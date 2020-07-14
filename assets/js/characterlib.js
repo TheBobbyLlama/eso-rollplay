@@ -190,6 +190,8 @@ const skillsKnowledge = [
 	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
 ];
 
+const masterQualityList = [ attributes, skillsCombat, skillsMagic, skillsGeneral, skillsCrafting, skillsKnowledge ];
+
 class CharacterSheet {
 	constructor() {
 		this.sex = SEX_MALE;

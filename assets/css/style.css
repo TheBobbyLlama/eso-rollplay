@@ -7,11 +7,29 @@
 body {
 	background-color: #202020;
 	color: white;
+	margin-bottom: 40px;
 	text-align: center;
+}
+
+footer {
+	background-color: #404040;
+	border-top: solid 2px #202020;
+	bottom: -60px;
+	height: 40px;
+	left: 0;
+	padding: 10px;
+	position: fixed;
+	right: 0;
+	transition-duration: 0.5s;
+}
+
+footer.shown {
+	bottom: 0px;
 }
 
 h2 {
 	text-align: center;
+	margin-bottom: 10px;
 }
 
 section {
@@ -24,9 +42,14 @@ section {
 }
 
 #main {
+	align-items: flex-start;
 	background-color: #101010;
 	border-radius: 10px;
 	display: flex;
 	flex-wrap: wrap;
 	margin: 10px;
+}
+
+#main section label {
+	display: block;
 }
