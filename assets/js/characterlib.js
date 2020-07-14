@@ -217,15 +217,15 @@ class CharacterSheet {
 		this.skills = {};
 	}
 
-	getItem(getMe) {
+	getItem(getMe, noSlider=false) {
 		if (attributes.find(element => element.key == getMe)) {
-			return this.getAttribute(getMe);
+			return this.getAttribute(getMe, noSlider);
 		} else {
-			return this.getSkill(getMe);
+			return this.getSkill(getMe, noSlider);
 		}
 	}
 
-	getAttribute(getMe) {
+	getAttribute(getMe, noSlider=false) {
 		var result = 10;
 		var tryMe = getTemplate(this.race, races);
 
@@ -239,14 +239,14 @@ class CharacterSheet {
 			result += tryMe.attributes[this.sex][getMe];
 		}
 
-		if (getMe in this.attributes) {
+		if ((!noSlider) && (getMe in this.attributes)) {
 			result += this.attributes[getMe];
 		}
 
 		return result;
 	}
 
-	getSkill(getMe) {
+	getSkill(getMe, noSlider=false) {
 		var result = 0;
 		var tryMe = getTemplate(this.race, races);
 
@@ -260,7 +260,7 @@ class CharacterSheet {
 			result += tryMe.skills[getMe];
 		}
 
-		if (getMe in this.skills) {
+		if ((!noSlider) && (getMe in this.skills)) {
 			result += this.skills[getMe];
 		}
 

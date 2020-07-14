@@ -37,7 +37,7 @@ function fillSection(sectionName, elements) {
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div data-key='" + elements[i].key + "'>" +
-						"<label for='" + elements[i].key + "'>" + elements[i].name + " [" + character.getItem(elements[i].key) + "]</label>" +
+						"<label for='" + elements[i].key + "'>" + elements[i].name + ((elements[i].governing) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span>" + character.getItem(elements[i].key) + "</span>]</label>" +
 						"<input type='range' min='" + elements[i].min + "' max='" + elements[i].max + "' value='0' name='" + elements[i].key + "' />" +
 					"</div>");
 	}
@@ -45,31 +45,46 @@ function fillSection(sectionName, elements) {
 
 function changeName() {
 	character.name = $(this).val();
-	UpdateCharacterSheet();
+	updateCharacterSheet();
 }
 
 function changeRace() {
 	character.race = $(this).val();
-	UpdateCharacterSheet();
+	updateCharacterSheet();
 }
 
 function changeSex() {
 	character.sex = $(this).prop("selectedIndex");
-	UpdateCharacterSheet();
+	updateCharacterSheet();
 }
 
 function changeSupernatural() {
 	character.supernatural = $(this).val();
-	UpdateCharacterSheet();
+	updateCharacterSheet();
 }
 
 function changeClass() {
 	character.class = $(this).val();
-	UpdateCharacterSheet();
+	updateCharacterSheet();
 }
 
-function UpdateCharacterSheet() {
-	// TODO!
+function updateCharacterSheet() {
+	for (var idx = 0; idx < masterQualityList.length; idx++) {
+		var workingList = masterQualityList[idx];
+
+		for(var i = 0; i < workingList.length; i++) {
+			$("div[data-key='" + workingList[i].key + "'] span").text(character.getItem(workingList[i].key));
+
+			if (attributes.find(element => element.key == workingList[i].key)) {
+				var tmpVal = character.getItem(workingList[i].key) - character.getItem(workingList[i].key, true);
+				$("div[data-key='" + workingList[i].key + "'] input[type='range']").val(tmpVal);
+			} else {
+				$("div[data-key='" + workingList[i].key + "'] input[type='range']").val(character.getItem(workingList[i].key));
+			}
+		}
+	}
+
+
 	character.print("printout");
 }
 
