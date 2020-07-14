@@ -6,7 +6,7 @@ const SKILL_DIFF_MODERATE = 1;
 const SKILL_DIFF_HARD = 2;
 const SKILL_DIFF_ESOTERIC = 3;
 
-const skillDifficultyNames = [ "Easy", "Moderate", "Hard", "Esoteric" ];
+const skillDifficultyNames = [ "Easy", "Moderate", "Hard", "Esoteric!" ];
 
 class QualityTemplate {
 	constructor(myName, myDesc, myMin, myMax) {
@@ -203,7 +203,7 @@ const skillsKnowledge = [
 	new ExtraSkill("Language: Pyandonean", SKILL_DIFF_EASY, "Discerning the langauge of the Maormer, or sea elves."),
 	new ExtraSkill("Language: Ta-agra", SKILL_DIFF_EASY, "Discerning the language of the Khajiit."),
 	new ExtraSkill("Language: Yoku", SKILL_DIFF_MODERATE, "Discerning the language of Yokuda, ancestral homeland of the Redguards."),
-	new ExtraSkill("Necromancy", SKILL_DIFF_EASY, "Knowledge of summoning and/or controlling the dead."),
+	new ExtraSkill("Necromancy", SKILL_DIFF_MODERATE, "Knowledge of summoning and/or controlling the dead."),
 	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
 ];
 
@@ -248,6 +248,17 @@ class CharacterSheet {
 		return result;
 	}
 
+	getAttributeModifier(key) {
+		var attrVal = this.getAttribute(key);
+		var result = attrVal - 10;
+	
+		if (result > 0) {
+			result = Math.floor(result / 2.0);
+		}
+	
+		return result;
+	}
+
 	getSkill(getMe, noSlider=false) {
 		var result = 0;
 		var tryMe = getTemplate(this.race, races);
@@ -269,7 +280,7 @@ class CharacterSheet {
 		return result;
 	}
 
-	getResists() {
+	getResists(internal=false) {
 		var result = [];
 		var tryMe = getTemplate(this.race, races);
 
@@ -283,13 +294,20 @@ class CharacterSheet {
 			Array.prototype.push.apply(result, tryMe.resist);
 		}
 
-		// Unique resuls only!
-		return result.filter(function(value, index, self) {
-			return self.indexOf(value) === index;
-		});
+		if (!internal) {
+			var checkWeaknesses = this.getWeaknesses(true);
+
+			// Unique results only!
+			result = result.filter(function(value, index, self) {
+				return ((self.indexOf(value) === index) && (checkWeaknesses.indexOf(value) < 0));
+			});
+			result.sort();
+		}
+
+		return result;
 	}
 
-	getWeaknesses() {
+	getWeaknesses(internal=false) {
 		var result = [];
 		var tryMe = getTemplate(this.race, races);
 
@@ -303,21 +321,33 @@ class CharacterSheet {
 			Array.prototype.push.apply(result, tryMe.weakness);
 		}
 
-		// Unique results only!
-		return result.filter(function(value, index, self) {
-			return self.indexOf(value) === index;
-		});
+		if (!internal) {
+			var checkResists = this.getResists(true);
+
+			result = result.filter(function(value, index, self) {
+				return ((self.indexOf(value) === index) && (checkResists.indexOf(value) < 0));
+			});
+			result.sort();
+		}
+
+		return result;
 	}
 
 	print(id) {
 		var i;
-		var headerSpace = "=====";
 		var printArr = [];
 		var printout = $("#" + id);
 		printout.text("");
 
 		if (this.name) {
+			printout.append("===============================<br />")
 			printout.append("<h3>" + this.name.toUpperCase() + "</h3>");
+		}
+
+		printout.append("===============================<br />")
+
+		if (this.player) {
+			printout.append("@" + this.player + "<br />");
 		}
 
 		if (this.race) {
@@ -344,55 +374,55 @@ class CharacterSheet {
 			);
 		}
 
-		printout.append("<strong>" + headerSpace + " ATTRIBUTES " + headerSpace + "</strong><br />");
+		printout.append("<strong>========= ATTRIBUTES ==========</strong><br />");
 		printout.append(printArr.join("<br />") + "<br />");
 
 		printArr = this.loadSkillArray(skillsCombat);
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " COMBAT SKILLS " + headerSpace + "</strong><br />");
+			printout.append("<strong>======== COMBAT SKILLS ========</strong><br />");
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsMagic);
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " MAGIC SKILLS " + headerSpace + "</strong><br />");
+			printout.append("<strong>======== MAGIC SKILLS =========</strong><br />");
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsGeneral);
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " GENERAL SKILLS " + headerSpace + "</strong><br />");
+			printout.append("<strong>======= GENERAL SKILLS ========</strong><br />");
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsCrafting);
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " CRAFTING SKILLS " + headerSpace + "</strong><br />");
+			printout.append("<strong>======= CRAFTING SKILLS =======</strong><br />");
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsKnowledge);
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " KNOWLEDGE SKILLS " + headerSpace + "</strong><br />");
+			printout.append("<strong>====== KNOWLEDGE SKILLS =======</strong><br />");
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.getResists();
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " RESISTANCES " + headerSpace + "</strong><br />");
+			printout.append("<strong>========= RESISTANCES =========</strong><br />");
 			printout.append(printArr.join(", ") + "<br />");
 		}
 
 		printArr = this.getWeaknesses();
 
 		if (printArr.length) {
-			printout.append("<strong>" + headerSpace + " WEAKNESSES " + headerSpace + "</strong><br />");
+			printout.append("<strong>========= WEAKNESSES ==========</strong><br />");
 			printout.append(printArr.join(", ") + "<br />");
 		}
 	}
@@ -411,3 +441,4 @@ class CharacterSheet {
 		return result;
 	}
 }
+

@@ -74,3 +74,19 @@ section > div[id] {
 	padding: 20px;
 	text-align: left;
 }
+
+.costIncreased {
+	color: #fff0c0;
+}
+
+.costHigh {
+	color: #ffc0b0;
+}
+
+.costExtreme {
+	color: #ff2000;
+}
+
+.redFlag {
+	color: red;
+}

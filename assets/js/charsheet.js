@@ -1,5 +1,9 @@
 var footer = $("footer");
 
+const ATTRIBUTE_POINT_LIMIT = 10;
+const SKILL_POINT_BASE = 10;
+var attrSpent = 0;
+var skillSpent = 0;
 var character = new CharacterSheet();
 
 function initializePage() {
@@ -37,14 +41,19 @@ function fillSection(sectionName, elements) {
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div data-key='" + elements[i].key + "'>" +
-						"<label for='" + elements[i].key + "'>" + elements[i].name + ((elements[i].governing) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span>" + character.getItem(elements[i].key) + "</span>]</label>" +
+						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='Difficulty: " + skillDifficultyNames[elements[i].difficulty] + "'" : "") +">" + elements[i].name + ((elements[i].governing) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
 						"<input type='range' min='" + elements[i].min + "' max='" + elements[i].max + "' value='0' name='" + elements[i].key + "' />" +
 					"</div>");
 	}
 }
 
 function changeName() {
-	character.name = $(this).val();
+	character.name = $(this).val().trim();
+	updateCharacterSheet();
+}
+
+function changePlayer() {
+	character.player = $(this).val().trim().replace(/@/g, "");
 	updateCharacterSheet();
 }
 
@@ -94,21 +103,79 @@ function updateCharacterSheet() {
 
 		for(var i = 0; i < workingList.length; i++) {
 			var tmpVal;
-			$("div[data-key='" + workingList[i].key + "'] span").text(character.getItem(workingList[i].key));
+			$("div[data-key='" + workingList[i].key + "'] span[name='curValue']").text(character.getItem(workingList[i].key));
 
 			if (attributes.find(element => element.key == workingList[i].key)) {
 				tmpVal = character.getItem(workingList[i].key) - character.getItem(workingList[i].key, true);
 				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("title", tmpVal).val(tmpVal);
 				
 			} else {
+				var costLevel = costForNextSkillRank(workingList[i].key, character.getSkill(workingList[i].key));
+				var costClass = "";
+
+				if (costLevel === 2) {
+					costClass = "costIncreased";
+				} else if ((costLevel === 3) || (costLevel === 4)) {
+					costClass = "costHigh";
+				} else if (costLevel > 4) {
+					costClass = "costExtreme";
+				}
+
 				tmpVal = character.getItem(workingList[i].key);
 				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("min", character.getItem(workingList[i].key, true)).val(tmpVal);
+				$("div[data-key='" + workingList[i].key + "'] label[for='" + workingList[i].key + "']").attr("class", costClass);
 			}
 		}
 	}
 
-
+	calculateTotalPoints();
 	character.print("printout");
+}
+
+function calculateTotalPoints() {
+	var i;
+	var total = 0;
+	var max = ATTRIBUTE_POINT_LIMIT;
+	var attrDisplay = $("#attributePoints");
+	var skillDisplay = $("#skillPoints");
+	var workingList = Object.entries(character.attributes);
+
+	for (i = 0; i < workingList.length; i++) {
+		total += workingList[i][1];
+	}
+
+	attrDisplay.text(total + "/" + max);
+	attrDisplay.toggleClass("redFlag", (total > max));
+
+	total = 0;
+	max = SKILL_POINT_BASE + 2 * character.getAttribute("Intelligence");
+	workingList = Object.entries(character.skills);
+
+	for (i = 0; i < workingList.length; i++) {
+		var curRank = character.getSkill(workingList[i][0]);
+
+		for (var x = character.getSkill(workingList[i][0], true); x < curRank; x++) {
+			total += costForNextSkillRank(workingList[i][0], x);
+		}
+	}
+
+	skillDisplay.text(total + "/" + max);
+	skillDisplay.toggleClass("redFlag", (total > max));
+}
+
+function costForNextSkillRank(key, rank) {
+	var skillObj = findItemForKey(key);
+	var governing = skillObj.governing || "Intelligence";
+	var difficulty = skillObj.difficulty || 0;
+	
+	rank -= character.getSkill(key, true);
+
+	if (rank < 0) {
+		return 0;
+	} else {
+		return (1 << Math.max(Math.floor((rank - character.getAttributeModifier(governing) + difficulty) / 4), 0));
+	}
+	
 }
 
 function copyOutput(event) {
@@ -127,19 +194,19 @@ function checkHighlight() {
 	var helpKey = $(this).closest("*[data-key]").attr("data-key");
 
 	if (helpKey) {
-		footer.text(findDescForKey(helpKey));
+		footer.text(findItemForKey(helpKey).description);
 		footer.addClass("shown");
 	} else {
 		footer.removeClass("shown");
 	}
 }
 
-function findDescForKey (findKey) {
+function findItemForKey (findKey) {
 	for (var i = 0; i < masterQualityList.length; i++) {
 		var findIndex = masterQualityList[i].findIndex(element => element.key == findKey);
 
 		if (findIndex > -1) {
-			return masterQualityList[i][findIndex].description;
+			return masterQualityList[i][findIndex];
 		}
 	}
 
@@ -147,6 +214,7 @@ function findDescForKey (findKey) {
 }
 
 $("input[name='charName']").on("change", changeName);
+$("input[name='charPlayer']").on("change", changePlayer);
 $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
