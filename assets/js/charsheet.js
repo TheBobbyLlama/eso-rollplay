@@ -194,7 +194,8 @@ function checkHighlight() {
 	var helpKey = $(this).closest("*[data-key]").attr("data-key");
 
 	if (helpKey) {
-		footer.text(findItemForKey(helpKey).description);
+		var item = findItemForKey(helpKey);
+		footer.text(item.description + ((item.difficulty) ? " (" + skillDifficultyNames[item.difficulty] + ")" : ""));
 		footer.addClass("shown");
 	} else {
 		footer.removeClass("shown");
