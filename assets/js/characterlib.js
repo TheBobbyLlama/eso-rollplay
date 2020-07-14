@@ -9,31 +9,31 @@ const SKILL_DIFF_ESOTERIC = 3;
 const skillDifficultyNames = [ "Easy", "Moderate", "Hard", "Esoteric" ];
 
 class QualityTemplate {
-	constructor(myName, myDesc) {
+	constructor(myName, myDesc, myMin, myMax) {
 		this.name = myName;
 		this.description = myDesc,
-		this.key = myName.replace(/[(): ]/g, "");
+		this.key = myName.replace(/[():- ]/g, "");
+		this.min = myMin;
+		this.max = myMax;
 	}
 }
 
 class Attribute extends QualityTemplate {
 	constructor(myName, myDesc) {
-		super(myName, myDesc);
-		this.max = 5;
+		super(myName, myDesc, -2, 5);
 	}
 }
 
 class Skill extends QualityTemplate {
 	constructor(myName, myAttr, myDesc) {
-		super(myName, myDesc);
+		super(myName, myDesc, 0, 10);
 		this.governing = myAttr;
-		this.max = 10;
 	}
 }
 
 class ExtraSkill extends QualityTemplate {
 	constructor(myName, myDiff, myDesc) {
-		super(myName, myDesc);
+		super(myName, myDesc, 0, 10);
 		this.difficulty = myDiff;
 	}
 }
@@ -56,63 +56,63 @@ class Race {
 const races = [
 	new Race("Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
-		{},
+		{ Destruction: 1, LanguageElvish: 4 },
 		{ Strength: -2, Intelligence: 2, Endurance: -2 },
-		{}
+		{ Destruction: 1, LanguageElvish: 4 }
 	),
 	new Race("Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
-		{},
+		{ LanguageJel: 4, Restoration: 1 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
-		{}
+		{ LanguageJel: 4, Restoration: 1 }
 	),
 	new Race("Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{},
+		{ Bow: 1 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{}
+		{ Bow: 1 }
 	),
 	new Race("Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
-		{},
+		{ LightArmor: 1 },
 		{ Strength: -2, Intelligence: 2, Willpower: 2, Agility: -2, Endurance: -2 },
-		{}
+		{ LightArmor: 1 }
 	),
 	new Race("Dunmer",
 		{ Willpower: -2, Speed: 2, Personality: -2 },
-		{},
+		{ DualWield: 1, LanguageDunmeris: 4 },
 		{ Willpower: -2, Speed: 2, Endurance: -2 },
-		{}
+		{ DualWield: 1, LanguageDunmeris: 4 }
 	),
 	new Race("Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
-		{},
+		{ OneHandandShield: 1 },
 		{ Agility: -2, Speed: -2, Personality: 2 },
-		{}
+		{ OneHandandShiled: 1 }
 	),
 	new Race("Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
-		{},
+		{ LanguageTaagra: 4, MediumArmor: 1 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
-		{}
+		{ LanguageTaagra: 4, MediumArmor: 1 }
 	),
 	new Race("Nord",
 		{ Strength: 2, Intelligence: -2, Agility: -2, Endurance: 2, Personality: -2 },
-		{},
+		{ TwoHanded: 1 },
 		{ Strength: 2, Intelligence: -2, Willpower: 2, Agility: -2, Personality: -2 },
-		{}
+		{ TwoHanded: 1 }
 	),
 	new Race("Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
-		{},
+		{ HeavyArmor: 1, LanguageOrcish: 4 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
-		{}
+		{ HeavyArmor: 1, LanguageOrcish: 4 }
 	),
 	new Race("Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
-		{},
+		{ LanguageYoku: 4, OneHandandShield: 1 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
-		{}
+		{ LanguageYoku: 4, OneHandandShield: 1 }
 	)
 ];
 
@@ -208,6 +208,8 @@ class CharacterSheet {
 		if (getMe in this.attributes) {
 			result += this.attributes[getMe];
 		}
+
+		return result;
 	}
 
 	getSkill(getMe) {
@@ -220,5 +222,7 @@ class CharacterSheet {
 		if (getMe in this.skills) {
 			result += this.skills[getMe];
 		}
+
+		return result;
 	}
 }
