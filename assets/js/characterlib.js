@@ -198,10 +198,18 @@ class CharacterSheet {
 		this.skills = {};
 	}
 
+	getItem(getMe) {
+		if (attributes.find(element => element.key == getMe)) {
+			return this.getAttribute(getMe);
+		} else {
+			return this.getSkill(getMe);
+		}
+	}
+
 	getAttribute(getMe) {
 		var result = 10;
 
-		if ((race) && (getMe in this.race.attributes[this.sex])) {
+		if ((this.race) && (getMe in this.race.attributes[this.sex])) {
 			result += this.race.attributes[getMe];
 		}
 
@@ -215,7 +223,7 @@ class CharacterSheet {
 	getSkill(getMe) {
 		var result = 0;
 
-		if ((race) && (getMe in this.race.skills[this.sex])) {
+		if ((this.race) && (getMe in this.race.skills[this.sex])) {
 			result += this.race.skills[getMe];
 		}
 

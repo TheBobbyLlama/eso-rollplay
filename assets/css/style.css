@@ -1,0 +1,32 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #202020;
+	color: white;
+	text-align: center;
+}
+
+h2 {
+	text-align: center;
+}
+
+section {
+	background-color: #404040;
+	border-radius: 8px;
+	display: inline-block;
+	margin: 10px;
+	padding: 10px 20px;
+	text-align: left;
+}
+
+#main {
+	background-color: #101010;
+	border-radius: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	margin: 10px;
+}
