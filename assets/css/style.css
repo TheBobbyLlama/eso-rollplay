@@ -53,3 +53,13 @@ section {
 #main section label {
 	display: block;
 }
+
+#printout {
+	background-color: silver;
+	border-radius: 8px;
+	color: black;
+	font-family: monospace;
+	margin: 20px;
+	padding: 20px;
+	text-align: left;
+}

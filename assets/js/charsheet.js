@@ -3,6 +3,8 @@ var footer = $("footer");
 var character = new CharacterSheet();
 
 function initializePage() {
+	var i;
+
 	fillSection("attributes", attributes);
 	fillSection("skillsCombat", skillsCombat);
 	fillSection("skillsMagic", skillsMagic);
@@ -11,10 +13,23 @@ function initializePage() {
 	fillSection("skillsKnowledge", skillsKnowledge);
 
 	var raceSelect = $("select[name='charRace']");
+	var superSelect = $("select[name='charSupernatural']");
+	var classSelect = $("select[name='charClass']");
 
-	for (var i = 0; i < races.length; i++) {
+	for (i = 0; i < races.length; i++) {
 		raceSelect.append("<option>" + races[i].name + "</option>")
 	}
+
+	for (i = 0; i < supernaturals.length; i++) {
+		superSelect.append("<option>" + supernaturals[i].name + "</option>")
+	}
+
+	for (i = 0; i < classes.length; i++) {
+		classSelect.append("<option>" + classes[i] + "</option>")
+	}
+
+	// Event handler isn't catching our default race, so force it!
+	raceSelect.trigger("change");
 }
 
 function fillSection(sectionName, elements) {
@@ -28,8 +43,38 @@ function fillSection(sectionName, elements) {
 	}
 }
 
+function changeName() {
+	character.name = $(this).val();
+	UpdateCharacterSheet();
+}
+
+function changeRace() {
+	character.race = $(this).val();
+	UpdateCharacterSheet();
+}
+
+function changeSex() {
+	character.sex = $(this).prop("selectedIndex");
+	UpdateCharacterSheet();
+}
+
+function changeSupernatural() {
+	character.supernatural = $(this).val();
+	UpdateCharacterSheet();
+}
+
+function changeClass() {
+	character.class = $(this).val();
+	UpdateCharacterSheet();
+}
+
+function UpdateCharacterSheet() {
+	// TODO!
+	character.print("printout");
+}
+
 function checkHighlight() {
-	var helpKey = $(this).closest("div[data-key]").attr("data-key");
+	var helpKey = $(this).closest("*[data-key]").attr("data-key");
 
 	if (helpKey) {
 		footer.text(findDescForKey(helpKey));
@@ -50,6 +95,12 @@ function findDescForKey (findKey) {
 
 	return "";
 }
+
+$("input[name='charName']").on("change", changeName);
+$("select[name='charRace']").on("change", changeRace);
+$("select[name='charSex']").on("change", changeSex);
+$("select[name='charSupernatural']").on("change", changeSupernatural);
+$("select[name='charClass']").on("change", changeClass);
 
 initializePage();
 

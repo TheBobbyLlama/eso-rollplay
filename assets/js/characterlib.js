@@ -38,83 +38,98 @@ class ExtraSkill extends QualityTemplate {
 	}
 }
 
-class Race {
-	constructor(myName, maleAttr, maleSkills, femaleAttr, femaleSkills) {
+class CharacterTemplate {
+	constructor(myName, maleAttr, femaleAttr, skillMods, myResist = [], myWeakness = []) {
 		this.name = myName;
 
 		this.attributes = [];
 		this.attributes[SEX_MALE] = maleAttr;
 		this.attributes[SEX_FEMALE] = femaleAttr;
 
-		this.skills = [];
-		this.skills[SEX_MALE] = maleSkills;
-		this.skills[SEX_FEMALE] = femaleSkills;
-
+		this.skills = skillMods;
+		this.resist = myResist;
+		this.weakness = myWeakness;
 	}
 }
 
 const races = [
-	new Race("Altmer",
+	new CharacterTemplate("Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
-		{ Destruction: 1, LanguageElvish: 4 },
 		{ Strength: -2, Intelligence: 2, Endurance: -2 },
 		{ Destruction: 1, LanguageElvish: 4 }
 	),
-	new Race("Argonian",
+	new CharacterTemplate("Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
-		{ LanguageJel: 4, Restoration: 1 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
 		{ LanguageJel: 4, Restoration: 1 }
 	),
-	new Race("Bosmer",
+	new CharacterTemplate("Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{ Bow: 1 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ Bow: 1 }
 	),
-	new Race("Breton",
+	new CharacterTemplate("Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
-		{ LightArmor: 1 },
 		{ Strength: -2, Intelligence: 2, Willpower: 2, Agility: -2, Endurance: -2 },
 		{ LightArmor: 1 }
 	),
-	new Race("Dunmer",
+	new CharacterTemplate("Dunmer",
 		{ Willpower: -2, Speed: 2, Personality: -2 },
-		{ DualWield: 1, LanguageDunmeris: 4 },
 		{ Willpower: -2, Speed: 2, Endurance: -2 },
-		{ DualWield: 1, LanguageDunmeris: 4 }
+		{ DualWield: 1, LanguageDunmeris: 4 },
+		[ "Flame" ]
 	),
-	new Race("Imperial",
+	new CharacterTemplate("Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
-		{ OneHandandShield: 1 },
 		{ Agility: -2, Speed: -2, Personality: 2 },
 		{ OneHandandShiled: 1 }
 	),
-	new Race("Khajiit",
+	new CharacterTemplate("Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
-		{ LanguageTaagra: 4, MediumArmor: 1 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
 		{ LanguageTaagra: 4, MediumArmor: 1 }
 	),
-	new Race("Nord",
+	new CharacterTemplate("Nord",
 		{ Strength: 2, Intelligence: -2, Agility: -2, Endurance: 2, Personality: -2 },
-		{ TwoHanded: 1 },
 		{ Strength: 2, Intelligence: -2, Willpower: 2, Agility: -2, Personality: -2 },
-		{ TwoHanded: 1 }
+		{ TwoHanded: 1 },
+		[ "Frost" ]
 	),
-	new Race("Orc",
+	new CharacterTemplate("Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
-		{ HeavyArmor: 1, LanguageOrcish: 4 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
 		{ HeavyArmor: 1, LanguageOrcish: 4 }
 	),
-	new Race("Redguard",
+	new CharacterTemplate("Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
-		{ LanguageYoku: 4, OneHandandShield: 1 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
 		{ LanguageYoku: 4, OneHandandShield: 1 }
 	)
 ];
+
+const supernaturals = [
+	new CharacterTemplate("", {}, {}, {}),
+	new CharacterTemplate("Vampire",
+		{ Strength: 2, Agility: 2, Speed: 2 },
+		{ Strength: 2, Agility: 2, Speed: 2 },
+		{ Perception: 2 },
+		[ "Disease" ],
+		[ "Flame" ]
+	),
+	new CharacterTemplate("Werewolf",
+		{ Strength: 1, Endurance: 2 },
+		{ Strength: 1, Endurance: 2 },
+		{ Perception: 3, Survival: 1 },
+		[ "Disease" ],
+		[ "Poison" ]
+	)
+];
+
+function getTemplate(name, list) {
+	return list.find(element => element.name === name);
+}
+
+const classes = [ "", "Dragonknight", "Necromancer", "Nightblade", "Sorcerer", "Templar", "Warden" ];
 
 const attributes = [
 	new Attribute("Strength", "How strong you are."),
@@ -195,7 +210,9 @@ const masterQualityList = [ attributes, skillsCombat, skillsMagic, skillsGeneral
 class CharacterSheet {
 	constructor() {
 		this.sex = SEX_MALE;
-		this.race = null;
+		this.race = "";
+		this.supernatural = "";
+		this.class = "";
 		this.attributes = {};
 		this.skills = {};
 	}
@@ -210,9 +227,16 @@ class CharacterSheet {
 
 	getAttribute(getMe) {
 		var result = 10;
+		var tryMe = getTemplate(this.race, races);
 
-		if ((this.race) && (getMe in this.race.attributes[this.sex])) {
-			result += this.race.attributes[getMe];
+		if ((tryMe) && (getMe in tryMe.attributes[this.sex])) {
+			result += tryMe.attributes[this.sex][getMe];
+		}
+
+		tryMe = getTemplate(this.supernatural, supernaturals);
+
+		if ((tryMe) && (getMe in tryMe.attributes[this.sex])) {
+			result += tryMe.attributes[this.sex][getMe];
 		}
 
 		if (getMe in this.attributes) {
@@ -224,13 +248,156 @@ class CharacterSheet {
 
 	getSkill(getMe) {
 		var result = 0;
+		var tryMe = getTemplate(this.race, races);
 
-		if ((this.race) && (getMe in this.race.skills[this.sex])) {
-			result += this.race.skills[getMe];
+		if ((tryMe) && (getMe in tryMe.skills)) {
+			result += tryMe.skills[getMe];
+		}
+
+		tryMe = getTemplate(this.supernatural, supernaturals);
+
+		if ((tryMe) && (getMe in tryMe.skills)) {
+			result += tryMe.skills[getMe];
 		}
 
 		if (getMe in this.skills) {
 			result += this.skills[getMe];
+		}
+
+		return result;
+	}
+
+	getResists() {
+		var result = [];
+		var tryMe = getTemplate(this.race, races);
+
+		if (tryMe) {
+			Array.prototype.push.apply(result, tryMe.resist);
+		}
+
+		tryMe = getTemplate(this.supernatural, supernaturals);
+
+		if (tryMe) {
+			Array.prototype.push.apply(result, tryMe.resist);
+		}
+
+		return result;
+	}
+
+	getWeaknesses() {
+		var result = [];
+		var tryMe = getTemplate(this.race, races);
+
+		if (tryMe) {
+			Array.prototype.push.apply(result, tryMe.weakness);
+		}
+
+		tryMe = getTemplate(this.supernatural, supernaturals);
+
+		if (tryMe) {
+			Array.prototype.push.apply(result, tryMe.weakness);
+		}
+
+		return result;
+	}
+
+	print(id) {
+		var i;
+		var headerSpace = "=====";
+		var printArr = [];
+		var printout = $("#" + id);
+		printout.text("");
+
+		if (this.name) {
+			printout.append("<h3>" + this.name.toUpperCase() + "</h3>");
+		}
+
+		if (this.race) {
+			printArr.push(this.race);
+		}
+
+		if (this.supernatural) {
+			printArr.push(this.supernatural);
+		}
+
+		printArr.push((this.sex) ? "Female" : "Male");
+
+		if (this.class) {
+			printArr.push(this.class);
+		}
+
+		printout.append("<p>" + printArr.join(" - ") + "</p>");
+
+		printArr = [];
+
+		for (i = 0; i < attributes.length; i++) {
+			printArr.push(
+				"<span data-key='" + attributes[i].key + "'>" + attributes[i].name.substring(0, 3) + ": " + this.getAttribute(attributes[i].key) + "</span>"
+			);
+		}
+
+		printout.append("<p><strong>" + headerSpace + " ATTRIBUTES " + headerSpace + "</strong></p>");
+		printout.append("<p>" + printArr.join("<br />") + "</p>");
+
+		printArr = this.loadSkillArray(skillsCombat);
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " COMBAT SKILLS " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join("<br />") + "</p>");
+		}
+
+		printArr = this.loadSkillArray(skillsMagic);
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " MAGIC SKILLS " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join("<br />") + "</p>");
+		}
+
+		printArr = this.loadSkillArray(skillsGeneral);
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " GENERAL SKILLS " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join("<br />") + "</p>");
+		}
+
+		printArr = this.loadSkillArray(skillsCrafting);
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " CRAFTING SKILLS " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join("<br />") + "</p>");
+		}
+
+		printArr = this.loadSkillArray(skillsKnowledge);
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " KNOWLEDGE SKILLS " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join("<br />") + "</p>");
+		}
+
+		printArr = this.getResists();
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " RESISTANCES " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join(", ") + "</p>");
+		}
+
+		printArr = this.getWeaknesses();
+
+		if (printArr.length) {
+			printout.append("<p><strong>" + headerSpace + " WEAKNESSES " + headerSpace + "</strong></p>");
+			printout.append("<p>" + printArr.join(", ") + "</p>");
+		}
+	}
+
+	loadSkillArray(list) {
+		var result = [];
+
+		for (var i = 0; i < list.length; i++) {
+			if (this.getSkill(list[i].key)) {
+				result.push(
+					"<span data-key='" + list[i].key + "'>" + list[i].name + ": " + this.getSkill(list[i].key) + "</span>"
+				);
+			}
 		}
 
 		return result;
