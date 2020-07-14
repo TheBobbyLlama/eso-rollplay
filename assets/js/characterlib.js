@@ -61,12 +61,14 @@ const races = [
 	new CharacterTemplate("Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
-		{ LanguageJel: 4, Restoration: 1 }
+		{ LanguageJel: 4, Restoration: 1 },
+		[ "Disease" ]
 	),
 	new CharacterTemplate("Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{ Bow: 1 }
+		{ Bow: 1 },
+		[ "Poison" ]
 	),
 	new CharacterTemplate("Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
@@ -281,7 +283,10 @@ class CharacterSheet {
 			Array.prototype.push.apply(result, tryMe.resist);
 		}
 
-		return result;
+		// Unique resuls only!
+		return result.filter(function(value, index, self) {
+			return self.indexOf(value) === index;
+		});
 	}
 
 	getWeaknesses() {
@@ -298,7 +303,10 @@ class CharacterSheet {
 			Array.prototype.push.apply(result, tryMe.weakness);
 		}
 
-		return result;
+		// Unique results only!
+		return result.filter(function(value, index, self) {
+			return self.indexOf(value) === index;
+		});
 	}
 
 	print(id) {

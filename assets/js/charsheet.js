@@ -68,18 +68,41 @@ function changeClass() {
 	updateCharacterSheet();
 }
 
+function changeSlider() {
+	var itemKey = $(this).closest("*[data-key]").attr("data-key");
+
+	if (attributes.find(element => element.key == itemKey)) {
+		character.attributes[itemKey] = parseInt($(this).val());
+
+		if (!character.attributes[itemKey]) {
+			delete character.attributes[itemKey];
+		}
+	} else {
+		character.skills[itemKey] = parseInt($(this).val()) - character.getSkill(itemKey, true);
+
+		if (!character.skills[itemKey]) {
+			delete character.skills[itemKey];
+		}
+	}
+
+	updateCharacterSheet();
+}
+
 function updateCharacterSheet() {
 	for (var idx = 0; idx < masterQualityList.length; idx++) {
 		var workingList = masterQualityList[idx];
 
 		for(var i = 0; i < workingList.length; i++) {
+			var tmpVal;
 			$("div[data-key='" + workingList[i].key + "'] span").text(character.getItem(workingList[i].key));
 
 			if (attributes.find(element => element.key == workingList[i].key)) {
-				var tmpVal = character.getItem(workingList[i].key) - character.getItem(workingList[i].key, true);
-				$("div[data-key='" + workingList[i].key + "'] input[type='range']").val(tmpVal);
+				tmpVal = character.getItem(workingList[i].key) - character.getItem(workingList[i].key, true);
+				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("title", tmpVal).val(tmpVal);
+				
 			} else {
-				$("div[data-key='" + workingList[i].key + "'] input[type='range']").val(character.getItem(workingList[i].key));
+				tmpVal = character.getItem(workingList[i].key);
+				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("min", character.getItem(workingList[i].key, true)).val(tmpVal);
 			}
 		}
 	}
@@ -128,6 +151,7 @@ $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
 $("select[name='charClass']").on("change", changeClass);
+$("section").on("input change", "input[type='range']", changeSlider);
 $("#printout").on("dblclick", copyOutput);
 
 initializePage();
