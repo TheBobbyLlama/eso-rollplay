@@ -1,5 +1,16 @@
-function createPageSliders() {
-	fillSection("attributes", attributes, 20);
+function initializePage() {
+	fillSection("attributes", attributes);
+	fillSection("skillsCombat", skillsCombat);
+	fillSection("skillsMagic", skillsMagic);
+	fillSection("skillsGeneral", skillsGeneral);
+	fillSection("skillsCrafting", skillsCrafting);
+	fillSection("skillsKnowledge", skillsKnowledge);
+
+	var raceSelect = $("select[name='charRace']");
+
+	for (var i = 0; i < races.length; i++) {
+		raceSelect.append("<option>" + races[i].name + "</option>")
+	}
 }
 
 function fillSection(sectionName, elements) {
@@ -7,10 +18,10 @@ function fillSection(sectionName, elements) {
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div>");
-		parent.append("<label for='" + elements[i].key + "'>" + elements[i].name + " [1]</label>");
-		parent.append("<input type='range' min='1' max='" + elements[i].max + "' value='1' name='" + elements[i].key + "' />")
+		parent.append("<label for='" + elements[i].key + "'>" + elements[i].name + "</label>");
+		parent.append("<input type='range' min='0' max='" + elements[i].max + "' value='0' name='" + elements[i].key + "' />")
 		parent.append("</div>");
 	}
 }
 
-createPageSliders();
+initializePage();
