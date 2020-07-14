@@ -73,6 +73,18 @@ function UpdateCharacterSheet() {
 	character.print("printout");
 }
 
+function copyOutput(event) {
+	event.stopPropagation();
+	var printout = $("#printout");
+	var range = document.createRange();
+	range.selectNodeContents(printout[0]);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	sel.addRange(range);
+	document.execCommand("copy");
+	sel.removeAllRanges();
+}
+
 function checkHighlight() {
 	var helpKey = $(this).closest("*[data-key]").attr("data-key");
 
@@ -101,6 +113,7 @@ $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
 $("select[name='charClass']").on("change", changeClass);
+$("#printout").on("dblclick", copyOutput);
 
 initializePage();
 

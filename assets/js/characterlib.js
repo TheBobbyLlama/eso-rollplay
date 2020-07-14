@@ -326,7 +326,7 @@ class CharacterSheet {
 			printArr.push(this.class);
 		}
 
-		printout.append("<p>" + printArr.join(" - ") + "</p>");
+		printout.append(printArr.join(" - ") + "<br />");
 
 		printArr = [];
 
@@ -336,56 +336,56 @@ class CharacterSheet {
 			);
 		}
 
-		printout.append("<p><strong>" + headerSpace + " ATTRIBUTES " + headerSpace + "</strong></p>");
-		printout.append("<p>" + printArr.join("<br />") + "</p>");
+		printout.append("<strong>" + headerSpace + " ATTRIBUTES " + headerSpace + "</strong><br />");
+		printout.append(printArr.join("<br />") + "<br />");
 
 		printArr = this.loadSkillArray(skillsCombat);
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " COMBAT SKILLS " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join("<br />") + "</p>");
+			printout.append("<strong>" + headerSpace + " COMBAT SKILLS " + headerSpace + "</strong><br />");
+			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsMagic);
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " MAGIC SKILLS " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join("<br />") + "</p>");
+			printout.append("<strong>" + headerSpace + " MAGIC SKILLS " + headerSpace + "</strong><br />");
+			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsGeneral);
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " GENERAL SKILLS " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join("<br />") + "</p>");
+			printout.append("<strong>" + headerSpace + " GENERAL SKILLS " + headerSpace + "</strong><br />");
+			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsCrafting);
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " CRAFTING SKILLS " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join("<br />") + "</p>");
+			printout.append("<strong>" + headerSpace + " CRAFTING SKILLS " + headerSpace + "</strong><br />");
+			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsKnowledge);
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " KNOWLEDGE SKILLS " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join("<br />") + "</p>");
+			printout.append("<strong>" + headerSpace + " KNOWLEDGE SKILLS " + headerSpace + "</strong><br />");
+			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.getResists();
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " RESISTANCES " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join(", ") + "</p>");
+			printout.append("<strong>" + headerSpace + " RESISTANCES " + headerSpace + "</strong><br />");
+			printout.append(printArr.join(", ") + "<br />");
 		}
 
 		printArr = this.getWeaknesses();
 
 		if (printArr.length) {
-			printout.append("<p><strong>" + headerSpace + " WEAKNESSES " + headerSpace + "</strong></p>");
-			printout.append("<p>" + printArr.join(", ") + "</p>");
+			printout.append("<strong>" + headerSpace + " WEAKNESSES " + headerSpace + "</strong><br />");
+			printout.append(printArr.join(", ") + "<br />");
 		}
 	}
 
