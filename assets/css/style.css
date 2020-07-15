@@ -7,62 +7,28 @@
 body {
 	background-color: #202020;
 	color: white;
-	margin-bottom: 40px;
 	text-align: center;
 }
 
-div[data-key] {
-	margin: 2px;
+a:link {
+	color: #80c0ff;
 }
 
-footer {
-	background-color: #404040;
-	border-top: solid 2px #202020;
-	bottom: -60px;
-	height: 40px;
-	left: 0;
-	padding: 10px;
-	position: fixed;
-	right: 0;
-	transition-duration: 0.5s;
-}
-
-footer.shown {
-	bottom: 0px;
+a:visited {
+	color: #5090e0;
 }
 
 section {
 	background-color: #404040;
 	border-radius: 8px;
-	display: inline-block;
 	margin: 10px;
 	padding: 10px 20px;
 	text-align: left;
 }
 
-section h3 {
-	text-align: center;
+section h2, section h3 {
 	margin-bottom: 8px;
-}
-
-section > div[id] {
-	display: flex;
-	flex-direction: column;
-	flex-wrap: wrap;
-	max-height: 400px;
-}
-
-#main {
-	align-items: flex-start;
-	background-color: #101010;
-	border-radius: 10px;
-	display: flex;
-	flex-wrap: wrap;
-	margin: 10px;
-}
-
-#main section label {
-	display: block;
+	text-align: center;
 }
 
 #modalBG {
@@ -93,21 +59,15 @@ section > div[id] {
 	border-radius: 8px;
 	color: black;
 	font-family: monospace;
-	margin: 20px;
 	padding: 20px;
 	text-align: left;
 }
 
-.costIncreased {
-	color: #fff0c0;
-}
-
-.costHigh {
-	color: #ffc0b0;
-}
-
-.costExtreme {
-	color: #ff2000;
+#referLink {
+	padding: 10px;
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 
 .redFlag {

@@ -1,0 +1,64 @@
+var character = new CharacterSheet();
+
+function initializePage() {
+	var i;
+	var rollSelector = $("#rollSelect");
+	initializeDB();
+
+	for(i = 0; i < masterQualityList.length; i++) {
+		var workingList = masterQualityList[i];
+
+		for (var idx = 0; idx < workingList.length; idx++) {
+			rollSelector.append("<option value='" + workingList[idx].key +"'>" + workingList[idx].name + "</option>")
+		}
+	}
+}
+
+function copyOutput(event) {
+	event.stopPropagation();
+	var printout = $("#printout");
+	var range = document.createRange();
+	range.selectNodeContents(printout[0]);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	sel.addRange(range);
+	document.execCommand("copy");
+	sel.removeAllRanges();
+}
+
+function loadChar() {
+	event.preventDefault();
+	var tmpName = $("input[name='charName']").val();
+	var tmpPlayer = $("input[name='charPlayer']").val();
+
+	if ((!tmpName) || (!tmpPlayer)) {
+		showErrorPopup("Please enter a character name and a player name.");
+		return;
+	}
+
+	dbLoadCharacter(tmpName + "@" + tmpPlayer, characterLoaded)
+}
+
+function characterLoaded(loadMe) {
+	if (loadMe.val()) {
+		character.loadValueHandler(loadMe.val());
+		character.print("printout");
+	} else {
+		showErrorPopup("Character not found.");
+	}
+}
+
+function showErrorPopup(message) {
+	$("#modalBG").addClass("show");
+	$("#errorText").text(message);
+}
+
+function hideErrorPopup() {
+	$("#modalBG").removeClass("show");
+}
+
+$("#loadChar").on("click", loadChar);
+$("#printout").on("dblclick", copyOutput);
+$("#errorButton").on("click", hideErrorPopup);
+
+initializePage();

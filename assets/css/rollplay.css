@@ -1,0 +1,37 @@
+#main {
+	display: flex;
+	min-height: 720px;
+}
+
+#charInfo {
+	flex-basis: 20%;
+	min-width: 320px;
+}
+
+#charInfo form {
+	display: grid;
+}
+
+#charInfo label {
+	display: inline-block;
+	text-align: right;
+	width: 30px;
+}
+
+#charInfo input {
+	grid-column-start: 2;
+}
+
+#charInfo .buttonHolder {
+	grid-column: 1 / span 2;
+	padding: 4px;
+	text-align: center;
+}
+
+#printout {
+	margin: 20px 0px;
+}
+
+#readOut {
+	flex-basis: 80%;
+}
