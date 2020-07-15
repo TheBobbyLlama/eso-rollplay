@@ -100,7 +100,7 @@ const races = [
 	new CharacterTemplate("Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
-		{ HeavyArmor: 1, OrcLore: 4 }
+		{ HeavyArmor: 1, OrcishLore: 4 }
 	),
 	new CharacterTemplate("Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
