@@ -65,6 +65,7 @@ function characterLoaded(loadMe) {
 		localStorage.setItem("ESORP[name]", character.name);
 		character.print("printout");
 		resetRollSelect();
+		$("#rollExecute").removeAttr("disabled");
 	} else {
 		showErrorPopup("Character not found.");
 		$("input[name='charName']").val(character.name);

@@ -49,11 +49,11 @@ ul {
 }
 
 div.show {
-	display: block;
+	display: block !important;
 }
 
 #modalBG.show {
-	display: flex;
+	display: flex !important;
 }
 
 #modalBG #errorModal {
