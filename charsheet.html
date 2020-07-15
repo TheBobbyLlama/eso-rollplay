@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Roleplay - Character Sheet</title>
+	<link rel="stylesheet" href="./assets/css/style.css" />
+	<link rel="stylesheet" href="./assets/css/charsheet.css" />
+</head>
+<body>
+	<aside><a id="referLink" href="rollplay.html" target="_blank">Use your character! →</a></aside>
+	<h1>ESO Roleplay - Character Sheet</h1>
+	<section>
+		<form>
+			<label for="charName">Name:</label>
+			<input type="text" name="charName"></input>
+			<label for="charPlayer">@</label>
+			<input type="text" name="charPlayer"></input>
+			<button id="saveChar" type="button">Save</button>
+			<button id="loadChar" type="submit">Load</button>
+		</form>
+		<div>
+			<label for="charRace">Race:</label>
+			<select name="charRace"></select>
+			<label for="charSex">Sex:</label>
+			<select name="charSex">
+				<option>Male</option>
+				<option>Female</option>
+			</select>
+			<label for="charSupernatural">Supernatural:</label>
+			<select name="charSupernatural"></select>
+			<label for="charClass">Class:</label>
+			<select name="charClass"></select>
+		</div>
+	</section>
+	<div id="points">
+		<h3>Attribute Points: <span id="attributePoints">0/10</span></h3>
+		<h3>Skill Points: <span id="skillPoints">0/30</span></h3>
+	</div>
+	<div id="main">
+		<section>
+			<h3>Attributes</h3>
+			<div id="attributes"></div>
+		</section>
+		<section>
+			<h3>Combat Skills</h3>
+			<div id="skillsCombat"></div>
+		</section>
+		<section>
+			<h3>Magic Skills</h3>
+			<div id="skillsMagic"></div>
+		</section>
+		<section>
+			<h3>General Skills</h3>
+			<div id="skillsGeneral"></div>
+		</section>
+		<section>
+			<h3>Crafting Skills</h3>
+			<div id="skillsCrafting"></div>
+		</section>
+		<section>
+			<h3>Knowledge Skills</h3>
+			<div id="skillsKnowledge"></div>
+		</section>
+	</div>
+	<h2>Character Printout</h2>
+	<div id="printout" title="Double click to copy character sheet."></div>
+	<footer></footer>
+	<div id="modalBG">
+		<div id="errorModal">
+			<h3>Error</h3>
+			<p id="errorText"></p>
+			<button id="errorButton" type="button">Ok</button>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/esorplib.js"></script>
+	<script src="./assets/js/charsheet.js"></script>
+</body>
+</html>
