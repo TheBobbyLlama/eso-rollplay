@@ -256,7 +256,7 @@ function loadChar(event) {
 		return;
 	}
 
-	dbLoadCharacter(character.name + "@" + character.player, characterLoaded)
+	dbLoadCharacter(character.name, characterLoaded)
 }
 
 function characterLoaded(loadMe) {

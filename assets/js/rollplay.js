@@ -56,7 +56,7 @@ function loadChar() {
 		return;
 	}
 
-	dbLoadCharacter(tmpName + "@" + tmpPlayer, characterLoaded)
+	dbLoadCharacter(tmpName, characterLoaded)
 }
 
 function characterLoaded(loadMe) {

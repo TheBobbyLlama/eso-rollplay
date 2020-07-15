@@ -468,3 +468,33 @@ class CharacterSheet {
 	}
 }
 
+const SPECIAL_ATTACK_TYPES = [ "N/A", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
+const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!" ];
+
+class NPC {
+	construction(myName) {
+		this.name = myName;
+		this.attackBonus = 0;
+		this.specialAttackType = "N/A";
+		this.resistanceBonus = 0;
+		this.resists = [];
+		this.weaknesses = [];
+		this.injuryLevel = 0;
+	}
+}
+
+class CharacterStatus {
+	constructor(character) {
+		this.name = character.name;
+		this.player = character.player;
+		this.injuryLevel = 0;
+	}
+}
+
+class Encounter {
+	constructor() {
+		this.characters = []; // CharacterSheets.
+		this.statuses = []; // CharacterStatuses.
+		this.npcs = []; // NPCs.
+	}
+}

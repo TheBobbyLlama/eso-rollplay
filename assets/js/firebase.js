@@ -26,7 +26,7 @@ function initializeDB() {
 
 function dbSaveCharacter(saveMe) {
 	if ((saveMe.name) && (saveMe.player)) {
-		database.ref(("characters/" + saveMe.name + "@" + saveMe.player).replace(/ /g, "")).set(saveMe);
+		database.ref(("characters/" + saveMe.name).replace(/ /g, "")).set(saveMe);
 	}
 }
 
