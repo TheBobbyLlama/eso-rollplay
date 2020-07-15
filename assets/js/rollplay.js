@@ -5,6 +5,7 @@ function initializePage() {
 	var rollSelector = $("#rollSelect");
 	initializeDB();
 
+	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
 	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
 
 	for(i = 0; i < masterQualityList.length; i++) {
@@ -44,6 +45,7 @@ function loadChar() {
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		character.loadValueHandler(loadMe.val());
+		localStorage.setItem("ESORP[name]", character.name);
 		character.print("printout");
 	} else {
 		showErrorPopup("Character not found.");
@@ -54,11 +56,13 @@ function characterLoaded(loadMe) {
 
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
+	$("#errorModal").addClass("show");
 	$("#errorText").text(message);
 }
 
 function hideErrorPopup() {
 	$("#modalBG").removeClass("show");
+	$("#erorModal").removeClass("show");
 }
 
 $("#loadChar").on("click", loadChar);

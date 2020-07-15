@@ -43,6 +43,10 @@ section h2, section h3 {
 	top: 0;
 }
 
+div.show {
+	display: block;
+}
+
 #modalBG.show {
 	display: flex;
 }
