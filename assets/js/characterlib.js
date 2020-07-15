@@ -56,56 +56,56 @@ const races = [
 	new CharacterTemplate("Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
 		{ Strength: -2, Intelligence: 2, Endurance: -2 },
-		{ Destruction: 1, LanguageElvish: 4 }
+		{ AltmerLore: 4, Destruction: 1 }
 	),
 	new CharacterTemplate("Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
-		{ LanguageJel: 4, Restoration: 1 },
+		{ HistLore: 4, Restoration: 1, Unarmed: 1 },
 		[ "Disease" ]
 	),
 	new CharacterTemplate("Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{ Bow: 1 },
+		{ BosmerLore: 4, Bow: 1 },
 		[ "Poison" ]
 	),
 	new CharacterTemplate("Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
 		{ Strength: -2, Intelligence: 2, Willpower: 2, Agility: -2, Endurance: -2 },
-		{ LightArmor: 1 }
+		{ BretonLore: 4, LightArmor: 1 }
 	),
 	new CharacterTemplate("Dunmer",
 		{ Willpower: -2, Speed: 2, Personality: -2 },
 		{ Willpower: -2, Speed: 2, Endurance: -2 },
-		{ DualWield: 1, LanguageDunmeris: 4 },
+		{ DualWield: 1, DunmerLore: 4 },
 		[ "Flame" ]
 	),
 	new CharacterTemplate("Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
 		{ Agility: -2, Speed: -2, Personality: 2 },
-		{ OneHandandShiled: 1 }
+		{ ImperialLore: 4, OneHandandShiled: 1 }
 	),
 	new CharacterTemplate("Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
-		{ LanguageTaagra: 4, MediumArmor: 1 }
+		{ KhajiitLore: 4, MediumArmor: 1, Unarmed: 2 }
 	),
 	new CharacterTemplate("Nord",
 		{ Strength: 2, Intelligence: -2, Agility: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 2, Intelligence: -2, Willpower: 2, Agility: -2, Personality: -2 },
-		{ TwoHanded: 1 },
+		{ NordLore: 4, TwoHanded: 1 },
 		[ "Frost" ]
 	),
 	new CharacterTemplate("Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
-		{ HeavyArmor: 1, LanguageOrcish: 4 }
+		{ HeavyArmor: 1, OrcLore: 4 }
 	),
 	new CharacterTemplate("Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
-		{ LanguageYoku: 4, OneHandandShield: 1 }
+		{ OneHandandShield: 1, RedguardLore: 4 }
 	)
 ];
 
@@ -116,14 +116,14 @@ const supernaturals = [
 		{ Strength: 2, Agility: 2, Speed: 2 },
 		{ Perception: 2 },
 		[ "Disease" ],
-		[ "Flame" ]
+		[ "Flame", "Silver" ]
 	),
 	new CharacterTemplate("Werewolf",
 		{ Strength: 1, Endurance: 2 },
 		{ Strength: 1, Endurance: 2 },
 		{ Perception: 3, Survival: 1 },
 		[ "Disease" ],
-		[ "Poison" ]
+		[ "Poison", "Silver" ]
 	)
 ];
 
@@ -149,6 +149,7 @@ const skillsCombat = [
 	new Skill("One Hand and Shield", "Strength","How well you use a weapon and shield."),
 	new Skill("Dual Wield", "Agility", "How well you use two weapons at once."),
 	new Skill("Bow", "Agility", "How well you use bows."),
+	new Skill("Unarmed", "Strength", "How well you can fight or grapple with your bare hands."),
 	new Skill("Light Armor", "Speed", "How well you use light armor - robes and clothing."),
 	new Skill("Medium Armor", "Agility", "How well you use medium armor - leather."),
 	new Skill("Heavy Armor", "Endurance", "How well you use heavy armor - metal.")
@@ -185,25 +186,29 @@ const skillsCrafting = [
 
 // These skills represent specialized knowledge.  There is no governing attribute associated!
 const skillsKnowledge = [
+	new ExtraSkill("Altmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Altmer people, as well as their elvish language."),
+	new ExtraSkill("Akaviri Lore", SKILL_DIFF_MODERATE, "Knowledge of the continent of Akavir."),
+	new ExtraSkill("Ayleid Lore", SKILL_DIFF_HARD, "Studying the history of the extinct Ayleid people, and their language Ayleidoon."),
+	new ExtraSkill("Bosmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Bosmer people, as well as the Wild Hunt."),
+	new ExtraSkill("Breton Lore", SKILL_DIFF_MODERATE, "Studying the history of the Breton people and their mixed man/mer ancestry."),
+	new ExtraSkill("Daedric Lore", SKILL_DIFF_MODERATE, "Studying the secrets of the daedra - their society/planes, summoning them, and their language."),
+	new ExtraSkill("Dragon Lore", SKILL_DIFF_HARD, "Studying the secrets of the dragon lords of the Merethic Era, and their language which is now only used by the Greybeards."),
+	new ExtraSkill("Dunmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Dunmer people, as well as their writings in Dunmeris or Ald Chimeris."),
+	new ExtraSkill("Dwemerology", SKILL_DIFF_HARD, "Studying the secrets of the Dwemer, who disappeared in the First Era."),
+	new ExtraSkill("Falmer Lore", SKILL_DIFF_ESOTERIC, "Studying the history of the Falmer, and what little remains of their culture."),
 	new ExtraSkill("First Aid", SKILL_DIFF_MODERATE, "Treating and dressing wounds in the field."),
-	new ExtraSkill("Language: Akaviri", SKILL_DIFF_HARD, "Discerning the language used on the continent of Akavir."),
-	new ExtraSkill("Language: Ayleidoon", SKILL_DIFF_HARD, "Discerning the language of the Ayleids of the First Era, which is now only known in written form."),
-	new ExtraSkill("Language: Daedric", SKILL_DIFF_MODERATE, "Discerning the language of the daedra."),
-	new ExtraSkill("Language: Draconic", SKILL_DIFF_ESOTERIC, "Discerning the language of the dragons of the Merethic Era, which is now only used by the Greybeards."),
-	new ExtraSkill("Language: Dunmeris", SKILL_DIFF_EASY, "Discerning the language of the Dunmer, or dark elves."),
-	new ExtraSkill("Language: Dwemeris", SKILL_DIFF_ESOTERIC, "Discerning the language of the Dwemer of the First Era, which is now forgotten and only persists in written form."),
-	new ExtraSkill("Language: Ehlnofex", SKILL_DIFF_ESOTERIC, "Discerning the proto-language of all known cultures on Mundus."),
-	new ExtraSkill("Language: Elvish", SKILL_DIFF_EASY, "Discerning the language of the Altmer, or high elves."),
-	new ExtraSkill("Language: Falmeris", SKILL_DIFF_ESOTERIC, "Discerning the language of the Falmer of the First Era, which is now forgotten and only persists in written form."),
-	new ExtraSkill("Language: Jel", SKILL_DIFF_EASY, "Discerning the language of the Argonians."),
-	new ExtraSkill("Language: Kothringi", SKILL_DIFF_HARD, "Discerning the language of the Kothringi, who were wiped out by a plague earlier in the Second Era."),
-	new ExtraSkill("Language: Nedic", SKILL_DIFF_HARD, "Discerning the language of the Nedes of the First Era, an early race of men."),
-	new ExtraSkill("Language: Old Orcish", SKILL_DIFF_HARD, "Discerning the language of the Orcs of the First Era, which has been superseded by the more modern Orcish language."),
-	new ExtraSkill("Language: Orcish", SKILL_DIFF_MODERATE, "Discerning the language of the Orcs."),
-	new ExtraSkill("Language: Pyandonean", SKILL_DIFF_EASY, "Discerning the langauge of the Maormer, or sea elves."),
-	new ExtraSkill("Language: Ta-agra", SKILL_DIFF_EASY, "Discerning the language of the Khajiit."),
-	new ExtraSkill("Language: Yoku", SKILL_DIFF_MODERATE, "Discerning the language of Yokuda, ancestral homeland of the Redguards."),
+	new ExtraSkill("Hist Lore", SKILL_DIFF_EASY, "Studying the intricacies of the Hist, as well as Jel, the language of the Argonians."),
+	new ExtraSkill("Khajiit Lore", SKILL_DIFF_MODERATE, "Studying the history of the Khajiit people, as well as their Ta'agra language."),
+	new ExtraSkill("Imperial Lore", SKILL_DIFF_MODERATE, "Studying the history of the Imperial people, and the Alessian Empire that came before them."),
+	new ExtraSkill("Kothringi Lore", SKILL_DIFF_HARD, "Studying the history of the Kothringi people, who were wiped out by a plague earlier in the Second Era."),
+	new ExtraSkill("Maormer Lore", SKILL_DIFF_EASY, "Knowledge of the maormer, or sea elves, as well as their language, Pyandonean."),
+	new ExtraSkill("Merethic Lore", SKILL_DIFF_ESOTERIC, "Studying the origins of all the people of Tamriel, as well as their proto-language, Ehlnofex."),
+	new ExtraSkill("Nedic Lore", SKILL_DIFF_HARD, "Studying the history of the early men who settled Tamriel, the Nedes."),
+	new ExtraSkill("Nord Lore", SKILL_DIFF_MODERATE, "Studying the history of the Nords and their ancestral homeland of Atmora."),
+	new ExtraSkill("Orcish Lore", SKILL_DIFF_MODERATE, "Studying the history of the pariah mer, or Orcs, as well as the modern and archaic forms of their language."),
 	new ExtraSkill("Necromancy", SKILL_DIFF_MODERATE, "Knowledge of summoning and/or controlling the dead."),
+	new ExtraSkill("Reach Lore", SKILL_DIFF_MODERATE, "Knowledge of the people, customs, and religion of the Reach."),
+	new ExtraSkill("Redguard Lore", SKILL_DIFF_MODERATE, "Studying the history of the Redguard people and their ancestral homeland of Yokuda."),
 	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
 ];
 

@@ -134,6 +134,7 @@ function updateCharacterSheet() {
 
 function calculateTotalPoints() {
 	var i;
+	var result = true;
 	var total = 0;
 	var max = ATTRIBUTE_POINT_LIMIT;
 	var attrDisplay = $("#attributePoints");
@@ -146,6 +147,7 @@ function calculateTotalPoints() {
 
 	attrDisplay.text(total + "/" + max);
 	attrDisplay.toggleClass("redFlag", (total > max));
+	result &= !(total > max);
 
 	total = 0;
 	max = SKILL_POINT_BASE + 2 * character.getAttribute("Intelligence");
@@ -161,6 +163,9 @@ function calculateTotalPoints() {
 
 	skillDisplay.text(total + "/" + max);
 	skillDisplay.toggleClass("redFlag", (total > max));
+	result &= !(total > max);
+
+	return result;
 }
 
 function costForNextSkillRank(key, rank) {
