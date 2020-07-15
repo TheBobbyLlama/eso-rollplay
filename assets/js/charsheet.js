@@ -22,6 +22,8 @@ function initializePage() {
 	var superSelect = $("select[name='charSupernatural']");
 	var classSelect = $("select[name='charClass']");
 
+	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
+
 	for (i = 0; i < races.length; i++) {
 		raceSelect.append("<option>" + races[i].name + "</option>")
 	}
@@ -56,6 +58,7 @@ function changeName() {
 
 function changePlayer() {
 	character.player = $(this).val().trim().replace(/@/g, "");
+	localStorage.setItem("ESORP[player]", character.player);
 	updateCharacterSheet();
 }
 

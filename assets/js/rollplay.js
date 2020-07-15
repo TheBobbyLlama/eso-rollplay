@@ -5,6 +5,8 @@ function initializePage() {
 	var rollSelector = $("#rollSelect");
 	initializeDB();
 
+	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
+
 	for(i = 0; i < masterQualityList.length; i++) {
 		var workingList = masterQualityList[i];
 
@@ -45,6 +47,8 @@ function characterLoaded(loadMe) {
 		character.print("printout");
 	} else {
 		showErrorPopup("Character not found.");
+		$("input[name='charName']").val(character.name);
+		$("input[name='charPlayer']").val(character.player);
 	}
 }
 
