@@ -215,6 +215,18 @@ const skillsKnowledge = [
 
 const masterQualityList = [ attributes, skillsCombat, skillsMagic, skillsGeneral, skillsCrafting, skillsKnowledge ];
 
+function getQuality(key) {
+	for (var i = 0; i < masterQualityList.length; i++) {
+		var tryMe = masterQualityList[i].find(element => element.key == key);
+
+		if (tryMe) {
+			return tryMe;
+		}
+	}
+
+	return undefined;
+}
+
 class CharacterSheet {
 	constructor() {
 		this.sex = SEX_MALE;

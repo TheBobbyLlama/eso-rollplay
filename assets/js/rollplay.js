@@ -1,20 +1,37 @@
 var character = new CharacterSheet();
 
 function initializePage() {
-	var i;
-	var rollSelector = $("#rollSelect");
 	initializeDB();
 
 	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
 	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
 
+	resetRollSelect();
+}
+
+function resetRollSelect() {
+	var i;
+	var rollSelector = $("#rollSelect");
+	var charItems = Object.entries(character.skills);
+	
+	rollSelector.text("");
+
+	for (i = 0; i < charItems.length; i++) {
+		var curQuality = getQuality(charItems[i][0]);
+
+		rollSelector.append("<option value='" + curQuality.key +"'>" + curQuality.name + "</option>")
+	}
+
 	for(i = 0; i < masterQualityList.length; i++) {
 		var workingList = masterQualityList[i];
 
 		for (var idx = 0; idx < workingList.length; idx++) {
-			rollSelector.append("<option value='" + workingList[idx].key +"'>" + workingList[idx].name + "</option>")
+			if (!charItems.find(element => element[0] == workingList[idx].key)) {
+				rollSelector.append("<option value='" + workingList[idx].key +"'>" + workingList[idx].name + "</option>")
+			}
 		}
 	}
+		
 }
 
 function copyOutput(event) {
@@ -47,6 +64,7 @@ function characterLoaded(loadMe) {
 		character.loadValueHandler(loadMe.val());
 		localStorage.setItem("ESORP[name]", character.name);
 		character.print("printout");
+		resetRollSelect();
 	} else {
 		showErrorPopup("Character not found.");
 		$("input[name='charName']").val(character.name);
