@@ -22,7 +22,8 @@ function initializePage() {
 	var superSelect = $("select[name='charSupernatural']");
 	var classSelect = $("select[name='charClass']");
 
-	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
+	character.player = localStorage.getItem("ESORP[player]");
+	$("input[name='charPlayer']").val(character.player);
 
 	for (i = 0; i < races.length; i++) {
 		raceSelect.append("<option>" + races[i].name + "</option>")
@@ -247,7 +248,9 @@ function saveChar() {
 	dbSaveCharacter(character);
 }
 
-function loadChar() {
+function loadChar(event) {
+	event.preventDefault();
+
 	if ((!character.name) || (!character.player)) {
 		showErrorPopup("Please enter a character name and a player name.");
 		return;

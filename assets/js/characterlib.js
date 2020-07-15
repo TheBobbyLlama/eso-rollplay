@@ -167,9 +167,9 @@ const skillsMagic = [
 const skillsGeneral = [
 	new Skill("Acrobatics", "Agility", "How well you jump, climb, and avoid damage from falls."),
 	new Skill("Athletics", "Speed", "How well you can run and swim."),
+	new Skill("Legerdemain", "Intelligence", "How well you can pick pockets or locks."),
 	new Skill("Mercantile", "Personality", "How well you barer and haggle."),
 	new Skill("Perception", "Willpower", "Noticing details about the world around you."),
-	new Skill("Security", "Intelligence", "How well you can pick pockets or locks."),
 	new Skill("Sneak", "Agility", "How well you can move unseen and unheard."),
 	new Skill("Speechcraft", "Personality", "How well you can influence others by admiring, intimidating, or taunting them.")
 ];
