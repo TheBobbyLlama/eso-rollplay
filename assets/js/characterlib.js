@@ -187,7 +187,7 @@ const skillsCrafting = [
 // These skills represent specialized knowledge.  There is no governing attribute associated!
 const skillsKnowledge = [
 	new ExtraSkill("Altmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Altmer people, as well as their elvish language."),
-	new ExtraSkill("Akaviri Lore", SKILL_DIFF_MODERATE, "Knowledge of the continent of Akavir."),
+	new ExtraSkill("Akaviri Lore", SKILL_DIFF_HARD, "Knowledge of the continent of Akavir."),
 	new ExtraSkill("Ayleid Lore", SKILL_DIFF_HARD, "Studying the history of the extinct Ayleid people, and their language Ayleidoon."),
 	new ExtraSkill("Bosmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Bosmer people, as well as the Wild Hunt."),
 	new ExtraSkill("Breton Lore", SKILL_DIFF_MODERATE, "Studying the history of the Breton people and their mixed man/mer ancestry."),
@@ -197,11 +197,11 @@ const skillsKnowledge = [
 	new ExtraSkill("Dwemerology", SKILL_DIFF_HARD, "Studying the secrets of the Dwemer, who disappeared in the First Era."),
 	new ExtraSkill("Falmer Lore", SKILL_DIFF_ESOTERIC, "Studying the history of the Falmer, and what little remains of their culture."),
 	new ExtraSkill("First Aid", SKILL_DIFF_MODERATE, "Treating and dressing wounds in the field."),
-	new ExtraSkill("Hist Lore", SKILL_DIFF_EASY, "Studying the intricacies of the Hist, as well as Jel, the language of the Argonians."),
+	new ExtraSkill("Hist Lore", SKILL_DIFF_MODERATE, "Studying the intricacies of the Hist, as well as Jel, the language of the Argonians."),
 	new ExtraSkill("Khajiit Lore", SKILL_DIFF_MODERATE, "Studying the history of the Khajiit people, as well as their Ta'agra language."),
 	new ExtraSkill("Imperial Lore", SKILL_DIFF_MODERATE, "Studying the history of the Imperial people, and the Alessian Empire that came before them."),
 	new ExtraSkill("Kothringi Lore", SKILL_DIFF_HARD, "Studying the history of the Kothringi people, who were wiped out by a plague earlier in the Second Era."),
-	new ExtraSkill("Maormer Lore", SKILL_DIFF_EASY, "Knowledge of the maormer, or sea elves, as well as their language, Pyandonean."),
+	new ExtraSkill("Maormer Lore", SKILL_DIFF_HARD, "Knowledge of the maormer, or sea elves, as well as their language, Pyandonean."),
 	new ExtraSkill("Merethic Lore", SKILL_DIFF_ESOTERIC, "Studying the origins of all the people of Tamriel, as well as their proto-language, Ehlnofex."),
 	new ExtraSkill("Nedic Lore", SKILL_DIFF_HARD, "Studying the history of the early men who settled Tamriel, the Nedes."),
 	new ExtraSkill("Nord Lore", SKILL_DIFF_MODERATE, "Studying the history of the Nords and their ancestral homeland of Atmora."),
