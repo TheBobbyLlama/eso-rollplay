@@ -9,6 +9,8 @@ var character = new CharacterSheet();
 function initializePage() {
 	var i;
 
+	initializeDB();
+
 	fillSection("attributes", attributes);
 	fillSection("skillsCombat", skillsCombat);
 	fillSection("skillsMagic", skillsMagic);
@@ -219,13 +221,61 @@ function findItemForKey (findKey) {
 	return "";
 }
 
+function showErrorPopup(message) {
+	$("#modalBG").addClass("show");
+	$("#errorText").text(message);
+}
+
+function hideErrorPopup() {
+	$("#modalBG").removeClass("show");
+}
+
+function saveChar() {
+	if ((!character.name) || (!character.player)) {
+		showErrorPopup("Please enter a character name and a player name.");
+		return;
+	}
+
+	if (!calculateTotalPoints()) {
+		showErrorPopup("You are over your point allotment.");
+		return;
+	}
+
+	dbSaveCharacter(character);
+}
+
+function loadChar() {
+	if ((!character.name) || (!character.player)) {
+		showErrorPopup("Please enter a character name and a player name.");
+		return;
+	}
+
+	dbLoadCharacter(character.name + "@" + character.player, characterLoaded)
+}
+
+function characterLoaded(loadMe) {
+	if (loadMe.val()) {
+		character.loadValueHandler(loadMe.val());
+		$("select[name='charRace']").val(character.race);
+		$("select[name='charSex']").prop("selectedIndex", character.sex);
+		$("select[name='charSupernatural']").val(character.supernatural);
+		$("select[name='charClass']").val(character.class);
+		updateCharacterSheet();
+	} else {
+		showErrorPopup("Character not found.");
+	}
+}
+
 $("input[name='charName']").on("change", changeName);
 $("input[name='charPlayer']").on("change", changePlayer);
 $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
 $("select[name='charClass']").on("change", changeClass);
+$("#saveChar").on("click", saveChar);
+$("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
+$("#errorButton").on("click", hideErrorPopup);
 $("#printout").on("dblclick", copyOutput);
 
 initializePage();

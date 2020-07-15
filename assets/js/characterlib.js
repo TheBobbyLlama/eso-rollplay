@@ -209,6 +209,7 @@ const skillsKnowledge = [
 	new ExtraSkill("Necromancy", SKILL_DIFF_MODERATE, "Knowledge of summoning and/or controlling the dead."),
 	new ExtraSkill("Reach Lore", SKILL_DIFF_MODERATE, "Knowledge of the people, customs, and religion of the Reach."),
 	new ExtraSkill("Redguard Lore", SKILL_DIFF_MODERATE, "Studying the history of the Redguard people and their ancestral homeland of Yokuda."),
+	new ExtraSkill("Sload Lore", SKILL_DIFF_HARD, "Studying the history of the Sload, a slug-like race that live over the seas southwest of Tamriel."),
 	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
 ];
 
@@ -336,6 +337,14 @@ class CharacterSheet {
 		}
 
 		return result;
+	}
+
+	loadValueHandler(loadMe) {
+		var loadList = Object.entries(loadMe);
+		
+		for (var i = 0; i < loadList.length; i ++) {
+			this[loadList[i][0]] = loadList[i][1];
+		}
 	}
 
 	print(id) {
