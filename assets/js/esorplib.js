@@ -476,7 +476,7 @@ class NPC {
 	construction(myName) {
 		this.name = myName;
 		this.attackBonus = 0;
-		this.specialAttackType = "N/A";
+		this.specialAttackType = SPECIAL_ATTACK_TYPES[0];
 		this.resistanceBonus = 0;
 		this.resists = [];
 		this.weaknesses = [];

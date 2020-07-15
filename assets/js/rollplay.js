@@ -60,7 +60,7 @@ function loadChar() {
 }
 
 function characterLoaded(loadMe) {
-	if (loadMe.val()) {
+	if ((loadMe.val()) && (loadMe.val().player == $("input[name='charPlayer']").val())) {
 		character.loadValueHandler(loadMe.val());
 		localStorage.setItem("ESORP[name]", character.name);
 		character.print("printout");
@@ -69,7 +69,7 @@ function characterLoaded(loadMe) {
 	} else {
 		showErrorPopup("Character not found.");
 		$("input[name='charName']").val(character.name);
-		$("input[name='charPlayer']").val(character.player);
+		$("input[name='charPlayer']").val(character.player || localStorage.getItem("ESORP[player]"));
 	}
 }
 

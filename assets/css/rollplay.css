@@ -13,9 +13,9 @@
 }
 
 #charInfo label {
-	display: inline-block;
+	padding-right: 4px;
 	text-align: right;
-	width: 30px;
+	width: 100%;
 }
 
 #charInfo input {
