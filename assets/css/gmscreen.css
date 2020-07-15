@@ -1,0 +1,67 @@
+h3 {
+	margin-top: 8px;
+}
+
+#main {
+	display: flex;
+}
+
+#encounterInfo {
+	min-width: 600px;
+}
+
+#npcList, #playerList {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#npcList input, #playerList input {
+	width: 75%;
+}
+
+#npcManagement, #playerManagement {
+	background-color: #606060;
+	border-radius: 8px;
+	display: flex;
+	padding:10px;
+}
+
+#npcManagement > div:first-child, #playerManagement > div:first-child {
+	flex-basis: 100%;
+}
+
+#npcManagement > div:last-child, #playerManagement > div:last-child {
+	margin-left: 10px;
+	min-width: 280px;
+}
+
+#npcManagement > div:last-child {
+	background-color: silver;
+	border-radius: 8px;
+	color: black;
+	padding: 20px;
+	text-align: left;
+}
+
+#npcManagement > div + div > div {
+	margin-top: 2px;
+}
+
+#npcManagement li a, #playerManagement li a {
+	cursor: pointer;
+}
+
+#npcManagement li a:hover, #playerManagement li a:hover {
+	font-weight: bold;
+}
+
+#readOut {
+	flex-basis: 100%;
+}
+
+#rollingSection {
+	display: flex;
+	flex-basis: 100%;
+	flex-direction: column;
+}

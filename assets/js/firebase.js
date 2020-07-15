@@ -24,13 +24,40 @@ function initializeDB() {
 	database = firebase.database();
 }
 
+function dbSanitize(input) {
+	return input.replace(/[\s\/]/g, "");
+}
+
 function dbSaveCharacter(saveMe) {
 	if ((saveMe.name) && (saveMe.player)) {
-		database.ref(("characters/" + saveMe.name).replace(/ /g, "")).set(saveMe);
+		database.ref("characters/" + dbSanitize(saveMe)).set(saveMe);
 	}
 }
 
 function dbLoadCharacter(getMe, handler) {
-	getMe = getMe.replace(/ /g, "");
-	firebase.database().ref('characters/' + getMe).once('value').then(handler);
+	database.ref("characters/" + dbSanitize(getMe)).once("value").then(handler);
+}
+
+function dbSaveSession(saveMe) {
+	database.ref("rp_sessions/" + dbSanitize(saveMe.owner)).set(saveMe);
+}
+
+function dbLoadSessionByOwner(owner, handler) {
+	var result = database.ref("rp_sessions/" + dbSanitize(owner));
+	result.once("value").then(handler);
+	return result;
+}
+
+function dbLoadSessionByParticipant(participant, handler) {
+	database.ref("rp_sessions/").once("value").then(function(returnSet) {
+		results = returnSet.val();
+
+		if (results) {
+			for (var i = 0; i < results.length; i++) {
+				if ((results[i].characters) && (results[i].characters.find(participant))) {
+					handler(results[i]);
+				}
+			}
+		}
+	});
 }

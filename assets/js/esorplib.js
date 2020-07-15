@@ -469,7 +469,7 @@ class CharacterSheet {
 	}
 }
 
-const SPECIAL_ATTACK_TYPES = [ "N/A", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
+const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
 const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!" ];
 
 class NPC {
@@ -478,8 +478,8 @@ class NPC {
 		this.attackBonus = 0;
 		this.specialAttackType = SPECIAL_ATTACK_TYPES[0];
 		this.resistanceBonus = 0;
-		this.resists = [];
-		this.weaknesses = [];
+		this.resists = SPECIAL_ATTACK_TYPES[0];;
+		this.weaknesses = SPECIAL_ATTACK_TYPES[0];;
 		this.injuryLevel = 0;
 	}
 }
@@ -492,10 +492,11 @@ class CharacterStatus {
 	}
 }
 
-class Encounter {
-	constructor() {
-		this.characters = []; // CharacterSheets.
-		this.statuses = []; // CharacterStatuses.
+class RoleplaySession {
+	constructor(ownMe) {
+		this.owner = ownMe;
+		this.characters; // CharacterSheets.
+		this.statuses; // CharacterStatuses.
 		this.npcs = []; // NPCs.
 	}
 }
