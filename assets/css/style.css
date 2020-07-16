@@ -59,11 +59,17 @@ div.show {
 	display: flex !important;
 }
 
-#modalBG #errorModal {
+#modalBG div {
 	background-color: #404040;
 	border: solid 2px #202020;
 	border-radius: 10px;
+	display: none;
+	max-width: 400px;
 	padding: 10px;
+}
+
+#modalBG div p {
+	margin: 10px;
 }
 
 #printout {
@@ -73,6 +79,31 @@ div.show {
 	font-family: monospace;
 	padding: 20px;
 	text-align: left;
+}
+
+#eventPane > div {
+	border: solid 1px #202020;
+	border-radius: 4px;
+	display: flex;
+	justify-content: space-between;
+	margin: 2px;
+	padding: 8px;
+}
+
+#eventPane p {
+	margin-bottom: 4px;
+}
+
+#eventPane .rollComment {
+	background-color: #383838;
+	border-radius: 4px;
+	font-style: italic;
+	padding: 2px 8px;
+}
+
+#eventPane .rollResult {
+	font-weight: bold;
+	white-space: nowrap;
 }
 
 #referLink {

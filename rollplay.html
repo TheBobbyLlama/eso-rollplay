@@ -24,12 +24,20 @@
 			<div id="printout" title="Double click to copy character sheet."></div>
 			<div>
 				<h3>Make a Roll!</h3>
-				<select id="rollSelect"></select>
-				<button id="rollExecute" type="button" disabled>Roll →</button>
+				<div id="rollControls">
+					<div>
+						<select id="rollSelect"></select>
+						<button id="rollExecute" type="button" disabled>Roll →</button>						
+					</div>
+					<div>
+						<input type="text" id="rollComment" maxlength="100"></input>
+					</div>
+				</div>
 			</div>
 		</section>
 		<section id="readOut">
 			<h2>Roll History</h2>
+			<div id="eventPane"></div>
 		</section>
 	</div>
 	<div id="modalBG">
@@ -40,7 +48,7 @@
 		</div>
 		<div id="rollModal">
 			<h3>You Need to Roll!</h3>
-			TODO!
+			TODO
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

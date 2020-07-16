@@ -12,6 +12,10 @@
 	display: grid;
 }
 
+#charInfo h3 {
+	text-align: left;
+}
+
 #charInfo label {
 	padding-right: 4px;
 	text-align: right;
@@ -38,4 +42,15 @@
 
 #readOut {
 	flex-basis: 80%;
+	overflow: auto;
+}
+
+#rollControls > div:first-child {
+	display: flex;
+	justify-content: space-between;
+}
+
+#rollControls input {
+	margin-top: 2px;
+	width: 100%;
 }

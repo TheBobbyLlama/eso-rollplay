@@ -58,9 +58,10 @@ section > div[id] {
 
 #bottomInfo > div:last-child textarea {
 	border-radius: 8px;
+	font-family: Arial, Helvetica, sans-serif;
 	height: 300px;
 	margin-top: 20px;
-	padding: 4px;
+	padding: 8px;
 	width: 100%;
 }
 
@@ -75,6 +76,10 @@ section > div[id] {
 
 #main section label {
 	display: block;
+}
+
+#main section:last-child {
+	flex-basis: 500px;
 }
 
 #printout {

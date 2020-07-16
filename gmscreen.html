@@ -11,47 +11,46 @@
 	<h1>ESO Roleplay - GM's Screen</h1>
 	<div id="main">
 		<section id="encounterInfo">
-			<h2>Current Encounter</h2>
+			<h2>Current Session</h2>
 			<div>
 				<label for="gmPlayer">Owner: @</label>
 				<input type="text" name="gmPlayer"></input>
-				<button type="button" id="endEncounter">End</button>
+				<button type="button" id="createNewSession">Create New Session</button>
 			</div>
 			<div>
 				<h3>NPCs</h3>
 				<div id="npcManagement">
 					<div id="npcList">
-						<ol>
-							<li>Zombie 1 <select><option>Unhurt</option></select></li>
-							<li>Zombie 2 <select><option>Incapacitated!</option></select></li>
-						</ol>
+						<ol></ol>
 						<form>
 							<input type="text" name="newNPC"></input>
 							<button type="submit" id="addNPC">Add</button>
 						</form>
 					</div>
 					<div>
-						<h4>Zombie 1</h4>
-						<div>
-							<label for="npcAttack">Attack Bonus:</label>
-							<input type="number" name="npcAttack" min="-5" max="10" value="0"></input>
-						</div>
-						<div>
-							<label for="npcAttackType">Attack Type:</label>
-							<select name="npcAttackType"></select>
-						</div>
-						<div>
-							<label for="npcResistance">Resistance Bonus:</label>
-							<input type="number" name="npcResistance" min="-5" max="10" value="0"></input>
-						</div>
-						<div>
-							<label for="npcResist">Resists:</label>
-							<select name="npcResist"></select>
-						</div>
-						<div>
-							<label for="npcWeakness">Weak to:</label>
-							<select name="npcWeakness"></select>
-						</div>
+						<h4>Current NPC</h4>
+						<form id="npcCurForm">
+							<div>
+								<label for="npcAttack">Attack Bonus:</label>
+								<input type="number" name="npcAttack" min="-5" max="10" value="0"></input>
+							</div>
+							<div>
+								<label for="npcAttackType">Attack Type:</label>
+								<select name="npcAttackType"></select>
+							</div>
+							<div>
+								<label for="npcResistance">Resistance Bonus:</label>
+								<input type="number" name="npcResistance" min="-5" max="10" value="0"></input>
+							</div>
+							<div>
+								<label for="npcResist">Resists:</label>
+								<select name="npcResist"></select>
+							</div>
+							<div>
+								<label for="npcWeakness">Weak to:</label>
+								<select name="npcWeakness"></select>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -59,24 +58,20 @@
 				<h3>Players</h3>
 				<div id="playerManagement">
 					<div id="playerList">
-						<ol>
-							<li><a>Smashy McNord</a> <select><option>Injured</option></select></li>
-							<li><a>Sneaky Khajiit</a> <select><option>Unhurt</option></select></li>
-						</ol>
+						<ol></ol>
 						<form>
 							<input type="text" name="newPlayer"></input>
 							<button type="submit" id="addPlayer">Add</button>
 						</form>
 					</div>
-					<div id="printout" title="Double click to copy character sheet.">
-===============================<br><h3>SMASHY MCNORD</h3>===============================<br>@PlayerName<br>Nord - Male - Dragonknight<br><strong>========= ATTRIBUTES ==========</strong><br><span data-key="Strength">Str: 16</span><br><span data-key="Intelligence">Int: 8</span><br><span data-key="Willpower">Wil: 10</span><br><span data-key="Agility">Agi: 10</span><br><span data-key="Speed">Spe: 12</span><br><span data-key="Endurance">End: 12</span><br><span data-key="Personality">Per: 8</span><br><span data-key="Luck">Luc: 12</span><br><strong>======== COMBAT SKILLS ========</strong><br><span data-key="TwoHanded">Two Handed: 8</span><br><span data-key="MediumArmor">Medium Armor: 4</span><br><strong>======= GENERAL SKILLS ========</strong><br><span data-key="Athletics">Athletics: 2</span><br><span data-key="Perception">Perception: 3</span><br><strong>======= CRAFTING SKILLS =======</strong><br><span data-key="Blacksmithing">Blacksmithing: 3</span><br><span data-key="Woodworking">Woodworking: 1</span><br><strong>====== KNOWLEDGE SKILLS =======</strong><br><span data-key="NordLore">Nord Lore: 4</span><br><span data-key="Survival">Survival: 4</span><br><strong>========= RESISTANCES =========</strong><br>Frost<br>
-					</div>
+					<div id="printout" title="Double click to copy character sheet."></div>
 				</div>
 			</div>
 		</section>
 		<div id="rollingSection">
 			<section id="readOut">
-				<h3>Roll History</h3>
+				<h2>Roll History</h2>
+				<div id="eventPane"></div>
 			</section>
 			<section>
 				<h3>Rolls</h3>
@@ -84,6 +79,19 @@
 					TODO - UI elements for making rolls.
 				</p>
 			</section>
+		</div>
+	</div>
+	<div id="modalBG">
+		<div id="errorModal">
+			<h3>Error</h3>
+			<p id="errorText"></p>
+			<button id="errorButton" type="button">Ok</button>
+		</div>
+		<div id="confirmModal">
+			<h3>Confirm</h3>
+			<p id="confirmText"></p>
+			<button id="confirmOk" type="button">Ok</button>
+			<button id="confirmCancel" type="button">Cancel</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -2,6 +2,8 @@
 const dbFragments = [ "AIz", "8dl", "0fr", "DcR", "aSy", "3ix", "Zxt", "N1b", "Ake", "FEM", "cNu", "YPo", "vKU" ];
 
 var database;
+var sessionRef;
+var eventRef;
 
 function initializeDB() {
 	var buildKey = "";
@@ -49,21 +51,104 @@ function dbSaveSession(saveMe) {
 }
 
 function dbLoadSessionByOwner(owner, handler) {
-	var result = database.ref("rp_sessions/" + dbSanitize(owner));
-	result.once("value").then(handler);
-	return result;
+	dbClearSession();
+
+	sessionRef = database.ref("rp_sessions/" + dbSanitize(owner));
+	sessionRef.once("value").then(handler);
+
+	return ((sessionRef != null) && (sessionRef != undefined));
 }
 
 function dbLoadSessionByParticipant(participant, handler) {
-	database.ref("rp_sessions/").once("value").then(function(returnSet) {
-		results = returnSet.val();
+	dbClearSession();
 
-		if (results) {
-			for (var i = 0; i < results.length; i++) {
-				if ((results[i].characters) && (results[i].characters.find(participant))) {
-					handler(results[i]);
-				}
+	database.ref("rp_sessions/").once("value").then(function(returnSet) {
+		if ((!returnSet) || (!returnSet.val())) {
+			handler(null);
+			return;
+		}
+
+		var results = Object.entries(returnSet.val());
+
+		for (var i = 0; i < results.length; i ++) {
+			var tryMe = results[i][1];
+
+			if ((tryMe.characters) && (tryMe.characters.indexOf(participant) > -1)) {
+				handler(tryMe);
+				return;
 			}
 		}
+
+		handler(null);
 	});
+}
+
+function dbSaveSession(saveMe) {
+	if (sessionRef) {
+		sessionRef.set(saveMe);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function dbDeleteSession() {
+	if (sessionRef) {
+		sessionRef.remove();
+
+		if (eventRef) {
+			eventRef.remove();
+		}
+	}
+
+	dbClearSession();
+}
+
+function dbClearSession() {
+	sessionRef = null;
+
+	if (eventRef) {
+		eventRef.off();
+	}
+
+	eventRef = null;
+}
+
+function dbBindCallbackToSession(eventName, handler) {
+	if (sessionRef) {
+		sessionRef.on(eventName, handler);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function dbLoadEventMessages(owner, handler) {
+	eventRef = database.ref("rp_session_events/" + dbSanitize(owner));
+	eventRef.once("value").then(handler);
+
+	return ((eventRef != null) && (eventRef != undefined));
+}
+
+function dbClearEventSystem() {
+	eventRef = null;
+}
+
+function dbPushEvent(event) {
+	if (eventRef) {
+		eventRef.push(event);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function dbBindCallbackToEventSystem(eventName, handler) {
+	if (eventRef) {
+		eventRef.on(eventName, handler);
+		return true;
+	} else {
+		return false;
+	}
+
 }

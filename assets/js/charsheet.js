@@ -261,7 +261,9 @@ function loadChar(event) {
 
 function characterLoaded(loadMe) {
 	if ((loadMe.val()) && (loadMe.val().player == character.player)) {
-		character.loadValueHandler(loadMe.val());
+		//character.loadValueHandler(loadMe.val());
+		character = loadMe.val();
+		Object.setPrototypeOf(character, new CharacterSheet());
 		$("select[name='charRace']").val(character.race);
 		$("select[name='charSex']").prop("selectedIndex", character.sex);
 		$("select[name='charSupernatural']").val(character.supernatural);

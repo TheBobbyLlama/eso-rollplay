@@ -168,7 +168,7 @@ const skillsGeneral = [
 	new Skill("Acrobatics", "Agility", "How well you jump, climb, and avoid damage from falls."),
 	new Skill("Athletics", "Speed", "How well you can run and swim."),
 	new Skill("Legerdemain", "Intelligence", "How well you can pick pockets or locks."),
-	new Skill("Mercantile", "Personality", "How well you barer and haggle."),
+	new Skill("Mercantile", "Personality", "How well you barter and haggle."),
 	new Skill("Perception", "Willpower", "Noticing details about the world around you."),
 	new Skill("Sneak", "Agility", "How well you can move unseen and unheard."),
 	new Skill("Speechcraft", "Personality", "How well you can influence others by admiring, intimidating, or taunting them.")
@@ -226,6 +226,10 @@ function getQuality(key) {
 	}
 
 	return undefined;
+}
+
+function internalDieRoll() {
+	return (1 + Math.floor(20 * Math.random()));
 }
 
 class CharacterSheet {
@@ -347,6 +351,32 @@ class CharacterSheet {
 				return ((self.indexOf(value) === index) && (checkResists.indexOf(value) < 0));
 			});
 			result.sort();
+		}
+
+		return result;
+	}
+
+	getRollModifier(getMe) {
+		if (attributes.find(element => element.key == getMe)) {
+			return this.getAttributeModifier(getMe);
+		} else {
+			return this.getSkill(getMe);
+		}
+	}
+
+	makeRoll(key) {
+		return internalDieRoll() + this.getRollModifier(key);
+	}
+
+	makeResistanceRoll(attackType) {
+		var result;
+
+		if (this.getResists().indexOf(attackType) > -1) {
+			result = Math.max(makeRoll("Endurance"), makeRoll("Endurance"));
+		} else if (this.getWeaknesses().indexOf(attackType) > -1) {
+			result = Math.min(makeRoll("Endurance"), makeRoll("Endurance"));
+		} else {
+			result = makeRoll("Endurance");
 		}
 
 		return result;
@@ -489,14 +519,67 @@ class CharacterStatus {
 		this.name = character.name;
 		this.player = character.player;
 		this.injuryLevel = 0;
+
+		// TODO - Equipped items?
 	}
 }
 
 class RoleplaySession {
 	constructor(ownMe) {
 		this.owner = ownMe;
-		this.characters; // CharacterSheets.
-		this.statuses; // CharacterStatuses.
+		this.characters = []; // CharacterSheets.
+		this.statuses = []; // CharacterStatuses.
 		this.npcs = []; // NPCs.
+	}
+}
+
+function convertEventToHtml(event) {
+	switch (event.eventType) {
+		case "Close":
+			return "<div>" + event.owner + " has closed this session.<br />THERE HAS BEEN AN ERROR IF YOU CAN SEE THIS.</div>";
+		case "Roll":
+			return "<div>" +
+				"<div>" +
+					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
+					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + event.result +
+				"</div>" +
+			"</div>";
+		case "Start":
+			return "<div>" + event.owner + " opened this session. (" + event.timeStamp + ")</div>";
+	}
+}
+
+class SharedEvent {
+	constructor(myType) {
+		this.eventType = myType;
+	}
+}
+
+class EventStart extends SharedEvent {
+	constructor(ownMe, myTime) {
+		super("Start");
+		this.owner = ownMe;
+		this.timeStamp = myTime;
+	}
+}
+
+class EventClose extends SharedEvent {
+	constructor(ownMe) {
+		super("Close");
+		this.owner = ownMe;
+	}
+}
+
+class EventRoll extends SharedEvent {
+	constructor(myPlayer, mySkill, myMod, myResult, myComment) {
+		super("Roll");
+		this.player = myPlayer;
+		this.key = mySkill;
+		this.modifier = myMod;
+		this.result = myResult;
+		this.comment = myComment;
 	}
 }
