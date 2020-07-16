@@ -22,6 +22,22 @@ a:visited {
 	color: #5090e0;
 }
 
+button {
+	background-color: #e0e0e0;
+	border-bottom: solid 2px #808080;
+	border-left: solid 2px silver;
+	border-radius: 4px;
+	border-right: solid 2px #808080;
+	border-top: solid 2px silver;
+	cursor: pointer;
+	margin: 2px;
+	padding: 2px 8px;
+}
+
+button:hover {
+	background-color: #f0f0f0;
+}
+
 section {
 	background-color: #404040;
 	border-radius: 8px;
@@ -120,11 +136,11 @@ div.show {
 #eventPane .gmExtra > div > div {
 	border: solid 1px #202020;
 	border-radius: 4px;
+	margin: 4px 0px;
 	padding: 2px 8px;
 }
 
 #eventPane .gmExtra input[type='text'] {
-	margin-top: 4px;
 	width: 100%;
 }
 

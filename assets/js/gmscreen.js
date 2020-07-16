@@ -11,6 +11,7 @@ var markupAttackOptions = "";
 var markupResistOptions = "";
 var markupBonusOptions = "";
 var markupNPCOptions = "";
+var markupPlayerOptions = "";
 
 function initializePage() {
 	var i;
@@ -132,13 +133,22 @@ function activatePlayer(index) {
 	characterList[index].print("printout");
 }
 
+function setNPCActive() {
+	activateNPC($(this).closest("li").attr("data-index"));
+}
+
+function setPlayerActive() {
+	activatePlayer($(this).closest("li").attr("data-index"));
+}
+
 // Perform a roll in response to a player roll.
 function subordinateRollBonus() {
 	var eventDiv = $(this).closest("div[id]");
+	var curNPC = eventDiv.find("select[name='npc']").prop("selectedIndex");
 	var rollBonus = parseInt(eventDiv.find("select[name='bonus']").val());
 	var comment = eventDiv.find("input[type='text']").val();
 
-	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, "", rollBonus, internalDieRoll() + rollBonus, comment, eventDiv.attr("id")));
+	dbPushEvent(new EventRollSubordinate(currentSession.npcs[curNPC].name, "", rollBonus, internalDieRoll() + rollBonus, comment, eventDiv.attr("id")));
 
 	eventDiv.find("input[type='text']").val("");
 }
@@ -146,20 +156,21 @@ function subordinateRollBonus() {
 // Perform a resistance roll in response to a player roll.
 function subordinateRollResistance() {
 	var eventDiv = $(this).closest("div[id]");
+	var curNPC = eventDiv.find("select[name='npc']").prop("selectedIndex");
 	var attackType = eventDiv.find("select[name='attackType']").prop("selectedIndex");
 	var rollBonus = currentSession.npcs[activeNPC].resistanceBonus;
 	var comment = eventDiv.find("input[type='text']").val();
 	var dieRoll;
 
-	if (attackType == currentSession.npcs[activeNPC].resist) {
+	if (attackType == currentSession.npcs[curNPC].resist) {
 		dieRoll = Math.max(internalDieRoll(), internalDieRoll());
-	} else if (attackType == currentSession.npcs[activeNPC].weakness) {
+	} else if (attackType == currentSession.npcs[curNPC].weakness) {
 		dieRoll = Math.min(internalDieRoll(), internalDieRoll());
 	} else {
 		dieRoll = internalDieRoll();
 	}
 
-	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, "Resistance", rollBonus, dieRoll + rollBonus, comment, eventDiv.attr("id")));
+	dbPushEvent(new EventRollSubordinate(currentSession.npcs[curNPC].name, "Resistance", rollBonus, dieRoll + rollBonus, comment, eventDiv.attr("id")));
 }
 
 // Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
@@ -184,13 +195,15 @@ function addNPCToList(name, index) {
 	$("#npcList ol").append(
 		"<li data-index='" + index + "'>" +
 			"<div>" + 
-				"<a>" + name + "</a>" +
+				"<a title='Click to view/edit'>" + name + "</a>" +
 				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
 			"<div>" +
 		"</li>"
 	);
+
+	markupNPCOptions += "<option>" + name + "</option>";
 
 	$("#npcList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.npcs[index].injuryLevel);
 }
@@ -200,7 +213,7 @@ function addPlayerToList(name, index) {
 	$("#playerList ol").append(
 		"<li data-index='" + index + "'>" +
 			"<div>" + 
-				"<a>" + name + "</a>" +
+				"<a title='Click to view'>" + name + "</a>" +
 				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
@@ -228,10 +241,14 @@ function addEventDisplay(event) {
 
 			holder.append(
 				"<div class='gmExtra'>" +
-					"<h4>Roll Against Current NPC:</h4>" +
+					"<h4>Roll Against " +
+						"<select name='npc'>" +
+							markupNPCOptions +
+						"</select>" +
+					"</h4>" +
 					"<div>" +
 						"<div>" +
-							"<select name='bonus' selectedIndex='5'>" +
+							"<select name='bonus' >" +
 								markupBonusOptions +
 							"</select>" +
 							"<button type='button' name='rollBonus'>Roll</button>" +
@@ -247,6 +264,8 @@ function addEventDisplay(event) {
 					"<input type='text' name='rollComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
+
+			holder.find("select[name='bonus']").prop("selectedIndex", 5);
 			
 			break;
 	}
@@ -259,9 +278,12 @@ function resetScreenInfo() {
 	var playerList = $("#playerList ol");
 	dispatchMessages = false;
 	characterList = [];
+	$("#printout").text("");
 	npcList.text("");
 	playerList.text("");
 	eventPane.text("");
+	markupNPCOptions = "";
+	markupPlayerOptions = "";
 
 	$("#npcCurForm")[0].reset();
 
@@ -402,8 +424,10 @@ function hideErrorPopup() {
 $("#createNewSession").on("click", createNewSession);
 $("#addNPC").on("click", addNPC);
 $("#npcList ol").on("change", "select", setNPCInjuryStatus);
+$("#npcList ol").on("click", "a", setNPCActive);
 $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
+$("#playerList ol").on("click", "a", setPlayerActive);
 $("#eventPane").on("click", "button[name='rollBonus']", subordinateRollBonus);
 $("#eventPane").on("click", "button[name='rollResistance']", subordinateRollResistance);
 $("#printout").on("dblclick", copyOutput);
