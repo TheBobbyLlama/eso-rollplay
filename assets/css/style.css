@@ -85,6 +85,7 @@ div.show {
 	border: solid 1px #202020;
 	border-radius: 4px;
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-between;
 	margin: 2px;
 	padding: 8px;
@@ -94,9 +95,43 @@ div.show {
 	margin-bottom: 4px;
 }
 
-#eventPane .gmInfo {
+#eventPane .gmInfo, #eventPane .gmExtra {
 	background-color: #303030;
 	color: silver;
+}
+
+#eventPane .gmExtra {
+	border-radius: 4px;
+	margin-top: 4px;
+	padding: 2px 8px 8px 8px;
+	width: 100%;
+}
+
+#eventPane .gmExtra > div {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+#eventPane .gmExtra> div > div {
+	border: solid 1px #202020;
+	border-radius: 4px;
+	padding: 2px 8px;
+}
+
+#eventPane .gmExtra input[type='text'] {
+	margin-top: 4px;
+	width: 100%;
+}
+
+#eventPane .gmExtra.subordinate {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+#eventPane .gmExtra.subordinate div {
+	display: block;
 }
 
 #eventPane .rollComment {

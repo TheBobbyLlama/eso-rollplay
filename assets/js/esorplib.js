@@ -545,9 +545,19 @@ function convertEventToHtml(event) {
 		case "InjuryPlayer":
 			return "<div>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + "</div>";
 		case "Roll":
-			return "<div>" +
+			return "<div id='Roll_" + event.id + "'>" +
 				"<div>" +
 					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
+					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + event.result +
+				"</div>" +
+			"</div>";
+		case "RollSubordinate":
+			return "<div class='gmExtra subordinate'>" +
+				"<div>" +
+					"<p>" + event.name + " rolls " + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -565,7 +575,7 @@ class SharedEvent {
 	}
 }
 
-const GM_EVENTS = [ "AddNPC", "AddPlayer" ];
+const GM_EVENTS = [ "AddNPC", "AddPlayer", "RollSubordinate" ];
 
 // ADMINISTRATIVE EVENTS
 class EventStart extends SharedEvent {
@@ -601,11 +611,23 @@ class EventAddPlayer extends SharedEvent {
 class EventRoll extends SharedEvent {
 	constructor(myPlayer, mySkill, myMod, myResult, myComment) {
 		super("Roll");
+		this.id = Date.now();
 		this.player = myPlayer;
 		this.key = mySkill;
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = myComment;
+	}
+}
+
+class EventRollSubordinate extends SharedEvent {
+	constructor(myName, myMod, myResult, myComment, parentId) {
+		super("RollSubordinate");
+		this.name = myName;
+		this.modifier = myMod;
+		this.result = myResult;
+		this.comment = myComment;
+		this.parent = parentId;
 	}
 }
 

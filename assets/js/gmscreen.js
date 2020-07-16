@@ -2,9 +2,14 @@ var characterList = [];
 var currentSession;
 var dispatchMessages = false;
 
-var activeNPC;
+var activeNPC = 0;
 
 var eventPane = $("#eventPane");
+
+var markupInjuryOptions = "";
+var markupAttackOptions = "";
+var markupResistOptions = "";
+var markupBonusOptions = "";
 
 function initializePage() {
 	var i;
@@ -22,13 +27,24 @@ function initializePage() {
 	$("input[name='gmPlayer']").val(player);
 	currentSession = new RoleplaySession(player);
 
+	for (i = 0; i < INJURY_LEVEL_DISPLAY.length; i++) {
+		markupInjuryOptions += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
+	}
+
 	for (i = 0; i < SPECIAL_ATTACK_TYPES.length; i++) {
 		if (i > 0) { 
-			attackSelectors.append("<option>" + SPECIAL_ATTACK_TYPES[i] + "</option>");
+			markupAttackOptions += "<option>" + SPECIAL_ATTACK_TYPES[i] + "</option>"
 		}
 
-		resistSelectors.append("<option>" + SPECIAL_ATTACK_TYPES[i] + "</option>");
+		markupResistOptions += "<option>" + SPECIAL_ATTACK_TYPES[i] + "</option>"
 	}
+
+	for (i = -5; i <= 10; i++) {
+		markupBonusOptions += "<option>" + ((i >= 0) ? "+" : "") + i + "</option>";
+	}
+
+	attackSelectors.append(markupAttackOptions);
+	resistSelectors.append(markupResistOptions);
 
 	dbLoadSessionByOwner(player, sessionLoaded);
 }
@@ -76,6 +92,7 @@ function addPlayer(event) {
 // Selects an NPC for editing.
 function activateNPC(index) {
 	dispatchMessages = false;
+	activeNPC = index;
 	$("#NPCName").text(currentSession.npcs[index].name);
 	$("input[name='npcAttackBonus']").val(currentSession.npcs[index].attackBonus);
 	$("select[name='npcAttackType']").prop("selectedIndex", currentSession.npcs[index].attackType-1);
@@ -83,6 +100,21 @@ function activateNPC(index) {
 	$("select[name='npcResist']").prop("selectedIndex", currentSession.npcs[index].resists);
 	$("select[name='npcWeakness']").prop("selectedIndex", currentSession.npcs[index].weakness);
 	dispatchMessages = true;
+}
+
+function subordinateRollBonus() {
+	var eventDiv = $(this).closest("div[id]");
+	var rollBonus = parseInt(eventDiv.find("select[name='bonus'] option:selected").val());
+	var comment = eventDiv.find("input[type='text']").val();
+
+	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, rollBonus, internalDieRoll() + rollBonus, comment, eventDiv.attr("id")));
+
+	eventDiv.find("input[type='text']").val("");
+}
+
+function subordinateRollResistance() {
+	// TODO!!!
+	console.log("Resistance roll.");
 }
 
 // Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
@@ -104,13 +136,16 @@ function confirmCreateSession() {
 
 // Displays a new NPC on the page.
 function addNPCToList(name, index) {
-	var buildMarkup = "<li data-index='" + index + "'><div><a>" + name + "</a><select selectedIndex='" + currentSession.npcs[index].injuryLevel + "'>";
-
-	for (var i = 0; i < INJURY_LEVEL_DISPLAY.length; i++) {
-		buildMarkup += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
-	}
-
-	$("#npcList ol").append(buildMarkup + "</select><div></li>");
+	$("#npcList ol").append(
+		"<li data-index='" + index + "'>" +
+			"<div>" + 
+				"<a>" + name + "</a>" +
+				"<select selectedIndex='" + currentSession.npcs[index].injuryLevel + "'>" +
+					markupInjuryOptions +
+				"</select>" +
+			"<div>" +
+		"</li>"
+	);
 }
 
 // Displays a new player on the page.
@@ -126,7 +161,42 @@ function addPlayerToList(name, index) {
 
 // Handler for incoming events.
 function addEventDisplay(event) {
-	eventPane.append(convertEventToHtml(event));
+	switch(event.eventType) {
+		case "RollSubordinate":
+			$("#" + event.parent).append(convertEventToHtml(event));
+			break;
+		default:
+			eventPane.append(convertEventToHtml(event));
+	}
+
+	switch(event.eventType) {
+		case "Roll":
+			var holder = eventPane.children("div:last-child");
+
+			holder.append(
+				"<div class='gmExtra'>" +
+					"<h4>Roll Against Current NPC:</h4>" +
+					"<div>" +
+						"<div>" +
+							"<select name='bonus' selectedIndex='5'>" +
+								markupBonusOptions +
+							"</select>" +
+							"<button type='button' name='rollBonus'>Roll</button>" +
+						"</div>" +
+						"<div>" +
+							"<select name='attackType'>" +
+								markupAttackOptions +
+							"</select>" +
+							" vs. Resistance" +
+							"<button type='button' name='rollResistance'>Roll</button>" +
+						"</div>" +
+					"</div>" +
+					"<input type='text' name='rollComment' placeholder='Comment' maxlength='100'></input>" +
+				"</div>"
+			);
+			
+			break;
+	}
 }
 
 // Resets screen info and fills based on
@@ -259,6 +329,8 @@ function hideErrorPopup() {
 $("#createNewSession").on("click", createNewSession);
 $("#addNPC").on("click", addNPC);
 $("#addPlayer").on("click", addPlayer);
+$("#eventPane").on("click", "button[name='rollBonus']", subordinateRollBonus);
+$("#eventPane").on("click", "button[name='rollResistance']", subordinateRollResistance);
 $("#printout").on("dblclick", copyOutput);
 $("#confirmCancel").on("click", hideConfirmPopup);
 $("#errorButton").on("click", hideErrorPopup);
