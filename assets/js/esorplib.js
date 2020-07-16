@@ -503,13 +503,13 @@ const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", 
 const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!" ];
 
 class NPC {
-	construction(myName) {
+	constructor(myName) {
 		this.name = myName;
 		this.attackBonus = 0;
-		this.specialAttackType = SPECIAL_ATTACK_TYPES[0];
+		this.AttackType = 1;
 		this.resistanceBonus = 0;
-		this.resists = SPECIAL_ATTACK_TYPES[0];;
-		this.weaknesses = SPECIAL_ATTACK_TYPES[0];;
+		this.resist = 0;
+		this.weakness = 0;
 		this.injuryLevel = 0;
 	}
 }
@@ -517,7 +517,6 @@ class NPC {
 class CharacterStatus {
 	constructor(character) {
 		this.name = character.name;
-		this.player = character.player;
 		this.injuryLevel = 0;
 
 		// TODO - Equipped items?
@@ -535,8 +534,16 @@ class RoleplaySession {
 
 function convertEventToHtml(event) {
 	switch (event.eventType) {
+		case "AddNPC":
+			return "<div class='gmInfo'>NPC " + event.name + " has been added to the session.</div>";
+		case "AddPlayer":
+			return "<div class='gmInfo'>Player " + event.player + " has been added to the session.</div>";
 		case "Close":
-			return "<div>" + event.owner + " has closed this session.<br />THERE HAS BEEN AN ERROR IF YOU CAN SEE THIS.</div>";
+			return "<div class='gmInfo'>" + event.owner + " has closed this session.<br />THERE HAS BEEN AN ERROR IF YOU CAN SEE THIS.</div>";
+		case "InjuryNPC":
+			return "<div>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + "</div>";
+		case "InjuryPlayer":
+			return "<div>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + "</div>";
 		case "Roll":
 			return "<div>" +
 				"<div>" +
@@ -558,6 +565,9 @@ class SharedEvent {
 	}
 }
 
+const GM_EVENTS = [ "AddNPC", "AddPlayer" ];
+
+// ADMINISTRATIVE EVENTS
 class EventStart extends SharedEvent {
 	constructor(ownMe, myTime) {
 		super("Start");
@@ -573,6 +583,21 @@ class EventClose extends SharedEvent {
 	}
 }
 
+class EventAddNPC extends SharedEvent {
+	constructor(myName) {
+		super("AddNPC");
+		this.name = myName;
+	}
+}
+
+class EventAddPlayer extends SharedEvent {
+	constructor(myPlayer) {
+		super("AddPlayer");
+		this.player = myPlayer;
+	}
+}
+
+// ACTIVE EVENTS
 class EventRoll extends SharedEvent {
 	constructor(myPlayer, mySkill, myMod, myResult, myComment) {
 		super("Roll");
@@ -581,5 +606,21 @@ class EventRoll extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = myComment;
+	}
+}
+
+class EventInjuryPlayer extends SharedEvent {
+	constructor(myPlayer, myStatus) {
+		super("InjuryPlayer");
+		this.player = myPlayer;
+		this.status = myStatus;
+	}
+}
+
+class EventInjuryNPC extends SharedEvent {
+	constructor(myName, myStatus) {
+		super("InjuryNPC");
+		this.name = myName;
+		this.status = myStatus;
 	}
 }

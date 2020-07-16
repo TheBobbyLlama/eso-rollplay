@@ -66,7 +66,9 @@ function addEventDisplay(event) {
 			dbLoadSessionByParticipant(character.name, sessionLoaded);
 			break;
 		default:
-			eventPane.append(convertEventToHtml(event));
+			if (GM_EVENTS.indexOf(event.eventType) < 0) {
+				eventPane.append(convertEventToHtml(event));
+			}
 	}
 }
 

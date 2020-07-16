@@ -94,6 +94,11 @@ div.show {
 	margin-bottom: 4px;
 }
 
+#eventPane .gmInfo {
+	background-color: #303030;
+	color: silver;
+}
+
 #eventPane .rollComment {
 	background-color: #383838;
 	border-radius: 4px;

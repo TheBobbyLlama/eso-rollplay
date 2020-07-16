@@ -28,10 +28,10 @@
 						</form>
 					</div>
 					<div>
-						<h4>Current NPC</h4>
+						<h4 id="NPCName">Current NPC</h4>
 						<form id="npcCurForm">
 							<div>
-								<label for="npcAttack">Attack Bonus:</label>
+								<label for="npcAttackBonus">Attack Bonus:</label>
 								<input type="number" name="npcAttack" min="-5" max="10" value="0"></input>
 							</div>
 							<div>
@@ -39,7 +39,7 @@
 								<select name="npcAttackType"></select>
 							</div>
 							<div>
-								<label for="npcResistance">Resistance Bonus:</label>
+								<label for="npcResistanceBonus">Resistance Bonus:</label>
 								<input type="number" name="npcResistance" min="-5" max="10" value="0"></input>
 							</div>
 							<div>
@@ -70,7 +70,7 @@
 		</section>
 		<div id="rollingSection">
 			<section id="readOut">
-				<h2>Roll History</h2>
+				<h2>Session History</h2>
 				<div id="eventPane"></div>
 			</section>
 			<section>

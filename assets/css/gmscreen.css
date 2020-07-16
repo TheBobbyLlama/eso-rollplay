@@ -48,7 +48,7 @@ h3 {
 	margin-top: 2px;
 }
 
-#npcManagement li, #playerManagement li {
+#npcManagement li div, #playerManagement li div {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
