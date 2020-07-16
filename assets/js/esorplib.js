@@ -541,9 +541,9 @@ function convertEventToHtml(event) {
 		case "Close":
 			return "<div class='gmInfo'>" + event.owner + " has closed this session.<br />YOU SHOULD NEVER SEE THIS.</div>";
 		case "InjuryNPC":
-			return "<div>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + "</div>";
+			return "<div>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</div>";
 		case "InjuryPlayer":
-			return "<div>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + "</div>";
+			return "<div>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</div>";
 		case "Roll":
 			return "<div id='Roll_" + event.id + "'>" +
 				"<div>" +

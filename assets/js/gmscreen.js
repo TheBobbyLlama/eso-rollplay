@@ -10,6 +10,7 @@ var markupInjuryOptions = "";
 var markupAttackOptions = "";
 var markupResistOptions = "";
 var markupBonusOptions = "";
+var markupNPCOptions = "";
 
 function initializePage() {
 	var i;
@@ -89,6 +90,30 @@ function addPlayer(event) {
 	$("input[name='newPlayer']").val("");
 }
 
+function setNPCInjuryStatus() {
+	if (dispatchMessages) {
+		var value = $(this).prop("selectedIndex");
+		var owner = $(this).closest("li[data-index]").attr("data-index");
+
+		currentSession.npcs[owner].injuryLevel = value;
+
+		postSessionUpdate();
+		dbPushEvent(new EventInjuryNPC(currentSession.npcs[owner].name, value));
+	}
+}
+
+function setPlayerInjuryStatus() {
+	if (dispatchMessages) {
+		var value = $(this).prop("selectedIndex");
+		var owner = $(this).closest("li[data-index]").attr("data-index");
+
+		currentSession.statuses[owner].injuryLevel = value;
+
+		postSessionUpdate();
+		dbPushEvent(new EventInjuryPlayer(currentSession.characters[owner], value));
+	}
+}
+
 // Selects an NPC for editing.
 function activateNPC(index) {
 	dispatchMessages = false;
@@ -104,7 +129,7 @@ function activateNPC(index) {
 
 function subordinateRollBonus() {
 	var eventDiv = $(this).closest("div[id]");
-	var rollBonus = parseInt(eventDiv.find("select[name='bonus'] option:selected").val());
+	var rollBonus = parseInt(eventDiv.find("select[name='bonus']").val());
 	var comment = eventDiv.find("input[type='text']").val();
 
 	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, "", rollBonus, internalDieRoll() + rollBonus, comment, eventDiv.attr("id")));
@@ -153,23 +178,31 @@ function addNPCToList(name, index) {
 		"<li data-index='" + index + "'>" +
 			"<div>" + 
 				"<a>" + name + "</a>" +
-				"<select selectedIndex='" + currentSession.npcs[index].injuryLevel + "'>" +
+				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
 			"<div>" +
 		"</li>"
 	);
+
+	$("#npcList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.npcs[index].injuryLevel);
 }
 
 // Displays a new player on the page.
 function addPlayerToList(name, index) {
-	var buildMarkup = "<li data-index='" + index + "'><div><a>" + name + "</a><select selectedIndex='" + currentSession.statuses[index].injuryLevel +"'>";
+	$("#playerList ol").append(
+		"<li data-index='" + index + "'>" +
+			"<div>" + 
+				"<a>" + name + "</a>" +
+				"<select>" +
+					markupInjuryOptions +
+				"</select>" +
+			"<div>" +
+		"</li>"
+	);
 
-	for (var i = 0; i < INJURY_LEVEL_DISPLAY.length; i++) {
-		buildMarkup += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
-	}
+	$("#playerList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.statuses[index].injuryLevel);
 
-	$("#playerList ol").append(buildMarkup + "</select><div></li>");
 }
 
 // Handler for incoming events.
@@ -341,7 +374,9 @@ function hideErrorPopup() {
 
 $("#createNewSession").on("click", createNewSession);
 $("#addNPC").on("click", addNPC);
+$("#npcList ol").on("change", "select", setNPCInjuryStatus);
 $("#addPlayer").on("click", addPlayer);
+$("#playerList ol").on("change", "select", setPlayerInjuryStatus);
 $("#eventPane").on("click", "button[name='rollBonus']", subordinateRollBonus);
 $("#eventPane").on("click", "button[name='rollResistance']", subordinateRollResistance);
 $("#printout").on("dblclick", copyOutput);
