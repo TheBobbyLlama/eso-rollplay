@@ -499,6 +499,10 @@ class CharacterSheet {
 	}
 }
 
+function formatDescription(description) {
+	return description.replace(/\n/g, "<br />");
+}
+
 const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
 const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!" ];
 

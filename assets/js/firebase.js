@@ -27,7 +27,7 @@ function initializeDB() {
 }
 
 function dbSanitize(input) {
-	return input.replace(/[\s\/]/g, "");
+	return input.replace(/[\s\W]/g, "").toLowerCase();
 }
 
 function dbSaveCharacter(saveMe, description) {
@@ -46,6 +46,10 @@ function dbLoadCharacterDescription(getMe, handler) {
 	if (handler) {
 		database.ref("descriptions/" + dbSanitize(getMe)).once("value").then(handler);
 	}
+}
+
+function dbLoadCharacterList(handler) {
+	database.ref("characters/").orderByChild("name").once("value").then(handler);
 }
 
 function dbSaveSession(saveMe) {

@@ -1,0 +1,25 @@
+section {
+	display: flex;
+}
+
+section div:last-child {
+	flex-basis: 100%;
+	margin-left: 20px;
+	padding: 20px;
+}
+
+select {
+	margin: 20px;
+}
+
+#printout {
+	min-width: 300px;
+}
+
+#profileText > div {
+	background-color: #f0f0f0;
+	border: solid 2px #202020;
+	border-radius: 8px;
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+}
