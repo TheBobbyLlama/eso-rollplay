@@ -107,14 +107,27 @@ function subordinateRollBonus() {
 	var rollBonus = parseInt(eventDiv.find("select[name='bonus'] option:selected").val());
 	var comment = eventDiv.find("input[type='text']").val();
 
-	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, rollBonus, internalDieRoll() + rollBonus, comment, eventDiv.attr("id")));
+	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, "", rollBonus, internalDieRoll() + rollBonus, comment, eventDiv.attr("id")));
 
 	eventDiv.find("input[type='text']").val("");
 }
 
 function subordinateRollResistance() {
-	// TODO!!!
-	console.log("Resistance roll.");
+	var eventDiv = $(this).closest("div[id]");
+	var attackType = eventDiv.find("select[name='attackType']").prop("selectedIndex");
+	var rollBonus = currentSession.npcs[activeNPC].resistanceBonus;
+	var comment = eventDiv.find("input[type='text']").val();
+	var dieRoll;
+
+	if (attackType == currentSession.npcs[activeNPC].resist) {
+		dieRoll = Math.max(internalDieRoll(), internalDieRoll());
+	} else if (attackType == currentSession.npcs[activeNPC].weakness) {
+		dieRoll = Math.min(internalDieRoll(), internalDieRoll());
+	} else {
+		dieRoll = internalDieRoll();
+	}
+
+	dbPushEvent(new EventRollSubordinate(currentSession.npcs[activeNPC].name, "Resistance", rollBonus, dieRoll + rollBonus, comment, eventDiv.attr("id")));
 }
 
 // Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.

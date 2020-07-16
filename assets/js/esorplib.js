@@ -539,7 +539,7 @@ function convertEventToHtml(event) {
 		case "AddPlayer":
 			return "<div class='gmInfo'>Player " + event.player + " has been added to the session.</div>";
 		case "Close":
-			return "<div class='gmInfo'>" + event.owner + " has closed this session.<br />THERE HAS BEEN AN ERROR IF YOU CAN SEE THIS.</div>";
+			return "<div class='gmInfo'>" + event.owner + " has closed this session.<br />YOU SHOULD NEVER SEE THIS.</div>";
 		case "InjuryNPC":
 			return "<div>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + "</div>";
 		case "InjuryPlayer":
@@ -557,7 +557,7 @@ function convertEventToHtml(event) {
 		case "RollSubordinate":
 			return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + event.name + " rolls " + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
+					"<p>" + event.name + " rolls " + ((event.rollType) ? event.rollType + " " : "") + "(" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -621,9 +621,10 @@ class EventRoll extends SharedEvent {
 }
 
 class EventRollSubordinate extends SharedEvent {
-	constructor(myName, myMod, myResult, myComment, parentId) {
+	constructor(myName, myType, myMod, myResult, myComment, parentId) {
 		super("RollSubordinate");
 		this.name = myName;
+		this.rollType = myType;
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = myComment;
