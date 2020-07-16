@@ -100,8 +100,6 @@ function dbDeleteSession() {
 			eventRef.remove();
 		}
 	}
-
-	dbClearSession();
 }
 
 function dbClearSession() {
@@ -150,5 +148,10 @@ function dbBindCallbackToEventSystem(eventName, handler) {
 	} else {
 		return false;
 	}
+}
 
+function dbClearEventCallbacks() {
+	if (eventRef) {
+		eventRef.off();
+	}
 }

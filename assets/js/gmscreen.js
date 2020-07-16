@@ -32,11 +32,7 @@ function initializePage() {
 }
 
 function createNewSession() {
-	if (sessionStarted()) {
-		showConfirmPopup("This will delete the current session.", confirmCreateSession);
-	} else {
-		confirmCreateSession();
-	}
+	showConfirmPopup("This will delete the current session.", confirmCreateSession);
 }
 
 function addNPC(event) {
@@ -60,17 +56,13 @@ function addPlayer(event) {
 function confirmCreateSession() {
 	hideConfirmPopup();
 
-	if (sessionStarted()) {
+	if (currentSession.characters.length) {
 		dbPushEvent(new EventClose(currentSession.owner));
-		dbDeleteSession(currentSession.owner);
-
-		dispatchNewMessages = false;
-		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
-		dbBindCallbackToEventSystem("child_added", eventAddedCallback);
 	}
 
+	dbDeleteSession();
 	currentSession = new RoleplaySession($("input[name='gmPlayer']").val());
-	eventPane.text("");
+	resetScreenInfo();
 
 	postSessionUpdate();
 
@@ -81,16 +73,15 @@ function addEventDisplay(event) {
 	eventPane.append(convertEventToHtml(event));
 }
 
-function sessionStarted() {
-	if (currentSession.characters.length > 0) {
-		return true;
-	}
+function resetScreenInfo() {
+	var i;
+	var playerList = $("#playerList ol");
+	playerList.text("");
+	eventPane.text("");
 
-	if (currentSession.npcs.length > 0) {
-		return true;
+	for (i = 0; i < currentSession.characters.length; i++) {
+		playerList.append("<li>" + currentSession.characters[i] + "</li>");
 	}
-
-	return false;
 }
 
 function copyOutput(event) {
@@ -109,11 +100,16 @@ function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		var character = loadMe.val();
 		Object.setPrototypeOf(character, new CharacterSheet());
-		$("#playerList ol").append("<li>" + character.name + "</li>");
-		characterList.push(character);
-		currentSession.characters.push(character.name);
-		currentSession.statuses.push(new CharacterStatus(character));
-		postSessionUpdate();
+
+		if (currentSession.characters.indexOf(character.name) == -1) {
+			$("#playerList ol").append("<li>" + character.name + "</li>");
+			characterList.push(character);
+			currentSession.characters.push(character.name);
+			currentSession.statuses.push(new CharacterStatus(character));
+			postSessionUpdate();
+		} else {
+			showErrorPopup("This character is already in the session.");
+		}
 	} else {
 		showErrorPopup("Character not found.");
 	}
@@ -127,6 +123,7 @@ function sessionLoaded(loadMe) {
 		dispatchNewMessages = false;
 		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
 		dbBindCallbackToEventSystem("child_added", eventAddedCallback);
+		resetScreenInfo();
 	}
 	// Don't show an error if session fails to load, we can start a new one.
 }
