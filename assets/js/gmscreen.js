@@ -127,6 +127,12 @@ function activateNPC(index) {
 	dispatchMessages = true;
 }
 
+// Selects a player for viewing.
+function activatePlayer(index) {
+	characterList[index].print("printout");
+}
+
+// Perform a roll in response to a player roll.
 function subordinateRollBonus() {
 	var eventDiv = $(this).closest("div[id]");
 	var rollBonus = parseInt(eventDiv.find("select[name='bonus']").val());
@@ -137,6 +143,7 @@ function subordinateRollBonus() {
 	eventDiv.find("input[type='text']").val("");
 }
 
+// Perform a resistance roll in response to a player roll.
 function subordinateRollResistance() {
 	var eventDiv = $(this).closest("div[id]");
 	var attackType = eventDiv.find("select[name='attackType']").prop("selectedIndex");
@@ -251,9 +258,12 @@ function resetScreenInfo() {
 	var npcList = $("#npcList ol");
 	var playerList = $("#playerList ol");
 	dispatchMessages = false;
+	characterList = [];
 	npcList.text("");
 	playerList.text("");
 	eventPane.text("");
+
+	$("#npcCurForm")[0].reset();
 
 	for (i = 0; i < currentSession.npcs.length; i++) {
 		addNPCToList(currentSession.npcs[i].name, i);
@@ -261,6 +271,11 @@ function resetScreenInfo() {
 
 	for (i = 0; i < currentSession.characters.length; i++) {
 		addPlayerToList(currentSession.characters[i], i);
+		dbLoadCharacter(currentSession.characters[i], characterReset);
+	}
+
+	if (currentSession.npcs.length) {
+		activateNPC(0);
 	}
 
 	dispatchMessages = true;
@@ -276,6 +291,18 @@ function copyOutput(event) {
 	sel.addRange(range);
 	document.execCommand("copy");
 	sel.removeAllRanges();
+}
+
+function characterReset(loadMe) {
+	if (loadMe.val()) {
+		var character = loadMe.val();
+		Object.setPrototypeOf(character, new CharacterSheet());
+		characterList.push(character);
+
+		if (characterList.length == 1) {
+			activatePlayer(0);
+		}
+	}
 }
 
 function characterLoaded(loadMe) {

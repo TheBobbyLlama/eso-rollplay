@@ -37,13 +37,15 @@ function dbSaveCharacter(saveMe, description) {
 	}
 }
 
-function dbLoadCharacter(getMe, handler, descHandler) {
+function dbLoadCharacter(getMe, handler, descHandler=null) {
 	database.ref("characters/" + dbSanitize(getMe)).once("value").then(handler);
 	dbLoadCharacterDescription(getMe, descHandler);
 }
 
 function dbLoadCharacterDescription(getMe, handler) {
-	database.ref("descriptions/" + dbSanitize(getMe)).once("value").then(handler);
+	if (handler) {
+		database.ref("descriptions/" + dbSanitize(getMe)).once("value").then(handler);
+	}
 }
 
 function dbSaveSession(saveMe) {
