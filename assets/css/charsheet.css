@@ -47,6 +47,23 @@ section > div[id] {
 	max-height: 400px;
 }
 
+#bottomInfo {
+	display: flex;
+}
+
+#bottomInfo > div:last-child {
+	flex-basis: 100%;
+	padding: 0px 20px;
+}
+
+#bottomInfo > div:last-child textarea {
+	border-radius: 8px;
+	height: 300px;
+	margin-top: 20px;
+	padding: 4px;
+	width: 100%;
+}
+
 #main {
 	align-items: flex-start;
 	background-color: #101010;

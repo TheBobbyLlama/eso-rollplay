@@ -245,7 +245,7 @@ function saveChar() {
 		return;
 	}
 
-	dbSaveCharacter(character);
+	dbSaveCharacter(character, $("textarea[name='charBackground']").val());
 }
 
 function loadChar(event) {
@@ -256,7 +256,7 @@ function loadChar(event) {
 		return;
 	}
 
-	dbLoadCharacter(character.name, characterLoaded)
+	dbLoadCharacter(character.name, characterLoaded, descriptionLoaded);
 }
 
 function characterLoaded(loadMe) {
@@ -269,6 +269,12 @@ function characterLoaded(loadMe) {
 		updateCharacterSheet();
 	} else {
 		showErrorPopup("Character not found.");
+	}
+}
+
+function descriptionLoaded(loadMe) {
+	if (loadMe.val()) {
+		$("textarea[name='charBackground']").val(loadMe.val());
 	}
 }
 

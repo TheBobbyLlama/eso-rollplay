@@ -28,14 +28,20 @@ function dbSanitize(input) {
 	return input.replace(/[\s\/]/g, "");
 }
 
-function dbSaveCharacter(saveMe) {
+function dbSaveCharacter(saveMe, description) {
 	if ((saveMe.name) && (saveMe.player)) {
-		database.ref("characters/" + dbSanitize(saveMe)).set(saveMe);
+		database.ref("characters/" + dbSanitize(saveMe.name)).set(saveMe);
+		database.ref("descriptions/" + dbSanitize(saveMe.name)).set(description);
 	}
 }
 
-function dbLoadCharacter(getMe, handler) {
+function dbLoadCharacter(getMe, handler, descHandler) {
 	database.ref("characters/" + dbSanitize(getMe)).once("value").then(handler);
+	dbLoadCharacterDescription(getMe, descHandler);
+}
+
+function dbLoadCharacterDescription(getMe, handler) {
+	database.ref("descriptions/" + dbSanitize(getMe)).once("value").then(handler);
 }
 
 function dbSaveSession(saveMe) {
