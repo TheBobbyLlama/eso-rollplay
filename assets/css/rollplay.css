@@ -55,6 +55,6 @@
 	width: 100%;
 }
 
-.gmInfo {
+.gmExtra, .gmInfo {
 	background-color: maroon;
 }
