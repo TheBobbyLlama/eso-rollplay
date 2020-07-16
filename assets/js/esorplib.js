@@ -500,7 +500,7 @@ class CharacterSheet {
 }
 
 function formatDescription(description) {
-	return description.replace(/\n/g, "<br />");
+	return description.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br />");
 }
 
 const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
@@ -548,11 +548,41 @@ function convertEventToHtml(event) {
 			return "<div>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</div>";
 		case "InjuryPlayer":
 			return "<div>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</div>";
+		case "NPCAttack":
+			return "<div class='gmInfo' id='Attack_" + event.id + "'>" +
+				"<div>" +
+					"<p>" + event.name + " attacks (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.player + "!</p>" +
+					((event.comment) ? "<span class='rollComment'>" + event.comment.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + event.result +
+				"</div>" +
+			"</div>";
+		case "NPCRoll":
+			return "<div class='gmInfo'>" +
+			"<div>" +
+				"<p>" + event.name + " rolls (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
+				((event.comment) ? "<span class='rollComment'>" + event.comment.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</span>" : "") +
+			"</div>" +
+			"<div class='rollResult'>" +
+				"Result: " + event.result +
+			"</div>" +
+		"</div>";
 		case "Roll":
 			return "<div id='Roll_" + event.id + "'>" +
 				"<div>" +
 					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
+					((event.comment) ? "<span class='rollComment'>" + event.comment.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + event.result +
+				"</div>" +
+			"</div>";
+		case "RollContested":
+			return "<div class='gmInfo' id='Contest_" + event.id + "' data-against='" + event.quality + "'>" +
+				"<div>" +
+					"<p>" + event.name + " rolls (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs " + event.player + "!</p>" +
+					((event.comment) ? "<span class='rollComment'>" + event.comment.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
 					"Result: " + event.result +
@@ -562,7 +592,7 @@ function convertEventToHtml(event) {
 			return "<div class='gmExtra subordinate'>" +
 				"<div>" +
 					"<p>" + event.name + " rolls " + ((event.rollType) ? event.rollType + " " : "") + "(" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
+					((event.comment) ? "<span class='rollComment'>" + event.comment.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
 					"Result: " + event.result +
@@ -636,6 +666,44 @@ class EventRollSubordinate extends SharedEvent {
 	}
 }
 
+// NPC makes a general purpose roll with no further action required by players or the GM.
+class EventNPCRoll extends SharedEvent {
+	constructor(myName, myMod, myResult, myComment) {
+		super("NPCRoll");
+		this.name = myName;
+		this.modifier = myMod;
+		this.result = myResult;
+		this.comment = myComment;
+	}
+}
+
+class EventNPCAttack extends SharedEvent {
+	constructor(myName, myTarget, myMod, myResult, myComment) {
+		super("NPCAttack");
+		this.id = Date.now();
+		this.name = myName;
+		this.player = myTarget;
+		this.modifier = myMod;
+		this.result = myResult;
+		this.comment = myComment;
+	}
+}
+
+// NPC makes non-combat roll that requires player response.
+class EventContestedRoll extends SharedEvent {
+	constructor(myName, myTarget, targetQuality, myMod, myResult, myComment) {
+		super("RollContested");
+		this.id = Date.now();
+		this.name = myName;
+		this.player = myTarget;
+		this.quality = targetQuality;
+		this.modifier = myMod;
+		this.result = myResult;
+		this.comment = myComment;
+	}
+}
+
+// CONTROLLED BY GM
 class EventInjuryPlayer extends SharedEvent {
 	constructor(myPlayer, myStatus) {
 		super("InjuryPlayer");
