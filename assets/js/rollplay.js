@@ -205,6 +205,7 @@ function characterLoaded(loadMe) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, new CharacterSheet());
 		localStorage.setItem("ESORP[name]", nameDecode(character.name));
+		localStorage.setItem("ESORP[player]", nameDecode(character.player));
 		character.print("printout");
 		resetRollSelect();
 
