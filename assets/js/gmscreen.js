@@ -361,7 +361,7 @@ function addNPCToList(name, index) {
 				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
-			"<div>" +
+			"</div>" +
 		"</li>"
 	);
 
@@ -381,7 +381,7 @@ function addPlayerToList(name, index) {
 				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
-			"<div>" +
+			"</div>" +
 		"</li>"
 	);
 

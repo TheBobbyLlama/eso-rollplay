@@ -243,3 +243,54 @@ div.show {
 .redFlag {
 	color: red;
 }
+
+@media screen and (max-width: 980px) {
+	#eventPane > div, .playersubordinate {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.playersubordinate {
+		margin-top: 4px;
+	}
+
+	.rollComment {
+		display: block;
+		margin-bottom: 4px;
+	}
+
+	.rollResult {
+		text-align: right;
+		margin-right: 4px;
+	}
+}
+
+@media screen and (max-width: 575px) {
+	button {
+		min-width: 60px;
+	}
+
+	button, input, select {
+		height: 30px;
+		padding: 6px;
+	}
+
+	label, #eventPane {
+		font-size: large;
+	}
+
+	#eventPane {
+		max-height: 300px;
+	}
+}
+
+
+@media screen and (max-width: 400px) {
+	h1 {
+		font-size: x-large;
+	}
+
+	section {
+		padding: 10px;
+	}
+}
