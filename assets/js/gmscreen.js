@@ -321,7 +321,7 @@ function subordinatePlayerAttackMiss() {
 
 // Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
 function confirmCreateSession() {
-	hideConfirmPopup();
+	hidePopup();
 
 	if (!eventRef) {
 		dbLoadEventMessages(currentSession.owner, confirmCreateSession);
@@ -344,7 +344,7 @@ function confirmCreateSession() {
 }
 
 function confirmEndSession() {
-	hideConfirmPopup();
+	hidePopup();
 
 	currentSession.inactive = true;
 
