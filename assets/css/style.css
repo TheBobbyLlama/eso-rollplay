@@ -38,6 +38,7 @@ button:hover {
 	background-color: #f0f0f0;
 }
 
+
 section {
 	background-color: #404040;
 	border-radius: 8px;
@@ -87,6 +88,18 @@ div.show {
 #modalBG div p {
 	margin: 10px;
 }
+#profileModal {
+	padding: 0px 0px 10px 0px !important;
+	width: 500px;
+}
+
+#modalBG iframe {
+	border: none;
+	border-radius: 8px;
+	display: block;
+	height: 400px;
+	width: 100%;
+}
 
 #printout {
 	background-color: silver;
@@ -95,6 +108,11 @@ div.show {
 	font-family: monospace;
 	padding: 20px;
 	text-align: left;
+}
+
+#printout a {
+	display: block;
+	text-align: center;
 }
 
 #eventPane {

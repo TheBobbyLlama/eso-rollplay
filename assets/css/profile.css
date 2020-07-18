@@ -23,3 +23,22 @@ select {
 	color: black;
 	font-family: Arial, Helvetica, sans-serif;
 }
+
+.minimal {
+	background-color: #404040;
+}
+
+.minimal section {
+	margin: 0;
+	padding: 10px 0;
+	width: 100%;
+}
+
+.minimal #profileText {
+	margin: 0;
+	padding: 0;
+}
+
+.minimal #profileText > div {
+	margin: 0 20px;
+}

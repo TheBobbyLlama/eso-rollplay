@@ -401,7 +401,7 @@ class CharacterSheet {
 		}
 	}
 
-	print(id) {
+	print(id, profileLink=false) {
 		var i;
 		var printArr = [];
 		var printout = $("#" + id);
@@ -492,6 +492,10 @@ class CharacterSheet {
 		if (printArr.length) {
 			printout.append("<strong>========= WEAKNESSES ==========</strong><br />");
 			printout.append(printArr.join(", ") + "<br />");
+		}
+
+		if (profileLink) {
+			printout.append("<a href='profile.html?character=" + encodeURI(nameDecode(this.name)) + "&minimal=true' target='_blank'>View Profile</a>");
 		}
 	}
 

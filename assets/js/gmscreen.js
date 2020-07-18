@@ -194,7 +194,7 @@ function activateNPC(index) {
 
 // Selects a player for viewing.
 function activatePlayer(index) {
-	characterList[index].print("printout");
+	characterList[index].print("printout", true);
 }
 
 function setNPCActive() {
@@ -591,7 +591,7 @@ function characterLoaded(loadMe) {
 			currentSession.characters.push(character.name);
 			addPlayerToList(character.name, currentSession.characters.length-1);
 			postSessionUpdate();
-			character.print("printout");
+			character.print("printout", true);
 			dbPushEvent(new EventAddPlayer(character.name));
 		} else {
 			showErrorPopup("This character is already in the session.");
@@ -650,6 +650,12 @@ function postSessionUpdate() {
 	}
 }
 
+function launchProfileLink(event) {
+	event.preventDefault();
+
+	showProfilePopoup($(this).attr("href"));
+}
+
 function showConfirmPopup(message, callback) {
 	$("#modalBG").addClass("show");
 	$("#confirmModal").addClass("show");
@@ -657,10 +663,6 @@ function showConfirmPopup(message, callback) {
 	$("#confirmOk").off("click").on("click", callback);
 }
 
-function hideConfirmPopup() {
-	$("#modalBG").removeClass("show");
-	$("#confirmModal").removeClass("show");
-}
 
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
@@ -668,9 +670,17 @@ function showErrorPopup(message) {
 	$("#errorText").text(message);
 }
 
-function hideErrorPopup() {
+function showProfilePopoup(link) {
+	$("#modalBG").addClass("show");
+	$("#profileModal").addClass("show");
+	$("#profileModal iframe").attr("src", link);
+}
+
+function hidePopup() {
 	$("#modalBG").removeClass("show");
 	$("#errorModal").removeClass("show");
+	$("#confirmModal").removeClass("show");
+	$("#profileModal").removeClass("show");
 }
 
 $("#createNewSession").on("click", createNewSession);
@@ -698,7 +708,7 @@ $("#eventPane").on("click", "button[name='npcAttackMiss']", subordinateNPCAttack
 $("#eventPane").on("click", "button[name='playerAttackHit']", subordinatePlayerAttackHit);
 $("#eventPane").on("click", "button[name='playerAttackMiss']", subordinatePlayerAttackMiss);
 $("#printout").on("dblclick", copyOutput);
-$("#confirmCancel").on("click", hideConfirmPopup);
-$("#errorButton").on("click", hideErrorPopup);
+$("#printout").on("click", "a", launchProfileLink);
+$("#confirmCancel, #errorButton, #profileDone").on("click", hidePopup);
 
 initializePage();

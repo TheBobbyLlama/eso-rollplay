@@ -11,6 +11,7 @@ function initializePage() {
 		if (minimal) {
 			$("h1").remove();
 			$("section div:first-child").remove();
+			$("body").addClass("minimal");
 		} else {
 			$("h1").text("Character Profile");
 			$("section div:first-child select").remove();
