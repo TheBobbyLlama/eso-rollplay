@@ -58,7 +58,7 @@ function changeName() {
 }
 
 function changePlayer() {
-	character.player = nameEnCode($(this).val().trim().replace(/@/g, ""));
+	character.player = nameEncode($(this).val().trim().replace(/@/g, ""));
 	localStorage.setItem("ESORP[player]", character.player);
 	updateCharacterSheet();
 }
@@ -156,7 +156,7 @@ function calculateTotalPoints() {
 	result &= !(total > max);
 
 	total = 0;
-	max = SKILL_POINT_BASE + 2 * character.getAttribute("Intelligence");
+	max = character.getAttribute("Intelligence") + character.getAttribute("Willpower") + character.getAttribute("Endurance");
 	workingList = Object.entries(character.skills);
 
 	for (i = 0; i < workingList.length; i++) {
