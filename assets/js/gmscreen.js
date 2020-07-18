@@ -23,8 +23,7 @@ function initializePage() {
 
 	initializeDB();
 
-	// TODO - Testing a fresh start!
-	var player;// = localStorage.getItem("ESORP[player]");
+	var player = localStorage.getItem("ESORP[player]");
 
 	for (i = 0; i < INJURY_LEVEL_DISPLAY.length; i++) {
 		markupInjuryOptions += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
