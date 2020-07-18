@@ -26,8 +26,50 @@ function initializeDB() {
 	database = firebase.database();
 }
 
+function nameEncode(name) {
+	//return name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/"/g, "&quot");
+	return name.replace(/[&<>'"]/g, function(match) {
+		switch (match)
+		{
+			case "&":
+				return "&amp;";
+			case "<":
+				return "&lt;";
+			case ">":
+				return "&gt;";
+			case "'":
+				return "&apos;";
+			case "\"":
+				return "&quot;";
+			default:
+				return "[ENCODING ERROR!]"
+		}
+	})
+}
+
+function nameDecode(name) {
+	//return name.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+	return name.replace(/&amp;|&lt;|&gt;|&apos;|&quot;/g, function (match) {
+		switch (match)
+		{
+			case "&amp;":
+				return "&";
+			case "&lt;":
+				return "<";
+			case "&gt;":
+				return ">";
+			case "&apos;":
+				return "'";
+			case "&quot;":
+				return "\"";
+			default:
+				return "[DECODING ERROR!]"
+		}
+	})
+}
+
 function dbSanitize(input) {
-	return input.replace(/[\s\W]/g, "").toLowerCase();
+	return nameDecode(input).replace(/[\s\W]/g, "").toLowerCase();
 }
 
 function dbSaveCharacter(saveMe, description) {
@@ -79,7 +121,7 @@ function dbLoadSessionByParticipant(participant, handler) {
 		for (var i = 0; i < results.length; i ++) {
 			var tryMe = results[i][1];
 
-			if ((tryMe.characters) && (tryMe.characters.indexOf(participant) > -1)) {
+			if ((!tryMe.inactive) && (tryMe.characters) && (tryMe.characters.indexOf(participant) > -1)) {
 				handler(tryMe);
 				return;
 			}
@@ -135,6 +177,7 @@ function dbLoadEventMessages(owner, handler) {
 }
 
 function dbClearEventSystem() {
+	dbClearEventCallbacks();
 	eventRef = null;
 }
 

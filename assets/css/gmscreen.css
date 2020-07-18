@@ -71,3 +71,27 @@ h3 {
 	flex-basis: 100%;
 	flex-direction: column;
 }
+
+#rollPanel div {
+	margin: 4px;
+}
+
+#rollPanel input {
+	flex-basis: 100%;
+	margin-left: 8px;
+}
+
+#rollPanel div > div > div {
+	margin: 0;
+}
+
+/* Ugly af. */
+#rollPanel > div > div:not(:first-child), #rollPanel > div > div > div > div {
+	border: solid 1px #202020;
+	border-radius: 4px;
+	padding: 2px 8px;
+}
+
+#rollPanel > div > div > div > div {
+	margin: 0 4px 4px 4px;
+}

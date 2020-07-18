@@ -97,46 +97,72 @@ div.show {
 	text-align: left;
 }
 
-#eventPane > div {
+#eventPane {
+	margin-right: -20px;
+	padding-right: 20px;
+	max-height: 600px;
+	overflow: auto;
+}
+
+#eventPane > div, #eventPane .playersubordinate {
+	background-color: #404040;
 	border: solid 1px #202020;
 	border-radius: 4px;
+	color: #e0e0e0;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
 	margin: 2px;
 	padding: 8px;
+	width: 100%;
 }
 
 #eventPane p {
 	margin-bottom: 4px;
 }
 
-#eventPane .gmInfo, #eventPane .gmExtra {
+#eventPane .error {
+	background-color: maroon;
+}
+
+#eventPane .gmControls, #eventPane .gmInfo, #eventPane .gmExtra {
 	background-color: #303030;
 	color: silver;
 }
 
-#eventPane .gmExtra {
+#eventPane .gmControls, #eventPane .gmExtra {
 	border-radius: 4px;
 	margin-top: 4px;
 	padding: 2px 8px 8px 8px;
 	width: 100%;
 }
 
+#eventPane .gmControls {
+	align-items: center;
+	border: solid 1px #202020;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 2px 8px;
+}
+
+
 #eventPane .gmExtra button {
 	margin-left: 8px;
+}
+
+#eventPane .gmControls button {
+	margin: 2px;
 }
 
 #eventPane .gmExtra > div {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
 }
 
 #eventPane .gmExtra > div > div {
 	border: solid 1px #202020;
 	border-radius: 4px;
-	margin: 4px 0px;
+	margin: 4px 4px;
 	padding: 2px 8px;
 }
 
@@ -144,13 +170,20 @@ div.show {
 	width: 100%;
 }
 
-#eventPane .gmExtra.subordinate {
+#eventPane .gmControls input[type='text'] {
+	flex-grow: 1;
+	width: auto;
+}
+
+#eventPane .subordinate {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
+	margin-top: 4px;
+	width: 100%;
 }
 
-#eventPane .gmExtra.subordinate div {
+#eventPane .gmExtra.subordinate div:not(.gmControls) {
 	display: block;
 }
 
@@ -166,11 +199,27 @@ div.show {
 	white-space: nowrap;
 }
 
+#eventPane > div + div {
+	margin-top: 10px !important;
+}
+
 #referLink {
 	padding: 10px;
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+.damageResist {
+	color: #c0ffb0;
+}
+
+.damageWeakness {
+	color: #ffc0b0;
+}
+
+.flexMe {
+	display: flex;
 }
 
 .redFlag {

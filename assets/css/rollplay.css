@@ -41,20 +41,38 @@
 }
 
 #readOut {
+	flex-basis: 100%;
+}
+
+#rollingSection {
+	display: flex;
 	flex-basis: 80%;
-	overflow: auto;
+	flex-direction: column;
+}
+
+#rollControls {
+	align-items: center;
+	border: solid 1px #202020;
+	border-radius: 4px;
+	display: flex;
+	padding: 2px 8px;
 }
 
 #rollControls > div:first-child {
-	display: flex;
-	justify-content: space-between;
+	border: solid 1px #202020;
+	border-radius: 4px;
+	padding: 8px;
+}
+
+#rollControls > div:last-child {
+	padding: 8px;
 }
 
 #rollControls input {
-	margin-top: 2px;
+	margin-top: 4px;
 	width: 100%;
 }
 
 .gmExtra, .gmInfo {
-	background-color: maroon;
+	background-color: maroon !important;
 }

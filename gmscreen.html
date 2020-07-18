@@ -14,8 +14,9 @@
 			<h2>Current Session</h2>
 			<div>
 				<label for="gmPlayer">Owner: @</label>
-				<input type="text" name="gmPlayer" placeholder="Account Name"></input>
+				<input type="text" name="gmPlayer" placeholder="Account Name" maxlength="25"></input>
 				<button type="button" id="createNewSession">Create New Session</button>
+				<button type="button" id="endSession">EndSession</button>
 			</div>
 			<div>
 				<h3>NPCs</h3>
@@ -23,7 +24,7 @@
 					<div id="npcList">
 						<ol></ol>
 						<form>
-							<input type="text" name="newNPC" placeholder="New NPC name here"></input>
+							<input type="text" name="newNPC" placeholder="New NPC name here" maxlength="25"></input>
 							<button type="submit" id="addNPC">Add</button>
 						</form>
 					</div>
@@ -32,15 +33,23 @@
 							<h4 id="NPCName">Current NPC</h4>
 							<div>
 								<label for="npcAttackBonus">Attack Bonus:</label>
-								<input type="number" name="npcAttack" min="-5" max="10" value="0"></input>
+								<select name="npcAttackBonus"></select>
 							</div>
 							<div>
 								<label for="npcAttackType">Attack Type:</label>
 								<select name="npcAttackType"></select>
 							</div>
 							<div>
-								<label for="npcResistanceBonus">Resistance Bonus:</label>
-								<input type="number" name="npcResistance" min="-5" max="10" value="0"></input>
+								<label for="npcDamageBonus">Damage Bonus:</label>
+								<select name="npcDamageBonus"></select>
+							</div>
+							<div>
+								<label for="npcDefenseBonus">Defense Bonus:</label>
+								<select name="npcDefenseBonus"></select>
+							</div>
+							<div>
+								<label for="npcToughnessBonus">Toughness Bonus:</label>
+								<select name="npcToughnessBonus" select></select>
 							</div>
 							<div>
 								<label for="npcResist">Resists:</label>
@@ -60,7 +69,7 @@
 					<div id="playerList">
 						<ol></ol>
 						<form>
-							<input type="text" name="newPlayer" placeholder="Character name here"></input>
+							<input type="text" name="newPlayer" placeholder="Character name here" maxLength="25"></input>
 							<button type="submit" id="addPlayer">Add</button>
 						</form>
 					</div>
@@ -73,11 +82,35 @@
 				<h2>Session History</h2>
 				<div id="eventPane"></div>
 			</section>
-			<section>
-				<h3>Rolls</h3>
-				<p>
-					TODO - UI elements for making rolls.
-				</p>
+			<section id="rollPanel">
+				<h3>Make a Roll</h3>
+				<div>
+					<div class="flexMe">
+						<select id="rollNPC"></select>
+						<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>
+					</div>
+					<div>
+						<label for="rollBonus">Roll die</label>
+						<select id="rollBonus" name="rollBonus"></select>
+						<button type="button" id="rollPlain">Roll</button>
+					</div>
+					<div class="flexMe">
+						<div>
+							<label for="rollTarget">Roll against</label>
+							<select id="rollTarget" name="rollTarget"></select>
+						</div>
+						<div>
+							<div>
+								<select id="contestedBonus"></select>
+								<button type="button" id="rollContested">Roll vs.</button>
+								<select id="contestedStat"></select>
+							</div>
+							<div>
+								<button type="button" id="rollAttack">Attack!</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</section>
 		</div>
 	</div>

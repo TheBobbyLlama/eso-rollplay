@@ -31,7 +31,7 @@ function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, new CharacterSheet());
-		$("#profileText h2").text(character.name);
+		$("#profileText h2").text(nameDecode(character.name));
 		character.print("printout");
 	} else {
 		showErrorPopup("Character not found.");

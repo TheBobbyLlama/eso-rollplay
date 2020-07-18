@@ -14,31 +14,44 @@
 			<h2>Your Character</h2>
 			<form name="charInfo">
 				<label for="charName">Name:</label>
-				<input type="text" name="charName"></input>
+				<input type="text" name="charName" maxlength="25"></input>
 				<label for="charPlayer">@</label>
-				<input type="text" name="charPlayer" placeholder="Account Name"></input>
+				<input type="text" name="charPlayer" placeholder="Account Name" maxlength="25"></input>
 				<div class="buttonHolder">
 					<button id="loadChar" type="submit">Load</button>
 				</div>
 			</form>
 			<div id="printout" title="Double click to copy character sheet."></div>
-			<div>
+		</section>
+		<div id="rollingSection">
+			<section id="readOut">
+				<h2>Session History</h2>
+				<div id="eventPane"></div>
+			</section>
+			<section>
 				<h3>Make a Roll!</h3>
 				<div id="rollControls">
 					<div>
-						<select id="rollSelect"></select>
-						<button id="rollExecute" type="button" disabled>Roll →</button>						
+						<p>
+							<label for="rollSelect">Roll using</label>
+							<select id="rollSelect" name="rollSelect"></select>
+						</p>
+						<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>					
 					</div>
 					<div>
-						<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>
+						<div>
+							<button id="rollExecute" type="button">Roll!</button>	
+						</div>
+						<div>
+							<button id="attackExecute" type="button">Attack!</button>
+							<select id="rollTarget"></select>
+						</div>
 					</div>
 				</div>
-			</div>
-		</section>
-		<section id="readOut">
-			<h2>Session History</h2>
-			<div id="eventPane"></div>
-		</section>
+				<input type="checkbox" id="lazyMode" name="lazyMode"></input>
+				<label for="lazyMode" title="Any incoming roll requests from the GM are resolved automatically.">Lazy Mode</label>
+			</section>
+		</div>
 	</div>
 	<div id="modalBG">
 		<div id="errorModal">
@@ -47,8 +60,10 @@
 			<button id="errorButton" type="button">Ok</button>
 		</div>
 		<div id="rollModal">
-			<h3>You Need to Roll!</h3>
-			TODO
+			<h3>Roll Needed!</h3>
+			<p id="forceRollText"></p>
+			<input type="text" id="forceRollComment" placeholder='Comment' maxlength="100"></input>
+			<button id="makeForceRoll" type="button">Roll!</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

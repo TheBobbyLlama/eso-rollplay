@@ -46,19 +46,19 @@ function fillSection(sectionName, elements) {
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div data-key='" + elements[i].key + "'>" +
-						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='Difficulty: " + skillDifficultyNames[elements[i].difficulty] + "'" : "") +">" + elements[i].name + ((elements[i].governing) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
+						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='Difficulty: " + skillDifficultyNames[elements[i].difficulty] + "'" : "") +">" + elements[i].name + (((elements[i].difficulty === undefined) && (elements[i].governing)) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
 						"<input type='range' min='" + elements[i].min + "' max='" + elements[i].max + "' value='0' name='" + elements[i].key + "' />" +
 					"</div>");
 	}
 }
 
 function changeName() {
-	character.name = $(this).val().trim();
+	character.name = nameEncode($(this).val().trim());
 	updateCharacterSheet();
 }
 
 function changePlayer() {
-	character.player = $(this).val().trim().replace(/@/g, "");
+	character.player = nameEnCode($(this).val().trim().replace(/@/g, ""));
 	localStorage.setItem("ESORP[player]", character.player);
 	updateCharacterSheet();
 }
@@ -256,11 +256,11 @@ function loadChar(event) {
 		return;
 	}
 
-	dbLoadCharacter(character.name, characterLoaded, descriptionLoaded);
+	dbLoadCharacter(nameDecode(character.name), characterLoaded, descriptionLoaded);
 }
 
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (loadMe.val().player == character.player)) {
+	if ((loadMe.val()) && (nameEncode(loadMe.val().player) == character.player)) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, new CharacterSheet());
 		$("select[name='charRace']").val(character.race);
@@ -290,8 +290,6 @@ $("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
 $("#errorButton").on("click", hideErrorPopup);
 $("#printout").on("dblclick", copyOutput);
+$("*").on("mouseenter mouseleave", checkHighlight);
 
 initializePage();
-
-// TODO - Not quite working right - doesn't trigger help footer on the first item in a section moused over!
-$("*").on("mouseenter mouseleave", checkHighlight);
