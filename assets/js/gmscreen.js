@@ -230,7 +230,7 @@ function makeRollContested() {
 function makeRollAttack() {
 	var npc = $("#rollNPC").prop("selectedIndex");
 	var target = $("#rollTarget").val();
-	var bonus = currentSession.npcs[npc].attackBonus;
+	var bonus = parseInt(currentSession.npcs[npc].attackBonus);
 	var comment = $("#rollComment");
 
 	dbPushEvent(new EventNPCAttack(currentSession.npcs[npc].name, nameEncode(target), bonus, internalDieRoll() + bonus, comment.val()));
@@ -255,7 +255,7 @@ function subordinateRollToughness() {
 	var eventDiv = $(this).closest("div[id]");
 	var curNPC = eventDiv.find("select[name='npc']").prop("selectedIndex");
 	var attackType = eventDiv.find("select[name='attackType']").prop("selectedIndex");
-	var rollBonus = currentSession.npcs[activeNPC].toughnessBonus;
+	var rollBonus = parseInt(currentSession.npcs[activeNPC].toughnessBonus);
 	var comment = eventDiv.find("input[type='text']");
 	var dieRoll;
 
@@ -277,7 +277,7 @@ function subordinateNPCAttackHit() {
 	var npc = nameEncode(eventDiv.attr("attacker"));
 	var player = nameEncode(eventDiv.attr("target"));
 	var attackType = $(this).parent().find("select[name='attackType']").prop("selectedIndex") + 1;
-	var attackBonus = currentSession.npcs.find(element => element.name == npc).damageBonus;
+	var attackBonus = parseInt(currentSession.npcs.find(element => element.name == npc).damageBonus);
 	var comment = $(this).parent().find("input[name='attackComment']");
 	dbPushEvent(new EventNPCAttackResolution(npc, player, true, attackType, attackBonus, attackBonus + internalDieRoll(), comment.val(), eventDiv.attr("id")));
 	comment.val("");

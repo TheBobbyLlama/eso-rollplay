@@ -103,7 +103,7 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerAttackResolution":
-			if (event.success) {
+			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
 					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.target, event.key, event.attackType, event.parent, resolvePlayerDamage);
 				}
