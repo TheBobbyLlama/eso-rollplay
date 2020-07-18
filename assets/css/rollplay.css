@@ -50,8 +50,14 @@
 	flex-direction: column;
 }
 
-#rollingSection div:last-child {
-	margin: 8px 0px 0px 8px;
+#rollingSection section:last-child > div:last-child {
+	align-items: center;
+	display: flex;
+	margin: 8px 0;
+}
+
+#rollingSection section:last-child > div:last-child * {
+	margin-left: 8px;
 }
 
 #rollControls {
@@ -128,6 +134,10 @@
 		padding: 6px;
 	}
 
+	label, #eventPane {
+		font-size: large;
+	}
+
 	#eventPane {
 		max-height: 300px;
 	}
@@ -141,7 +151,7 @@
 		flex-direction: column;
 	}
 
-	#rollingSection div:last-child {
+	#rollingSection section:last-child div:last-child {
 		margin: 0;
 		padding: 0;
 	}
