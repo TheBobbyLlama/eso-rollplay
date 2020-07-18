@@ -79,6 +79,11 @@ function copyOutput(event) {
 
 function addEventDisplay(event) {
 	switch (event.eventType) {
+		case "AddNPC":
+			if (dispatchMessages) {
+				$("#rollTarget").append("<option>" + event.name + "</option>");
+			}
+			break;
 		case "Close":
 			eventPane[0].textContent = "";
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
