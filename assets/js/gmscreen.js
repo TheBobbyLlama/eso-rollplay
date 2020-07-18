@@ -23,14 +23,8 @@ function initializePage() {
 
 	initializeDB();
 
-	var player = localStorage.getItem("ESORP[player]");
-
-	while ((!player) || (player.length > 25)) {
-		player = prompt("Please enter a valid ESO account name.");
-	}
-
-	$("input[name='gmPlayer']").val(player);
-	currentSession = new RoleplaySession(player);
+	// TODO - Testing a fresh start!
+	var player;// = localStorage.getItem("ESORP[player]");
 
 	for (i = 0; i < INJURY_LEVEL_DISPLAY.length; i++) {
 		markupInjuryOptions += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
@@ -64,15 +58,28 @@ function initializePage() {
 
 	$("#endSession, #npcManagement button, #npcManagement input, #npcManagement select, #playerManagement button, #playerManagement input, #playerManagement select, #rollingSection button, #rollingSection input, #rollingSection select").attr("disabled", "true");
 
-	dbLoadSessionByOwner(player, sessionLoaded);
+	if (player) {
+		$("input[name='gmPlayer']").val(player);
+		currentSession = new RoleplaySession(player);
+		dbLoadSessionByOwner(player, sessionLoaded);
+	}
 }
 
-// Create New Session button handler, just fires a confirmation handler.
+// Create New Session button handler.
 function createNewSession() {
-	if ($("input[name='gmPlayer']").val()) {
-		showConfirmPopup("This will delete the current session.", confirmCreateSession);
+	event.preventDefault();
+	var owner = $("input[name='gmPlayer']").val();
+
+	if (dbSanitize(owner)) {
+		if (!currentSession) {
+			dbLoadSessionByOwner(owner, sessionLoaded);
+		} else if (dbSanitize(owner) != dbSanitize(currentSession.owner)) {
+			dbLoadSessionByOwner(owner, sessionLoaded);
+		} else {
+			showConfirmPopup("Opening another session will delete the current sessions.", confirmCreateSession);
+		}
 	} else {
-		showErrorPopup("You must enter an account name to start a new session.");
+		showErrorPopup("You must enter a valid account name to start a new session.");
 	}
 }
 
@@ -323,24 +330,33 @@ function subordinatePlayerAttackMiss() {
 function confirmCreateSession() {
 	hidePopup();
 
-	if (!eventRef) {
-		dbLoadEventMessages(currentSession.owner, confirmCreateSession);
-		return;
+	var isSameOwner = (currentSession.owner == $("input[name='gmPlayer']").val());
+
+	if (isSameOwner) {
+		if (!eventRef) {
+			dbLoadEventMessages(currentSession.owner, confirmCreateSession);
+			return;
+		}
+
+		if (currentSession.characters.length) {
+			dbPushEvent(new EventClose(currentSession.owner));
+		}
+
+		dbDeleteSession();
+		dbClearEventCallbacks();
+	} else {
+		dbLoadEventMessages($("input[name='gmPlayer']").val(), eventSystemLoaded);
 	}
 
-	if (currentSession.characters.length) {
-		dbPushEvent(new EventClose(currentSession.owner));
-	}
-
-	dbDeleteSession();
-	dbClearEventCallbacks();
 	dbBindCallbackToEventSystem("child_added", eventAddedCallback);
-	currentSession = new RoleplaySession(nameEncode($("input[name='gmPlayer']").val()));
+	currentSession = new RoleplaySession($("input[name='gmPlayer']").val());
 	resetScreenInfo();
 
 	postSessionUpdate();
 
 	dbPushEvent(new EventStart(currentSession.owner));
+
+	localStorage.setItem("ESORP[player]", nameDecode(currentSession.owner));
 }
 
 function confirmEndSession() {
@@ -630,8 +646,9 @@ function sessionLoaded(loadMe) {
 		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
 		dbBindCallbackToEventSystem("child_added", eventAddedCallback);
 		resetScreenInfo(false);
+	} else {
+		confirmCreateSession();
 	}
-	// Don't show an error if session fails to load, we can start a new one.
 }
 
 function eventSystemLoaded(loadMe) {
