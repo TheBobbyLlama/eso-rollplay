@@ -128,7 +128,7 @@ function addEventDisplay(event) {
 	}
 
 	var queue = $("#eventPane");
-	queue.scrollTop(queue.height());
+	queue.scrollTop(queue[0].scrollHeight);
 }
 
 function resolveContestedRoll() {
