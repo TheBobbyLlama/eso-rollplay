@@ -156,7 +156,7 @@ function calculateTotalPoints() {
 	result &= !(total > max);
 
 	total = 0;
-	max = character.getAttribute("Intelligence") + character.getAttribute("Willpower") + character.getAttribute("Endurance");
+	max = SKILL_POINT_BASE + 2 * character.getAttribute("Intelligence");
 	workingList = Object.entries(character.skills);
 
 	for (i = 0; i < workingList.length; i++) {
