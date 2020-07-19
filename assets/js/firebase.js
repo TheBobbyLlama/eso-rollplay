@@ -77,21 +77,29 @@ function dbSaveCharacter(saveMe, description) {
 		database.ref("characters/" + dbSanitize(saveMe.name)).set(saveMe);
 		database.ref("descriptions/" + dbSanitize(saveMe.name)).set(description);
 		
-		database.ref("players/" + dbSanitize(nameDecode(saveMe.player))).once("value").then(function(loadMe) {
+		database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).once("value").then(function(loadMe) {
 			var result = loadMe.val();
 
 			if (result) {
-				if (result.indexOf(saveMe.name) < 0) {
-					result.push(saveMe.name);
-					database.ref("players/" + dbSanitize(nameDecode(saveMe.player))).set(result.sort());
+				if (result.characters.indexOf(saveMe.name) < 0) {
+					result.characters.push(saveMe.name);
+					result.characters = result.characters.sort();
+					database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).set(result);
 				}
+			} else {
+				var newAccount = {
+					display: saveMe.player,
+					characters: [ saveMe.name ]
+				};
+
+				database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).set(newAccount);
 			}
 		});
 	}
 }
 
 function dbSearchCharacterByPlayerName(name, handler) {
-	database.ref("players/" + dbSanitize(name)).once("value").then(handler);
+	database.ref("accounts/" + dbSanitize(name) + "/characters").once("value").then(handler);
 }
 
 function dbLoadCharacter(getMe, handler, descHandler=null) {
