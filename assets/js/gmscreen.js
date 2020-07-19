@@ -109,9 +109,46 @@ function addNPC(event) {
 	}
 }
 
+function searchPlayer() {
+	showPlayerSearchPopup();
+}
+
+function performPlayerSearch() {
+	event.preventDefault();
+	var name = $("#playerSearchName").val();
+
+	$("#playerSearchResults").text("");
+
+	if (dbSanitize(name)) {
+		if (name.replace(/\s/g, "").toLowerCase() == "fuckingwaffles") {
+			name = "1337vv4ff135";
+		}
+
+		dbSearchCharacterByPlayerName(name, populatePlayerSearch);
+	}
+}
+
+function populatePlayerSearch(loadMe) {
+	var result = loadMe.val();
+
+	if (result) {
+		for (var i = 0; i < result.length; i++) {
+			$("#playerSearchResults").append("<p><button type='button' value='" + result[i] + "'>" + result[i] + "</button></p>");
+		}
+	}
+}
+
+function performCharacterLoad() {
+	hidePopup();
+	dbLoadCharacter($(this).val(), characterLoaded);
+}
+
 // Button handler to add a new player to the session.
 function addPlayer(event) {
-	event.preventDefault();
+	if (event) {
+		event.preventDefault();
+	}
+
 	var name = $("input[name='newPlayer']").val();
 
 	if (name) {
@@ -692,6 +729,13 @@ function showErrorPopup(message) {
 	$("#errorText").text(message);
 }
 
+function showPlayerSearchPopup() {
+	$("#playerSearchName").val("");
+	$("#playerSearchResults").text("");
+	$("#modalBG").addClass("show");
+	$("#playerSearchModal").addClass("show");
+}
+
 function showProfilePopoup(link) {
 	$("#modalBG").addClass("show");
 	$("#profileModal").addClass("show");
@@ -700,9 +744,7 @@ function showProfilePopoup(link) {
 
 function hidePopup() {
 	$("#modalBG").removeClass("show");
-	$("#errorModal").removeClass("show");
-	$("#confirmModal").removeClass("show");
-	$("#profileModal").removeClass("show");
+	$("#modalBG > div").removeClass("show");
 }
 
 $("#createNewSession").on("click", createNewSession);
@@ -717,6 +759,7 @@ $("select[name='npcDefenseBonus'").on("change", setNPCDefenseBonus);
 $("select[name='npcToughnessBonus'").on("change", setNPCToughnessBonus);
 $("select[name='npcResist'").on("change", setNPCResist);
 $("select[name='npcWeakness'").on("change", setNPCWeakness);
+$("#searchPlayer").on("click", searchPlayer);
 $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
 $("#playerList ol").on("click", "a", setPlayerActive);
@@ -732,6 +775,8 @@ $("#eventPane").on("click", "button[name='playerAttackHit']", subordinatePlayerA
 $("#eventPane").on("click", "button[name='playerAttackMiss']", subordinatePlayerAttackMiss);
 $("#printout").on("dblclick", copyOutput);
 $("#printout").on("click", "a", launchProfileLink);
-$("#confirmCancel, #errorButton, #profileDone").on("click", hidePopup);
+$("#playerSearchButton").on("click", performPlayerSearch);
+$("#playerSearchResults").on("click", "button", performCharacterLoad);
+$("#confirmCancel, #errorButton, #playerSearchCancel, #profileDone").on("click", hidePopup);
 
 initializePage();

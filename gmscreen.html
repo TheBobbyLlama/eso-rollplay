@@ -74,6 +74,7 @@
 						<ol></ol>
 						<form>
 							<input type="text" name="newPlayer" placeholder="Character name here" maxLength="25"></input>
+							<button type="button" id="searchPlayer">?</button>
 							<button type="submit" id="addPlayer">Add</button>
 						</form>
 					</div>
@@ -138,6 +139,15 @@
 			<p id="confirmText"></p>
 			<button id="confirmOk" type="button">Ok</button>
 			<button id="confirmCancel" type="button">Cancel</button>
+		</div>
+		<div id="playerSearchModal">
+			<h3>Player Search</h3>
+			<form>
+				<input type="text" id="playerSearchName" maxlength="25" placeholder="Player account name"></input>
+				<button type="submit" id="playerSearchButton">Search</button>
+			</form>
+			<div id="playerSearchResults"></div>
+			<button id="playerSearchCancel">Cancel</button>
 		</div>
 		<div id="profileModal">
 			<iframe></iframe>

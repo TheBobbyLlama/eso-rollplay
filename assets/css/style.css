@@ -76,7 +76,7 @@ ul {
 	display: flex !important;
 }
 
-#modalBG div {
+#modalBG > div {
 	background-color: #404040;
 	border: solid 2px #202020;
 	border-radius: 10px;

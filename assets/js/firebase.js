@@ -90,6 +90,10 @@ function dbSaveCharacter(saveMe, description) {
 	}
 }
 
+function dbSearchCharacterByPlayerName(name, handler) {
+	database.ref("players/" + dbSanitize(name)).once("value").then(handler);
+}
+
 function dbLoadCharacter(getMe, handler, descHandler=null) {
 	database.ref("characters/" + dbSanitize(getMe)).once("value").then(handler);
 	dbLoadCharacterDescription(getMe, descHandler);
