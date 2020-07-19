@@ -244,6 +244,12 @@ function makeRollAttack() {
 	comment.val("");
 }
 
+function sendGMComment() {
+	var gmPost = $("#GMPost").val();
+
+	dbPushEvent(new EventGMPost(gmPost));
+}
+
 // Perform a roll in response to a player roll.
 function subordinateRollBonus() {
 	var eventDiv = $(this).closest("div[id]");
@@ -717,6 +723,7 @@ $("#playerList ol").on("click", "a", setPlayerActive);
 $("#rollPlain").on("click", makeRollPlain);
 $("#rollContested").on("click", makeRollContested);
 $("#rollAttack").on("click", makeRollAttack);
+$("#sendComment").on("click", sendGMComment);
 $("#eventPane").on("click", "button[name='rollBonus']", subordinateRollBonus);
 $("#eventPane").on("click", "button[name='rollToughness']", subordinateRollToughness);
 $("#eventPane").on("click", "button[name='npcAttackHit']", subordinateNPCAttackHit);

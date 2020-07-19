@@ -236,6 +236,15 @@ ul {
 	margin-top: 10px !important;
 }
 
+#eventPane .gmComment {
+	background-color: #606060;
+	display: block;
+}
+
+#eventPane .gmComment  h3 {
+	text-align: left;
+}
+
 #referLink {
 	padding: 10px;
 	position: absolute;

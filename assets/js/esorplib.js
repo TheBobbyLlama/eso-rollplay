@@ -561,6 +561,8 @@ function convertEventToHtml(event) {
 			return "<div class='gmInfo'>" + event.owner + " has closed this session.<br />YOU SHOULD NEVER SEE THIS.</div>";
 		case "End":
 			return "<div><p>The session has been ended by " + event.owner + ". (" + event.timeStamp + ")</p><p>Thanks for playing!</p></div>";
+		case "GMPost":
+			return "<div class='gmComment'><h3>GM Post:</h3><em>" + event.post.replace(/\n/g, "<br />") + "</em></div>"
 		case "InjuryNPC":
 			return "<div countMe><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</span></div>";
 		case "InjuryPlayer":
@@ -756,6 +758,13 @@ class EventClose extends SharedEvent {
 	constructor(ownMe) {
 		super("Close");
 		this.owner = ownMe;
+	}
+}
+
+class EventGMPost extends SharedEvent {
+	constructor(text) {
+		super("GMComment");
+		this.post = nameEncode(text);
 	}
 }
 

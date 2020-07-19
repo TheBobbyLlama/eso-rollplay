@@ -76,6 +76,17 @@ function dbSaveCharacter(saveMe, description) {
 	if ((saveMe.name) && (saveMe.player)) {
 		database.ref("characters/" + dbSanitize(saveMe.name)).set(saveMe);
 		database.ref("descriptions/" + dbSanitize(saveMe.name)).set(description);
+		
+		database.ref("players/" + dbSanitize(nameDecode(saveMe.player))).once("value").then(function(loadMe) {
+			var result = loadMe.val();
+
+			if (result) {
+				if (result.indexOf(saveMe.name) < 0) {
+					result.push(saveMe.name);
+					database.ref("players/" + dbSanitize(nameDecode(saveMe.player))).set(result.sort());
+				}
+			}
+		});
 	}
 }
 

@@ -275,8 +275,6 @@ function forcePlayerRoll(message, comment, npc, key, attackType, parent, callbac
 		return;
 	}
 
-	console.log("[" + comment + "]");
-
 	// Tack on all the data we'll want to use when we make our roll.
 	$("#rollModal").attr("data-npc", npc).attr("data-key", key).attr("data-type", attackType).attr("data-parent", parent);
 
