@@ -493,6 +493,18 @@ function addEventDisplay(event) {
 				"</div>"
 			);
 			break;
+		case "NPCToughness":
+		case "PlayerBusy":
+		case "PlayerToughness":
+		case "RollSubordinate":
+					$("#" + event.parent).append(convertEventToHtml(event));
+					break;
+		case "PlayerConnect":
+		case "PlayerDisconnect":
+			if (dispatchMessages) {
+				eventPane.append(convertEventToHtml(event));
+			}
+			break;
 		case "PlayerDefense":
 			var holder = $("#" + event.parent);
 			holder.append(convertEventToHtml(event));
@@ -507,11 +519,6 @@ function addEventDisplay(event) {
 				"</div>"
 			);
 			break;
-		case "NPCToughness":
-		case "PlayerToughness":
-		case "RollSubordinate":
-				$("#" + event.parent).append(convertEventToHtml(event));
-				break;
 		default:
 			eventPane.append(convertEventToHtml(event));
 	}

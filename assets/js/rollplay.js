@@ -136,7 +136,7 @@ function addEventDisplay(event) {
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.name, event.key, "", event.id, resolveContestedRoll);
+				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, event.name, event.key, "", event.id, resolveContestedRoll);
 			}
 			break;
 		default:
@@ -201,6 +201,12 @@ function resolvePlayerDamage() {
 	dbPushEvent(new EventPlayerDamageRoll(character.name, target, modifier, result, attackType, $("#forceRollComment").val(), parent));
 
 	hidePopup();
+}
+
+function sendDisconnectEvent() {
+	if ((character) && (currentSession)) {
+		dbPushEvent(new EventPlayerDisconnect(character.name));
+	}
 }
 
 function loadChar() {
@@ -272,6 +278,8 @@ function sessionLoaded(loadMe) {
 function eventSystemLoaded(loadMe) {
 	$("#rollControls button, #rollControls input, #rollControls select").removeAttr("disabled");
 	dispatchMessages = true;
+
+	dbPushEvent(new EventPlayerConnect(character.name));
 }
 
 function eventAddedCallback(loadMe) {
@@ -288,6 +296,9 @@ function showErrorPopup(message) {
 
 function forcePlayerRoll(message, comment, npc, key, attackType, parent, callback) {
 	if (!dispatchMessages) {
+		return;
+	} else if ($("#modalBG").hasClass("show")) {
+		dbPushEvent(new EventPlayerBusy(character.name, parent));
 		return;
 	}
 
@@ -313,6 +324,7 @@ function hidePopup() {
 	$("#modalBG > div").removeClass("show");
 }
 
+$(window).on("unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);

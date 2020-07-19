@@ -648,12 +648,16 @@ function convertEventToHtml(event) {
 					"Result: " + event.result +
 				"</div>" +
 			"</div>";
+		case "PlayerBusy":
+			return "<div class='gmExtra subordinate'>" + event.player + " is busy.</div>";
 		case "PlayerAttackResolution":
 			// No output on a success.
 			if (!event.success) {
 				return "<div class='subordinate'><i>The attack missed!" + ((event.comment) ? " <span class='rollComment'>" + event.comment + "</span>" : "") + "</i></div>"
 			}
 			break;
+		case "PlayerConnect":
+			return "<div class='gmInfo'>" + event.player + " has connected to the session.</div>";
 		case "PlayerDamage":
 			return "<div class='playersubordinate'>" +
 				"<div>" +
@@ -674,6 +678,8 @@ function convertEventToHtml(event) {
 					"Result: " + event.result +
 				"</div>" +
 			"</div>";
+		case "PlayerDisconnect":
+			return "<div class='gmInfo'>" + event.player + " has disconnected from the session.</div>";
 		case "PlayerToughness":
 			var action = " attempts to withstand ";
 
@@ -742,17 +748,17 @@ function convertEventToHtml(event) {
 class SharedEvent {
 	constructor(myType) {
 		this.eventType = myType;
+		this.timeStamp = new Date().toLocaleString("en-US")
 	}
 }
 
-const GM_EVENTS = [ "AddNPC", "AddPlayer", "NPCDefense", "NPCRoll", "NPCToughness", "RollSubordinate" ];
+const GM_EVENTS = [ "AddNPC", "AddPlayer", "NPCDefense", "NPCRoll", "NPCToughness", "PlayerBusy", "PlayerConnect", "PlayerDisconnect", "RollSubordinate" ];
 
 // ADMINISTRATIVE EVENTS
 class EventStart extends SharedEvent {
 	constructor(ownMe) {
 		super("Start");
 		this.owner = ownMe;
-		this.timeStamp = new Date().toLocaleString("en-US")
 	}
 }
 
@@ -760,7 +766,6 @@ class EventEnd extends SharedEvent {
 	constructor(ownMe) {
 		super("End");
 		this.owner = ownMe;
-		this.timeStamp = new Date().toLocaleString("en-US")
 	}
 }
 
@@ -789,6 +794,28 @@ class EventAddPlayer extends SharedEvent {
 	constructor(myPlayer) {
 		super("AddPlayer");
 		this.player = myPlayer;
+	}
+}
+
+class EventPlayerConnect extends SharedEvent {
+	constructor(myPlayer) {
+		super("PlayerConnect");
+		this.player = myPlayer;
+	}
+}
+
+class EventPlayerDisconnect extends SharedEvent {
+	constructor(myPlayer) {
+		super("PlayerDisconnect");
+		this.player = myPlayer;
+	}
+}
+
+class EventPlayerBusy extends SharedEvent {
+	constructor(myPlayer, parentId) {
+		super("PlayerBusy");
+		this.player = myPlayer;
+		this.parent = parentId;
 	}
 }
 
