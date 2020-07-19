@@ -36,6 +36,14 @@
 	display: none;
 }
 
+#forceRollGMComment {
+	background-color: #383838;
+	border-radius: 4px;
+	display: none;
+	font-style: italic;
+	padding: 2px 8px;
+}
+
 #printout {
 	margin: 20px 0px;
 }

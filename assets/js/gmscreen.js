@@ -124,7 +124,7 @@ function addPlayer(event) {
 }
 
 function setNPCAttackBonus() {
-	currentSession.npcs[activeNPC].attackBonus = $(this).val();
+	currentSession.npcs[activeNPC].attackBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
@@ -134,17 +134,17 @@ function setNPCAttackType() {
 }
 
 function setNPCDamageBonus() {
-	currentSession.npcs[activeNPC].damageBonus = $(this).val();
+	currentSession.npcs[activeNPC].damageBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
 function setNPCDefenseBonus() {
-	currentSession.npcs[activeNPC].defenseBonus = $(this).val();
+	currentSession.npcs[activeNPC].defenseBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
 function setNPCToughnessBonus() {
-	currentSession.npcs[activeNPC].toughnessBonus = $(this).val();
+	currentSession.npcs[activeNPC].toughnessBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
@@ -469,7 +469,7 @@ function addEventDisplay(event) {
 		case "PlayerDamage":
 			if (dispatchMessages) {
 				var curNPC = currentSession.npcs.find(element => element.name == event.target);
-				var toughness = curNPC.toughnessBonus;
+				var toughness = parseInt(curNPC.toughnessBonus);
 				var result = internalDieRoll() + toughness;
 				var resist = false;
 				var weak = false;
@@ -488,7 +488,7 @@ function addEventDisplay(event) {
 		case "PlayerAttack":
 			if (dispatchMessages) {
 				var curNPC = currentSession.npcs.find(element => element.name == event.target);
-				var defense = curNPC.defenseBonus;
+				var defense = parseInt(curNPC.defenseBonus);
 
 				dbPushEvent(new EventNPCDefense(event.player, event.target, defense, internalDieRoll() + defense, eventPane.children("div:last-child").attr("id")));
 			}

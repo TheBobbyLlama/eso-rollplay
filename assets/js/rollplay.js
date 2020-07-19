@@ -95,13 +95,13 @@ function addEventDisplay(event) {
 			dbClearEventSystem();
 		case "NPCAttack":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				forcePlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.name, "Defense", "", event.id, resolveNPCAttack);
+				forcePlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, event.name, "Defense", "", event.id, resolveNPCAttack);
 			}
 			break;
 		case "NPCAttackResolution":
 			if (event.success) {
 				if ((dispatchMessages) && (event.player == character.name)) {
-					forcePlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.name, "Toughness", event.attackType, event.parent, resolveNPCDamage);
+					forcePlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, event.name, "Toughness", event.attackType, event.parent, resolveNPCDamage);
 				}
 			} else {
 				$("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
@@ -110,7 +110,7 @@ function addEventDisplay(event) {
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
-					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.target, event.key, event.attackType, event.parent, resolvePlayerDamage);
+					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, event.target, event.key, event.attackType, event.parent, resolvePlayerDamage);
 				}
 			} else {
 				$("#" + event.parent).append(convertEventToHtml(event));
@@ -270,10 +270,12 @@ function showErrorPopup(message) {
 	$("#errorText").text(message);
 }
 
-function forcePlayerRoll(message, npc, key, attackType, parent, callback) {
+function forcePlayerRoll(message, comment, npc, key, attackType, parent, callback) {
 	if (!dispatchMessages) {
 		return;
 	}
+
+	console.log("[" + comment + "]");
 
 	// Tack on all the data we'll want to use when we make our roll.
 	$("#rollModal").attr("data-npc", npc).attr("data-key", key).attr("data-type", attackType).attr("data-parent", parent);
@@ -286,6 +288,8 @@ function forcePlayerRoll(message, npc, key, attackType, parent, callback) {
 		$("#modalBG").addClass("show");
 		$("#rollModal").addClass("show");
 		$("#forceRollText").text(message);
+		$("#forceRollGMComment").text(comment);
+		$("#forceRollGMComment").toggleClass("show", !!(comment));
 		$("#makeForceRoll").off("click").on("click", callback);
 	}
 }
