@@ -80,6 +80,11 @@ h3 {
 	font-weight: bold;
 }
 
+#playerSearchResults {
+	max-height: 400px;
+	overflow: auto;
+}
+
 #readOut {
 	flex-basis: 100%;
 }
