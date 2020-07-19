@@ -405,7 +405,7 @@ class CharacterSheet {
 		var i;
 		var printArr = [];
 		var printout = $("#" + id);
-		printout.text("");
+		printout.empty();
 
 		if (this.name) {
 			printout.append("===============================<br />")

@@ -24,7 +24,7 @@ function initializePage() {
 }
 
 function selectCharacter() {
-	$("#profileText div").text("");
+	$("#profileText div").empty();
 	dbLoadCharacter($(this).val(), characterLoaded, descriptionLoaded);
 }
 

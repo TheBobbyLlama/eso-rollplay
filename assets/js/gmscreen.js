@@ -118,7 +118,7 @@ function performPlayerSearch() {
 	event.preventDefault();
 	var name = $("#playerSearchName").val();
 
-	$("#playerSearchResults").text("");
+	$("#playerSearchResults").empty();
 
 	if (dbSanitize(name)) {
 		if (name.replace(/\s/g, "").toLowerCase() == "fuckingwaffles") {
@@ -589,11 +589,11 @@ function resetScreenInfo(enableMessages=true) {
 	var playerList = $("#playerList ol");
 	dispatchMessages = false;
 	characterList = [];
-	$("#printout").text("");
-	$("#rollNPC, #rollTarget").text("");
-	npcList.text("");
-	playerList.text("");
-	eventPane.text("");
+	$("#printout").empty();
+	$("#rollNPC, #rollTarget").empty();
+	npcList.empty();
+	playerList.empty();
+	eventPane.empty();
 	markupNPCOptions = "";
 	markupPlayerOptions = "";
 
@@ -671,7 +671,7 @@ function sessionLoaded(loadMe) {
 	if ((loadMe) && (loadMe.val())) {
 		var i;
 		var dummy;
-		eventPane.text("");
+		eventPane.empty();
 		currentSession = loadMe.val();
 		Object.setPrototypeOf(currentSession, new RoleplaySession());
 
@@ -739,7 +739,7 @@ function showErrorPopup(message) {
 
 function showPlayerSearchPopup() {
 	$("#playerSearchName").val("");
-	$("#playerSearchResults").text("");
+	$("#playerSearchResults").empty();
 	$("#modalBG").addClass("show");
 	$("#playerSearchModal").addClass("show");
 }

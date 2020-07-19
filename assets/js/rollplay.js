@@ -20,7 +20,7 @@ function resetRollSelect() {
 	var rollSelector = $("#rollSelect");
 	var charItems = Object.entries(character.skills);
 	
-	rollSelector.text("");
+	rollSelector.empty();
 
 	for (i = 0; i < charItems.length; i++) {
 		var curQuality = getQuality(charItems[i][0]);
@@ -213,7 +213,7 @@ function loadChar() {
 		return;
 	}
 
-	$("#rollTarget").text("");
+	$("#rollTarget").empty();
 	$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
 	dbLoadCharacter(tmpName, characterLoaded)
 }
@@ -227,7 +227,7 @@ function characterLoaded(loadMe) {
 		character.print("printout");
 		resetRollSelect();
 
-		eventPane.text("");
+		eventPane.empty();
 		dbLoadSessionByParticipant(character.name, sessionLoaded);
 		
 	} else {
@@ -241,7 +241,7 @@ function sessionLoaded(loadMe) {
 	if (loadMe) {
 		var i;
 		var dummy;
-		eventPane.text("");
+		eventPane.empty();;
 		currentSession = loadMe;
 		Object.setPrototypeOf(currentSession, new RoleplaySession());
 
