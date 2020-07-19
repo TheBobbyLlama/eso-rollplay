@@ -25,7 +25,8 @@ function initializePage() {
 
 	var player = localStorage.getItem("ESORP[player]");
 
-	for (i = 0; i < INJURY_LEVEL_DISPLAY.length; i++) {
+	// Only has basice injury options, special Hidden value will be added later for NPCs.
+	for (i = 0; i < INJURY_LEVEL_DISPLAY.length - 1; i++) {
 		markupInjuryOptions += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
 	}
 
@@ -199,11 +200,17 @@ function setNPCInjuryStatus() {
 	if (dispatchMessages) {
 		var value = $(this).prop("selectedIndex");
 		var owner = $(this).closest("li[data-index]").attr("data-index");
+		var oldStatus = currentSession.npcs[owner].status;
 
-		currentSession.npcs[owner].injuryLevel = value;
+		// Just to be 100% sure we'll never send the event unless we need to.
+		if (oldStatus == value) {
+			return;
+		}
+
+		currentSession.npcs[owner].status = value;
 
 		postSessionUpdate();
-		dbPushEvent(new EventInjuryNPC(currentSession.npcs[owner].name, value));
+		dbPushEvent(new EventNPCStatus(currentSession.npcs[owner].name, value, oldStatus));
 	}
 }
 
@@ -418,6 +425,7 @@ function addNPCToList(name, index) {
 				"<a title='Click to view/edit'>" + name + "</a>" +
 				"<select>" +
 					markupInjuryOptions +
+					"<option>Hidden</option>" +
 				"</select>" +
 			"</div>" +
 		"</li>"
@@ -425,7 +433,7 @@ function addNPCToList(name, index) {
 
 	markupNPCOptions += "<option>" + name + "</option>";
 
-	$("#npcList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.npcs[index].injuryLevel);
+	$("#npcList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.npcs[index].status);
 
 	$("#rollNPC").append("<option>" + name + "</option>");
 }

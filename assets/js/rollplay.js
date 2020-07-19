@@ -79,11 +79,6 @@ function copyOutput(event) {
 
 function addEventDisplay(event) {
 	switch (event.eventType) {
-		case "AddNPC":
-			if (dispatchMessages) {
-				$("#rollTarget").append("<option>" + event.name + "</option>");
-			}
-			break;
 		case "Close":
 			eventPane[0].textContent = "";
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
@@ -107,6 +102,24 @@ function addEventDisplay(event) {
 				$("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
 			}
 			break;
+		case "NPCStatus":
+				if (dispatchMessages) {
+					if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
+						$("#rollTarget").append("<option>" + event.name + "</option>");
+					} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
+						var rollOptions = $("#rollTarget").children();
+
+						for (var i = 0; i < rollOptions.length; i++) {
+							if (rollOptions[i].value == event.name) {
+								rollOptions[i].remove();
+							}
+						}
+						//$("#rollTarget option[value='" + event.name + "']").remove();
+					}
+				}
+
+				eventPane.append(convertEventToHtml(event));
+				break;
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
@@ -242,7 +255,10 @@ function sessionLoaded(loadMe) {
 
 		for (i = 0; i < currentSession.npcs.length; i++) {
 			Object.setPrototypeOf(currentSession.npcs[i], dummy);
-			$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
+
+			if (currentSession.npcs[i].status < INJURY_LEVEL_DISPLAY.length - 1) {
+				$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
+			}
 		}
 
 		dispatchMessages = false;

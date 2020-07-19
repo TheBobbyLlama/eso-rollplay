@@ -519,7 +519,7 @@ function formatDescription(description) {
 }
 
 const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
-const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!" ];
+const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!", "Hidden" ];
 
 class NPC {
 	constructor(myName) {
@@ -531,7 +531,7 @@ class NPC {
 		this.toughnessBonus = 0;
 		this.resist = 0;
 		this.weakness = 0;
-		this.injuryLevel = 0;
+		this.status = INJURY_LEVEL_DISPLAY.length - 1;
 	}
 }
 
@@ -563,10 +563,20 @@ function convertEventToHtml(event) {
 			return "<div><p>The session has been ended by " + event.owner + ". (" + event.timeStamp + ")</p><p>Thanks for playing!</p></div>";
 		case "GMPost":
 			return "<div class='gmComment'><h3>GM Post:</h3><em>" + event.post.replace(/\n/g, "<br />") + "</em></div>"
-		case "InjuryNPC":
-			return "<div countMe><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</span></div>";
+		case "NPCStatus":
+			if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
+				if (event.status > 0) {
+					return "<div countMe><span>" + event.name + " appears!  It is " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+				} else {
+					return "<div countMe><span>" + event.name + " appears!</span></div>";
+				}
+			} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
+				return "<div countMe><span>" + event.name + " disappears!</span></div>";
+			} else {
+				return "<div countMe><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+			}
 		case "InjuryPlayer":
-			return "<div countMe><span>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</span></div>";
+			return "<div countMe><span>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
 		case "NPCAttack":
 			return "<div class='gmInfo' id='" + event.id + "' attacker='" + event.name + "' target='" + event.player + "' countMe>" +
 				"<div>" +
@@ -735,7 +745,7 @@ class SharedEvent {
 	}
 }
 
-const GM_EVENTS = [ "AddPlayer", "NPCDefense", "NPCRoll", "NPCToughness", "RollSubordinate" ];
+const GM_EVENTS = [ "AddNPC", "AddPlayer", "NPCDefense", "NPCRoll", "NPCToughness", "RollSubordinate" ];
 
 // ADMINISTRATIVE EVENTS
 class EventStart extends SharedEvent {
@@ -978,10 +988,11 @@ class EventInjuryPlayer extends SharedEvent {
 	}
 }
 
-class EventInjuryNPC extends SharedEvent {
-	constructor(myName, myStatus) {
-		super("InjuryNPC");
+class EventNPCStatus extends SharedEvent {
+	constructor(myName, myStatus, myOld) {
+		super("NPCStatus");
 		this.name = myName;
 		this.status = myStatus;
+		this.oldStatus = myOld;
 	}
 }
