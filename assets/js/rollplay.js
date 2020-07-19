@@ -203,6 +203,12 @@ function resolvePlayerDamage() {
 	hidePopup();
 }
 
+function sendConnectEvent() {
+	if ((character) && (currentSession)) {
+		dbPushEvent(new EventPlayerConnect(character.name));
+	}
+}
+
 function sendDisconnectEvent() {
 	if ((character) && (currentSession)) {
 		dbPushEvent(new EventPlayerDisconnect(character.name));
@@ -279,7 +285,7 @@ function eventSystemLoaded(loadMe) {
 	$("#rollControls button, #rollControls input, #rollControls select").removeAttr("disabled");
 	dispatchMessages = true;
 
-	dbPushEvent(new EventPlayerConnect(character.name));
+	sendConnectEvent();
 }
 
 function eventAddedCallback(loadMe) {
@@ -324,7 +330,8 @@ function hidePopup() {
 	$("#modalBG > div").removeClass("show");
 }
 
-$(window).on("unload", sendDisconnectEvent);
+$(window).on("online", sendDisconnectEvent);
+$(window).on("offline, unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);
