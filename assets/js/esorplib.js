@@ -562,11 +562,11 @@ function convertEventToHtml(event) {
 		case "End":
 			return "<div><p>The session has been ended by " + event.owner + ". (" + event.timeStamp + ")</p><p>Thanks for playing!</p></div>";
 		case "InjuryNPC":
-			return "<div>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</div>";
+			return "<div countMe><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</span></div>";
 		case "InjuryPlayer":
-			return "<div>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</div>";
+			return "<div countMe><span>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 1) ? "." : "") + "</span></div>";
 		case "NPCAttack":
-			return "<div class='gmInfo' id='" + event.id + "' attacker='" + event.name + "' target='" + event.player + "'>" +
+			return "<div class='gmInfo' id='" + event.id + "' attacker='" + event.name + "' target='" + event.player + "' countMe>" +
 				"<div>" +
 					"<p>" + event.name + " attacks (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.player + "!</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
@@ -599,7 +599,7 @@ function convertEventToHtml(event) {
 				"</div>" +
 			"</div>";
 		case "NPCRoll":
-			return "<div class='gmInfo'>" +
+			return "<div class='gmInfo' countMe>" +
 			"<div>" +
 				"<p>" + event.name + " rolls (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
 				((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
@@ -627,7 +627,7 @@ function convertEventToHtml(event) {
 				"</div>" +
 			"</div>";
 		case "PlayerAttack":
-			return "<div id='" + event.id + "' attacker='" + event.player + "' target='" + event.target + "' data-key='" + event.key + "'>" +
+			return "<div id='" + event.id + "' attacker='" + event.player + "' target='" + event.target + "' data-key='" + event.key + "' countMe>" +
 				"<div>" +
 					"<p>" + event.player + " attacks (" + getQuality(event.key).name + ", " + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.target + "!</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
@@ -653,7 +653,7 @@ function convertEventToHtml(event) {
 				"</div>" +
 			"</div>";
 		case "PlayerDefense":
-			return "<div class='playersubordinate' data-parent='" + event.parent + "'>" +
+			return "<div class='playersubordinate' data-parent='" + event.parent + "' countMe>" +
 				"<div>" +
 					"<p>" + event.player + " defends (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs. " + event.attacker + "'s attack!" + "</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
@@ -681,7 +681,7 @@ function convertEventToHtml(event) {
 				"</div>" +
 			"</div>";
 		case "Roll":
-			return "<div id='" + event.id + "'>" +
+			return "<div id='" + event.id + "' countMe>" +
 				"<div>" +
 					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
@@ -691,7 +691,7 @@ function convertEventToHtml(event) {
 				"</div>" +
 			"</div>";
 		case "RollContested":
-			return "<div class='gmInfo' id='" + event.id + "' data-against='" + event.key + "'>" +
+			return "<div class='gmInfo' id='" + event.id + "' data-against='" + event.key + "' countMe>" +
 				"<div>" +
 					"<p>" + event.name + " rolls (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs. " + event.player + "!</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
@@ -701,7 +701,7 @@ function convertEventToHtml(event) {
 				"</div>" +
 			"</div>";
 		case "RollContestedSubordinate":
-			return "<div class='playersubordinate'>" +
+			return "<div class='playersubordinate' countMe>" +
 				"<div>" +
 					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs " + event.npc + ":" + "</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
