@@ -99,6 +99,10 @@ h3 {
 	margin: 4px;
 }
 
+#rollPanel > div > .flexMe:first-child {
+	flex-wrap: nowrap;
+}
+
 #rollPanel input {
 	flex-basis: 100%;
 	margin-left: 8px;
@@ -125,6 +129,7 @@ h3 {
 }
 
 #commentArea textarea {
+	resize: vertical;
 	width: 100%;
 }
 
@@ -185,7 +190,7 @@ h3 {
 		font-size: medium !important;
 	}
 
-	.flexMe {
+	.flexMe, #rollPanel > div > .flexMe:first-child {
 		flex-direction: column;
 	}
 

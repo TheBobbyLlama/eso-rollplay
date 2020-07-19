@@ -728,6 +728,18 @@ function convertEventToHtml(event) {
 					"Result: " + event.result +
 				"</div>" +
 			"</div>";
+		case "RollPlayerContested":
+			return "<div id='" + event.id + "' countMe><span>" + event.player1 + " rolls " + event.key1 + " against " + event.player2 + "'s " + event.key2 + "!</span></div>";
+		case "RollPlayerContestedSubordinate":
+			return "<div class='playersubordinate' countMe>" +
+				"<div>" +
+					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
+					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + event.result +
+				"</div>" +
+			"</div>";
 		case "RollSubordinate":
 			return "<div class='gmExtra subordinate'>" +
 				"<div>" +
@@ -778,7 +790,7 @@ class EventClose extends SharedEvent {
 
 class EventGMPost extends SharedEvent {
 	constructor(text) {
-		super("GMComment");
+		super("GMPost");
 		this.post = nameEncode(text);
 	}
 }
@@ -844,6 +856,7 @@ class EventRollSubordinate extends SharedEvent {
 	}
 }
 
+
 // NPC makes a general purpose roll with no further action required by players or the GM.
 class EventNPCRoll extends SharedEvent {
 	constructor(myName, myMod, myResult, myComment) {
@@ -878,6 +891,31 @@ class EventContestedResponse extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
+		this.parent = parentId;
+	}
+}
+
+// Players make a generic roll against each other.
+class EventPlayerContestedRoll extends SharedEvent {
+	constructor(myPlayer1, myKey1, myPlayer2, myKey2, myComment) {
+		super("RollPlayerContested");
+		this.id = "PlayerContest_" + Date.now();
+		this.player1 = myPlayer1;
+		this.key1 = myKey1;
+		this.player2 = myPlayer2;
+		this.key2 = myKey2;
+		this.comment = myComment;
+	}
+}
+
+class EventPlayerContestedRollSubordinate extends SharedEvent {
+	constructor(myPlayer, myKey, myMod, myResult, myComment, parentId) {
+		super("RollPlayerContestedSubordinate");
+		this.player = myPlayer;
+		this.key = myKey;
+		this.modifier = myMod;
+		this.result = myResult;
+		this.comment = myComment;
 		this.parent = parentId;
 	}
 }

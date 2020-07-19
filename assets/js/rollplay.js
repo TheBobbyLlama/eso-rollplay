@@ -130,6 +130,7 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerDamage":
+		case "RollPlayerContestedSubordinate":
 				$("#" + event.parent).append(convertEventToHtml(event));
 		case "PlayerToughness":
 				eventPane.find("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
@@ -137,6 +138,17 @@ function addEventDisplay(event) {
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
 				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, event.name, event.key, "", event.id, resolveContestedRoll);
+			}
+			break;
+		case "RollPlayerContested":
+			eventPane.append(convertEventToHtml(event));
+
+			if (dispatchMessages) {
+				if (event.player1 == character.name) {
+					forcePlayerRoll("Roll " + getQuality(event.key1).name + " vs. " + nameDecode(event.player2) + "!", event.comment, event.player2, event.key1, "", event.id, resolvePlayerContestedRoll);
+				} else if (event.player2 == character.name) {
+					forcePlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, event.player1, event.key2, "", event.id, resolvePlayerContestedRoll);
+				}
 			}
 			break;
 		default:
@@ -155,6 +167,15 @@ function resolveContestedRoll() {
 	var parent = $("#rollModal").attr("data-parent");
 
 	dbPushEvent(new EventContestedResponse(character.name, npc, key, character.getRollModifier(key), character.makeRoll(key), $("#forceRollComment").val(), parent));
+
+	hidePopup();
+}
+
+function resolvePlayerContestedRoll() {
+	var key = $("#rollModal").attr("data-key");
+	var parent = $("#rollModal").attr("data-parent");
+
+	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, key, character.getRollModifier(key), character.makeRoll(key), $("#forceRollComment").val(), parent));
 
 	hidePopup();
 }

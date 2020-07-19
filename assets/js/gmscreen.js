@@ -18,7 +18,7 @@ function initializePage() {
 	var i;
 	var attackSelectors = $("select[name='npcAttackType']");
 	var resistSelectors = $("select[name='npcResist'], select[name='npcWeakness']");
-	var qualitySelectors = $("#contestedStat");
+	var qualitySelectors = $("#contestedStat, #playerKey1, #playerKey2");
 	var bonusSelectors = $("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus'], #rollBonus, #contestedBonus");
 
 	initializeDB();
@@ -257,41 +257,63 @@ function setPlayerActive() {
 
 function makeRollPlain() {
 	var name = $("#rollNPC").val();
-	var bonus = parseInt($("#rollBonus").val());
-	var comment = $("#rollComment");
 
-	dbPushEvent(new EventNPCRoll(nameEncode(name), bonus, internalDieRoll() + bonus, comment.val()));
+	if (name) {
+		var bonus = parseInt($("#rollBonus").val());
+		var comment = $("#rollComment");
 
-	comment.val("");
+		dbPushEvent(new EventNPCRoll(nameEncode(name), bonus, internalDieRoll() + bonus, comment.val()));
+		comment.val("");
+	}
 }
 
 function makeRollContested() {
 	var name = $("#rollNPC").val();
 	var target = $("#rollTarget").val();
-	var bonus = parseInt($("#contestedBonus").val());
-	var stat = $("#contestedStat").val();
-	var comment = $("#rollComment");
 
-	dbPushEvent(new EventContestedRoll(nameEncode(name), nameEncode(target), stat, bonus, internalDieRoll() + bonus, comment.val()));
+	if ((name) && (target)) {
+		var bonus = parseInt($("#contestedBonus").val());
+		var stat = $("#contestedStat").val();
+		var comment = $("#rollComment");
 
-	comment.val("");
+		dbPushEvent(new EventContestedRoll(nameEncode(name), nameEncode(target), stat, bonus, internalDieRoll() + bonus, comment.val()));
+		comment.val("");
+	}
 }
 
 function makeRollAttack() {
 	var npc = $("#rollNPC").prop("selectedIndex");
 	var target = $("#rollTarget").val();
-	var bonus = parseInt(currentSession.npcs[npc].attackBonus);
+
+	if ((npc) && (target)) {
+		var bonus = parseInt(currentSession.npcs[npc].attackBonus);
+		var comment = $("#rollComment");
+
+		dbPushEvent(new EventNPCAttack(currentSession.npcs[npc].name, nameEncode(target), bonus, internalDieRoll() + bonus, comment.val()));
+		comment.val("");
+	}
+}
+
+function startPlayerContestedRoll() {
+	var player1 = $("#playerContested1").val();
+	var player2 = $("#playerContested2").val();
 	var comment = $("#rollComment");
 
-	dbPushEvent(new EventNPCAttack(currentSession.npcs[npc].name, nameEncode(target), bonus, internalDieRoll() + bonus, comment.val()));
+	if ((player1) && (player2) && (player1 != player2)) {
+		var key1 = $("#playerKey1").val();
+		var key2 = $("#playerKey2").val();
 
-	comment.val("");
+		dbPushEvent(new EventPlayerContestedRoll(player1, key1, player2, key2, comment.val()));
+		comment.val("");
+	}
 }
 
 function sendGMComment() {
 	var gmPost = $("#GMPost").val();
 
-	dbPushEvent(new EventGMPost(gmPost));
+	if (gmPost) {
+		dbPushEvent(new EventGMPost(gmPost));
+	}
 }
 
 // Perform a roll in response to a player roll.
@@ -453,7 +475,7 @@ function addPlayerToList(name, index) {
 
 	$("#playerList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.statuses[index].injuryLevel);
 
-	$("#rollTarget").append("<option>" + name + "</option>")
+	$("#rollTarget, #playerContested1, #playerContested2").append("<option>" + name + "</option>")
 }
 
 // Handler for incoming events.
@@ -496,6 +518,7 @@ function addEventDisplay(event) {
 		case "NPCToughness":
 		case "PlayerBusy":
 		case "PlayerToughness":
+		case "RollPlayerContestedSubordinate":
 		case "RollSubordinate":
 					$("#" + event.parent).append(convertEventToHtml(event));
 					break;
@@ -597,7 +620,7 @@ function resetScreenInfo(enableMessages=true) {
 	dispatchMessages = false;
 	characterList = [];
 	$("#printout").empty();
-	$("#rollNPC, #rollTarget").empty();
+	$("#rollNPC, #rollTarget, #playerContested1, #playerContested2").empty();
 	npcList.empty();
 	playerList.empty();
 	eventPane.empty();
@@ -781,6 +804,7 @@ $("#playerList ol").on("click", "a", setPlayerActive);
 $("#rollPlain").on("click", makeRollPlain);
 $("#rollContested").on("click", makeRollContested);
 $("#rollAttack").on("click", makeRollAttack);
+$("#rollPlayerContested").on("click", startPlayerContestedRoll);
 $("#sendComment").on("click", sendGMComment);
 $("#eventPane").on("click", "button[name='rollBonus']", subordinateRollBonus);
 $("#eventPane").on("click", "button[name='rollToughness']", subordinateRollToughness);
