@@ -175,7 +175,7 @@ function calculateTotalPoints() {
 }
 
 function costForNextSkillRank(key, rank) {
-	var skillObj = findItemForKey(key);
+	var skillObj = getQuality(key);
 	var governing = skillObj.governing || "Intelligence";
 	var difficulty = skillObj.difficulty || 0;
 	
@@ -205,24 +205,30 @@ function checkHighlight() {
 	var helpKey = $(this).closest("*[data-key]").attr("data-key");
 
 	if (helpKey) {
-		var item = findItemForKey(helpKey);
-		footer.text(item.description + ((item.difficulty) ? " (" + skillDifficultyNames[item.difficulty] + ")" : ""));
+		var item = getQuality(helpKey);
+		showFooter(item.description + ((item.difficulty) ? " (" + skillDifficultyNames[item.difficulty] + ")" : ""));
+	} else {
+		showFooter(null);
+	}
+}
+
+function descriptionHelper() {
+	var desc = $(this);
+
+	showFooter("This is only a summary.  Please be brief! (" + desc.val().length + "/" + desc.prop("maxlength") + " characters)")
+}
+
+function leaveDescription() {
+	showFooter(null);
+}
+
+function showFooter(message) {
+	if (message) {
+		footer.text(message);
 		footer.addClass("shown");
 	} else {
 		footer.removeClass("shown");
 	}
-}
-
-function findItemForKey (findKey) {
-	for (var i = 0; i < masterQualityList.length; i++) {
-		var findIndex = masterQualityList[i].findIndex(element => element.key == findKey);
-
-		if (findIndex > -1) {
-			return masterQualityList[i][findIndex];
-		}
-	}
-
-	return "";
 }
 
 function showErrorPopup(message) {
@@ -290,6 +296,8 @@ $("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
 $("#errorButton").on("click", hideErrorPopup);
 $("#printout").on("dblclick", copyOutput);
-$("*").on("mouseenter mouseleave", checkHighlight);
+$("textarea[name='charBackground']").on("focus, keydown", descriptionHelper);
+$("textarea[name='charBackground']").on("blur", leaveDescription);
+$("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
 
 initializePage();
