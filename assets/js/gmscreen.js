@@ -295,7 +295,7 @@ function subordinateNPCAttackMiss() {
 	var player = eventDiv.attr("target");
 	var comment = $(this).parent().find("input[name='attackComment']");
 
-	dbPushEvent(new EventNPCAttackResolution(npc, player, false, null, null, comment.val(), eventDiv.attr("id")));
+	dbPushEvent(new EventNPCAttackResolution(npc, player, false, null, null, null, comment.val(), eventDiv.attr("id")));
 
 	comment.val("");
 }
