@@ -629,7 +629,7 @@ function convertEventToHtml(event) {
 		case "PlayerAttack":
 			return "<div id='" + event.id + "' attacker='" + event.player + "' target='" + event.target + "' data-key='" + event.key + "'>" +
 				"<div>" +
-					"<p>" + event.player + " attacks (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.target + "!</p>" +
+					"<p>" + event.player + " attacks (" + getQuality(event.key).name + ", " + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.target + "!</p>" +
 					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
