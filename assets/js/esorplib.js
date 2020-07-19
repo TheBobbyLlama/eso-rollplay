@@ -12,7 +12,7 @@ class QualityTemplate {
 	constructor(myName, myDesc, myMin, myMax) {
 		this.name = myName;
 		this.description = myDesc,
-		this.key = myName.replace(/[():\- ]/g, "");
+		this.key = myName.replace(/[\s\W]/g, "");
 		this.min = myMin;
 		this.max = myMax;
 	}
