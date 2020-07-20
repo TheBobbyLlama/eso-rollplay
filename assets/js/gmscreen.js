@@ -397,6 +397,23 @@ function subordinatePlayerAttackMiss() {
 	comment.val("");
 }
 
+function subordinateSuccess() {
+	sendSubordinateResult(this, true);
+}
+
+function subordinateFailure() {
+	sendSubordinateResult(this, false);
+}
+
+function sendSubordinateResult(target, pass) {
+	var eventDiv = $(target).closest("div[id]");
+	var comment = $(target).closest("div.gmExtra").find("input[name='subordinateComment']");
+
+	dbPushEvent(new EventRollSubordinateResolution(pass, comment.val(), eventDiv.attr("id")));
+
+	comment.val("");
+}
+
 // Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
 function confirmCreateSession() {
 	hidePopup();
@@ -490,6 +507,7 @@ function addEventDisplay(event) {
 		case "NPCToughness":
 		case "PlayerDamage":
 		case "RollContestedSubordinate":
+		case "RollSubordinateResolution":
 			var holder = $("#" + event.parent);
 			holder.find("button, input, select").attr("disabled", "true");
 			holder.append(convertEventToHtml(event));
@@ -519,9 +537,24 @@ function addEventDisplay(event) {
 		case "PlayerBusy":
 		case "PlayerToughness":
 		case "RollPlayerContestedSubordinate":
+			("#" + event.parent).append(convertEventToHtml(event));
+			break;
 		case "RollSubordinate":
-					$("#" + event.parent).append(convertEventToHtml(event));
-					break;
+				var holder = $("#" + event.parent);
+				holder.append(convertEventToHtml(event));
+
+				holder.append(
+					"<div class='gmExtra'>" +
+						"<div>" +
+							"<div>" +
+								"<button type='button' name='subordinateSuccess'>Success!</button>" +
+								"<button type='button' name='subordinateFailure'>Failure!</button>" +
+							"</div>" +
+						"</div>" +
+						"<input type='text' name='subordinateComment' placeholder='Comment' maxlength='100'></input>" +
+					"</div>"
+				);
+				break;
 		case "PlayerConnect":
 		case "PlayerDisconnect":
 			if (dispatchMessages) {
@@ -812,6 +845,8 @@ $("#eventPane").on("click", "button[name='npcAttackHit']", subordinateNPCAttackH
 $("#eventPane").on("click", "button[name='npcAttackMiss']", subordinateNPCAttackMiss);
 $("#eventPane").on("click", "button[name='playerAttackHit']", subordinatePlayerAttackHit);
 $("#eventPane").on("click", "button[name='playerAttackMiss']", subordinatePlayerAttackMiss);
+$("#eventPane").on("click", "button[name='subordinateSuccess']", subordinateSuccess);
+$("#eventPane").on("click", "button[name='subordinateFailure']", subordinateFailure);
 $("#printout").on("dblclick", copyOutput);
 $("#printout").on("click", "a", launchProfileLink);
 $("#playerSearchButton").on("click", performPlayerSearch);

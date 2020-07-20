@@ -728,6 +728,11 @@ function convertEventToHtml(event) {
 					"Result: " + event.result +
 				"</div>" +
 			"</div>";
+		case "RollSubordinateResolution":
+				return "<div class='playersubordinate'>" +
+					"<span>The roll " + ((event.success) ? "succeeds" : "fails") + "!</span>" +
+					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
+					"</div>";
 		case "RollPlayerContested":
 			return "<div id='" + event.id + "' countMe><span>" + event.player1 + " rolls " + event.key1 + " against " + event.player2 + "'s " + event.key2 + "!</span></div>";
 		case "RollPlayerContestedSubordinate":
@@ -851,6 +856,15 @@ class EventRollSubordinate extends SharedEvent {
 		this.rollType = myType;
 		this.modifier = myMod;
 		this.result = myResult;
+		this.comment = nameEncode(myComment);
+		this.parent = parentId;
+	}
+}
+
+class EventRollSubordinateResolution extends SharedEvent {
+	constructor(pass, myComment, parentId) {
+		super("RollSubordinateResolution");
+		this.success = pass;
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
 	}

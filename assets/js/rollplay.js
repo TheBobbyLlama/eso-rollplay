@@ -131,6 +131,7 @@ function addEventDisplay(event) {
 			break;
 		case "PlayerDamage":
 		case "RollPlayerContestedSubordinate":
+		case "RollSubordinateResolution":
 				$("#" + event.parent).append(convertEventToHtml(event));
 		case "PlayerToughness":
 				eventPane.find("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
