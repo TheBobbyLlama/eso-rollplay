@@ -22,6 +22,8 @@
 				</div>
 			</form>
 			<div id="printout" title="Double click to copy character sheet."></div>
+			<h3>Party</h3>
+			<ol id="charList"></ol>
 		</section>
 		<div id="rollingSection">
 			<section id="readOut">
@@ -29,23 +31,31 @@
 				<div id="eventPane"></div>
 			</section>
 			<section>
-				<h3>Make a Roll!</h3>
-				<div id="rollControls">
-					<div>
-						<p>
-							<label for="rollSelect">Roll using</label>
-							<select id="rollSelect" name="rollSelect"></select>
-						</p>
-						<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>					
+				<div class="flexMe">
+					<span>
+					<h3>Make a Roll!</h3>
+					<div id="rollControls">
+						<div>
+							<p>
+								<label for="rollSelect">Roll using</label>
+								<select id="rollSelect" name="rollSelect"></select>
+							</p>
+							<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>					
+						</div>
+						<div>
+							<div>
+								<button id="rollExecute" type="button">Roll!</button>	
+							</div>
+							<div>
+								<button id="attackExecute" type="button">Attack!</button>
+								<select id="rollTarget"></select>
+							</div>
+						</div>
 					</div>
+					</span>
 					<div>
-						<div>
-							<button id="rollExecute" type="button">Roll!</button>	
-						</div>
-						<div>
-							<button id="attackExecute" type="button">Attack!</button>
-							<select id="rollTarget"></select>
-						</div>
+						<h3>Enemies</h3>
+						<ol id="npcList"></ol>
 					</div>
 				</div>
 				<div>
@@ -73,6 +83,10 @@
 			<p id="forceRollGMComment"></p>
 			<input type="text" id="forceRollComment" placeholder='Comment' maxlength="100"></input>
 			<button id="makeForceRoll" type="button">Roll!</button>
+		</div>
+		<div id="profileModal">
+			<iframe></iframe>
+			<button id="profileDone" type="button">Done</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

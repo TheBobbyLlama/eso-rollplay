@@ -783,7 +783,7 @@ function postSessionUpdate() {
 function launchProfileLink(event) {
 	event.preventDefault();
 
-	showProfilePopoup($(this).attr("href"));
+	showProfilePopup($(this).attr("href"));
 }
 
 function showConfirmPopup(message, callback) {
@@ -807,7 +807,7 @@ function showPlayerSearchPopup() {
 	$("#playerSearchModal").addClass("show");
 }
 
-function showProfilePopoup(link) {
+function showProfilePopup(link) {
 	$("#modalBG").addClass("show");
 	$("#profileModal").addClass("show");
 	$("#profileModal iframe").attr("src", link);

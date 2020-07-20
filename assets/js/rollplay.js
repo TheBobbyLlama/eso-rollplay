@@ -1,3 +1,5 @@
+const statusClasses = [ "statusUnhurt", "statusInjured", "statusCritical", "statusIncapacitated", "statusHidden" ];
+
 var character = new CharacterSheet();
 var currentSession;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
@@ -77,8 +79,43 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
+function addPlayerToList(name) {
+	$("#charList").append("<li class='" + statusClasses[0] + "' title='Click to view profile.'>" + name + "</li>");
+}
+
+function addNPCToList(name) {
+	$("#npcList").append("<li class='" + statusClasses[0] + "'>" + name + "</li>");
+}
+
+function setPlayerStatus(index, status) {
+	var pElement = $("#charList li:nth-child(" + (index + 1) + ")");
+
+	for (var i = 0; i < statusClasses.length; i++) {
+		pElement.toggleClass(statusClasses[i], (i == status));
+	}
+}
+
+function setNPCStatus(index, status) {
+	var pElement = $("#npcList li:nth-child(" + (index + 1) + ")");
+
+	for (var i = 0; i < statusClasses.length; i++) {
+		pElement.toggleClass(statusClasses[i], (i == status));
+	}
+}
+
 function addEventDisplay(event) {
 	switch (event.eventType) {
+		case "AddNPC":
+			if (dispatchMessages) {
+				currentSession.npcs.push(new NPC(name));
+				addNPCToList(event.name);
+			}
+		case "AddPlayer":
+			if (dispatchMessages) {
+				currentSession.characters.push(event.player);
+				addPlayerToList(event.player);
+			}
+			break;
 		case "Close":
 			eventPane[0].textContent = "";
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
@@ -88,6 +125,13 @@ function addEventDisplay(event) {
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
 			eventPane.append(convertEventToHtml(event));
 			dbClearEventSystem();
+		case "InjuryPlayer":
+			if (dispatchMessages) {
+				setPlayerStatus(currentSession.characters.indexOf(event.player), event.status);
+			}
+
+			eventPane.append(convertEventToHtml(event));
+			break;
 		case "NPCAttack":
 			if ((dispatchMessages) && (event.player == character.name)) {
 				forcePlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, event.name, "Defense", "", event.id, resolveNPCAttack);
@@ -114,8 +158,11 @@ function addEventDisplay(event) {
 								rollOptions[i].remove();
 							}
 						}
-						//$("#rollTarget option[value='" + event.name + "']").remove();
 					}
+
+					console.log(currentSession.npcs.findIndex(element => element.name == event.name));
+
+					setNPCStatus(currentSession.npcs.findIndex(element => element.name == event.name), event.status);
 				}
 
 				eventPane.append(convertEventToHtml(event));
@@ -237,6 +284,13 @@ function sendDisconnectEvent() {
 	}
 }
 
+function launchCharacterProfile(event) {
+	event.preventDefault();
+	window.getSelection().removeAllRanges();
+
+	showProfilePopup($(this).text());
+}
+
 function loadChar() {
 	event.preventDefault();
 	var tmpName = $("input[name='charName']").val();
@@ -290,14 +344,17 @@ function sessionLoaded(loadMe) {
 	if (result) {
 		var i;
 		var dummy;
-		eventPane.empty();;
+		eventPane.empty();
+		$("#charList").empty();
 		currentSession = result;
 		Object.setPrototypeOf(currentSession, new RoleplaySession());
 
 		dummy = new CharacterStatus("");
 
 		for (i = 0; i < currentSession.statuses.length; i++) {
+			addPlayerToList(currentSession.characters[i]);
 			Object.setPrototypeOf(currentSession.statuses[i], dummy);
+			setPlayerStatus(i, currentSession.statuses[i].injuryLevel);
 		}
 
 		dummy = new NPC();
@@ -308,6 +365,9 @@ function sessionLoaded(loadMe) {
 			if (currentSession.npcs[i].status < INJURY_LEVEL_DISPLAY.length - 1) {
 				$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
 			}
+
+			addNPCToList(currentSession.npcs[i].name);
+			setNPCStatus(i, currentSession.npcs[i].status);
 		}
 
 		dispatchMessages = false;
@@ -378,6 +438,12 @@ function forcePlayerRoll(message, comment, npc, key, attackType, parent, callbac
 	}
 }
 
+function showProfilePopup(name) {
+	$("#modalBG").addClass("show");
+	$("#profileModal").addClass("show");
+	$("#profileModal iframe").attr("src", "profile.html?character=" + name + "&minimal=true");
+}
+
 function hidePopup() {
 	$("#modalBG").removeClass("show");
 	$("#modalBG > div").removeClass("show");
@@ -386,11 +452,12 @@ function hidePopup() {
 $(window).on("online", sendDisconnectEvent);
 $(window).on("offline, unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
+$("#charList").on("click", "li", launchCharacterProfile);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);
-$("#errorButton, #sessionSelectionCancel").on("click", hidePopup);
+$("#errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);
 
 initializePage();

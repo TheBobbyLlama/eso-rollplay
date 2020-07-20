@@ -12,7 +12,7 @@
 	display: grid;
 }
 
-#charInfo h3 {
+#charInfo #printout h3 {
 	text-align: left;
 }
 
@@ -30,6 +30,15 @@
 	grid-column: 1 / span 2;
 	padding: 4px;
 	text-align: center;
+}
+
+#charList, #npcList {
+	margin: 0 auto;
+	max-width: 75%;
+}
+
+#charList li {
+	cursor: pointer;
 }
 
 #errorModal, #rollModal {
@@ -91,8 +100,33 @@
 	width: 100%;
 }
 
+.flexMe {
+	align-items: flex-start;
+	justify-content: space-around;
+}
+
 .gmExtra, .gmInfo {
 	background-color: maroon !important;
+}
+
+.statusUnhurt {
+	color: #c0ffc0;
+}
+
+.statusInjured {
+	color: #fff0c0;
+}
+
+.statusCritical {
+	color: #ffc0b0;
+}
+
+.statusIncapacitated {
+	color: #808090;
+}
+
+.statusHidden {
+	display: none;
 }
 
 @media screen and (max-width: 700px) {
@@ -112,6 +146,10 @@
 }
 
 @media screen and (max-width: 575px) {
+	li {
+		height: 24px;
+	}
+
 	#readOut {
 		padding: 10px;
 	}
@@ -128,5 +166,9 @@
 
 	#rollControls > div > div {
 		margin: 4px 0px 4px 4px !important;
+	}
+
+	.flexMe *:last-child {
+		width: 100%;
 	}
 }

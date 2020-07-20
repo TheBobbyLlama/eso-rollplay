@@ -769,7 +769,7 @@ class SharedEvent {
 	}
 }
 
-const GM_EVENTS = [ "AddNPC", "AddPlayer", "NPCDefense", "NPCRoll", "NPCToughness", "PlayerBusy", "PlayerConnect", "PlayerDisconnect", "RollSubordinate" ];
+const GM_EVENTS = [ "AddNPC", "NPCDefense", "NPCRoll", "NPCToughness", "PlayerBusy", "PlayerConnect", "PlayerDisconnect", "RollSubordinate" ];
 
 // ADMINISTRATIVE EVENTS
 class EventStart extends SharedEvent {
