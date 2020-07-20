@@ -233,6 +233,7 @@ function showFooter(message) {
 
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
+	$("#errorModal").addClass("show");
 	$("#errorText").text(message);
 }
 
@@ -258,6 +259,7 @@ function loadChar(event) {
 	event.preventDefault();
 
 	if ((!character.name) || (!character.player)) {
+		console.log("bad");
 		showErrorPopup("Please enter a character name and a player name.");
 		return;
 	}
