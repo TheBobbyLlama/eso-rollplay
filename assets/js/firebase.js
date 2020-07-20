@@ -139,18 +139,18 @@ function dbLoadSessionByParticipant(participant, handler) {
 			return;
 		}
 
+		var found = [];
 		var results = Object.entries(returnSet.val());
 
 		for (var i = 0; i < results.length; i ++) {
 			var tryMe = results[i][1];
 
 			if ((!tryMe.inactive) && (tryMe.characters) && (tryMe.characters.indexOf(participant) > -1)) {
-				handler(tryMe);
-				return;
+				found.push(tryMe.owner);
 			}
 		}
 
-		handler(null);
+		handler(found);
 	});
 }
 

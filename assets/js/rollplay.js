@@ -82,7 +82,7 @@ function addEventDisplay(event) {
 		case "Close":
 			eventPane[0].textContent = "";
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
-			dbLoadSessionByParticipant(character.name, sessionLoaded);
+			dbLoadSessionByParticipant(character.name, loadSessionList);
 			break;
 		case "End":
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
@@ -262,7 +262,7 @@ function characterLoaded(loadMe) {
 		resetRollSelect();
 
 		eventPane.empty();
-		dbLoadSessionByParticipant(character.name, sessionLoaded);
+		dbLoadSessionByParticipant(character.name, loadSessionList);
 		
 	} else {
 		showErrorPopup("Character not found.");
@@ -271,12 +271,27 @@ function characterLoaded(loadMe) {
 	}
 }
 
+function loadSessionList(result) {
+	switch (result.length) {
+		case 0:
+			showErrorPopup("This character is not part of an active roleplaying session.  Check with your Game Master.");
+			break;
+		case 1:
+			dbLoadSessionByOwner(result[0], sessionLoaded);
+			break;
+		default:
+			showSessionSelection(result);
+	}
+}
+
 function sessionLoaded(loadMe) {
-	if (loadMe) {
+	var result = loadMe.val();
+
+	if (result) {
 		var i;
 		var dummy;
 		eventPane.empty();;
-		currentSession = loadMe;
+		currentSession = result;
 		Object.setPrototypeOf(currentSession, new RoleplaySession());
 
 		dummy = new CharacterStatus("");
@@ -299,7 +314,7 @@ function sessionLoaded(loadMe) {
 		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
 		dbBindCallbackToEventSystem("child_added", eventAddedCallback);
 	} else {
-		showErrorPopup("This character is not part of an active roleplaying session.  Check with your Game Master.");
+		showErrorPopup("Your session failed to load.");
 	}
 }
 
@@ -320,6 +335,22 @@ function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
 	$("#errorModal").addClass("show");
 	$("#errorText").text(message);
+}
+
+function showSessionSelection(sessionList) {
+	$("#sessionList").empty();
+
+	for (var i = 0; i < sessionList.length; i++) {
+		$("#sessionList").append("<p><button type='button' value='" + sessionList[i] + "'>" + sessionList[i] + "</button></p>");
+	}
+
+	$("#modalBG").addClass("show");
+	$("#sessionModal").addClass("show");
+}
+
+function performSessionLoad() {
+	hidePopup();
+	dbLoadSessionByOwner($(this).val(), sessionLoaded);
 }
 
 function forcePlayerRoll(message, comment, npc, key, attackType, parent, callback) {
@@ -359,6 +390,7 @@ $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
-$("#errorButton").on("click", hidePopup);
+$("#sessionList").on("click", "button", performSessionLoad);
+$("#errorButton, #sessionSelectionCancel").on("click", hidePopup);
 
 initializePage();
