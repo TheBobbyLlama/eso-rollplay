@@ -109,7 +109,6 @@ function updateCharacterSheet() {
 
 		for(var i = 0; i < workingList.length; i++) {
 			var tmpVal;
-			$("div[data-key='" + workingList[i].key + "'] span[name='curValue']").text(character.getItem(workingList[i].key));
 
 			if (attributes.find(element => element.key == workingList[i].key)) {
 				tmpVal = character.getItem(workingList[i].key) - character.getItem(workingList[i].key, true);
@@ -128,9 +127,18 @@ function updateCharacterSheet() {
 				}
 
 				tmpVal = character.getItem(workingList[i].key);
+
+				// Correct value overflows.
+				if (tmpVal > 10) {
+					character.skills[workingList[i].key] = 10 - character.getItem(workingList[i].key, true);
+					tmpVal = 10;
+				}
+
 				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("min", character.getItem(workingList[i].key, true)).val(tmpVal);
 				$("div[data-key='" + workingList[i].key + "'] label[for='" + workingList[i].key + "']").attr("class", costClass);
 			}
+
+			$("div[data-key='" + workingList[i].key + "'] span[name='curValue']").text(character.getItem(workingList[i].key));
 		}
 	}
 
@@ -231,6 +239,11 @@ function showFooter(message) {
 	}
 }
 
+function showHelpPopup() {
+	$("#modalBG").addClass("show");
+	$("#helpModal").addClass("show");
+}
+
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
 	$("#errorModal").addClass("show");
@@ -291,6 +304,7 @@ function descriptionLoaded(loadMe) {
 	}
 }
 
+$("#buttonHelp").on("click", showHelpPopup);
 $("input[name='charName']").on("change", changeName);
 $("input[name='charPlayer']").on("change", changePlayer);
 $("select[name='charRace']").on("change", changeRace);
@@ -300,7 +314,7 @@ $("select[name='charClass']").on("change", changeClass);
 $("#saveChar").on("click", saveChar);
 $("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
-$("#errorButton").on("click", hideErrorPopup);
+$("#errorButton, #helpDone").on("click", hideErrorPopup);
 $("#printout").on("dblclick", copyOutput);
 $("textarea[name='charBackground']").on("focus, keydown", descriptionHelper);
 $("textarea[name='charBackground']").on("blur", leaveDescription);

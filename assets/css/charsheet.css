@@ -82,6 +82,17 @@ section > div[id] {
 	flex-basis: 500px;
 }
 
+#helpPanel {
+	background-color: #404040;
+	border-bottom: solid 1px #202020;
+	border-right: solid 1px #202020;
+	border-bottom-right-radius: 4px;
+	left: 0;
+	padding: 2px 4px 4px 2px;
+	position: fixed;
+	top: 0;
+}
+
 #printout {
 	margin: 20px;
 }
