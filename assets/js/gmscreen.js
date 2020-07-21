@@ -122,7 +122,7 @@ function performPlayerSearch() {
 
 	if (dbSanitize(name)) {
 		if (name.replace(/\s/g, "").toLowerCase() == "fuckingwaffles") {
-			name = "1337vv4ff135";
+			name = "l337vv4ff135";
 		}
 
 		dbSearchCharacterByPlayerName(name, populatePlayerSearch);

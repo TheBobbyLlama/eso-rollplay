@@ -566,17 +566,17 @@ function convertEventToHtml(event) {
 		case "NPCStatus":
 			if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
 				if (event.status > 0) {
-					return "<div countMe><span>" + event.name + " appears!  It is " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+					return "<div><span>" + event.name + " appears!  It is " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
 				} else {
-					return "<div countMe><span>" + event.name + " appears!</span></div>";
+					return "<div><span>" + event.name + " appears!</span></div>";
 				}
 			} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
-				return "<div countMe><span>" + event.name + " disappears!</span></div>";
+				return "<div><span>" + event.name + " disappears!</span></div>";
 			} else {
-				return "<div countMe><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+				return "<div><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
 			}
 		case "InjuryPlayer":
-			return "<div countMe><span>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+			return "<div><span>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
 		case "NPCAttack":
 			return "<div class='gmInfo' id='" + event.id + "' attacker='" + event.name + "' target='" + event.player + "' countMe>" +
 				"<div>" +
