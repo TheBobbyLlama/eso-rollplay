@@ -285,7 +285,9 @@ function makeRollAttack() {
 	var npc = $("#rollNPC").prop("selectedIndex");
 	var target = $("#rollTarget").val();
 
-	if ((npc) && (target)) {
+	console.log(npc, target);
+
+	if ((npc > -1) && (target)) {
 		var bonus = parseInt(currentSession.npcs[npc].attackBonus);
 		var comment = $("#rollComment");
 
@@ -537,7 +539,7 @@ function addEventDisplay(event) {
 		case "PlayerBusy":
 		case "PlayerToughness":
 		case "RollPlayerContestedSubordinate":
-			("#" + event.parent).append(convertEventToHtml(event));
+			$("#" + event.parent).append(convertEventToHtml(event));
 			break;
 		case "RollSubordinate":
 				var holder = $("#" + event.parent);
