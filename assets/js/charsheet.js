@@ -252,7 +252,11 @@ function saveChar() {
 		return;
 	}
 
-	dbSaveCharacter(character, $("textarea[name='charBackground']").val());
+	dbSaveCharacter(character, $("textarea[name='charBackground']").val(), charSaveSuccess, showErrorPopup);
+}
+
+function charSaveSuccess() {
+	showFooter("Character saved successfully!");
 }
 
 function loadChar(event) {

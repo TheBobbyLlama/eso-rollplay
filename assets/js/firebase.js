@@ -72,10 +72,27 @@ function dbSanitize(input) {
 	return nameDecode(input).replace(/[\s\W]/g, "").toLowerCase();
 }
 
-function dbSaveCharacter(saveMe, description) {
+function dbSaveCharacter(saveMe, description, successCallback = undefined, failureCallback = undefined) {
 	if ((saveMe.name) && (saveMe.player)) {
-		database.ref("characters/" + dbSanitize(saveMe.name)).set(saveMe);
-		database.ref("descriptions/" + dbSanitize(saveMe.name)).set(description);
+		database.ref("characters/" + dbSanitize(saveMe.name)).set(saveMe)
+			.then(function() {
+				// Yay?
+			}).catch(function(error) {
+				if (failureCallback) {
+					failureCallback(error);
+				}
+			}
+		);
+
+		database.ref("descriptions/" + dbSanitize(saveMe.name)).set(description)
+			.then(function() {
+				// Yay?
+			}).catch(function(error) {
+				if (failureCallback) {
+					failureCallback(error);
+				}
+			}
+		);
 		
 		database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).once("value").then(function(loadMe) {
 			var result = loadMe.val();
@@ -93,6 +110,12 @@ function dbSaveCharacter(saveMe, description) {
 				};
 
 				database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).set(newAccount);
+			}
+
+			successCallback();
+		}).catch(function(error) {
+			if (failureCallback) {
+				failureCallback(error);
 			}
 		});
 	}
