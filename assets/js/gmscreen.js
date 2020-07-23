@@ -285,8 +285,6 @@ function makeRollAttack() {
 	var npc = $("#rollNPC").prop("selectedIndex");
 	var target = $("#rollTarget").val();
 
-	console.log(npc, target);
-
 	if ((npc > -1) && (target)) {
 		var bonus = parseInt(currentSession.npcs[npc].attackBonus);
 		var comment = $("#rollComment");

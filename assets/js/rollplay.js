@@ -108,8 +108,12 @@ function addEventDisplay(event) {
 		case "AddNPC":
 			if (dispatchMessages) {
 				currentSession.npcs.push(new NPC(name));
-				addNPCToList(event.name);
+
+				if (event.status < INJURY_LEVEL_DISPLAY.length - 1) {
+					addNPCToList(event.name);
+				}
 			}
+			break;
 		case "AddPlayer":
 			if (dispatchMessages) {
 				currentSession.characters.push(event.player);
@@ -150,6 +154,7 @@ function addEventDisplay(event) {
 				if (dispatchMessages) {
 					if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
 						$("#rollTarget").append("<option>" + event.name + "</option>");
+						addNPCToList(event.name);
 					} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
 						var rollOptions = $("#rollTarget").children();
 
