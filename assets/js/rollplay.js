@@ -84,7 +84,9 @@ function addPlayerToList(name) {
 }
 
 function addNPCToList(name) {
-	$("#npcList").append("<li class='" + statusClasses[0] + "'>" + name + "</li>");
+	var npcList = $("#npcList")
+	npcList.append("<li class='" + statusClasses[0] + "'>" + name + "</li>");
+	setNPCStatus(npcList.children().length - 1, currentSession.npcs[npcList.children().length - 1].status);
 }
 
 function setPlayerStatus(index, status) {
@@ -107,11 +109,8 @@ function addEventDisplay(event) {
 	switch (event.eventType) {
 		case "AddNPC":
 			if (dispatchMessages) {
-				currentSession.npcs.push(new NPC(name));
-
-				if (event.status < INJURY_LEVEL_DISPLAY.length - 1) {
-					addNPCToList(event.name);
-				}
+				currentSession.npcs.push(new NPC(event.name));
+				addNPCToList(event.name);
 			}
 			break;
 		case "AddPlayer":
@@ -154,7 +153,6 @@ function addEventDisplay(event) {
 				if (dispatchMessages) {
 					if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
 						$("#rollTarget").append("<option>" + event.name + "</option>");
-						addNPCToList(event.name);
 					} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
 						var rollOptions = $("#rollTarget").children();
 
@@ -164,8 +162,6 @@ function addEventDisplay(event) {
 							}
 						}
 					}
-
-					console.log(currentSession.npcs.findIndex(element => element.name == event.name));
 
 					setNPCStatus(currentSession.npcs.findIndex(element => element.name == event.name), event.status);
 				}
@@ -350,7 +346,7 @@ function sessionLoaded(loadMe) {
 		var i;
 		var dummy;
 		eventPane.empty();
-		$("#charList").empty();
+		$("#charList, #npcList").empty();
 		currentSession = result;
 		Object.setPrototypeOf(currentSession, new RoleplaySession());
 

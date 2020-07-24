@@ -110,15 +110,15 @@
 }
 
 .statusUnhurt {
-	color: var(common-green);
+	color: var(--common-green);
 }
 
 .statusInjured {
-	color: var(common-gold);
+	color: var(--common-gold);
 }
 
 .statusCritical {
-	color: var(common-red);
+	color: var(--common-red);
 }
 
 .statusIncapacitated {
