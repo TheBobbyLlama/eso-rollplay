@@ -1,3 +1,26 @@
+:root {
+	--page-background: #202020;
+	--inset-background: #101010;
+	--content-color: white;
+	--content-background: #404040;
+	--content-border: #202020;
+	--subordinate-text: #e0e0e0;
+	--comment-background: #383838;
+	--gm-color: silver;
+	--gm-background: #303030;
+	--important-background: #606060;
+	--printout-color: black;
+	--printout-background: silver;
+	--link-color: #80c0ff;
+	--link-visited: #5090e0;
+	--common-green: #c0ffb0;
+	--common-gold: #fff0c0;
+	--common-red: #ffc0b0;
+	--common-alert: #ff2000;
+
+	--nav-width: 160px;
+}
+
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -9,17 +32,17 @@ li {
 }
 
 body {
-	background-color: #202020;
-	color: white;
+	background-color: var(--page-background);
+	color: var(--content-color);
 	text-align: center;
 }
 
 a:link {
-	color: #80c0ff;
+	color: var(--link-color);
 }
 
 a:visited {
-	color: #5090e0;
+	color: var(--link-visited);
 }
 
 button {
@@ -40,7 +63,7 @@ button:hover {
 
 
 section {
-	background-color: #404040;
+	background-color: var(--content-background);
 	border-radius: 8px;
 	margin: 10px;
 	padding: 10px 20px;
@@ -77,8 +100,8 @@ ul {
 }
 
 #modalBG > div {
-	background-color: #404040;
-	border: solid 2px #202020;
+	background-color: var(--content-background);
+	border: solid 2px var(--content-border);
 	border-radius: 10px;
 	display: none;
 	max-width: 400px;
@@ -125,10 +148,10 @@ ul {
 }
 
 #eventPane > div, #eventPane .playersubordinate {
-	background-color: #404040;
-	border: solid 1px #202020;
+	background-color: var(--content-background);
+	border: solid 1px var(--content-border);
 	border-radius: 4px;
-	color: #e0e0e0;
+	color: var(--subordinate-text);
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
@@ -160,8 +183,8 @@ ul {
 }
 
 #eventPane .gmControls, #eventPane .gmInfo, #eventPane .gmExtra {
-	background-color: #303030;
-	color: silver;
+	background-color: var(--gm-background);
+	color: var(--gm-color);
 }
 
 #eventPane .gmControls, #eventPane .gmExtra {
@@ -173,7 +196,7 @@ ul {
 
 #eventPane .gmControls {
 	align-items: center;
-	border: solid 1px #202020;
+	border: solid 1px var(--content-border);
 	display: flex;
 	flex-wrap: wrap;
 	padding: 2px 8px;
@@ -194,7 +217,7 @@ ul {
 }
 
 #eventPane .gmExtra > div > div {
-	border: solid 1px #202020;
+	border: solid 1px var(--content-border);
 	border-radius: 4px;
 	margin: 4px 4px;
 	padding: 2px 8px;
@@ -222,7 +245,7 @@ ul {
 }
 
 #eventPane .rollComment {
-	background-color: #383838;
+	background-color: var(--comment-background);
 	border-radius: 4px;
 	font-style: italic;
 	padding: 2px 8px;
@@ -238,7 +261,7 @@ ul {
 }
 
 #eventPane .gmComment {
-	background-color: #606060;
+	background-color: var(--important-background);
 	display: block;
 }
 
@@ -254,11 +277,11 @@ ul {
 }
 
 .damageResist {
-	color: #c0ffb0;
+	color: var(--common-green);
 }
 
 .damageWeakness {
-	color: #ffc0b0;
+	color: var(--common-red);
 }
 
 .flexMe {
@@ -268,7 +291,7 @@ ul {
 }
 
 .redFlag {
-	color: red;
+	color: var(--common-alert);
 }
 
 @media screen and (max-width: 980px) {

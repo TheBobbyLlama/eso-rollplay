@@ -1,9 +1,6 @@
 
 body {
-	background-color: #202020;
-	color: white;
 	margin-bottom: 40px;
-	text-align: center;
 }
 
 div[data-key] {
@@ -11,8 +8,8 @@ div[data-key] {
 }
 
 footer {
-	background-color: #404040;
-	border-top: solid 2px #202020;
+	background-color: var(--content-background);
+	border-top: solid 2px var(--content-border);
 	bottom: -60px;
 	height: 40px;
 	left: 0;
@@ -27,12 +24,7 @@ footer.shown {
 }
 
 section {
-	background-color: #404040;
-	border-radius: 8px;
 	display: inline-block;
-	margin: 10px;
-	padding: 10px 20px;
-	text-align: left;
 }
 
 section h3 {
@@ -67,7 +59,7 @@ section > div[id] {
 
 #main {
 	align-items: flex-start;
-	background-color: #101010;
+	background-color: var(--inset-background);
 	border-radius: 10px;
 	display: flex;
 	flex-wrap: wrap;
@@ -83,9 +75,9 @@ section > div[id] {
 }
 
 #helpPanel {
-	background-color: #404040;
-	border-bottom: solid 1px #202020;
-	border-right: solid 1px #202020;
+	background-color: var(--content-background);
+	border-bottom: solid 1px var(--content-border);
+	border-right: solid 1px var(--content-border);
 	border-bottom-right-radius: 4px;
 	left: 0;
 	padding: 2px 4px 4px 2px;
@@ -98,13 +90,13 @@ section > div[id] {
 }
 
 .costIncreased {
-	color: #fff0c0;
+	color: var(--common-gold);
 }
 
 .costHigh {
-	color: #ffc0b0;
+	color: var(--common-red);
 }
 
 .costExtreme {
-	color: #ff2000;
+	color: var(--common-alert);
 }

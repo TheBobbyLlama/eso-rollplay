@@ -36,10 +36,10 @@ h3 {
 }
 
 #npcManagement, #playerManagement {
-	background-color: #606060;
+	background-color: var(--important-background);
 	border-radius: 8px;
 	display: flex;
-	padding:10px;
+	padding: 10px;
 }
 
 #npcManagement > div:first-child, #playerManagement > div:first-child {
@@ -52,9 +52,9 @@ h3 {
 }
 
 #npcManagement > div:last-child {
-	background-color: silver;
+	background-color: var(--printout-background);
 	border-radius: 8px;
-	color: black;
+	color: var(--printout-color);
 	padding: 20px;
 	text-align: left;
 }
@@ -114,7 +114,7 @@ h3 {
 
 /* Ugly af. */
 #rollPanel > div > div:not(:first-child), #rollPanel > div > div > div > div {
-	border: solid 1px #202020;
+	border: solid 1px var(--content-border);
 	border-radius: 4px;
 	padding: 2px 8px;
 }

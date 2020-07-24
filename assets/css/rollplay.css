@@ -46,7 +46,7 @@
 }
 
 #forceRollGMComment {
-	background-color: #383838;
+	background-color: var(--comment-background);
 	border-radius: 4px;
 	display: none;
 	font-style: italic;
@@ -79,14 +79,14 @@
 
 #rollControls {
 	align-items: center;
-	border: solid 1px #202020;
+	border: solid 1px var(--content-border);
 	border-radius: 4px;
 	display: flex;
 	padding: 2px 8px;
 }
 
 #rollControls > div:first-child {
-	border: solid 1px #202020;
+	border: solid 1px var(--content-border);
 	border-radius: 4px;
 	padding: 8px;
 }
@@ -110,15 +110,15 @@
 }
 
 .statusUnhurt {
-	color: #c0ffc0;
+	color: var(common-green);
 }
 
 .statusInjured {
-	color: #fff0c0;
+	color: var(common-gold);
 }
 
 .statusCritical {
-	color: #ffc0b0;
+	color: var(common-red);
 }
 
 .statusIncapacitated {
