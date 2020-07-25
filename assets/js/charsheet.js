@@ -129,9 +129,9 @@ function updateCharacterSheet() {
 				tmpVal = character.getItem(workingList[i].key);
 
 				// Correct value overflows.
-				if (tmpVal > 10) {
-					character.skills[workingList[i].key] = 10 - character.getItem(workingList[i].key, true);
-					tmpVal = 10;
+				if (tmpVal > workingList[i].max) {
+					character.skills[workingList[i].key] = workingList[i].max - character.getItem(workingList[i].key, true);
+					tmpVal = workingList[i].max;
 				}
 
 				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("min", character.getItem(workingList[i].key, true)).val(tmpVal);
@@ -192,7 +192,7 @@ function costForNextSkillRank(key, rank) {
 	if (rank < 0) {
 		return 0;
 	} else {
-		return (1 << Math.max(Math.floor((rank - character.getAttributeModifier(governing) + difficulty) / 4), 0));
+		return (1 << Math.max(Math.floor((rank - character.getAttributeSkillModifier(governing) + difficulty) / 3), 0));
 	}
 	
 }

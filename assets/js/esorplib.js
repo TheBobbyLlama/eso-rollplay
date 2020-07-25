@@ -272,7 +272,7 @@ class CharacterSheet {
 		return result;
 	}
 
-	getAttributeModifier(key) {
+	getAttributeSkillModifier(key) {
 		var attrVal = this.getAttribute(key);
 		var result = attrVal - 10;
 	
@@ -281,6 +281,10 @@ class CharacterSheet {
 		}
 	
 		return result;
+	}
+
+	getAttributeModifier(key) {
+		return this.getAttribute(key) - 10;
 	}
 
 	getSkill(getMe, noSlider=false) {
