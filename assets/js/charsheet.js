@@ -292,6 +292,7 @@ function characterLoaded(loadMe) {
 		$("select[name='charSex']").prop("selectedIndex", character.sex);
 		$("select[name='charSupernatural']").val(character.supernatural);
 		$("select[name='charClass']").val(character.class);
+		$("textarea[name='charBackground']").val("");
 		updateCharacterSheet();
 	} else {
 		showErrorPopup("Character not found.");
