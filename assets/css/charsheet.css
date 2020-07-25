@@ -71,7 +71,7 @@ section > div[id] {
 }
 
 #main section:last-child {
-	flex-basis: 500px;
+	flex-basis: 600px;
 }
 
 #helpPanel {

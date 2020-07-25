@@ -190,6 +190,7 @@ const skillsKnowledge = [
 	new ExtraSkill("Altmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Altmer people, as well as their elvish language."),
 	new ExtraSkill("Akaviri Lore", SKILL_DIFF_HARD, "Knowledge of the continent of Akavir."),
 	new ExtraSkill("Ayleid Lore", SKILL_DIFF_HARD, "Studying the history of the extinct Ayleid people, and their language Ayleidoon."),
+	new ExtraSkill("Blood Magic", SKILL_DIFF_HARD, "A form of dark magic to manipulate blood, most famously used by vampires."),
 	new ExtraSkill("Bosmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Bosmer people, as well as the Wild Hunt."),
 	new ExtraSkill("Breton Lore", SKILL_DIFF_MODERATE, "Studying the history of the Breton people and their mixed man/mer ancestry."),
 	new ExtraSkill("Daedric Lore", SKILL_DIFF_MODERATE, "Studying the secrets of the daedra - their society/planes, summoning them, and their language."),
@@ -211,6 +212,7 @@ const skillsKnowledge = [
 	new ExtraSkill("Necromancy", SKILL_DIFF_MODERATE, "Knowledge of summoning and/or controlling the dead."),
 	new ExtraSkill("Reach Lore", SKILL_DIFF_MODERATE, "Knowledge of the people, customs, and religion of the Reach."),
 	new ExtraSkill("Redguard Lore", SKILL_DIFF_MODERATE, "Studying the history of the Redguard people and their ancestral homeland of Yokuda."),
+	new ExtraSkill("Shadow Magic", SKILL_DIFF_ESOTERIC, "An obscure form of magic which is used by Nocturnal, but can also be learned by mortals."),
 	new ExtraSkill("Sload Lore", SKILL_DIFF_HARD, "Studying the history of the Sload, a slug-like race that live over the seas southwest of Tamriel."),
 	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
 ];
