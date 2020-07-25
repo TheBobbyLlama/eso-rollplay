@@ -8,6 +8,7 @@ var character = new CharacterSheet();
 
 function initializePage() {
 	var i;
+	var tmpVal;
 
 	initializeDB();
 
@@ -29,7 +30,9 @@ function initializePage() {
 		raceSelect.append("<option>" + races[i].name + "</option>")
 	}
 
-	for (i = 0; i < supernaturals.length; i++) {
+	superSelect.append("<option value=''>N/A</option>")
+
+	for (i = 1; i < supernaturals.length; i++) {
 		superSelect.append("<option>" + supernaturals[i].name + "</option>")
 	}
 
