@@ -146,7 +146,7 @@ function addEventDisplay(event) {
 					forcePlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, event.name, "Toughness", event.attackType, event.parent, resolveNPCDamage);
 				}
 			} else {
-				$("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
+				eventPane.find("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
 			}
 			break;
 		case "NPCStatus":
