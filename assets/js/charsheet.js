@@ -104,6 +104,7 @@ function changeSlider() {
 	}
 
 	updateCharacterSheet();
+	checkHighlight(this);
 }
 
 function updateCharacterSheet() {
@@ -212,8 +213,16 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
-function checkHighlight() {
-	var helpKey = $(this).closest("*[data-key]").attr("data-key");
+function checkHighlight(checkMe) {
+	var root;
+
+	if (checkMe.target) {
+		root = $(checkMe.target);
+	} else {
+		root = $(checkMe);
+	}
+
+	var helpKey = root.closest("*[data-key]").attr("data-key");
 
 	if (helpKey) {
 		var item = getQuality(helpKey);

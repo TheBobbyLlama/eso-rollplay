@@ -89,6 +89,13 @@ section > div[id] {
 	margin: 20px;
 }
 
+#referLink {
+	padding: 10px;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
 .costIncreased {
 	color: var(--common-gold);
 }
@@ -99,4 +106,85 @@ section > div[id] {
 
 .costExtreme {
 	color: var(--common-alert);
+}
+
+@media screen and (max-width: 575px) {
+	body {
+		margin-bottom: 60px;
+	}
+	body > section:first-of-type {
+		margin: 10px 0;
+	}
+
+	body > section:first-of-type > div {
+		display: grid;
+		grid-template-columns: auto auto;
+	}
+
+	footer {
+		height: 60px;
+	}
+
+	form {
+		display: grid;
+		grid-template-columns: auto auto auto auto;
+
+	}
+
+	form button:first-of-type {
+		grid-column-start: 2;
+	}
+
+	form input[type='text'] {
+		grid-column-start: 2;
+  		grid-column-end: 5;
+	}
+
+	h1 {
+		margin-top: 50px;
+	}
+
+	section, section input, #bottomInfo, #main {
+		width: 100%;
+	}
+	
+	section > div[id] {
+		max-height: initial;
+	}
+
+	#bottomInfo {
+		flex-direction: column;
+	}
+
+	#bottomInfo > div:last-child {
+		padding: 0px 10px;
+	}
+
+	#helpPanel {
+		position: absolute;
+	}
+
+	#main {
+		margin: 10px 0;
+	}
+
+	#main section {
+		padding: 10px 32px;
+	}
+
+	#main section:last-child {
+		flex-basis: initial;
+	}
+
+	#printout {
+		margin: 0 10px 20px 10px;
+		max-width: 360px;
+	}
+}
+
+@media screen and (max-width: 360px) {
+	#helpModal > div {
+		max-height: 400px;
+		overflow: auto;
+	}
 }

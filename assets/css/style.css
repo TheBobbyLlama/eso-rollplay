@@ -269,13 +269,6 @@ ul {
 	text-align: left;
 }
 
-#referLink {
-	padding: 10px;
-	position: absolute;
-	right: 0;
-	top: 0;
-}
-
 .damageResist {
 	color: var(--common-green);
 }
