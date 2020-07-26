@@ -507,7 +507,6 @@ function addEventDisplay(event) {
 		case "NPCAttackResolution":
 		case "NPCToughness":
 		case "PlayerDamage":
-		case "RollContestedSubordinate":
 		case "RollSubordinateResolution":
 			var holder = $("#" + event.parent);
 			holder.find("button, input, select").attr("disabled", "true");
@@ -540,6 +539,7 @@ function addEventDisplay(event) {
 		case "RollPlayerContestedSubordinate":
 			$("#" + event.parent).append(convertEventToHtml(event));
 			break;
+		case "RollContestedSubordinate":
 		case "RollSubordinate":
 				var holder = $("#" + event.parent);
 				holder.append(convertEventToHtml(event));

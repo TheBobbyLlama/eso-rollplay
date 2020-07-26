@@ -189,6 +189,10 @@ function addEventDisplay(event) {
 				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, event.name, event.key, "", event.id, resolveContestedRoll);
 			}
 			break;
+		case "RollContestedSubordinate":
+			eventPane.append(convertEventToHtml(event));
+			eventPane.children().last().attr("id", event.parent);
+			break;
 		case "RollPlayerContested":
 			eventPane.append(convertEventToHtml(event));
 
