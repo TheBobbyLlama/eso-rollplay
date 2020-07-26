@@ -313,6 +313,7 @@ function sendGMComment() {
 
 	if (gmPost) {
 		dbPushEvent(new EventGMPost(gmPost));
+		$("#GMPost").val("");
 	}
 }
 
