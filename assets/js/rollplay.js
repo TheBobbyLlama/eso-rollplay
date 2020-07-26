@@ -308,7 +308,7 @@ function loadChar() {
 }
 
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (loadMe.val().player == $("input[name='charPlayer']").val())) {
+	if ((loadMe.val()) && (dbSanitize(loadMe.val().player) == dbSanitize($("input[name='charPlayer']").val()))) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, new CharacterSheet());
 		localStorage.setItem("ESORP[name]", nameDecode(character.name));

@@ -288,9 +288,11 @@ function loadChar(event) {
 }
 
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (nameEncode(loadMe.val().player) == character.player)) {
+	if ((loadMe.val()) && (dbSanitize(nameEncode(loadMe.val().player)) == dbSanitize(character.player))) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, new CharacterSheet());
+		$("input[name='charName']").val(character.name);
+		$("input[name='charPlayer']").val(character.player);
 		$("select[name='charRace']").val(character.race);
 		$("select[name='charSex']").prop("selectedIndex", character.sex);
 		$("select[name='charSupernatural']").val(character.supernatural);
