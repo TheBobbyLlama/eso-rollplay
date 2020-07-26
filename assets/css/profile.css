@@ -42,3 +42,28 @@ select {
 .minimal #profileText > div {
 	margin: 0 20px;
 }
+
+@media screen and (max-width: 575px) {
+	section {
+		flex-direction: column;
+	}
+
+	section > div:first-child {
+		order: 2;
+	}
+
+	section div:last-child {
+		margin-left: 0px;
+		padding: 10px;
+	}
+
+	select {
+		margin: 10px 0px 20px 0px;
+		width: 100%;
+	}
+
+	#printout {
+		min-width: initial;
+		max-width: 360px;
+	}
+}
