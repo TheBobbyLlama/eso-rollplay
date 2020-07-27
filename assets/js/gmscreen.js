@@ -295,8 +295,8 @@ function makeRollAttack() {
 }
 
 function startPlayerContestedRoll() {
-	var player1 = $("#playerContested1").val();
-	var player2 = $("#playerContested2").val();
+	var player1 = nameEncode($("#playerContested1").val());
+	var player2 = nameEncode($("#playerContested2").val());
 	var comment = $("#rollComment");
 
 	if ((player1) && (player2) && (player1 != player2)) {
