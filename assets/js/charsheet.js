@@ -213,6 +213,12 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
+function expandContractSection() {
+	if (screen.width <= 575) {
+		$(this).closest("section").toggleClass("expanded");
+	}
+}
+
 function checkHighlight(checkMe) {
 	var root;
 
@@ -329,6 +335,7 @@ $("select[name='charClass']").on("change", changeClass);
 $("#saveChar").on("click", saveChar);
 $("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
+$("#main section > h3").on("click", expandContractSection);
 $("#errorButton, #helpDone").on("click", hideErrorPopup);
 $("#printout").on("dblclick", copyOutput);
 $("textarea[name='charBackground']").on("focus, keydown", descriptionHelper);

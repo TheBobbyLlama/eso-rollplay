@@ -37,6 +37,7 @@ section > div[id] {
 	flex-direction: column;
 	flex-wrap: wrap;
 	max-height: 400px;
+	transition: 1s;
 }
 
 #bottomInfo {
@@ -170,6 +171,28 @@ section > div[id] {
 
 	#main section {
 		padding: 10px 32px;
+	}
+
+	#main section > div[id] {
+		height: 0px;
+		overflow: hidden;
+	}
+
+	#main section > h3 {
+		width: 100%;
+	}
+
+	#main section > h3::after {
+		content: " +";
+	}
+
+	#main section.expanded > div[id] {
+		height: initial;
+		overflow: initial;
+	}
+
+	#main section.expanded > h3::after {
+		content: " ‒";
 	}
 
 	#main section:last-child {
