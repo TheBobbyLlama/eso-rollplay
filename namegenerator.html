@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Roleplay - Name Generator</title>
+	<link rel="stylesheet" href="./assets/css/style.css" />
+	<link rel="stylesheet" href="./assets/css/namegenerator.css" />
+</head>
+<body>
+	<h1>ESO Roleplay - Name Generator</h1>
+	<section>
+		<form>
+			<div>
+				<label for="race">Race:</label>
+				<select id="race" name="race"></select>
+				<label for="sex">Sex:</label>
+				<select id="sex" name="sex">
+					<option>Male</option>
+					<option>Female</option>
+				</select>
+			</div>
+			<div id="sourceFilters"></div>
+			<div>
+				<button type="submit" id="generateButton">Generate</button>
+				<select name="resultCount" id="resultCount">
+					<option>5</option>
+					<option selected>10</option>
+					<option>20</option>
+				</select>
+				<label for="resultCount">results.</label>
+			</div>
+		</form>
+	</section>
+	<section>
+		<h2>Results</h2>
+		<ol id="results"></ol>
+	</section>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="./assets/js/namegenerator.js"></script>
+</body>
+</html>

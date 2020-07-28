@@ -1,0 +1,53 @@
+form > div {
+	text-align: center;
+}
+
+section:first-of-type {
+	display: inline-block;
+}
+
+section:last-of-type {
+	margin: 0 auto;
+	width: 400px;
+}
+
+#sourceFilters {
+	display: flex;
+	margin: 10px 0;
+}
+
+#sourceFilters input {
+	margin: 0 4px 0 10px;
+}
+
+#sourceFilters p {
+	font-weight: bold;
+}
+
+@media screen and (max-width: 440px) {
+	section:last-of-type {
+		margin: 0 10px;
+		width: initial;
+	}
+
+	#sourceFilters {
+		align-items: center;
+		flex-direction: column;
+	}
+
+	#sourceFilters div {
+		align-items: center;
+		display: flex;
+		justify-content: center;
+		text-align: left;
+		width: 100%;
+	}
+
+	#sourceFilters label {
+		width: 40%;
+	}
+
+	#sourceFilters p {
+		align-self: flex-start;
+	}
+}
