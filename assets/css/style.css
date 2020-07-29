@@ -37,6 +37,10 @@ body {
 	text-align: center;
 }
 
+body, textarea {
+	font-family: 'Roboto', sans-serif;
+}
+
 a:link {
 	color: var(--link-color);
 }
@@ -59,6 +63,10 @@ button {
 
 button:hover {
 	background-color: #f0f0f0;
+}
+
+h1, h2, h3, h4 {
+	font-weight: bold;
 }
 
 

@@ -21,7 +21,6 @@ select {
 	border: solid 2px var(--content-border);
 	border-radius: 8px;
 	color: black;
-	font-family: Arial, Helvetica, sans-serif;
 }
 
 .minimal {
