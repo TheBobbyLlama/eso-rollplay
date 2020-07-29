@@ -218,7 +218,6 @@ function bindIframeEvents() {
 }
 
 function selectGeneratedName() {
-	console.log($(this));
 	$("input[name='charName']").val($(this).text());
 	hidePopup();
 }
