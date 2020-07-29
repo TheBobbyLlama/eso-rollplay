@@ -213,6 +213,16 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
+function bindIframeEvents() {
+	$(this).contents().find("#results").on("click", "button", selectGeneratedName);
+}
+
+function selectGeneratedName() {
+	console.log($(this));
+	$("input[name='charName']").val($(this).text());
+	hidePopup();
+}
+
 function expandContractSection() {
 	if (screen.width <= 575) {
 		$(this).closest("section").toggleClass("expanded");
@@ -258,18 +268,27 @@ function showFooter(message) {
 }
 
 function showHelpPopup() {
-	$("#modalBG").addClass("show");
-	$("#helpModal").addClass("show");
+	$("#modalBG, #helpModal").addClass("show");
+}
+
+function showNamePopup() {
+	const myFrame = $("#nameModal iframe");
+	const url = "namegenerator.html?race=" + $("select[name='charRace']").val() + "&sex=" + $("select[name='charSex']").val();
+
+	if (myFrame.attr("src") != url) {
+		myFrame.attr("src", url);
+	}
+
+	$("#modalBG, #nameModal").addClass("show");
 }
 
 function showErrorPopup(message) {
-	$("#modalBG").addClass("show");
-	$("#errorModal").addClass("show");
+	$("#modalBG, #errorModal").addClass("show");
 	$("#errorText").text(message);
 }
 
-function hideErrorPopup() {
-	$("#modalBG").removeClass("show");
+function hidePopup() {
+	$("#modalBG, #modalBG > div").removeClass("show");
 }
 
 function saveChar() {
@@ -327,6 +346,7 @@ function descriptionLoaded(loadMe) {
 
 $("#buttonHelp").on("click", showHelpPopup);
 $("input[name='charName']").on("change", changeName);
+$("#generateName").on("click", showNamePopup);
 $("input[name='charPlayer']").on("change", changePlayer);
 $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
@@ -336,10 +356,11 @@ $("#saveChar").on("click", saveChar);
 $("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
 $("#main section > h3").on("click", expandContractSection);
-$("#errorButton, #helpDone").on("click", hideErrorPopup);
+$("#errorButton, #nameCancel, #helpDone").on("click", hidePopup);
 $("#printout").on("dblclick", copyOutput);
 $("textarea[name='charBackground']").on("focus, keydown", descriptionHelper);
 $("textarea[name='charBackground']").on("blur", leaveDescription);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
+$("#nameModal iframe").on("load", bindIframeEvents);
 
 initializePage();

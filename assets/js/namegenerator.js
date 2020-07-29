@@ -4,6 +4,8 @@ var useTag = "p";
 
 function initializePage(data) {
 	//console.log(data);
+	var setRace = new URLSearchParams(window.location.search).get("race");
+	var setSex = new URLSearchParams(window.location.search).get("sex");
 	nameData = data;
 
 	for (let i = 0; i < nameData.length; i++) {
@@ -11,6 +13,14 @@ function initializePage(data) {
 	}
 
 	$("#race").trigger("change");
+
+	if ((setRace) && (setSex)) {
+		$("#race").val(setRace);
+		$("#sex").val(setSex);
+		$("h1, form > div:first-child").addClass("hideMe");
+		useTag = "button";
+		generate(null);
+	}
 }
 
 function createFilters() {
@@ -36,7 +46,10 @@ function createFilters() {
 }
 
 function generate(event) {
-	event.preventDefault();
+	if (event) {
+		event.preventDefault();
+	}
+
 	const count = $("#resultCount").val();
 	const filters = $("#sourceFilters input:checked");
 	const selectedFilters = [];

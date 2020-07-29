@@ -11,6 +11,10 @@ section:last-of-type {
 	width: 400px;
 }
 
+.hideMe {
+	display: none;
+}
+
 #sourceFilters {
 	display: flex;
 	margin: 10px 0;

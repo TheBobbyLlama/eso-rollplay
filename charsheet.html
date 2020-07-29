@@ -16,7 +16,10 @@
 	<section>
 		<form>
 			<label for="charName">Name:</label>
-			<input type="text" name="charName" maxlength="25"></input>
+			<span id="charInput">
+				<input type="text" name="charName" maxlength="25"></input>
+				<button id="generateName" type="button">?</button>
+			</span>
 			<label for="charPlayer">@</label>
 			<input type="text" name="charPlayer" placeholder="Account Name" maxlength="25"></input>
 			<button id="saveChar" type="button">Save</button>
@@ -93,6 +96,11 @@
 				<p>Below your skill selections, you can see your character's stat summary.  There is a field to enter a brief description of your character as well.</p>
 			</div>
 			<button id="helpDone" type="button">Ok</button>
+		</div>
+		<div id="nameModal">
+			<h2>Choose a Random Name</h2>
+			<iframe></iframe>
+			<button id="nameCancel" type="button">Cancel</button>
 		</div>
 		<div id="errorModal">
 			<h3>Error</h3>

@@ -58,6 +58,16 @@ section > div[id] {
 	width: 100%;
 }
 
+#charInput {
+	align-items: center;
+	display: inline-flex;
+	justify-content: stretch;
+}
+
+#charInput button {
+	flex-basis: 0%;
+}
+
 #main {
 	align-items: flex-start;
 	background-color: var(--inset-background);
@@ -86,6 +96,19 @@ section > div[id] {
 	top: 0;
 }
 
+#nameModal {
+	height: 600px;
+	max-height: 100%;
+	max-width: initial !important;
+	width: 600px;
+}
+
+#nameModal iframe {
+	height: 500px;
+	margin: 10px 0;
+	max-height: 85%;
+}
+
 #printout {
 	margin: 20px;
 }
@@ -107,6 +130,12 @@ section > div[id] {
 
 .costExtreme {
 	color: var(--common-alert);
+}
+
+@media screen and (max-width: 575px) {
+	#nameModal {
+		width: 100%;
+	}
 }
 
 @media screen and (max-width: 575px) {
@@ -136,7 +165,7 @@ section > div[id] {
 		grid-column-start: 2;
 	}
 
-	form input[type='text'] {
+	form input[type='text'], form span {
 		grid-column-start: 2;
   		grid-column-end: 5;
 	}
