@@ -85,7 +85,7 @@ const races = [
 	new CharacterTemplate("Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
 		{ Agility: -2, Speed: -2, Personality: 2 },
-		{ ImperialLore: 4, OneHandandShiled: 1 }
+		{ ImperialLore: 4, OneHandandShield: 1 }
 	),
 	new CharacterTemplate("Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
