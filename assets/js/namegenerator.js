@@ -23,6 +23,7 @@ function initializePage(data) {
 	}
 }
 
+// Dynamically create filter checkboxes based on what's available for the chosen race.
 function createFilters() {
 	const raceIndex = $(this).prop("selectedIndex");
 	const filterList = [];
@@ -72,6 +73,7 @@ function generate(event) {
 	}
 }
 
+// Applies our filters and returns an array valid component lists for each possible word in the name.
 function getComponentLists(filter) {
 	var result = [];
 	var componentIndex = 1;
@@ -112,6 +114,7 @@ function generateName(workingList) {
 	return result;
 }
 
+// The heavy lifting of name generation - Chooses a component list and then builds a word from it.
 function createNameComponent(componentList) {
 	var count = 0;
 	var random;
@@ -131,8 +134,9 @@ function createNameComponent(componentList) {
 	}
 
 	if (typeof(componentList[curList].length) === "string") {
-		var tmpVals = componentList[curList].length.split("-");
-		curLength = tmpVals[0] + Math.floor(tmpVals[1] * Math.random());
+		var tmpVals = componentList[curList].length.split("-").map(element => parseInt(element));
+		// Extra Math.random() is there to create a bias toward lower end of the scale!
+		curLength = tmpVals[0] + Math.floor((((tmpVals[1] - tmpVals[0]) * Math.random()) + 1) * Math.random());
 	} else {
 		curLength = componentList[curList].length;
 	}
