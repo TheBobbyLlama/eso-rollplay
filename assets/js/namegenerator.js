@@ -116,6 +116,7 @@ function createNameComponent(componentList) {
 	var count = 0;
 	var random;
 	var curList = 0;
+	var curLength;
 	var result = "";
 
 	for (let i = 0; i < componentList.length; i++) {
@@ -129,12 +130,19 @@ function createNameComponent(componentList) {
 		curList++;
 	}
 
-	for (let i = 0; i < componentList[curList].length; i++) {
+	if (typeof(componentList[curList].length) === "string") {
+		var tmpVals = componentList[curList].length.split("-");
+		curLength = tmpVals[0] + Math.floor(tmpVals[1] * Math.random());
+	} else {
+		curLength = componentList[curList].length;
+	}
+
+	for (let i = 0; i < curLength; i++) {
 		var workingList;
 
 		if (i == 0) {
 			workingList = componentList[curList].list.filter(element => element[0] != "+");
-		} else if (i >= componentList[curList].length -1) {
+		} else if (i >= curLength - 1) {
 			workingList = componentList[curList].list.filter(element => element[element.length - 1] != "+");
 		} else {
 			workingList = componentList[curList].list.filter(element => ((element[0] === "+") && (element[element.length - 1] === "+")));
