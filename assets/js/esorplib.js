@@ -697,7 +697,7 @@ class SharedRollEvent extends SharedEvent {
 			this.key = rollData.key;
 			this.modifier = rollData.modifier;
 			this.result = rollData.result + rollData.modifier;
-			this.rolls = rollData.rolls;
+			//this.rolls = rollData.rolls;
 			this.comment = rollData.comment;
 
 			if (rollData.attackType) {
@@ -839,9 +839,20 @@ class EventRoll extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var rollType;
+		var keyName = getQuality(this.key).name;
+
+		if (this.lucky) {
+			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+		} else if (this.unlucky) {
+			rollType = " makes an <span class='luckyRoll'>unlucky</span> " + keyName+ " roll";
+		} else  {
+			rollType = " rolls " + keyName;
+		}
+
 		return "<div id='" + this.id + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " rolls " + getQuality(this.key).name + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -951,9 +962,20 @@ class EventContestedResponse extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var rollType;
+		var keyName = getQuality(this.key).name;
+
+		if (this.lucky) {
+			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+		} else if (this.unlucky) {
+			rollType = " makes an <span class='luckyRoll'>unlucky</span> " + keyName+ " roll";
+		} else  {
+			rollType = " rolls " + keyName;
+		}
+
 		return "<div class='playersubordinate' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " rolls " + getQuality(this.key).name + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs " + this.npc + ":" + "</p>" +
+					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs " + this.npc + ":" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -987,9 +1009,20 @@ class EventPlayerContestedRollSubordinate extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var rollType;
+		var keyName = getQuality(this.key).name;
+
+		if (this.lucky) {
+			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+		} else if (this.unlucky) {
+			rollType = " makes an <span class='luckyRoll'>unlucky</span> " + keyName+ " roll";
+		} else  {
+			rollType = " rolls " + keyName;
+		}
+		
 		return "<div class='playersubordinate' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " rolls " + getQuality(this.key).name + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1124,9 +1157,19 @@ class EventPlayerAttack extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var rollType;
+
+		if (this.lucky) {
+			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
+		} else if (this.unlucky) {
+			rollType = " with an <span class='luckyRoll'>unlucky</span> roll";
+		} else  {
+			rollType = "";
+		}
+
 		return "<div id='" + this.id + "' attacker='" + this.player + "' target='" + this.target + "' data-key='" + this.key + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " attacks (" + getQuality(this.key).name + ", " + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + "!</p>" +
+					"<p>" + this.player + " attacks (" + getQuality(this.key).name + ", " + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1172,9 +1215,19 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var rollType;
+
+		if (this.lucky) {
+			rollType = " makes a <span class='luckyRoll'>lucky</span> roll";
+		} else if (this.unlucky) {
+			rollType = " makes an <span class='luckyRoll'>unlucky</span> roll";
+		} else  {
+			rollType = " rolls";
+		}
+
 		return "<div class='playersubordinate'>" +
 				"<div>" +
-					"<p>" + this.player + " rolls for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+					"<p>" + this.player + rollType + " for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1195,9 +1248,19 @@ class EventPlayerDefense extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var rollType;
+
+		if (this.lucky) {
+			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
+		} else if (this.unlucky) {
+			rollType = " with an <span class='luckyRoll'>unlucky</span> roll";
+		} else  {
+			rollType = "";
+		}
+
 		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.attacker + "'s attack!" + "</p>" +
+					"<p>" + this.player + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.attacker + "'s attack" + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1215,6 +1278,15 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 
 	toHTML() {
 		var action = " attempts to withstand ";
+		var rollType;
+
+		if (this.lucky) {
+			rollType = " with a <span class='luckyRoll'>lucky</span> roll!";
+		} else if (this.unlucky) {
+			rollType = " with an <span class='luckyRoll'>unlucky</span> roll!";
+		} else  {
+			rollType = "";
+		}
 
 		if (this.weak) {
 			action = " is <span class='damageWeakness'>WEAK</span> to ";
@@ -1224,7 +1296,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		
 		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
 				"<div>" +
-					"<p>" + this.player + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+					"<p>" + this.player + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + rollType + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +

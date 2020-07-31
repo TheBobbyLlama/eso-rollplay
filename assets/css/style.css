@@ -277,11 +277,11 @@ ul {
 	text-align: left;
 }
 
-.damageResist {
+.damageResist, .luckyRoll {
 	color: var(--common-green);
 }
 
-.damageWeakness {
+.damageWeakness, .unluckyRoll {
 	color: var(--common-red);
 }
 
