@@ -45,7 +45,7 @@ function resetRollSelect() {
 function performRoll() {
 	var key = $("#rollSelect").val();
 
-	forcePlayerRoll("Make your roll.", "", { key, playerInitiated: true, callback: resolveRoll });
+	forcePlayerRoll("Make a roll using " + getQuality(key).name + ".", "", { key, playerInitiated: true, callback: resolveRoll });
 }
 
 function resolveRoll() {
@@ -56,7 +56,7 @@ function performAttack() {
 	var target = nameEncode($("#rollTarget").val());
 	var key = $("#rollSelect").val();
 
-	forcePlayerRoll("Make your attack roll.", "", { target, key, playerInitiated: true, callback: resolveAttack });
+	forcePlayerRoll("Make an attack using " + getQuality(key).name + ".", "", { target, key, playerInitiated: true, callback: resolveAttack });
 }
 
 function resolveAttack() {
@@ -389,6 +389,12 @@ function forcePlayerRoll(message, comment, rollInfo) {
 		forcedRoll.comment = "Lazy mode.";
 		acceptForcedRoll();
 	} else {
+		if (forcedRoll.playerInitiated) {
+			$("#rollModal h3").text("Make a Roll");
+		} else {
+			$("#rollModal h3").text("Roll Needed!");
+		}
+
 		$("#forceRollComment").val("");
 		$("#modalBG").addClass("show");
 		$("#rollModal").addClass("show");
