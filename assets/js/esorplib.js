@@ -383,8 +383,55 @@ class CharacterSheet {
 		}
 	}
 
-	makeRoll(key) {
-		return internalDieRoll() + this.getRollModifier(key);
+	makeRoll(rollData) {
+		var result;
+		var rollCount = 0;
+		var modifier = this.getRollModifier(rollData.key);
+		var luckMod = this.getAttributeModifier("Luck");
+		rollData.modifier = modifier;
+
+		if (rollData.key == "Toughness") {
+			if (this.resistsDamage(SPECIAL_ATTACK_TYPES[rollData.attackType])) {
+				rollData.resist = true;
+				rollCount++;
+			} else if (this.weakToDamage(SPECIAL_ATTACK_TYPES[rollData.attackType])) {
+				rollData.weak = true;
+				rollCount--;
+			}
+		}
+
+		if (luckMod > 0) {
+			if (internalDieRoll() <= luckMod) {
+				rollData.lucky = true;
+				rollCount++;
+			}
+		} else if (luckMod < 0) {
+			luckMod = Math.abs(luckMod);
+
+			if (internalDieRoll() <= luckMod) {
+				rollData.unlucky = true;
+				rollCount--;
+			}
+		}
+
+		rollData.rolls = [];
+
+		for (var i = 0; i < 1 + Math.abs(rollCount); i++) {
+			let curRoll = internalDieRoll();
+			rollData.rolls.push(curRoll);
+
+			if (!result) {
+				result = curRoll;
+			} else if (rollCount > 0) {
+				result = Math.max(result, curRoll);
+			} else if (rollCount < 0) {
+				result = Math.min(result, curRoll);
+			}
+		}
+
+		rollData.result = result;
+
+		return result + modifier;
 	}
 
 	makeToughnessRoll(attackType) {
@@ -557,214 +604,66 @@ class RoleplaySession {
 	}
 }
 
-function convertEventToHtml(event) {
+function forceEventType(event) {
 	switch (event.eventType) {
 		case "AddNPC":
-			return "<div class='gmInfo'>NPC " + event.name + " has been added to the session.</div>";
+			return Object.setPrototypeOf(event, new EventAddNPC(""));
 		case "AddPlayer":
-			return "<div class='gmInfo'>Player " + event.player + " has been added to the session.</div>";
+			return Object.setPrototypeOf(event, new EventAddPlayer(""));
 		case "Close":
-			return "<div class='gmInfo'>" + event.owner + " has closed this session.<br />YOU SHOULD NEVER SEE THIS.</div>";
+			return Object.setPrototypeOf(event, new EventClose(""));
 		case "End":
-			return "<div><p>The session has been ended by " + event.owner + ". (" + event.timeStamp + ")</p><p>Thanks for playing!</p></div>";
+			return Object.setPrototypeOf(event, new EventEnd(""));
 		case "GMPost":
-			return "<div class='gmComment'><h3>GM Post:</h3><em>" + event.post.replace(/\n/g, "<br />") + "</em></div>"
+			return Object.setPrototypeOf(event, new EventGMPost(""));
 		case "NPCStatus":
-			if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
-				if (event.status > 0) {
-					return "<div><span>" + event.name + " appears!  It is " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
-				} else {
-					return "<div><span>" + event.name + " appears!</span></div>";
-				}
-			} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
-				return "<div><span>" + event.name + " disappears!</span></div>";
-			} else {
-				return "<div><span>" + event.name + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
-			}
+			return Object.setPrototypeOf(event, new EventNPCStatus("", 0, 0));
 		case "InjuryPlayer":
-			return "<div><span>" + event.player + " is now " + INJURY_LEVEL_DISPLAY[event.status] + ((event.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+			return Object.setPrototypeOf(event, new EventInjuryPlayer("", 0));
 		case "NPCAttack":
-			return "<div class='gmInfo' id='" + event.id + "' attacker='" + event.name + "' target='" + event.player + "' countMe>" +
-				"<div>" +
-					"<p>" + event.name + " attacks (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.player + "!</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventNPCAttack("", "", 0, 0, ""));
 		case "NPCAttackResolution":
-			if (event.success) {
-				return "<div class='gmExtra subordinate'>" +
-					"<div>" +
-						"<p>" + event.name + " hits " + event.player + "! (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ")</p>" +
-						((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-					"</div>" +
-					"<div class='rollResult'>" +
-						"Result: " + event.result +
-					"</div>" +
-				"</div>";
-			} else {
-				return "<div class='subordinate'><i>The attack missed!" + ((event.comment) ? " <span class='rollComment'>" + event.comment + "</span>" : "") + "</i></div>"
-			}
+			return Object.setPrototypeOf(event, new EventNPCAttackResolution("", "", 0, 0, 0, 0, "", 0));
 		case "NPCDefense":
-			return "<div class='gmExtra subordinate'>" +
-				"<div>" +
-					"<p>" + event.defender + " defends (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs. " + event.player + "'s attack!" + "</p>" +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventNPCDefense("", "", 0, 0, 0));
 		case "NPCRoll":
-			return "<div class='gmInfo' countMe>" +
-			"<div>" +
-				"<p>" + event.name + " rolls (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
-				((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-			"</div>" +
-			"<div class='rollResult'>" +
-				"Result: " + event.result +
-			"</div>" +
-		"</div>";
+			return Object.setPrototypeOf(event, new EventNPCRoll("", 0, 0, ""));
 		case "NPCToughness":
-			var action = " attempts to withstand ";
-
-			if (event.weak) {
-				action = " is <span class='damageWeakness'>WEAK</span> to ";
-			} else if (event.resist) {
-				action = " <span class='damageResist'>RESISTS</span> "
-			}
-			
-			return "<div class='gmExtra subordinate'>" +
-				"<div>" +
-					"<p>" + event.name + action + SPECIAL_ATTACK_TYPES[event.attackType] + " damage (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ")" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventNPCToughnessRoll("", 0, 0, 0, 0, 0, 0));
 		case "PlayerAttack":
-			return "<div id='" + event.id + "' attacker='" + event.player + "' target='" + event.target + "' data-key='" + event.key + "' countMe>" +
-				"<div>" +
-					"<p>" + event.player + " attacks (" + getQuality(event.key).name + ", " + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") " + event.target + "!</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventPlayerToughnessRoll("", null));
 		case "PlayerBusy":
-			return "<div class='gmExtra subordinate'>" + event.player + " is busy.</div>";
+			return Object.setPrototypeOf(event, new EventAddPlayer(""));
 		case "PlayerAttackResolution":
-			// No output on a success.
-			if (!event.success) {
-				return "<div class='subordinate'><i>The attack missed!" + ((event.comment) ? " <span class='rollComment'>" + event.comment + "</span>" : "") + "</i></div>"
-			}
-			break;
+			return Object.setPrototypeOf(event, new EventPlayerAttackResolution("", "", 0, 0, 0, "", 0));
 		case "PlayerConnect":
-			return "<div class='gmInfo'>" + event.player + " has connected to the session.</div>";
+			return Object.setPrototypeOf(event, new EventPlayerConnect(""));
 		case "PlayerDamage":
-			return "<div class='playersubordinate'>" +
-				"<div>" +
-					"<p>" + event.player + " rolls for damage (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ")" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventPlayerDamageRoll("", null));
 		case "PlayerDefense":
-			return "<div class='playersubordinate' data-parent='" + event.parent + "' countMe>" +
-				"<div>" +
-					"<p>" + event.player + " defends (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs. " + event.attacker + "'s attack!" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventPlayerDefense("", null));
 		case "PlayerDisconnect":
-			return "<div class='gmInfo'>" + event.player + " has disconnected from the session.</div>";
+			return Object.setPrototypeOf(event, new EventPlayerDisconnect(""));
 		case "PlayerToughness":
-			var action = " attempts to withstand ";
-
-			if (event.weak) {
-				action = " is <span class='damageWeakness'>WEAK</span> to ";
-			} else if (event.resist) {
-				action = " <span class='damageResist'>RESISTS</span> "
-			}
-			
-			return "<div class='playersubordinate' data-parent='" + event.parent + "'>" +
-				"<div>" +
-					"<p>" + event.player + action + SPECIAL_ATTACK_TYPES[event.attackType] + " damage (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ")" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventPlayerToughnessRoll("", null));
 		case "Roll":
-			return "<div id='" + event.id + "' countMe>" +
-				"<div>" +
-					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventRoll("", 0, 0, 0, ""));
 		case "RollContested":
-			return "<div class='gmInfo' id='" + event.id + "' data-against='" + event.key + "' countMe>" +
-				"<div>" +
-					"<p>" + event.name + " rolls (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs. " + event.player + "!</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventContestedRoll("", "", 0, 0, 0, ""));
 		case "RollContestedSubordinate":
-			return "<div class='playersubordinate' countMe>" +
-				"<div>" +
-					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + ") vs " + event.npc + ":" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventContestedResponse("", null));
 		case "RollSubordinateResolution":
-				return "<div class='playersubordinate'>" +
-					"<span>The roll " + ((event.success) ? "succeeds" : "fails") + "!</span>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-					"</div>";
+			return Object.setPrototypeOf(event, new EventRollSubordinateResolution(0, "", 0));
 		case "RollPlayerContested":
-			return "<div id='" + event.id + "' countMe><span>" + event.player1 + " rolls " + event.key1 + " against " + event.player2 + "'s " + event.key2 + "!</span></div>";
+			return Object.setPrototypeOf(event, new EventPlayerContestedRoll("", 0, "", 0, ""))
 		case "RollPlayerContestedSubordinate":
-			return "<div class='playersubordinate' countMe>" +
-				"<div>" +
-					"<p>" + event.player + " rolls " + getQuality(event.key).name + " (" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventPlayerContestedRollSubordinate("", null));
 		case "RollSubordinate":
-			return "<div class='gmExtra subordinate'>" +
-				"<div>" +
-					"<p>" + event.name + " rolls " + ((event.rollType) ? event.rollType + " " : "") + "(" + ((event.modifier >= 0) ? "+" : "") + event.modifier + "):" + "</p>" +
-					((event.comment) ? "<span class='rollComment'>" + event.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + event.result +
-				"</div>" +
-			"</div>";
+			return Object.setPrototypeOf(event, new EventRollSubordinate("", 0, 0, 0, "" ,0));
 		case "Start":
-			return "<div>" + event.owner + " opened this session. (" + event.timeStamp + ")</div>";
+			return Object.setPrototypeOf(event, new EventStart(""));
 		default:
-			return "<div class='error'>An event was raised with an unrecognized type (" + event.eventType + ")</div>";
+			return new EventError(event.eventType);
 	}
 }
 
@@ -772,6 +671,59 @@ class SharedEvent {
 	constructor(myType) {
 		this.eventType = myType;
 		this.timeStamp = new Date().toLocaleString("en-US")
+	}
+
+	toHTML() {
+		return "<div class='error'>An event was raised with no output (" + this.eventType + ")</div>";
+	}
+}
+
+class EventError extends SharedEvent {
+	constructor(myType) {
+		super("Error");
+		this.passedType = myType;
+	}
+
+	toHTML() {
+		return "<div class='error'>An event was raised with an unrecognized type (" + this.passedType + ")</div>";
+	}
+}
+
+class SharedRollEvent extends SharedEvent {
+	constructor(myType, rollData) {
+		super(myType);
+
+		if (rollData) {
+			this.key = rollData.key;
+			this.modifier = rollData.modifier;
+			this.result = rollData.result + rollData.modifier;
+			this.rolls = rollData.rolls;
+			this.comment = rollData.comment;
+
+			if (rollData.attackType) {
+				this.attackType = rollData.attackType;
+			}
+
+			if (rollData.parent) {
+				this.parent = rollData.parent;
+			}
+
+			if (rollData.lucky) {
+				this.lucky = true;
+			}
+
+			if (rollData.resist) {
+				this.resist = true;
+			}
+
+			if (rollData.unlucky) {
+				this.unlucky = true;
+			}
+
+			if (rollData.weak) {
+				this.weak = true;
+			}
+		}
 	}
 }
 
@@ -783,12 +735,20 @@ class EventStart extends SharedEvent {
 		super("Start");
 		this.owner = ownMe;
 	}
+
+	toHTML() {
+		return "<div>" + this.owner + " opened this session. (" + this.timeStamp + ")</div>";
+	}
 }
 
 class EventEnd extends SharedEvent {
 	constructor(ownMe) {
 		super("End");
 		this.owner = ownMe;
+	}
+
+	toHTML() {
+		return "<div><p>The session has been ended by " + this.owner + ". (" + this.timeStamp + ")</p><p>Thanks for playing!</p></div>";
 	}
 }
 
@@ -797,12 +757,20 @@ class EventClose extends SharedEvent {
 		super("Close");
 		this.owner = ownMe;
 	}
+
+	toHTML() {
+		return "<div class='gmInfo'>" + this.owner + " has closed this session.<br />YOU SHOULD NEVER SEE THIS.</div>";
+	}
 }
 
 class EventGMPost extends SharedEvent {
 	constructor(text) {
 		super("GMPost");
 		this.post = nameEncode(text);
+	}
+
+	toHTML() {
+		return "<div class='gmComment'><h3>GM Post:</h3><em>" + this.post.replace(/\n/g, "<br />") + "</em></div>"
 	}
 }
 
@@ -811,12 +779,20 @@ class EventAddNPC extends SharedEvent {
 		super("AddNPC");
 		this.name = myName;
 	}
+
+	toHTML() {
+		return "<div class='gmInfo'>NPC " + this.name + " has been added to the session.</div>";
+	}
 }
 
 class EventAddPlayer extends SharedEvent {
 	constructor(myPlayer) {
 		super("AddPlayer");
 		this.player = myPlayer;
+	}
+
+	toHTML() {
+		return "<div class='gmInfo'>Player " + this.player + " has been added to the session.</div>";
 	}
 }
 
@@ -825,12 +801,20 @@ class EventPlayerConnect extends SharedEvent {
 		super("PlayerConnect");
 		this.player = myPlayer;
 	}
+
+	toHTML() {
+		return "<div class='gmInfo'>" + this.player + " has connected to the session.</div>";
+	}
 }
 
 class EventPlayerDisconnect extends SharedEvent {
 	constructor(myPlayer) {
 		super("PlayerDisconnect");
 		this.player = myPlayer;
+	}
+
+	toHTML() {
+		return "<div class='gmInfo'>" + this.player + " has disconnected from the session.</div>";
 	}
 }
 
@@ -839,6 +823,10 @@ class EventPlayerBusy extends SharedEvent {
 		super("PlayerBusy");
 		this.player = myPlayer;
 		this.parent = parentId;
+	}
+
+	toHTML() {
+		return "<div class='gmExtra subordinate'>" + this.player + " is busy.</div>";
 	}
 }
 
@@ -853,6 +841,18 @@ class EventRoll extends SharedEvent {
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
 	}
+
+	toHTML() {
+		return "<div id='" + this.id + "' countMe>" +
+				"<div>" +
+					"<p>" + this.player + " rolls " + getQuality(this.key).name + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
+	}
 }
 
 class EventRollSubordinate extends SharedEvent {
@@ -865,6 +865,18 @@ class EventRollSubordinate extends SharedEvent {
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
 	}
+
+	toHTML() {
+		return "<div class='gmExtra subordinate'>" +
+				"<div>" +
+					"<p>" + this.name + " rolls " + ((this.rollType) ? this.rollType + " " : "") + "(" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
+	}
 }
 
 class EventRollSubordinateResolution extends SharedEvent {
@@ -873,6 +885,13 @@ class EventRollSubordinateResolution extends SharedEvent {
 		this.success = pass;
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate'>" +
+					"<span>The roll " + ((this.success) ? "succeeds" : "fails") + "!</span>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+					"</div>";
 	}
 }
 
@@ -885,6 +904,18 @@ class EventNPCRoll extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
+	}
+
+	toHTML() {
+		return "<div class='gmInfo' countMe>" +
+			"<div>" +
+				"<p>" + this.name + " rolls (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+				((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+			"</div>" +
+			"<div class='rollResult'>" +
+				"Result: " + this.result +
+			"</div>" +
+		"</div>";
 	}
 }
 
@@ -900,18 +931,39 @@ class EventContestedRoll extends SharedEvent {
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
 	}
+
+	toHTML() {
+		return "<div class='gmInfo' id='" + this.id + "' data-against='" + this.key + "' countMe>" +
+				"<div>" +
+					"<p>" + this.name + " rolls (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.player + "!</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
+	}
 }
 
-class EventContestedResponse extends SharedEvent {
-	constructor(myPlayer, myAggressor, myQuality, myMod, myResult, myComment, parentId) {
-		super("RollContestedSubordinate");
+class EventContestedResponse extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("RollContestedSubordinate", rollData);
 		this.player = myPlayer;
-		this.npc = myAggressor;
-		this.key = myQuality;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.comment = nameEncode(myComment);
-		this.parent = parentId;
+		if (rollData) {
+			this.npc = rollData.npc;
+		}
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate' countMe>" +
+				"<div>" +
+					"<p>" + this.player + " rolls " + getQuality(this.key).name + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs " + this.npc + ":" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
@@ -926,17 +978,28 @@ class EventPlayerContestedRoll extends SharedEvent {
 		this.key2 = myKey2;
 		this.comment = myComment;
 	}
+
+	toHTML() {
+		return "<div id='" + this.id + "' countMe><span>" + this.player1 + " rolls " + this.key1 + " against " + this.player2 + "'s " + this.key2 + "!</span></div>";
+	}
 }
 
-class EventPlayerContestedRollSubordinate extends SharedEvent {
-	constructor(myPlayer, myKey, myMod, myResult, myComment, parentId) {
-		super("RollPlayerContestedSubordinate");
+class EventPlayerContestedRollSubordinate extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("RollPlayerContestedSubordinate", rollData);
 		this.player = myPlayer;
-		this.key = myKey;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.comment = myComment;
-		this.parent = parentId;
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate' countMe>" +
+				"<div>" +
+					"<p>" + this.player + " rolls " + getQuality(this.key).name + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
@@ -950,6 +1013,18 @@ class EventNPCAttack extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
+	}
+
+	toHTML() {
+		return "<div class='gmInfo' id='" + this.id + "' attacker='" + this.name + "' target='" + this.player + "' countMe>" +
+				"<div>" +
+					"<p>" + this.name + " attacks (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.player + "!</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
@@ -969,6 +1044,22 @@ class EventNPCAttackResolution extends SharedEvent {
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
 	}
+
+	toHTML() {
+		if (this.success) {
+			return "<div class='gmExtra subordinate'>" +
+				"<div>" +
+					"<p>" + this.name + " hits " + this.player + "! (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
+		} else {
+			return "<div class='subordinate'><i>The attack missed!" + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
+		}
+	}
 }
 
 class EventNPCDefense extends SharedEvent {
@@ -979,6 +1070,17 @@ class EventNPCDefense extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.parent = parentId;
+	}
+
+	toHTML() {
+		return "<div class='gmExtra subordinate'>" +
+				"<div>" +
+					"<p>" + this.defender + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.player + "'s attack!" + "</p>" +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
@@ -993,6 +1095,26 @@ class EventNPCToughnessRoll extends SharedEvent {
 		this.weak = weakTo;
 		this.parent = parentId;
 	}
+
+	toHTML() {
+		var action = " attempts to withstand ";
+
+			if (this.weak) {
+				action = " is <span class='damageWeakness'>WEAK</span> to ";
+			} else if (this.resist) {
+				action = " <span class='damageResist'>RESISTS</span> "
+			}
+			
+			return "<div class='gmExtra subordinate'>" +
+				"<div>" +
+					"<p>" + this.name + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
+	}
 }
 
 class EventPlayerAttack extends SharedEvent {
@@ -1005,6 +1127,18 @@ class EventPlayerAttack extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
+	}
+
+	toHTML() {
+		return "<div id='" + this.id + "' attacker='" + this.player + "' target='" + this.target + "' data-key='" + this.key + "' countMe>" +
+				"<div>" +
+					"<p>" + this.player + " attacks (" + getQuality(this.key).name + ", " + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + "!</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
@@ -1023,44 +1157,86 @@ class EventPlayerAttackResolution extends SharedEvent {
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
 	}
+
+	toHTML() {
+		// No output on a success.
+		if (!this.success) {
+			return "<div class='subordinate'><i>The attack missed!" + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
+		} else {
+			return "";
+		}
+	}
 }
 
-class EventPlayerDamageRoll extends SharedEvent {
-	constructor(myPlayer, myTarget, myMod, myResult, myType, myComment, parentId) {
+class EventPlayerDamageRoll extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
 		super("PlayerDamage");
 		this.player = myPlayer;
-		this.target = myTarget;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.attackType = myType;
-		this.comment = nameEncode(myComment);
-		this.parent = parentId;
+		if (rollData) {
+			this.target = rollData.npc;
+		}
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate'>" +
+				"<div>" +
+					"<p>" + this.player + " rolls for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
-class EventPlayerDefense extends SharedEvent {
-	constructor(myAtt, myPlayer, myMod, myResult, myComment, parentId) {
-		super("PlayerDefense");
-		this.attacker = myAtt;
+class EventPlayerDefense extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("PlayerDefense", rollData);
+		if (rollData) {
+			this.attacker = rollData.npc;
+		}
+
 		this.player = myPlayer;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.comment = nameEncode(myComment);
-		this.parent = parentId;
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
+				"<div>" +
+					"<p>" + this.player + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.attacker + "'s attack!" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
-class EventPlayerToughnessRoll extends SharedEvent {
-	constructor(myPlayer, myMod, myResult, type, resisted, weakTo, myComment, parentId) {
-		super("PlayerToughness");
+class EventPlayerToughnessRoll extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("PlayerToughness", rollData);
 		this.player = myPlayer;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.attackType = type;
-		this.resist = resisted;
-		this.weak = weakTo;
-		this.comment = nameEncode(myComment);
-		this.parent = parentId;
+	}
+
+	toHTML() {
+		var action = " attempts to withstand ";
+
+		if (this.weak) {
+			action = " is <span class='damageWeakness'>WEAK</span> to ";
+		} else if (this.resist) {
+			action = " <span class='damageResist'>RESISTS</span> "
+		}
+		
+		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
+				"<div>" +
+					"<p>" + this.player + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 
@@ -1071,6 +1247,10 @@ class EventInjuryPlayer extends SharedEvent {
 		this.player = myPlayer;
 		this.status = myStatus;
 	}
+
+	toHTML() {
+		return "<div><span>" + this.player + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+	}
 }
 
 class EventNPCStatus extends SharedEvent {
@@ -1079,5 +1259,19 @@ class EventNPCStatus extends SharedEvent {
 		this.name = myName;
 		this.status = myStatus;
 		this.oldStatus = myOld;
+	}
+
+	toHTML() {
+		if (this.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
+			if (this.status > 0) {
+				return "<div><span>" + this.name + " appears!  It is " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+			} else {
+				return "<div><span>" + this.name + " appears!</span></div>";
+			}
+		} else if (this.status == INJURY_LEVEL_DISPLAY.length - 1) {
+			return "<div><span>" + this.name + " disappears!</span></div>";
+		} else {
+			return "<div><span>" + this.name + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+		}
 	}
 }

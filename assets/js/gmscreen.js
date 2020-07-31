@@ -498,6 +498,8 @@ function addPlayerToList(name, index) {
 
 // Handler for incoming events.
 function addEventDisplay(event) {
+	event = forceEventType(event);
+
 	switch(event.eventType) {
 		case "End":
 			// Kill the event system!
@@ -510,18 +512,18 @@ function addEventDisplay(event) {
 		case "RollSubordinateResolution":
 			var holder = $("#" + event.parent);
 			holder.find("button, input, select").attr("disabled", "true");
-			holder.append(convertEventToHtml(event));
+			holder.append(event.toHTML());
 			break;
 		case "PlayerAttackResolution":
 			if (!event.success) {
 				var holder = $("#" + event.parent);
 				holder.find("button, input, select").attr("disabled", "true");
-				holder.append(convertEventToHtml(event));
+				holder.append(event.toHTML());
 			}
 			break;
 		case "NPCDefense":
 			var holder = $("#" + event.parent);
-			holder.append(convertEventToHtml(event));
+			holder.append(event.toHTML());
 			holder.children().last().append(
 				"<div class='gmControls'>" +
 					"<select name='attackType'>" +
@@ -537,12 +539,12 @@ function addEventDisplay(event) {
 		case "PlayerBusy":
 		case "PlayerToughness":
 		case "RollPlayerContestedSubordinate":
-			$("#" + event.parent).append(convertEventToHtml(event));
+			$("#" + event.parent).append(event.toHTML());
 			break;
 		case "RollContestedSubordinate":
 		case "RollSubordinate":
 				var holder = $("#" + event.parent);
-				holder.append(convertEventToHtml(event));
+				holder.append(event.toHTML());
 
 				holder.append(
 					"<div class='gmExtra'>" +
@@ -559,12 +561,12 @@ function addEventDisplay(event) {
 		case "PlayerConnect":
 		case "PlayerDisconnect":
 			if (dispatchMessages) {
-				eventPane.append(convertEventToHtml(event));
+				eventPane.append(event.toHTML());
 			}
 			break;
 		case "PlayerDefense":
 			var holder = $("#" + event.parent);
-			holder.append(convertEventToHtml(event));
+			holder.append(event.toHTML());
 			holder.children().last().append(
 				"<div class='gmControls'>" +
 					"<select name='attackType'>" +
@@ -577,7 +579,7 @@ function addEventDisplay(event) {
 			);
 			break;
 		default:
-			eventPane.append(convertEventToHtml(event));
+			eventPane.append(event.toHTML());
 	}
 
 	switch(event.eventType) {

@@ -45,12 +45,127 @@
 	display: none;
 }
 
+#rollModal {
+	max-width: initial !important;
+}
+
 #forceRollGMComment {
 	background-color: var(--comment-background);
 	border-radius: 4px;
 	display: none;
 	font-style: italic;
 	padding: 2px 8px;
+}
+
+#forceRollPanel {
+	background-color: var(--page-background);
+	display: flex;
+	height: 216px;
+	margin: 10px auto;
+	overflow: hidden;
+	width: 216px;
+}
+
+#forceRollPanel.double {
+	transition: 0.5s ease-in-out;
+	width: 432px;
+}
+
+#forceRollPanel.triple {
+	transition: 0.5s ease-in-out;
+	width: 648px;
+}
+
+@keyframes showDie {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+@keyframes flashDieStatus {
+	0%   { opacity: 0; }
+	10%  { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+#forceRollPanel div {
+	height: 200px;
+	margin: 8px;
+	position: relative;
+	width: 200px;
+}
+
+#forceRollPanel div > div {
+	animation: showDie;
+	animation-duration: 1s;
+	animation-fill-mode: both;
+	animation-timing-function: ease-in;
+	background-image: url("../images/d20.png");
+	background-size: contain;
+	font-size: 36px;
+	margin: 0;
+	padding-top: 44px;
+	text-align: center;
+}
+
+#forceRollPanel div.bad > div {
+	background-image: url("../images/d20-bad.png");
+}
+
+#forceRollPanel div.good > div {
+	background-image: url("../images/d20-good.png");
+}
+
+#forceRollPanel div::after {
+	animation: flashDieStatus;
+	animation-duration: 1s;
+	animation-fill-mode: both;
+	bottom: 0;
+	font-size: 50px;
+	left: 0;
+	padding-top: 64px;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: 0;
+}
+
+#forceRollPanel div.lucky::after {
+	content: "Lucky!";
+}
+
+#forceRollPanel div.resist::after {
+	content: "Resist!";
+}
+
+#forceRollPanel div.unlucky::after {
+	color: var(--common-alert);
+	content: "Unlucky!";
+}
+
+#forceRollPanel div.weak::after {
+	color: var(--common-alert);
+	content: "Weak!";
+}
+
+#forceRollPanel div.discarded > div {
+	opacity: 0.25 !important;
+	transition: 1s;
+}
+
+#forceRollPanel div:nth-of-type(2)::after {
+	animation-delay: 1.5s;
+}
+
+#forceRollPanel div:nth-of-type(2) > div {
+	animation-delay: 2s;
+}
+
+#forceRollPanel div:nth-of-type(3)::after {
+	animation-delay: 3.5s;
+}
+
+#forceRollPanel div:nth-of-type(3) > div {
+	animation-delay: 4s;
 }
 
 #printout {
@@ -148,6 +263,34 @@
 @media screen and (max-width: 575px) {
 	li {
 		height: 24px;
+	}
+
+	#forceRollPanel {
+		height: 116px;
+		width: 116px;
+	}
+	
+	#forceRollPanel.double {
+		width: 232px;
+	}
+	
+	#forceRollPanel.triple {
+		width: 348px;
+	}
+
+	#forceRollPanel div {
+		height: 100px;
+		width: 100px;
+	}
+
+	#forceRollPanel div::after {
+		font-size: 24px;
+		padding-top: 32px;
+	}
+
+	#forceRollPanel div > div {
+		font-size: 18px;
+		padding-top: 22px;
 	}
 
 	#readOut {

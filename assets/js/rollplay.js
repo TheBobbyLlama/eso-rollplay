@@ -3,6 +3,7 @@ const statusClasses = [ "statusUnhurt", "statusInjured", "statusCritical", "stat
 var character = new CharacterSheet();
 var currentSession;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
+var forcedRoll; // Holds data for the roll we're making.
 var lazyMode = false; // Autoroll all forced rolls.
 
 var eventPane = $("#eventPane");
@@ -43,7 +44,7 @@ function resetRollSelect() {
 
 function performRoll() {
 	var key = $("#rollSelect").val();
-	var result = character.makeRoll(key);
+	var result = character.makeRoll({ key });
 	var modifier = character.getRollModifier(key);
 	var comment = $("#rollComment");
 	dbPushEvent(new EventRoll(character.name, key, modifier, result, comment.val()));
@@ -54,7 +55,7 @@ function performRoll() {
 function performAttack() {
 	var target = $("#rollTarget").val();
 	var key = $("#rollSelect").val();
-	var result = character.makeRoll(key);
+	var result = character.makeRoll({ key });
 	var modifier = character.getRollModifier(key);
 	var comment = $("#rollComment");
 
@@ -106,6 +107,8 @@ function setNPCStatus(index, status) {
 }
 
 function addEventDisplay(event) {
+	event = forceEventType(event);
+
 	switch (event.eventType) {
 		case "AddNPC":
 			if (dispatchMessages) {
@@ -126,27 +129,27 @@ function addEventDisplay(event) {
 			break;
 		case "End":
 			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
-			eventPane.append(convertEventToHtml(event));
+			eventPane.append(event.toHTML());
 			dbClearEventSystem();
 		case "InjuryPlayer":
 			if (dispatchMessages) {
 				setPlayerStatus(currentSession.characters.indexOf(event.player), event.status);
 			}
 
-			eventPane.append(convertEventToHtml(event));
+			eventPane.append(event.toHTML());
 			break;
 		case "NPCAttack":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				forcePlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, event.name, "Defense", "", event.id, resolveNPCAttack);
+				forcePlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
 			}
 			break;
 		case "NPCAttackResolution":
 			if (event.success) {
 				if ((dispatchMessages) && (event.player == character.name)) {
-					forcePlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, event.name, "Toughness", event.attackType, event.parent, resolveNPCDamage);
+					forcePlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
 				}
 			} else {
-				eventPane.find("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
+				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
 			}
 			break;
 		case "NPCStatus":
@@ -166,47 +169,47 @@ function addEventDisplay(event) {
 					setNPCStatus(currentSession.npcs.findIndex(element => element.name == event.name), event.status);
 				}
 
-				eventPane.append(convertEventToHtml(event));
+				eventPane.append(event.toHTML());
 				break;
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
-					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, event.target, event.key, event.attackType, event.parent, resolvePlayerDamage);
+					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
 				}
 			} else {
-				$("#" + event.parent).append(convertEventToHtml(event));
+				$("#" + event.parent).append(event.toHTML());
 			}
 			break;
 		case "PlayerDamage":
 		case "RollPlayerContestedSubordinate":
 		case "RollSubordinateResolution":
-				$("#" + event.parent).append(convertEventToHtml(event));
+				$("#" + event.parent).append(event.toHTML());
 		case "PlayerToughness":
-				eventPane.find("div[data-parent='" + event.parent + "']").append(convertEventToHtml(event));
+				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, event.name, event.key, "", event.id, resolveContestedRoll);
+				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
 			}
 			break;
 		case "RollContestedSubordinate":
-			eventPane.append(convertEventToHtml(event));
+			eventPane.append(event.toHTML());
 			eventPane.children().last().attr("id", event.parent);
 			break;
 		case "RollPlayerContested":
-			eventPane.append(convertEventToHtml(event));
+			eventPane.append(event.toHTML());
 
 			if (dispatchMessages) {
 				if (event.player1 == character.name) {
-					forcePlayerRoll("Roll " + getQuality(event.key1).name + " vs. " + nameDecode(event.player2) + "!", event.comment, event.player2, event.key1, "", event.id, resolvePlayerContestedRoll);
+					forcePlayerRoll("Roll " + getQuality(event.key1).name + " vs. " + nameDecode(event.player2) + "!", event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
 				} else if (event.player2 == character.name) {
-					forcePlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, event.player1, event.key2, "", event.id, resolvePlayerContestedRoll);
+					forcePlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
 				}
 			}
 			break;
 		default:
 			if (GM_EVENTS.indexOf(event.eventType) < 0) {
-				eventPane.append(convertEventToHtml(event));
+				eventPane.append(event.toHTML());
 			}
 	}
 
@@ -215,66 +218,23 @@ function addEventDisplay(event) {
 }
 
 function resolveContestedRoll() {
-	var npc = $("#rollModal").attr("data-npc");
-	var key = $("#rollModal").attr("data-key");
-	var parent = $("#rollModal").attr("data-parent");
-
-	dbPushEvent(new EventContestedResponse(character.name, npc, key, character.getRollModifier(key), character.makeRoll(key), $("#forceRollComment").val(), parent));
-
-	hidePopup();
+	dbPushEvent(new EventContestedResponse(character.name, forcedRoll));
 }
 
 function resolvePlayerContestedRoll() {
-	var key = $("#rollModal").attr("data-key");
-	var parent = $("#rollModal").attr("data-parent");
-
-	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, key, character.getRollModifier(key), character.makeRoll(key), $("#forceRollComment").val(), parent));
-
-	hidePopup();
+	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, forcedRoll));
 }
 
 function resolveNPCAttack() {
-	var npc = $("#rollModal").attr("data-npc");
-	var key = $("#rollModal").attr("data-key");
-	var parent = $("#rollModal").attr("data-parent");
-
-	dbPushEvent(new EventPlayerDefense(npc, character.name, character.getRollModifier(key), character.makeRoll(key), $("#forceRollComment").val(), parent));
-
-	hidePopup();
+	dbPushEvent(new EventPlayerDefense(character.name, forcedRoll));
 }
 
 function resolveNPCDamage() {
-	var attackType = $("#rollModal").attr("data-type");
-	var parent = $("#rollModal").attr("data-parent");
-	var resist = character.resistsDamage(SPECIAL_ATTACK_TYPES[attackType]);
-	var weak = character.weakToDamage(SPECIAL_ATTACK_TYPES[attackType]);
-
-	var result = character.makeToughnessRoll(SPECIAL_ATTACK_TYPES[attackType]);
-
-	dbPushEvent(new EventPlayerToughnessRoll(character.name, character.getRollModifier("Toughness"), result, attackType, resist, weak, $("#forceRollComment").val(), parent));
-
-	hidePopup();
+	dbPushEvent(new EventPlayerToughnessRoll(character.name, forcedRoll));
 }
 
 function resolvePlayerDamage() {
-	var attackType = $("#rollModal").attr("data-type");
-	var parent = $("#rollModal").attr("data-parent");
-	var target = $("#rollModal").attr("data-npc");
-	var key = $("#rollModal").attr("data-key");
-	var modifier;
-
-	if (attributes.find(element => element.key == key)) {
-		modifier = character.getAttributeModifier(key);
-	} else {
-		key = getQuality(key).governing;
-		modifier = character.getAttributeModifier(key);
-	}
-
-	result = character.makeRoll(key);
-
-	dbPushEvent(new EventPlayerDamageRoll(character.name, target, modifier, result, attackType, $("#forceRollComment").val(), parent));
-
-	hidePopup();
+	dbPushEvent(new EventPlayerDamageRoll(character.name, forcedRoll));
 }
 
 function sendConnectEvent() {
@@ -296,7 +256,7 @@ function launchCharacterProfile(event) {
 	showProfilePopup($(this).text());
 }
 
-function loadChar() {
+function loadChar(event) {
 	event.preventDefault();
 	var tmpName = $("input[name='charName']").val();
 	var tmpPlayer = $("input[name='charPlayer']").val();
@@ -418,20 +378,22 @@ function performSessionLoad() {
 	dbLoadSessionByOwner($(this).val(), sessionLoaded);
 }
 
-function forcePlayerRoll(message, comment, npc, key, attackType, parent, callback) {
+function forcePlayerRoll(message, comment, rollInfo) {
 	if (!dispatchMessages) {
 		return;
-	} else if ($("#modalBG").hasClass("show")) {
+	} else if ((forcedRoll) || ($("#modalBG").hasClass("show"))) {
 		dbPushEvent(new EventPlayerBusy(character.name, parent));
 		return;
 	}
 
-	// Tack on all the data we'll want to use when we make our roll.
-	$("#rollModal").attr("data-npc", npc).attr("data-key", key).attr("data-type", attackType).attr("data-parent", parent);
+	/* npc, key, attackType, parent, callback */
+	forcedRoll = rollInfo;
+
+	character.makeRoll(forcedRoll);
 
 	if (lazyMode) {
-		$("#forceRollComment").val("Lazy mode.");
-		callback();
+		forcedRoll.comment = "Lazy mode.";
+		acceptForcedRoll();
 	} else {
 		$("#forceRollComment").val("");
 		$("#modalBG").addClass("show");
@@ -439,8 +401,73 @@ function forcePlayerRoll(message, comment, npc, key, attackType, parent, callbac
 		$("#forceRollText").text(message);
 		$("#forceRollGMComment").text(comment);
 		$("#forceRollGMComment").toggleClass("show", !!(comment));
-		$("#makeForceRoll").off("click").on("click", callback);
+		$("#rollModal button, #rollModal input").removeAttr("disabled");
+		$("#forceRollContinue").hide();
 	}
+}
+
+function doForcedRoll(event) {
+	event.preventDefault();
+	var rollPanel = $("#forceRollPanel");
+	var chosenRoll = 0;
+
+	$(this).parent().find("button, input").attr("disabled", "true");
+	forcedRoll.comment = $("#forceRollComment").val();
+
+	rollPanel.append("<div><div>" + forcedRoll.rolls[0] + "</div></div>");
+
+	if (forcedRoll.rolls.length > 1) {
+		var curRoll = 1;
+
+		if (forcedRoll.resist) {
+			rollPanel.append("<div class='good resist'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+			curRoll++;
+		}
+
+		if (forcedRoll.lucky) {
+			rollPanel.append("<div class='good lucky'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+			curRoll++;
+		}
+
+		if (forcedRoll.weak) {
+			rollPanel.append("<div class='bad weak'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+			curRoll++;
+		}
+
+		if (forcedRoll.unlucky) {
+			rollPanel.append("<div class='bad unlucky'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+			curRoll++;
+		}
+
+		setTimeout(function() { rollPanel.addClass("double"); }, 1000);
+
+		if (forcedRoll.rolls.length > 2) {
+			setTimeout(function() { rollPanel.addClass("triple"); }, 3000);
+		}
+
+		chosenRoll = forcedRoll.rolls.indexOf(forcedRoll.result);
+		setTimeout(finalizeForcedRoll, 2000 * forcedRoll.rolls.length - 500);
+	} else {
+		setTimeout(finalizeForcedRoll, 1000);
+	}
+
+	if (chosenRoll > -1) {
+		$("#forceRollPanel > div:nth-of-type(" + (chosenRoll + 1) + ")").attr("chosen", "true");
+	}
+
+	
+}
+
+function finalizeForcedRoll() {
+	$("#forceRollPanel > div:not([chosen])").addClass("discarded");
+	$("#forceRollContinue").show();
+}
+
+function acceptForcedRoll() {
+	forcedRoll.callback();
+	forcedRoll = null;
+	hidePopup();
+	$("#forceRollPanel").removeClass("double triple").empty();
 }
 
 function showProfilePopup(name) {
@@ -463,6 +490,8 @@ $("#attackExecute").on("click", performAttack);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);
+$("#makeForceRoll").on("click", doForcedRoll);
+$("#forceRollContinue").on("click", acceptForcedRoll);
 $("#errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);
 
 initializePage();
