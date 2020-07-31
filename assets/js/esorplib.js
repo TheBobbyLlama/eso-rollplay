@@ -607,61 +607,61 @@ class RoleplaySession {
 function forceEventType(event) {
 	switch (event.eventType) {
 		case "AddNPC":
-			return Object.setPrototypeOf(event, new EventAddNPC(""));
+			return Object.setPrototypeOf(event, EventAddNPC.prototype);
 		case "AddPlayer":
-			return Object.setPrototypeOf(event, new EventAddPlayer(""));
+			return Object.setPrototypeOf(event, EventAddPlayer.prototype);
 		case "Close":
-			return Object.setPrototypeOf(event, new EventClose(""));
+			return Object.setPrototypeOf(event, EventClose.prototype);
 		case "End":
-			return Object.setPrototypeOf(event, new EventEnd(""));
+			return Object.setPrototypeOf(event, EventEnd.prototype);
 		case "GMPost":
-			return Object.setPrototypeOf(event, new EventGMPost(""));
+			return Object.setPrototypeOf(event, EventGMPost.prototype);
 		case "NPCStatus":
-			return Object.setPrototypeOf(event, new EventNPCStatus("", 0, 0));
+			return Object.setPrototypeOf(event, EventNPCStatus.prototype);
 		case "InjuryPlayer":
-			return Object.setPrototypeOf(event, new EventInjuryPlayer("", 0));
+			return Object.setPrototypeOf(event, EventInjuryPlayer.prototype);
 		case "NPCAttack":
-			return Object.setPrototypeOf(event, new EventNPCAttack("", "", 0, 0, ""));
+			return Object.setPrototypeOf(event, EventNPCAttack.prototype);
 		case "NPCAttackResolution":
-			return Object.setPrototypeOf(event, new EventNPCAttackResolution("", "", 0, 0, 0, 0, "", 0));
+			return Object.setPrototypeOf(event, EventNPCAttackResolution.prototype);
 		case "NPCDefense":
-			return Object.setPrototypeOf(event, new EventNPCDefense("", "", 0, 0, 0));
+			return Object.setPrototypeOf(event, EventNPCDefense.prototype);
 		case "NPCRoll":
-			return Object.setPrototypeOf(event, new EventNPCRoll("", 0, 0, ""));
+			return Object.setPrototypeOf(event, EventNPCRoll.prototype);
 		case "NPCToughness":
-			return Object.setPrototypeOf(event, new EventNPCToughnessRoll("", 0, 0, 0, 0, 0, 0));
+			return Object.setPrototypeOf(event, EventNPCToughnessRoll.prototype);
 		case "PlayerAttack":
-			return Object.setPrototypeOf(event, new EventPlayerAttack("", null));
+			return Object.setPrototypeOf(event, EventPlayerAttack.prototype);
 		case "PlayerBusy":
-			return Object.setPrototypeOf(event, new EventAddPlayer(""));
+			return Object.setPrototypeOf(event, EventAddPlayer.prototype);
 		case "PlayerAttackResolution":
-			return Object.setPrototypeOf(event, new EventPlayerAttackResolution("", "", 0, 0, 0, "", 0));
+			return Object.setPrototypeOf(event, EventPlayerAttackResolution.prototype);
 		case "PlayerConnect":
-			return Object.setPrototypeOf(event, new EventPlayerConnect(""));
+			return Object.setPrototypeOf(event, EventPlayerConnect.prototype);
 		case "PlayerDamage":
-			return Object.setPrototypeOf(event, new EventPlayerDamageRoll("", null));
+			return Object.setPrototypeOf(event, EventPlayerDamageRoll.prototype);
 		case "PlayerDefense":
-			return Object.setPrototypeOf(event, new EventPlayerDefense("", null));
+			return Object.setPrototypeOf(event, EventPlayerDefense.prototype);
 		case "PlayerDisconnect":
-			return Object.setPrototypeOf(event, new EventPlayerDisconnect(""));
+			return Object.setPrototypeOf(event, EventPlayerDisconnect.prototype);
 		case "PlayerToughness":
-			return Object.setPrototypeOf(event, new EventPlayerToughnessRoll("", null));
+			return Object.setPrototypeOf(event, EventPlayerToughnessRoll.prototype);
 		case "Roll":
-			return Object.setPrototypeOf(event, new EventRoll("", null));
+			return Object.setPrototypeOf(event, EventRoll.prototype);
 		case "RollContested":
-			return Object.setPrototypeOf(event, new EventContestedRoll("", "", 0, 0, 0, ""));
+			return Object.setPrototypeOf(event, EventContestedRoll.prototype);
 		case "RollContestedSubordinate":
-			return Object.setPrototypeOf(event, new EventContestedResponse("", null));
+			return Object.setPrototypeOf(event, EventContestedResponse.prototype);
 		case "RollSubordinateResolution":
-			return Object.setPrototypeOf(event, new EventRollSubordinateResolution(0, "", 0));
+			return Object.setPrototypeOf(event, EventRollSubordinateResolution.prototype);
 		case "RollPlayerContested":
-			return Object.setPrototypeOf(event, new EventPlayerContestedRoll("", 0, "", 0, ""))
+			return Object.setPrototypeOf(event, EventPlayerContestedRoll.prototype)
 		case "RollPlayerContestedSubordinate":
-			return Object.setPrototypeOf(event, new EventPlayerContestedRollSubordinate("", null));
+			return Object.setPrototypeOf(event, EventPlayerContestedRollSubordinate.prototype);
 		case "RollSubordinate":
-			return Object.setPrototypeOf(event, new EventRollSubordinate("", 0, 0, 0, "" ,0));
+			return Object.setPrototypeOf(event, EventRollSubordinate.prototype);
 		case "Start":
-			return Object.setPrototypeOf(event, new EventStart(""));
+			return Object.setPrototypeOf(event, EventStart.prototype);
 		default:
 			return new EventError(event.eventType);
 	}

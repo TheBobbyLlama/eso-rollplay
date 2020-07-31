@@ -703,7 +703,7 @@ function copyOutput(event) {
 function characterReset(loadMe) {
 	if (loadMe.val()) {
 		var character = loadMe.val();
-		Object.setPrototypeOf(character, new CharacterSheet());
+		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		characterList.push(character);
 
 		if (characterList.length == 1) {
@@ -715,7 +715,7 @@ function characterReset(loadMe) {
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		var character = loadMe.val();
-		Object.setPrototypeOf(character, new CharacterSheet());
+		Object.setPrototypeOf(character, CharacterSheet.prototype);
 
 		if (currentSession.characters.indexOf(character.name) == -1) {
 			characterList.push(character);
@@ -736,26 +736,21 @@ function characterLoaded(loadMe) {
 function sessionLoaded(loadMe) {
 	if ((loadMe) && (loadMe.val())) {
 		var i;
-		var dummy;
 		eventPane.empty();
 		currentSession = loadMe.val();
-		Object.setPrototypeOf(currentSession, new RoleplaySession());
+		Object.setPrototypeOf(currentSession, RoleplaySession.prototype);
 
 		// Weird bug, arrays only half exist unless they're created explicitly???
 		if ((!currentSession.npcs) || (!currentSession.npcs.length)) { currentSession.npcs = []; }
 		if ((!currentSession.characters) || (!currentSession.characters.length)) { currentSession.characters = []; }
 		if ((!currentSession.statuses) || (!currentSession.statuses.length)) { currentSession.statuses = []; }
 
-		dummy = new NPC("dummy");
-
 		for (i = 0; i < currentSession.npcs.length; i++) {
-			Object.setPrototypeOf(currentSession.npcs[i], dummy);
+			Object.setPrototypeOf(currentSession.npcs[i], NPC.prototye);
 		}
 
-		dummy = new CharacterStatus(new CharacterSheet());
-
 		for (i = 0; i < currentSession.statuses.length; i++) {
-			Object.setPrototypeOf(currentSession.statuses[i], dummy);
+			Object.setPrototypeOf(currentSession.statuses[i], CharacterSheet.prototype);
 		}
 
 		dispatchMessages = false;

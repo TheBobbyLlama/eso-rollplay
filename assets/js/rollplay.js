@@ -273,7 +273,7 @@ function loadChar(event) {
 function characterLoaded(loadMe) {
 	if ((loadMe.val()) && (dbSanitize(loadMe.val().player) == dbSanitize($("input[name='charPlayer']").val()))) {
 		character = loadMe.val();
-		Object.setPrototypeOf(character, new CharacterSheet());
+		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		localStorage.setItem("ESORP[name]", nameDecode(character.name));
 		localStorage.setItem("ESORP[player]", nameDecode(character.player));
 		character.print("printout");
@@ -307,24 +307,19 @@ function sessionLoaded(loadMe) {
 
 	if (result) {
 		var i;
-		var dummy;
 		eventPane.empty();
 		$("#charList, #npcList").empty();
 		currentSession = result;
-		Object.setPrototypeOf(currentSession, new RoleplaySession());
-
-		dummy = new CharacterStatus("");
+		Object.setPrototypeOf(currentSession, RoleplaySession.prototype);
 
 		for (i = 0; i < currentSession.statuses.length; i++) {
 			addPlayerToList(currentSession.characters[i]);
-			Object.setPrototypeOf(currentSession.statuses[i], dummy);
+			Object.setPrototypeOf(currentSession.statuses[i], CharacterStatus.prototype);
 			setPlayerStatus(i, currentSession.statuses[i].injuryLevel);
 		}
 
-		dummy = new NPC();
-
 		for (i = 0; i < currentSession.npcs.length; i++) {
-			Object.setPrototypeOf(currentSession.npcs[i], dummy);
+			Object.setPrototypeOf(currentSession.npcs[i], NPC.prototype);
 
 			if (currentSession.npcs[i].status < INJURY_LEVEL_DISPLAY.length - 1) {
 				$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
@@ -470,6 +465,11 @@ function acceptForcedRoll() {
 	$("#forceRollPanel").removeClass("double triple").empty();
 }
 
+function cancelPlayerRoll() {
+	forcedRoll = null;
+	hidePopup();
+}
+
 function showProfilePopup(name) {
 	$("#modalBG").addClass("show");
 	$("#profileModal").addClass("show");
@@ -492,6 +492,7 @@ $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);
 $("#makeForceRoll").on("click", doForcedRoll);
 $("#forceRollContinue").on("click", acceptForcedRoll);
-$("#errorButton, #sessionSelectionCancel, #cancelForceRoll, #profileDone").on("click", hidePopup);
+$("#cancelForceRoll").on("click", cancelPlayerRoll);
+$("#errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);
 
 initializePage();

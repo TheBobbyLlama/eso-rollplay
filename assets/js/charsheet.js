@@ -322,7 +322,7 @@ function loadChar(event) {
 function characterLoaded(loadMe) {
 	if ((loadMe.val()) && (dbSanitize(nameEncode(loadMe.val().player)) == dbSanitize(character.player))) {
 		character = loadMe.val();
-		Object.setPrototypeOf(character, new CharacterSheet());
+		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		$("input[name='charName']").val(nameDecode(character.name));
 		$("input[name='charPlayer']").val(nameDecode(character.player));
 		$("select[name='charRace']").val(character.race);

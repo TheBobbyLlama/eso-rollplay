@@ -31,7 +31,7 @@ function selectCharacter() {
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		character = loadMe.val();
-		Object.setPrototypeOf(character, new CharacterSheet());
+		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		$("#profileText h2").text(nameDecode(character.name));
 		character.print("printout");
 	} else {
