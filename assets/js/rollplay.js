@@ -44,24 +44,23 @@ function resetRollSelect() {
 
 function performRoll() {
 	var key = $("#rollSelect").val();
-	var result = character.makeRoll({ key });
-	var modifier = character.getRollModifier(key);
-	var comment = $("#rollComment");
-	dbPushEvent(new EventRoll(character.name, key, modifier, result, comment.val()));
 
-	comment.val("");
+	forcePlayerRoll("Make your roll.", "", { key, playerInitiated: true, callback: resolveRoll });
+}
+
+function resolveRoll() {
+	dbPushEvent(new EventRoll(character.name, forcedRoll));
 }
 
 function performAttack() {
-	var target = $("#rollTarget").val();
+	var target = nameEncode($("#rollTarget").val());
 	var key = $("#rollSelect").val();
-	var result = character.makeRoll({ key });
-	var modifier = character.getRollModifier(key);
-	var comment = $("#rollComment");
 
-	dbPushEvent(new EventPlayerAttack(character.name, nameEncode(target), key, modifier, result, comment.val()));
+	forcePlayerRoll("Make your attack roll.", "", { target, key, playerInitiated: true, callback: resolveAttack });
+}
 
-	comment.val("");
+function resolveAttack() {
+	dbPushEvent(new EventPlayerAttack(character.name, forcedRoll));
 }
 
 function toggleLazyMode() {
@@ -382,7 +381,7 @@ function forcePlayerRoll(message, comment, rollInfo) {
 	if (!dispatchMessages) {
 		return;
 	} else if ((forcedRoll) || ($("#modalBG").hasClass("show"))) {
-		dbPushEvent(new EventPlayerBusy(character.name, parent));
+		dbPushEvent(new EventPlayerBusy(character.name, rollInfo.parent));
 		return;
 	}
 
@@ -402,6 +401,7 @@ function forcePlayerRoll(message, comment, rollInfo) {
 		$("#forceRollGMComment").text(comment);
 		$("#forceRollGMComment").toggleClass("show", !!(comment));
 		$("#rollModal button, #rollModal input").removeAttr("disabled");
+		$("#cancelForceRoll").toggle(!!forcedRoll.playerInitiated);
 		$("#forceRollContinue").hide();
 	}
 }
@@ -492,6 +492,6 @@ $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);
 $("#makeForceRoll").on("click", doForcedRoll);
 $("#forceRollContinue").on("click", acceptForcedRoll);
-$("#errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);
+$("#errorButton, #sessionSelectionCancel, #cancelForceRoll, #profileDone").on("click", hidePopup);
 
 initializePage();

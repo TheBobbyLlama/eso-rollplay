@@ -41,7 +41,6 @@
 								<label for="rollSelect">Roll using</label>
 								<select id="rollSelect" name="rollSelect"></select>
 							</p>
-							<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>					
 						</div>
 						<div>
 							<div>
@@ -61,7 +60,7 @@
 				</div>
 				<div>
 					<input type="checkbox" id="lazyMode" name="lazyMode"></input>
-					<label for="lazyMode" title="Any incoming roll requests from the GM are resolved automatically.">Lazy Mode</label>
+					<label for="lazyMode" title="Any incoming rolls you need to make are resolved automatically.">Lazy Mode</label>
 				</div>
 			</section>
 		</div>
@@ -85,9 +84,10 @@
 			<form>
 				<input type="text" id="forceRollComment" placeholder='Comment' maxlength="100"></input>
 				<button id="makeForceRoll" type="submit">Roll!</button>
+				<button id="cancelForceRoll" type="button">Cancel</button>
 			</form>
 			<div id="forceRollPanel"></div>
-			<button id="forceRollContinue">Continue</button>
+			<button id="forceRollContinue">Ok</button>
 		</div>
 		<div id="profileModal">
 			<iframe></iframe>

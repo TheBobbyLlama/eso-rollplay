@@ -631,7 +631,7 @@ function forceEventType(event) {
 		case "NPCToughness":
 			return Object.setPrototypeOf(event, new EventNPCToughnessRoll("", 0, 0, 0, 0, 0, 0));
 		case "PlayerAttack":
-			return Object.setPrototypeOf(event, new EventPlayerToughnessRoll("", null));
+			return Object.setPrototypeOf(event, new EventPlayerAttack("", null));
 		case "PlayerBusy":
 			return Object.setPrototypeOf(event, new EventAddPlayer(""));
 		case "PlayerAttackResolution":
@@ -647,7 +647,7 @@ function forceEventType(event) {
 		case "PlayerToughness":
 			return Object.setPrototypeOf(event, new EventPlayerToughnessRoll("", null));
 		case "Roll":
-			return Object.setPrototypeOf(event, new EventRoll("", 0, 0, 0, ""));
+			return Object.setPrototypeOf(event, new EventRoll("", null));
 		case "RollContested":
 			return Object.setPrototypeOf(event, new EventContestedRoll("", "", 0, 0, 0, ""));
 		case "RollContestedSubordinate":
@@ -831,15 +831,11 @@ class EventPlayerBusy extends SharedEvent {
 }
 
 // ACTIVE EVENTS
-class EventRoll extends SharedEvent {
-	constructor(myPlayer, mySkill, myMod, myResult, myComment) {
-		super("Roll");
-		this.id = Date.now();
+class EventRoll extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("Roll", rollData);
+		this.id = "PlayerContest_" + Date.now();
 		this.player = myPlayer;
-		this.key = mySkill;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.comment = nameEncode(myComment);
 	}
 
 	toHTML() {
@@ -1117,16 +1113,14 @@ class EventNPCToughnessRoll extends SharedEvent {
 	}
 }
 
-class EventPlayerAttack extends SharedEvent {
-	constructor(myPlayer, myTarget, myKey, myMod, myResult, myComment) {
-		super("PlayerAttack");
+class EventPlayerAttack extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("PlayerAttack", rollData);
 		this.id = "Attack_" + Date.now();
 		this.player = myPlayer;
-		this.target = myTarget;
-		this.key = myKey;
-		this.modifier = myMod;
-		this.result = myResult;
-		this.comment = nameEncode(myComment);
+		if (rollData) {
+			this.target = rollData.target;
+		}
 	}
 
 	toHTML() {
@@ -1170,7 +1164,7 @@ class EventPlayerAttackResolution extends SharedEvent {
 
 class EventPlayerDamageRoll extends SharedRollEvent {
 	constructor(myPlayer, rollData) {
-		super("PlayerDamage");
+		super("PlayerDamage", rollData);
 		this.player = myPlayer;
 		if (rollData) {
 			this.target = rollData.npc;
