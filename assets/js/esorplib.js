@@ -845,7 +845,7 @@ class EventRoll extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='luckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
 		} else  {
 			rollType = " rolls " + keyName;
 		}
