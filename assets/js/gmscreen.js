@@ -746,7 +746,7 @@ function sessionLoaded(loadMe) {
 		if ((!currentSession.statuses) || (!currentSession.statuses.length)) { currentSession.statuses = []; }
 
 		for (i = 0; i < currentSession.npcs.length; i++) {
-			Object.setPrototypeOf(currentSession.npcs[i], NPC.prototye);
+			Object.setPrototypeOf(currentSession.npcs[i], NPC.prototype);
 		}
 
 		for (i = 0; i < currentSession.statuses.length; i++) {
