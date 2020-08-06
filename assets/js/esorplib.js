@@ -968,7 +968,7 @@ class EventContestedResponse extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='luckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
 		} else  {
 			rollType = " rolls " + keyName;
 		}
@@ -1015,7 +1015,7 @@ class EventPlayerContestedRollSubordinate extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='luckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
 		} else  {
 			rollType = " rolls " + keyName;
 		}
@@ -1162,7 +1162,7 @@ class EventPlayerAttack extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
 		} else if (this.unlucky) {
-			rollType = " with an <span class='luckyRoll'>unlucky</span> roll";
+			rollType = " with an <span class='unluckyRoll'>unlucky</span> roll";
 		} else  {
 			rollType = "";
 		}
@@ -1220,7 +1220,7 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " makes a <span class='luckyRoll'>lucky</span> roll";
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='luckyRoll'>unlucky</span> roll";
+			rollType = " makes an <span class='unluckyRoll'>unlucky</span> roll";
 		} else  {
 			rollType = " rolls";
 		}
@@ -1253,7 +1253,7 @@ class EventPlayerDefense extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
 		} else if (this.unlucky) {
-			rollType = " with an <span class='luckyRoll'>unlucky</span> roll";
+			rollType = " with an <span class='unluckyRoll'>unlucky</span> roll";
 		} else  {
 			rollType = "";
 		}
@@ -1283,7 +1283,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " with a <span class='luckyRoll'>lucky</span> roll!";
 		} else if (this.unlucky) {
-			rollType = " with an <span class='luckyRoll'>unlucky</span> roll!";
+			rollType = " with an <span class='unluckyRoll'>unlucky</span> roll!";
 		} else  {
 			rollType = "";
 		}
