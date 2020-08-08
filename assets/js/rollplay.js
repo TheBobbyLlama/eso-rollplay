@@ -184,8 +184,10 @@ function addEventDisplay(event) {
 				eventPane.append(event.toHTML());
 				break;
 		case "PlayerArmor":
-			$("#playerArmor").prop("selectedIndex", event.armor);
-			currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
+			if (character.name == event.name) {
+				$("#playerArmor").prop("selectedIndex", event.armor);
+				currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
+			}
 			break;
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
