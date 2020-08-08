@@ -246,7 +246,7 @@ function resolveNPCAttack() {
 }
 
 function resolveNPCDamage() {
-	var armorIndex = $("#playerArmor").prop("selectedIndex");
+	var armorIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor
 
 	forcedRoll.armor = armorIndex;
 	forcedRoll.armorMod = character.getArmorModifier(armorIndex);
