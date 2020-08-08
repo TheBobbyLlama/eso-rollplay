@@ -41,6 +41,18 @@
 	cursor: pointer;
 }
 
+#charStatus {
+	margin: 14px 0;
+}
+
+#charStatus > div {
+	display: flex;
+}
+
+#charStatus label {
+	width: auto;
+}
+
 #errorModal, #rollModal {
 	display: none;
 }
@@ -263,6 +275,10 @@
 @media screen and (max-width: 575px) {
 	li {
 		height: 24px;
+	}
+
+	#charStatus > div {
+		justify-content: center;
 	}
 
 	#forceRollPanel {

@@ -13,7 +13,11 @@ function initializePage() {
 
 	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
 	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
-	$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+	$("#charStatus input, #charStatus select, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+
+	for (var i = 0; i < WORN_ARMOR.length; i++) {
+		$("#playerArmor").append("<option>" + getQuality(WORN_ARMOR[i]).name + "</option>");
+	}
 
 	resetRollSelect();
 }
@@ -39,6 +43,15 @@ function resetRollSelect() {
 				rollSelector.append("<option value='" + workingList[idx].key +"'>" + workingList[idx].name + "</option>")
 			}
 		}
+	}
+}
+
+function changeArmor() {
+	var newArmor = $("#playerArmor").prop("selectedIndex");
+	currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = newArmor;
+
+	if (dispatchMessages) {
+		dbPushEvent(new EventPlayerArmor(character.name, newArmor));
 	}
 }
 
@@ -170,6 +183,10 @@ function addEventDisplay(event) {
 
 				eventPane.append(event.toHTML());
 				break;
+		case "PlayerArmor":
+			$("#playerArmor").prop("selectedIndex", event.armor);
+			currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
+			break;
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
@@ -229,6 +246,11 @@ function resolveNPCAttack() {
 }
 
 function resolveNPCDamage() {
+	var armorIndex = $("#playerArmor").prop("selectedIndex");
+
+	forcedRoll.armor = armorIndex;
+	forcedRoll.armorMod = character.getArmorModifier(armorIndex);
+
 	dbPushEvent(new EventPlayerToughnessRoll(character.name, forcedRoll));
 }
 
@@ -316,17 +338,23 @@ function sessionLoaded(loadMe) {
 			addPlayerToList(currentSession.characters[i]);
 			Object.setPrototypeOf(currentSession.statuses[i], CharacterStatus.prototype);
 			setPlayerStatus(i, currentSession.statuses[i].injuryLevel);
+
+			if (currentSession.characters[i] == character.name) {
+				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor).removeAttr("disabled");;
+			}
 		}
 
-		for (i = 0; i < currentSession.npcs.length; i++) {
-			Object.setPrototypeOf(currentSession.npcs[i], NPC.prototype);
+		if (currentSession.npcs) {
+			for (i = 0; i < currentSession.npcs.length; i++) {
+				Object.setPrototypeOf(currentSession.npcs[i], NPC.prototype);
 
-			if (currentSession.npcs[i].status < INJURY_LEVEL_DISPLAY.length - 1) {
-				$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
+				if (currentSession.npcs[i].status < INJURY_LEVEL_DISPLAY.length - 1) {
+					$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
+				}
+
+				addNPCToList(currentSession.npcs[i].name);
+				setNPCStatus(i, currentSession.npcs[i].status);
 			}
-
-			addNPCToList(currentSession.npcs[i].name);
-			setNPCStatus(i, currentSession.npcs[i].status);
 		}
 
 		dispatchMessages = false;
@@ -490,6 +518,7 @@ function hidePopup() {
 $(window).on("online", sendDisconnectEvent);
 $(window).on("offline, unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
+$("#playerArmor").on("change", changeArmor);
 $("#charList").on("click", "li", launchCharacterProfile);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);

@@ -583,6 +583,9 @@ function addEventDisplay(event) {
 	}
 
 	switch(event.eventType) {
+		case "PlayerArmor":
+				currentSession.statuses[currentSession.characters.indexOf(event.name)].wornArmor = event.armor;
+			break;
 		case "PlayerDamage":
 			if (dispatchMessages) {
 				var curNPC = currentSession.npcs.find(element => element.name == event.target);

@@ -383,6 +383,10 @@ class CharacterSheet {
 		}
 	}
 
+	getArmorModifier(armor) {
+		return Math.floor(this.getSkill(WORN_ARMOR[armor]) / 2);
+	}
+
 	makeRoll(rollData) {
 		var result;
 		var rollCount = 0;
@@ -588,10 +592,15 @@ class NPC {
 	}
 }
 
+const WORN_ARMOR = [ "LightArmor", "MediumArmor", "HeavyArmor" ];
+
 class CharacterStatus {
 	constructor(character) {
 		this.name = character.name;
 		this.injuryLevel = 0;
+		
+		const armorLevels = WORN_ARMOR.map(element => character.getSkill(element));
+		this.wornArmor = armorLevels.indexOf(Math.max(...armorLevels));
 	}
 }
 
@@ -630,6 +639,8 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventNPCRoll.prototype);
 		case "NPCToughness":
 			return Object.setPrototypeOf(event, EventNPCToughnessRoll.prototype);
+		case "PlayerArmor":
+			return Object.setPrototypeOf(event, EventPlayerArmor.prototype);
 		case "PlayerAttack":
 			return Object.setPrototypeOf(event, EventPlayerAttack.prototype);
 		case "PlayerBusy":
@@ -1274,6 +1285,12 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 	constructor(myPlayer, rollData) {
 		super("PlayerToughness", rollData);
 		this.player = myPlayer;
+
+		if (rollData) {
+			this.armor = rollData.armor;
+			this.armorMod = rollData.armorMod;
+			this.result += this.armorMod;
+		}
 	}
 
 	toHTML() {
@@ -1296,7 +1313,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		
 		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
 				"<div>" +
-					"<p>" + this.player + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + rollType + "</p>" +
+					"<p>" + this.player + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + " + " + this.armorMod + " armor)" + rollType + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1339,5 +1356,18 @@ class EventNPCStatus extends SharedEvent {
 		} else {
 			return "<div><span>" + this.name + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
 		}
+	}
+}
+
+// PLAYER STATUS EVENTS
+class EventPlayerArmor extends SharedEvent {
+	constructor(myName, armorIndex) {
+		super("PlayerArmor");
+		this.name = myName;
+		this.armor = armorIndex;
+	}
+
+	toHTML() {
+		return "<div class='gmInfo'>" + this.name + " has equipped " + getQuality(WORN_ARMOR[this.armor]).name + ".</div>";
 	}
 }
