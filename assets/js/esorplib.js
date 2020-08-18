@@ -1268,11 +1268,17 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 		this.player = myPlayer;
 		if (rollData) {
 			this.target = rollData.npc;
+
+			if (rollData.shieldPenalty) {
+				this.shieldPenalty = rollData.shieldMod;
+				this.result += this.shieldPenalty;
+			}
 		}
 	}
 
 	toHTML() {
 		var rollType;
+		var shieldString;
 
 		if (this.lucky) {
 			rollType = " makes a <span class='luckyRoll'>lucky</span> roll";
@@ -1282,9 +1288,15 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 			rollType = " rolls";
 		}
 
+		if (this.shieldPenalty) {
+			shieldString = " - " + Math.abs(this.shieldPenalty) + " shield";
+		} else {
+			shieldString = "";
+		}
+
 		return "<div class='playersubordinate'>" +
 				"<div>" +
-					"<p>" + this.player + rollType + " for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+					"<p>" + this.player + rollType + " for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +

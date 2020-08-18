@@ -215,7 +215,7 @@ function addEventDisplay(event) {
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
-					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
 				}
 			} else {
 				$("#" + event.parent).append(event.toHTML());
@@ -287,6 +287,15 @@ function resolveNPCDamage() {
 }
 
 function resolvePlayerDamage() {
+	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
+
+	console.log(weaponIndex);
+
+	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
+		forcedRoll.shieldPenalty = true;
+		forcedRoll.shieldMod = -2;
+	}
+
 	dbPushEvent(new EventPlayerDamageRoll(character.name, forcedRoll));
 }
 
