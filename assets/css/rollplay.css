@@ -42,11 +42,13 @@
 }
 
 #charStatus {
+	display: grid;
+	grid-template-columns: auto auto;
 	margin: 14px 0;
 }
 
-#charStatus > div {
-	display: flex;
+#charStatus button, #charStatus h3 {
+	grid-column: span 2;
 }
 
 #charStatus label {
@@ -277,7 +279,7 @@
 		height: 24px;
 	}
 
-	#charStatus > div {
+	#charStatus {
 		justify-content: center;
 	}
 

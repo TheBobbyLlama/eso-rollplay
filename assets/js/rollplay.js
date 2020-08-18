@@ -13,7 +13,11 @@ function initializePage() {
 
 	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
 	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
-	$("#charStatus input, #charStatus select, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+	$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+
+	for (var i = 0; i < EQUIPPED_WEAPON.length; i++) {
+		$("#playerWeapon").append("<option>" + EQUIPPED_WEAPON[i].weapon + "</option>");
+	}
 
 	for (var i = 0; i < WORN_ARMOR.length; i++) {
 		$("#playerArmor").append("<option>" + getQuality(WORN_ARMOR[i]).name + "</option>");
@@ -43,6 +47,16 @@ function resetRollSelect() {
 				rollSelector.append("<option value='" + workingList[idx].key +"'>" + workingList[idx].name + "</option>")
 			}
 		}
+	}
+}
+
+function changeWeapon(event) {
+	var newWeapon = $("#playerWeapon").prop("selectedIndex");
+	currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = newWeapon;
+	$("#rollSelect").val(EQUIPPED_WEAPON[newWeapon].quality);
+
+	if ((event) && (dispatchMessages)) {
+		dbPushEvent(new EventPlayerWeapon(character.name, newWeapon));
 	}
 }
 
@@ -136,11 +150,11 @@ function addEventDisplay(event) {
 			break;
 		case "Close":
 			eventPane[0].textContent = "";
-			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+			$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
 			dbLoadSessionByParticipant(character.name, loadSessionList);
 			break;
 		case "End":
-			$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+			$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
 			eventPane.append(event.toHTML());
 			dbClearEventSystem();
 		case "InjuryPlayer":
@@ -186,9 +200,18 @@ function addEventDisplay(event) {
 		case "PlayerArmor":
 			if (character.name == event.name) {
 				$("#playerArmor").prop("selectedIndex", event.armor);
-				currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
 			}
+
+			currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
 			break;
+		case "PlayerWeapon":
+				if (character.name == event.name) {
+					$("#playerWeapon").prop("selectedIndex", event.weapon);
+					changeWeapon(false); // Why do I have to manually fire this???
+				}
+	
+				currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = event.weapon;
+				break;
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
@@ -244,11 +267,18 @@ function resolvePlayerContestedRoll() {
 }
 
 function resolveNPCAttack() {
+	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
+
+	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
+		forcedRoll.useBlock = true;
+		forcedRoll.blockMod = character.getBlockModifier();
+	}
+
 	dbPushEvent(new EventPlayerDefense(character.name, forcedRoll));
 }
 
 function resolveNPCDamage() {
-	var armorIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor
+	var armorIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor;
 
 	forcedRoll.armor = armorIndex;
 	forcedRoll.armorMod = character.getArmorModifier(armorIndex);
@@ -342,7 +372,9 @@ function sessionLoaded(loadMe) {
 			setPlayerStatus(i, currentSession.statuses[i].injuryLevel);
 
 			if (currentSession.characters[i] == character.name) {
-				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor).removeAttr("disabled");;
+				$("#playerWeapon").prop("selectedIndex", currentSession.statuses[i].equippedWeapon).removeAttr("disabled");
+				changeWeapon(false); // Why do I have to manually fire this???
+				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor).removeAttr("disabled");
 			}
 		}
 
@@ -520,6 +552,7 @@ function hidePopup() {
 $(window).on("online", sendDisconnectEvent);
 $(window).on("offline, unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
+$("#playerWeapon").on("change", changeWeapon);
 $("#playerArmor").on("change", changeArmor);
 $("#charList").on("click", "li", launchCharacterProfile);
 $("#rollExecute").on("click", performRoll);

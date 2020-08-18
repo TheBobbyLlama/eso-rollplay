@@ -85,7 +85,7 @@ const races = [
 	new CharacterTemplate("Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
 		{ Agility: -2, Speed: -2, Personality: 2 },
-		{ ImperialLore: 4, OneHandandShield: 1 }
+		{ ImperialLore: 4, Block: 1 }
 	),
 	new CharacterTemplate("Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
@@ -106,7 +106,7 @@ const races = [
 	new CharacterTemplate("Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
-		{ OneHandandShield: 1, RedguardLore: 4 }
+		{ OneHanded: 1, RedguardLore: 4 }
 	)
 ];
 
@@ -147,7 +147,8 @@ const attributes = [
 
 const skillsCombat = [
 	new Skill("Two Handed", "Strength", "How well you use two handed weapons."),
-	new Skill("One Hand and Shield", "Strength","How well you use a weapon and shield."),
+	new Skill("One Handed", "Strength","How well you use a single one handed weapon."),
+	new Skill("Block", "Endurance", "How well you protect yourself with a shield."),
 	new Skill("Dual Wield", "Agility", "How well you use two weapons at once."),
 	new Skill("Bow", "Agility", "How well you use bows."),
 	new Skill("Unarmed", "Strength", "How well you can fight or grapple with your bare hands."),
@@ -176,13 +177,13 @@ const skillsGeneral = [
 ];
 
 const skillsCrafting = [
-	new Skill("Alchemy", "Intelligence", "TODO"),
-	new Skill("Blacksmithing", "Endurance", "TODO"),
-	new Skill("Clothing", "Agility", "TODO"),
-	new Skill("Enchanting", "Intelligence", "TODO"),
-	new Skill("Jewelry", "Agility", "TODO"),
-	new Skill("Provisioning", "Willpower", "TODO"),
-	new Skill("Woodworking", "Agility", "TODO")
+	new Skill("Alchemy", "Intelligence", "How well you can brew potions and poisons, as well as recognize and use alchemical ingredients."),
+	new Skill("Blacksmithing", "Endurance", "How well you can create metal items."),
+	new Skill("Clothing", "Agility", "How well you can make clothing and leather items."),
+	new Skill("Enchanting", "Intelligence", "How well you can add enchantments to items."),
+	new Skill("Jewelry", "Agility", "How well you can create jewelry."),
+	new Skill("Provisioning", "Willpower", "How well you can prepare food and drink."),
+	new Skill("Woodworking", "Agility", "How well you can create wooden items.")
 ];
 
 // These skills represent specialized knowledge.  There is no governing attribute associated!
@@ -385,6 +386,10 @@ class CharacterSheet {
 
 	getArmorModifier(armor) {
 		return Math.floor(this.getSkill(WORN_ARMOR[armor]) / 2);
+	}
+
+	getBlockModifier() {
+		return Math.floor(this.getSkill("Block") / 2);
 	}
 
 	makeRoll(rollData) {
@@ -592,12 +597,51 @@ class NPC {
 	}
 }
 
+const EQUIPPED_WEAPON = [
+	{
+		weapon: "Two Handed",
+		quality: "TwoHanded"
+	},
+	{
+		weapon: "One Hand and Shield",
+		quality: "OneHanded",
+		useBlock: true
+	},
+	{
+		weapon: "Dual Wield",
+		quality: "DualWield"
+	},
+	{
+		weapon: "Bow",
+		quality: "Bow"
+	},
+	{
+		weapon: "Staff",
+		quality: "Destruction"
+	},
+	{
+		weapon: "Unarmed",
+		quality: "Unarmed"
+	},
+	{
+		weapon: "One Handed Only",
+		quality: "OneHanded"
+	},
+	{
+		weapon: "Shield Only",
+		quality: "Unarmed",
+		useBlock: true
+	}
+];
 const WORN_ARMOR = [ "LightArmor", "MediumArmor", "HeavyArmor" ];
 
 class CharacterStatus {
 	constructor(character) {
 		this.name = character.name;
 		this.injuryLevel = 0;
+
+		const weaponLevels = EQUIPPED_WEAPON.map(element => character.getSkill(element.quality));
+		this.equippedWeapon = weaponLevels.indexOf(Math.max(...weaponLevels));
 		
 		const armorLevels = WORN_ARMOR.map(element => character.getSkill(element));
 		this.wornArmor = armorLevels.indexOf(Math.max(...armorLevels));
@@ -641,6 +685,8 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventNPCToughnessRoll.prototype);
 		case "PlayerArmor":
 			return Object.setPrototypeOf(event, EventPlayerArmor.prototype);
+		case "PlayerWeapon":
+			return Object.setPrototypeOf(event, EventPlayerWeapon.prototype);
 		case "PlayerAttack":
 			return Object.setPrototypeOf(event, EventPlayerAttack.prototype);
 		case "PlayerBusy":
@@ -1253,25 +1299,37 @@ class EventPlayerDefense extends SharedRollEvent {
 		super("PlayerDefense", rollData);
 		if (rollData) {
 			this.attacker = rollData.npc;
+
+			if (rollData.useBlock) {
+				this.blockMod = rollData.blockMod;
+				this.result += this.blockMod;
+			}
 		}
 
 		this.player = myPlayer;
 	}
 
 	toHTML() {
+		var blockString;
 		var rollType;
 
 		if (this.lucky) {
 			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
 		} else if (this.unlucky) {
 			rollType = " with an <span class='unluckyRoll'>unlucky</span> roll";
-		} else  {
+		} else {
 			rollType = "";
+		}
+
+		if (this.blockMod) {
+			blockString = " + " + this.blockMod + " shield";
+		} else {
+			blockString = "";
 		}
 
 		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.attacker + "'s attack" + rollType + "!</p>" +
+					"<p>" + this.player + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") vs. " + this.attacker + "'s attack" + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1360,6 +1418,18 @@ class EventNPCStatus extends SharedEvent {
 }
 
 // PLAYER STATUS EVENTS
+class EventPlayerWeapon extends SharedEvent {
+	constructor(myName, weaponIndex) {
+		super("PlayerWeapon");
+		this.name = myName;
+		this.weapon = weaponIndex;
+	}
+
+	toHTML() {
+		return "<div class='gmInfo'>" + this.name + " has equipped " + EQUIPPED_WEAPON[this.weapon].weapon + ".</div>";
+	}
+}
+
 class EventPlayerArmor extends SharedEvent {
 	constructor(myName, armorIndex) {
 		super("PlayerArmor");
