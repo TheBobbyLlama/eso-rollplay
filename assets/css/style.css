@@ -69,6 +69,17 @@ h1, h2, h3, h4 {
 	font-weight: bold;
 }
 
+h1::before {
+	background-image: url('../images/logo.png');
+	background-size: cover;
+	content: '';
+	display: inline-block;
+	position: relative;
+	height: 40px;
+	left: -8px;
+	top: 8px;
+	width: 40px;
+}
 
 section {
 	background-color: var(--content-background);
@@ -324,6 +335,15 @@ ul {
 	button, input, select {
 		height: 30px;
 		padding: 6px;
+	}
+	
+	h1::before {
+		display: block;
+		height: 60px;
+		left: 0;
+		margin: 4px auto 0 auto;
+		top: 0;
+		width: 60px;
 	}
 
 	label, #eventPane {
