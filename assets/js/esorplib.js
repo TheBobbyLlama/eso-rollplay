@@ -57,75 +57,159 @@ const races = [
 	new CharacterTemplate("Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
 		{ Strength: -2, Intelligence: 2, Endurance: -2 },
-		{ AltmerLore: 4, Destruction: 1 }
+		{ Alteration: 1, AltmerLore: 4, Destruction: 1, Mysticism: 1 }
 	),
 	new CharacterTemplate("Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
-		{ HistLore: 4, Restoration: 1, Unarmed: 1 },
+		{ Athletics: 1, HistLore: 4, Restoration: 1, Unarmed: 1 },
 		[ "Disease" ]
 	),
 	new CharacterTemplate("Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{ BosmerLore: 4, Bow: 1 },
+		{ BosmerLore: 4, Bow: 1, HandleAnimal: 1, MediumArmor: 1, Sneak: 1 },
 		[ "Poison" ]
 	),
 	new CharacterTemplate("Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
 		{ Strength: -2, Intelligence: 2, Willpower: 2, Agility: -2, Endurance: -2 },
-		{ BretonLore: 4, LightArmor: 1 }
+		{ BretonLore: 4, Conjuration: 1, LightArmor: 1, Mysticism: 1 }
 	),
 	new CharacterTemplate("Dunmer",
 		{ Willpower: -2, Speed: 2, Personality: -2 },
 		{ Willpower: -2, Speed: 2, Endurance: -2 },
-		{ DualWield: 1, DunmerLore: 4 },
+		{ Destruction: 1, DualWield: 1, DunmerLore: 4, Mysticism: 1 },
 		[ "Flame" ]
 	),
 	new CharacterTemplate("Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
 		{ Agility: -2, Speed: -2, Personality: 2 },
-		{ ImperialLore: 4, Block: 1 }
+		{ Block: 1, ImperialLore: 4, Mercantile: 1, OneHanded: 1, Speechcraft: 1 }
 	),
 	new CharacterTemplate("Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
-		{ KhajiitLore: 4, MediumArmor: 1, Unarmed: 2 }
+		{ Acrobatics: 1, KhajiitLore: 4, MediumArmor: 1, Unarmed: 1 }
 	),
 	new CharacterTemplate("Nord",
 		{ Strength: 2, Intelligence: -2, Agility: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 2, Intelligence: -2, Willpower: 2, Agility: -2, Personality: -2 },
-		{ NordLore: 4, TwoHanded: 1 },
+		{ HeavyArmor: 1, MediumArmor: 1, NordLore: 4, TwoHanded: 1 },
 		[ "Frost" ]
 	),
 	new CharacterTemplate("Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
-		{ HeavyArmor: 1, OrcishLore: 4 }
+		{ Blacksmithing: 1, Block: 1, HeavyArmor: 1, OrcishLore: 4 }
 	),
 	new CharacterTemplate("Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
-		{ OneHanded: 1, RedguardLore: 4 }
-	)
+		{ Athletics: 1, DualWield: 1, OneHanded: 1, RedguardLore: 4 }
+	),
+	new CharacterTemplate("Khajiit (Ohmes)",
+		{ Willpower: -2, Agility: 2, Endurance: -2 },
+		{ Strength: -2, Willpower: -2, Agility: 2 },
+		{ Acrobatics: 1, KhajiitLore: 4, MediumArmor: 1, Speechcraft: 1 }
+	),
+	new CharacterTemplate("Maormer",
+		{ Strength: -2, Willpower: 2, Speed: -2 },
+		{ Strength: -2, Willpower: 2, Endurance: -2 },
+		{ Athletics: 1, Destruction: 1, MaormerLore: 1, Sneak: 1 }
+	),
+	new CharacterTemplate("Reachman",
+		{ Strength: 2, Speed: -2, Personality: -2 },
+		{ Willpower: 2, Speed: -2, Personality: -2 },
+		{ MediumArmor: 1, Mysticism: 1, ReachLore: 1, Survival: 1 }
+	),
 ];
 
 const supernaturals = [
 	new CharacterTemplate("", {}, {}, {}),
+	new CharacterTemplate("Werewolf",
+		{ Strength: 1, Agility: 1, Endurance: 1 },
+		{ Strength: 1, Agility: 1, Endurance: 1 },
+		{ Perception: 3, Survival: 2 },
+		[ "Disease" ],
+		[ "Silver" ]
+	),
 	new CharacterTemplate("Vampire",
-		{ Strength: 2, Agility: 2, Speed: 2 },
-		{ Strength: 2, Agility: 2, Speed: 2 },
-		{ Perception: 2 },
+		{ Strength: 2, Willpower: 2, Speed: 2 },
+		{ Strength: 2, Willpower: 2, Speed: 2 },
+		{ BloodMagic: 2, Perception: 2, Sneak: 1 },
 		[ "Disease" ],
 		[ "Flame", "Silver" ]
 	),
-	new CharacterTemplate("Werewolf",
-		{ Strength: 1, Endurance: 2 },
-		{ Strength: 1, Endurance: 2 },
-		{ Perception: 3, Survival: 1 },
+	new CharacterTemplate("Vampire (Daggerfall)",
+		{ Strength: 2, Intelligence: 2, Willpower: 2, Speed: 2 },
+		{ Strength: 2, Intelligence: 2, Willpower: 2, Speed: 2 },
+		{ BloodMagic: 2, Perception: 2 },
 		[ "Disease" ],
-		[ "Poison", "Silver" ]
+		[ "Flame", "Silver" ]
+	),
+	new CharacterTemplate("Vampire (Aundae)",
+		{ Strength: 2, Willpower: 4, Speed: 2 },
+		{ Strength: 2, Willpower: 4, Speed: 2 },
+		{ BloodMagic: 2, Destruction: 1, Illusion: 1, Perception: 2 },
+		[ "Disease" ],
+		[ "Flame", "Silver" ]
+	),
+	new CharacterTemplate("Vampire (Berne)",
+		{ Strength: 2, Willpower: 2, Agility: 2, Speed: 2 },
+		{ Strength: 2, Willpower: 2, Agility: 2, Speed: 2 },
+		{ BloodMagic: 2, LightArmor: 1, Perception: 2, Sneak: 1 },
+		[ "Disease" ],
+		[ "Flame", "Silver" ]
+	),
+	new CharacterTemplate("Vampire (Quarra)",
+		{ Strength: 4, Willpower: 2, Speed: 2 },
+		{ Strength: 4, Willpower: 2, Speed: 2 },
+		{ BloodMagic: 2, HeavyArmor: 1, Perception: 2, Unarmed: 1 },
+		[ "Disease" ],
+		[ "Flame", "Silver" ]
+	),
+	new CharacterTemplate("Vampire (Cyrodiil)",
+		{ Strength: 2, Willpower: 2, Speed: 2, Personality: 2 },
+		{ Strength: 2, Willpower: 2, Speed: 2, Personality: 2 },
+		{ BloodMagic: 2, Illusion: 1, Perception: 2, Speechcraft: 1 },
+		[ "Disease" ],
+		[ "Flame", "Silver" ]
+	),
+	new CharacterTemplate("Vampire (Volkihar)",
+		{ Strength: 2, Willpower: 2, Speed: 2 },
+		{ Strength: 2, Willpower: 2, Speed: 2 },
+		{ BloodMagic: 2, Perception: 2 },
+		[ "Disease" ],
+		[ "Flame", "Silver" ]
 	)
+];
+
+const supernaturalTransformations = [
+	{
+		parent: "Werewolf",
+		template: new CharacterTemplate("Werewolf",
+		{ Strength: 2, Speed: 2, Endurance: 2 },
+		{ Strength: 2, Speed: 2, Endurance: 2 },
+		{ Perception: 1, Unarmed: 3 },
+		[],
+		[ "Poison" ]
+		)
+	},
+	{
+		parent: "Vampire",
+		template: new CharacterTemplate("Blood Scion",
+		{ Endurance: 1 },
+		{ Endurance: 1 },
+		{ BloodMagic: 1, Unarmed: 1})
+	},
+	{
+		parent: "Vampire (Volkihar)",
+		template: new CharacterTemplate("Vampire Lord",
+		{ Speed: 2, Endurance: 2 },
+		{ Speed: 2, Endurance: 2 },
+		{ BloodMagic: 2, Destruction: 2, Illusion: 2, Mysticism: 2, Unarmed: 2})
+	}
 ];
 
 function getTemplate(name, list) {

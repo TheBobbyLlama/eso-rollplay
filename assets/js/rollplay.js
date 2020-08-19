@@ -289,8 +289,6 @@ function resolveNPCDamage() {
 function resolvePlayerDamage() {
 	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
 
-	console.log(weaponIndex);
-
 	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
 		forcedRoll.shieldPenalty = true;
 		forcedRoll.shieldMod = -2;
