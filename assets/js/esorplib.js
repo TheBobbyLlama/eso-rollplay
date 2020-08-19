@@ -116,12 +116,12 @@ const races = [
 	new CharacterTemplate("Maormer",
 		{ Strength: -2, Willpower: 2, Speed: -2 },
 		{ Strength: -2, Willpower: 2, Endurance: -2 },
-		{ Athletics: 1, Destruction: 1, MaormerLore: 1, Sneak: 1 }
+		{ Athletics: 1, Destruction: 1, MaormerLore: 4, Sneak: 1 }
 	),
 	new CharacterTemplate("Reachman",
 		{ Strength: 2, Speed: -2, Personality: -2 },
 		{ Willpower: 2, Speed: -2, Personality: -2 },
-		{ MediumArmor: 1, Mysticism: 1, ReachLore: 1, Survival: 1 }
+		{ MediumArmor: 1, Mysticism: 1, ReachLore: 4, Survival: 1 }
 	),
 ];
 
