@@ -1,4 +1,5 @@
 const statusClasses = [ "statusUnhurt", "statusInjured", "statusCritical", "statusIncapacitated", "statusHidden" ];
+const transformRevertLabel = "End Transformation";
 
 var character = new CharacterSheet();
 var currentSession;
@@ -67,6 +68,12 @@ function changeArmor() {
 	if (dispatchMessages) {
 		dbPushEvent(new EventPlayerArmor(character.name, newArmor));
 	}
+}
+
+function requestTransformation() {
+	var transformation = $(this).attr("data-key");
+
+	dbPushEvent(new EventPlayerRequestTransform(character.name, transformation));
 }
 
 function performRoll() {
@@ -157,6 +164,21 @@ function addEventDisplay(event) {
 			$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
 			eventPane.append(event.toHTML());
 			dbClearEventSystem();
+			break;
+		case "GMAllow":
+			if (event.player == character.name) {
+				eventPane.append(event.toHTML());
+			}
+			break;
+		case "GMDeny":
+			if (event.player == character.name) {
+				eventPane.append(event.toHTML());
+
+				if (event.parent.startsWith("RequestTransform_")) {
+					$("#transformButton").removeAttr("disabled");
+				}
+			}
+			break;
 		case "InjuryPlayer":
 			if (dispatchMessages) {
 				setPlayerStatus(currentSession.characters.indexOf(event.player), event.status);
@@ -224,9 +246,40 @@ function addEventDisplay(event) {
 		case "PlayerDamage":
 		case "RollPlayerContestedSubordinate":
 		case "RollSubordinateResolution":
-				$("#" + event.parent).append(event.toHTML());
+			$("#" + event.parent).append(event.toHTML());
+			break;
+		case "PlayerRequestTransform":
+			if (event.name == character.name) {
+				$("#transformButton").attr("disabled", "true");
+			}
+			break;
 		case "PlayerToughness":
-				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
+			eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
+			break;
+		case "PlayerTransform":
+				if (event.player == character.name) {
+					if (event.transform) {
+						character.transformation = event.transform;
+						$("#transformButton").text(transformRevertLabel).attr("data-key", "").removeAttr("disabled");
+					} else {
+						delete character.transformation;
+
+						var targetTransform = supernaturalTransformations.find(element => element.parent === character.supernatural);
+
+						if (targetTransform) {
+							var transformName = targetTransform.template.name;
+							$("#transformButton").text("Transform into " + transformName).attr("data-key", transformName).removeAttr("disabled");
+						}
+					}
+
+					character.print("printout");
+				}
+				eventPane.append(event.toHTML());
+			break;
+		case "PromptRoll":
+			if ((dispatchMessages && (event.player == character.name))) {
+				forcePlayerRoll("Roll " + getQuality(event.key).name + "!", event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
+			}
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
@@ -327,7 +380,8 @@ function loadChar(event) {
 	}
 
 	$("#rollTarget").empty();
-	$("#rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+	$("#charStatus button").remove();
+	$("#charStatus input, #charStatus select, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
 	dbLoadCharacter(tmpName, characterLoaded)
 }
 
@@ -337,6 +391,14 @@ function characterLoaded(loadMe) {
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		localStorage.setItem("ESORP[name]", nameDecode(character.name));
 		localStorage.setItem("ESORP[player]", nameDecode(character.player));
+
+		var targetTransform = supernaturalTransformations.find(element => element.parent === character.supernatural);
+
+		if (targetTransform) {
+			var transformName = targetTransform.template.name;
+			$("#charStatus").append("<button type='button' id='transformButton' data-key='" + transformName + "' disabled>Transform into " + transformName + "</button>");
+		}
+
 		character.print("printout");
 		resetRollSelect();
 
@@ -379,9 +441,10 @@ function sessionLoaded(loadMe) {
 			setPlayerStatus(i, currentSession.statuses[i].injuryLevel);
 
 			if (currentSession.characters[i] == character.name) {
-				$("#playerWeapon").prop("selectedIndex", currentSession.statuses[i].equippedWeapon).removeAttr("disabled");
+				$("#playerWeapon").prop("selectedIndex", currentSession.statuses[i].equippedWeapon);
 				changeWeapon(false); // Why do I have to manually fire this???
-				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor).removeAttr("disabled");
+				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor);
+				$("#charStatus button, #charStatus input, #charStatus select").removeAttr("disabled");
 			}
 		}
 
@@ -561,6 +624,7 @@ $(window).on("offline, unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
 $("#playerWeapon").on("change", changeWeapon);
 $("#playerArmor").on("change", changeArmor);
+$("#charStatus").on("click", "#transformButton", requestTransformation);
 $("#charList").on("click", "li", launchCharacterProfile);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);

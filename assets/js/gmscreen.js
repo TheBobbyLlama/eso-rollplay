@@ -3,6 +3,7 @@ var currentSession;
 var dispatchMessages = false;
 
 var activeNPC = 0;
+var activePlayer = 0;
 
 var eventPane = $("#eventPane");
 
@@ -18,7 +19,7 @@ function initializePage() {
 	var i;
 	var attackSelectors = $("select[name='npcAttackType']");
 	var resistSelectors = $("select[name='npcResist'], select[name='npcWeakness']");
-	var qualitySelectors = $("#contestedStat, #playerKey1, #playerKey2");
+	var qualitySelectors = $("#rollStat, #playerKey1, #playerKey2");
 	var bonusSelectors = $("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus'], #rollBonus, #contestedBonus");
 
 	initializeDB();
@@ -244,7 +245,22 @@ function activateNPC(index) {
 
 // Selects a player for viewing.
 function activatePlayer(index) {
+	activePlayer = index;
+
+	$("#playerControls button[name='transformButton']").remove();
+
 	characterList[index].print("printout", true);
+
+	if (characterList[index].transformation) {
+		$("#playerControls").append("<button type='button' name='transformButton' data-key=''>End Transformation</button>");
+	} else {
+		var targetTransform = supernaturalTransformations.find(element => element.parent === characterList[index].supernatural);
+
+		if (targetTransform) {
+			var transformName = targetTransform.template.name;
+			$("#playerControls").append("<button type='button' name='transformButton' data-key='" + transformName + "'>Transform into " + transformName + "</button>");
+		}
+	}
 }
 
 function setNPCActive() {
@@ -253,6 +269,12 @@ function setNPCActive() {
 
 function setPlayerActive() {
 	activatePlayer($(this).closest("li").attr("data-index"));
+}
+
+function forcePlayerTransform() {
+	var button = $(this);
+
+	dbPushEvent(new EventPlayerTransform(currentSession.characters[activePlayer], button.attr("data-key"), null, ""));
 }
 
 function makeRollPlain() {
@@ -267,13 +289,25 @@ function makeRollPlain() {
 	}
 }
 
+function sendRollPrompt() {
+	var target = $("#rollTarget").val();
+
+	if (target) {
+		var stat = $("#rollStat").val();
+		var comment = $("#rollComment");
+
+		dbPushEvent(new EventPromptRoll(nameEncode(target), stat, comment.val()));
+		comment.val("");
+	}
+}
+
 function makeRollContested() {
 	var name = $("#rollNPC").val();
 	var target = $("#rollTarget").val();
 
 	if ((name) && (target)) {
 		var bonus = parseInt($("#contestedBonus").val());
-		var stat = $("#contestedStat").val();
+		var stat = $("#rollStat").val();
 		var comment = $("#rollComment");
 
 		dbPushEvent(new EventContestedRoll(nameEncode(name), nameEncode(target), stat, bonus, internalDieRoll() + bonus, comment.val()));
@@ -415,6 +449,32 @@ function sendSubordinateResult(target, pass) {
 	comment.val("");
 }
 
+function allowTransformation() {
+	var eventDiv = $(this).closest("div[id]");
+	var comment = $(this).closest("div.gmExtra").find("input[name='gmComment']");
+
+	dbPushEvent(new EventPlayerTransform(nameEncode(eventDiv.attr("data-player")), eventDiv.attr("data-key"), eventDiv.attr("id"), comment.val()));
+
+	comment.val("");
+}
+
+function denyTransformation() {
+	var eventDiv = $(this).closest("div[id]");
+	var key = eventDiv.attr("data-key");
+	var comment = $(this).closest("div.gmExtra").find("input[name='gmComment']");
+	var request;
+
+	if (key) {
+		request = "turn into a " + key;
+	} else {
+		request = "end your transformation";
+	}
+
+	dbPushEvent(new EventGMResponseDeny(nameEncode(eventDiv.attr("data-player")), request, eventDiv.attr("id"), comment.val()));
+
+	comment.val("");
+}
+
 // Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
 function confirmCreateSession() {
 	hidePopup();
@@ -506,6 +566,8 @@ function addEventDisplay(event) {
 			dbClearEventSystem();
 			$("#endSession, #npcManagement button, #npcManagement input, #npcManagement select, #playerManagement button, #playerManagement input, #playerManagement select, #rollingSection button, #rollingSection input, #rollingSection select").attr("disabled", "true");
 			break;
+		case "GMAllow":
+		case "GMDeny":
 		case "NPCAttackResolution":
 		case "NPCToughness":
 		case "PlayerDamage":
@@ -540,6 +602,36 @@ function addEventDisplay(event) {
 		case "PlayerToughness":
 		case "RollPlayerContestedSubordinate":
 			$("#" + event.parent).append(event.toHTML());
+			break;
+		case "PlayerTransform":
+			var playerIndex = currentSession.characters.indexOf(event.player);
+
+			if (dispatchMessages) {
+				if (event.transform) {
+					characterList[playerIndex].transformation = event.transform;
+					currentSession.statuses[playerIndex].transformation = event.transform;
+				} else {
+					delete characterList[playerIndex].transformation;
+					delete currentSession.statuses[playerIndex].transformation;
+				}
+
+				postSessionUpdate();
+
+				if (playerIndex == activePlayer) {
+					activatePlayer(playerIndex);		
+				}
+			}
+
+			var holder;
+			
+			if (event.parent) {
+				holder = $("#" + event.parent);
+			} else {
+				holder = eventPane;
+			}
+
+			holder.find("button, input, select").attr("disabled", "true");
+			holder.append(event.toHTML());
 			break;
 		case "RollContestedSubordinate":
 		case "RollSubordinate":
@@ -612,6 +704,16 @@ function addEventDisplay(event) {
 
 				dbPushEvent(new EventNPCDefense(event.player, event.target, defense, internalDieRoll() + defense, eventPane.children("div:last-child").attr("id")));
 			}
+			break;
+		case "PlayerRequestTransform":
+			var holder = eventPane.children().last();
+			holder.append(
+				"<div class='gmExtra'>" +
+					"<button type='button' name='transformAllow'>Allow</button>" +
+					"<button type='button' name='transformDeny'>Deny</button>" +
+					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
+				"</div>"
+			);
 			break;
 		case "Roll":
 			var holder = eventPane.children().last();
@@ -707,6 +809,11 @@ function characterReset(loadMe) {
 	if (loadMe.val()) {
 		var character = loadMe.val();
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
+
+		if (currentSession.statuses[characterList.length].transformation) {
+			character.transformation = currentSession.statuses[characterList.length].transformation;
+		}
+
 		characterList.push(character);
 
 		if (characterList.length == 1) {
@@ -753,7 +860,7 @@ function sessionLoaded(loadMe) {
 		}
 
 		for (i = 0; i < currentSession.statuses.length; i++) {
-			Object.setPrototypeOf(currentSession.statuses[i], CharacterSheet.prototype);
+			Object.setPrototypeOf(currentSession.statuses[i], CharacterStatus.prototype);
 		}
 
 		dispatchMessages = false;
@@ -780,7 +887,7 @@ function postSessionUpdate() {
 		dbSaveSession(currentSession);
 	}
 }
-
+6
 function launchProfileLink(event) {
 	event.preventDefault();
 
@@ -835,7 +942,9 @@ $("#searchPlayer").on("click", searchPlayer);
 $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
 $("#playerList ol").on("click", "a", setPlayerActive);
+$("#playerControls").on("click", "button[name='transformButton']", forcePlayerTransform);
 $("#rollPlain").on("click", makeRollPlain);
+$("#rollPrompt").on("click", sendRollPrompt);
 $("#rollContested").on("click", makeRollContested);
 $("#rollAttack").on("click", makeRollAttack);
 $("#rollPlayerContested").on("click", startPlayerContestedRoll);
@@ -848,6 +957,8 @@ $("#eventPane").on("click", "button[name='playerAttackHit']", subordinatePlayerA
 $("#eventPane").on("click", "button[name='playerAttackMiss']", subordinatePlayerAttackMiss);
 $("#eventPane").on("click", "button[name='subordinateSuccess']", subordinateSuccess);
 $("#eventPane").on("click", "button[name='subordinateFailure']", subordinateFailure);
+$("#eventPane").on("click", "button[name='transformAllow']", allowTransformation);
+$("#eventPane").on("click", "button[name='transformDeny']", denyTransformation);
 $("#printout").on("dblclick", copyOutput);
 $("#printout").on("click", "a", launchProfileLink);
 $("#playerSearchButton").on("click", performPlayerSearch);

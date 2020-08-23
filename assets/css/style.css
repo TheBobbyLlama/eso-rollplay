@@ -288,6 +288,11 @@ ul {
 	text-align: left;
 }
 
+#printout .transformation {
+	color: maroon;
+	font-weight: bolder;
+}
+
 .damageResist, .luckyRoll {
 	color: var(--common-green);
 }

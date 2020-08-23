@@ -80,7 +80,9 @@
 							<button type="submit" id="addPlayer">Add</button>
 						</form>
 					</div>
-					<div id="printout" title="Double click to copy character sheet."></div>
+					<div id="playerControls">
+						<div id="printout" title="Double click to copy character sheet."></div>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -103,14 +105,24 @@
 					</div>
 					<div class="flexMe">
 						<div>
-							<label for="rollTarget">Roll against</label>
+							<label for="rollTarget">Target Player</label>
 							<select id="rollTarget" name="rollTarget"></select>
 						</div>
 						<div>
-							<div>
-								<select id="contestedBonus"></select>
-								<button type="button" id="rollContested">Roll vs.</button>
-								<select id="contestedStat"></select>
+							<div id="playerRollPanel">
+								<div>
+									<div>
+										<button type="button" id="rollPrompt">Prompt for Roll</button>
+									</div>
+									<div>
+										<select id="contestedBonus"></select>
+										<button type="button" id="rollContested">Contested Roll</button>
+									</div>
+								</div>
+								<div class="flexMe">
+									<label for="rollStat">vs.</label>
+									<select id="rollStat" name="rollStat"></select>
+								</div>
 							</div>
 							<div>
 								<button type="button" id="rollAttack">Attack!</button>

@@ -80,6 +80,16 @@ h3 {
 	font-weight: bold;
 }
 
+#playerControls button {
+	display: block;
+	margin: 6px auto 0px auto;
+}
+
+#playerRollPanel {
+	display: flex;
+	align-items: center;
+}
+
 #playerSearchResults {
 	max-height: 400px;
 	overflow: auto;

@@ -352,6 +352,14 @@ class CharacterSheet {
 			result += tryMe.attributes[this.sex][getMe];
 		}
 
+		if (this.transformation) {
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+
+			if ((tryMe) && (getMe in tryMe.template.attributes[this.sex])) {
+				result += tryMe.template.attributes[this.sex][getMe];
+			}
+		}
+
 		if ((!noSlider) && (getMe in this.attributes)) {
 			result += this.attributes[getMe];
 		}
@@ -388,6 +396,14 @@ class CharacterSheet {
 			result += tryMe.skills[getMe];
 		}
 
+		if (this.transformation) {
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+
+			if ((tryMe) && (getMe in tryMe.template.skills)) {
+				result += tryMe.template.skills[getMe];
+			}
+		}
+
 		if ((!noSlider) && (getMe in this.skills)) {
 			result += this.skills[getMe];
 		}
@@ -407,6 +423,14 @@ class CharacterSheet {
 
 		if (tryMe) {
 			Array.prototype.push.apply(result, tryMe.resist);
+		}
+
+		if (this.transformation) {
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+
+			if (tryMe) {
+				Array.prototype.push.apply(result, tryMe.template.resist);
+			}
 		}
 
 		if (!internal) {
@@ -434,6 +458,14 @@ class CharacterSheet {
 
 		if (tryMe) {
 			Array.prototype.push.apply(result, tryMe.weakness);
+		}
+
+		if (this.transformation) {
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+
+			if (tryMe) {
+				Array.prototype.push.apply(result, tryMe.template.weakness);
+			}
 		}
 
 		if (!internal) {
@@ -579,6 +611,10 @@ class CharacterSheet {
 		}
 
 		printout.append(printArr.join(" - ") + "<br />");
+
+		if (this.transformation) {
+			printout.append("<b class='transformation'>" + this.transformation + "!</b><br />");
+		}
 
 		printArr = [];
 
@@ -751,6 +787,10 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventClose.prototype);
 		case "End":
 			return Object.setPrototypeOf(event, EventEnd.prototype);
+		case "GMAllow":
+			return Object.setPrototypeOf(event, EventGMResponseAllow.prototype);
+		case "GMDeny":
+			return Object.setPrototypeOf(event, EventGMResponseDeny.prototype);
 		case "GMPost":
 			return Object.setPrototypeOf(event, EventGMPost.prototype);
 		case "NPCStatus":
@@ -774,7 +814,7 @@ function forceEventType(event) {
 		case "PlayerAttack":
 			return Object.setPrototypeOf(event, EventPlayerAttack.prototype);
 		case "PlayerBusy":
-			return Object.setPrototypeOf(event, EventAddPlayer.prototype);
+			return Object.setPrototypeOf(event, EventPlayerBusy.prototype);
 		case "PlayerAttackResolution":
 			return Object.setPrototypeOf(event, EventPlayerAttackResolution.prototype);
 		case "PlayerConnect":
@@ -785,8 +825,14 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerDefense.prototype);
 		case "PlayerDisconnect":
 			return Object.setPrototypeOf(event, EventPlayerDisconnect.prototype);
+		case "PlayerRequestTransform":
+			return Object.setPrototypeOf(event, EventPlayerRequestTransform.prototype);
 		case "PlayerToughness":
 			return Object.setPrototypeOf(event, EventPlayerToughnessRoll.prototype);
+		case "PlayerTransform":
+			return Object.setPrototypeOf(event, EventPlayerTransform.prototype);
+		case "PromptRoll":
+			return Object.setPrototypeOf(event, EventPromptRoll.prototype);
 		case "Roll":
 			return Object.setPrototypeOf(event, EventRoll.prototype);
 		case "RollContested":
@@ -868,7 +914,16 @@ class SharedRollEvent extends SharedEvent {
 	}
 }
 
-const GM_EVENTS = [ "AddNPC", "NPCDefense", "NPCRoll", "NPCToughness", "PlayerBusy", "PlayerConnect", "PlayerDisconnect", "RollSubordinate" ];
+const GM_EVENTS = [
+	"AddNPC",
+	"NPCDefense",
+	"NPCRoll",
+	"NPCToughness",
+	"PlayerBusy",
+	"PlayerConnect",
+	"PlayerDisconnect",
+	"RollSubordinate"
+];
 
 // ADMINISTRATIVE EVENTS
 class EventStart extends SharedEvent {
@@ -971,12 +1026,65 @@ class EventPlayerBusy extends SharedEvent {
 	}
 }
 
+class EventGMResponseAllow extends SharedEvent {
+	constructor(myPlayer, myRequest, parentId, myComment) {
+		super("GMAllow");
+		this.player = myPlayer;
+		this.request = myRequest;
+		this.parent = parentId;
+		this.comment = myComment;
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate'><p>Your request to " + this.request + " will be allowed.</p>" +
+		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+		"</div>";
+	}
+}
+
+class EventGMResponseDeny extends SharedEvent {
+	constructor(myPlayer, myRequest, parentId, myComment) {
+		super("GMDeny");
+		this.player = myPlayer;
+		this.request = myRequest;
+		this.parent = parentId;
+		this.comment = myComment;
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate'><p>Your request to " + this.request + " has been denied.</p>" +
+		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+		"</div>";
+	}
+}
+
 // ACTIVE EVENTS
+class EventPromptRoll extends SharedEvent {
+	constructor(myPlayer, rollKey, myComment) {
+		super("PromptRoll");
+		this.id = "PromptRoll_" + Date.now();
+		this.player = myPlayer;
+		this.key = rollKey;
+		this.comment = myComment;
+	}
+
+	toHTML() {
+		return "<div id='" + this.id + "' class='gmInfo'><p>" + this.player + " is prompted to make a " + getQuality(this.key).name + " roll.</p>" +
+		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+		"</div>";
+	}
+}
 class EventRoll extends SharedRollEvent {
 	constructor(myPlayer, rollData) {
 		super("Roll", rollData);
 		this.id = "PlayerContest_" + Date.now();
 		this.player = myPlayer;
+
+		if (rollData) {
+			if (rollData.parent) {
+				this.parent = rollData.parent;
+			}
+		}
 	}
 
 	toHTML() {
@@ -1535,5 +1643,53 @@ class EventPlayerArmor extends SharedEvent {
 
 	toHTML() {
 		return "<div class='gmInfo'>" + this.name + " has equipped " + getQuality(WORN_ARMOR[this.armor]).name + ".</div>";
+	}
+}
+
+class EventPlayerRequestTransform extends SharedEvent {
+	constructor(myName, transformTarget) {
+		super("PlayerRequestTransform");
+		this.id = "RequestTransform_" + Date.now();
+		this.name = myName;
+		this.transform = transformTarget;
+	}
+
+	toHTML() {
+		var request;
+
+		if (this.transform) {
+			request = " wants to transform into a " + this.transform;
+		} else {
+			request = " wants to end their transformation";
+		}
+
+		return "<div class='gmInfo' id='" + this.id + "' data-player='" + this.name + "' data-key='" + this.transform + "'>" + this.name + request + ".</div>";
+	}
+}
+
+class EventPlayerTransform extends SharedEvent {
+	constructor(myPlayer, transformTarget, parentId, myComment) {
+		super("PlayerTransform");
+		this.player = myPlayer;
+		this.transform = transformTarget;
+		this.comment = myComment;
+
+		if (parentId) {
+			this.parent = parentId;
+		}
+	}
+
+	toHTML() {
+		var result;
+
+		if (this.transform) {
+			result = " transforms into a <strong>" + this.transform + "</strong>";
+		} else {
+			result = " ends their transformation";
+		}
+
+		return "<div class='playersubordinate'><p>" + this.player + result + "!</p>" +
+		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+		"</div>";
 	}
 }
