@@ -261,6 +261,10 @@ function activatePlayer(index) {
 			$("#playerControls").append("<button type='button' name='transformButton' data-key='" + transformName + "'>Transform into " + transformName + "</button>");
 		}
 	}
+
+	if (currentSession.inactive) {
+		$("#playerControls button").attr("disabled", "true");
+	}
 }
 
 function setNPCActive() {
@@ -480,6 +484,8 @@ function confirmCreateSession() {
 	hidePopup();
 
 	var isSameOwner = (currentSession.owner == $("input[name='gmPlayer']").val());
+
+	$("#playerControls button").remove();
 
 	if (isSameOwner) {
 		if (!eventRef) {
@@ -833,7 +839,7 @@ function characterLoaded(loadMe) {
 			currentSession.characters.push(character.name);
 			addPlayerToList(character.name, currentSession.characters.length-1);
 			postSessionUpdate();
-			character.print("printout", true);
+			activatePlayer(currentSession.characters.length - 1);
 			dbPushEvent(new EventAddPlayer(character.name));
 		} else {
 			showErrorPopup("This character is already in the session.");
