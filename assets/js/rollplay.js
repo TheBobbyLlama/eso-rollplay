@@ -459,6 +459,8 @@ function sessionLoaded(loadMe) {
 				addNPCToList(currentSession.npcs[i].name);
 				setNPCStatus(i, currentSession.npcs[i].status);
 			}
+		} else {
+			currentSession.npcs = [];
 		}
 
 		dispatchMessages = false;
