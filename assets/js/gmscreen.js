@@ -254,12 +254,9 @@ function activatePlayer(index) {
 	if (characterList[index].transformation) {
 		$("#playerControls").append("<button type='button' name='transformButton' data-key=''>End Transformation</button>");
 	} else {
-		var targetTransform = supernaturalTransformations.find(element => element.parent === characterList[index].supernatural);
+		var targetTransforms = supernaturalTransformations.filter(element => element.parent === characterList[index].supernatural);
 
-		if (targetTransform) {
-			var transformName = targetTransform.template.name;
-			$("#playerControls").append("<button type='button' name='transformButton' data-key='" + transformName + "'>Transform into " + transformName + "</button>");
-		}
+		targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>Transform into " + element.template.name + "</button>"));
 	}
 
 	if (currentSession.inactive) {

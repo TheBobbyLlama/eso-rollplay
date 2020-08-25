@@ -209,6 +209,17 @@ const supernaturalTransformations = [
 		{ Speed: 2, Endurance: 2 },
 		{ Speed: 2, Endurance: 2 },
 		{ BloodMagic: 2, Destruction: 2, Illusion: 2, Mysticism: 2, Unarmed: 2})
+	},
+	// SPECIAL - Werewwolf Behmoth, having the same parent as Werewolf, will only appear on GM Screen!
+	{
+		parent: "Werewolf",
+		template: new CharacterTemplate("Werewolf Behemoth",
+		{ Strength: 4, Speed: 2, Endurance: 4 },
+		{ Strength: 4, Speed: 2, Endurance: 4 },
+		{ Perception: 1, Unarmed: 3 },
+		[],
+		[ "Poison" ]
+		)
 	}
 ];
 
