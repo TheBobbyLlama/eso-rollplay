@@ -732,36 +732,36 @@ class NPC {
 const EQUIPPED_WEAPON = [
 	{
 		weapon: "Two Handed",
-		quality: "TwoHanded"
+		skills: [ "TwoHanded" ]
 	},
 	{
 		weapon: "One Hand and Shield",
-		quality: "OneHanded",
+		skills: [ "OneHanded", "Block" ],
 		useBlock: true
 	},
 	{
 		weapon: "Dual Wield",
-		quality: "DualWield"
+		skills: [ "DualWield" ]
 	},
 	{
 		weapon: "Bow",
-		quality: "Bow"
+		skills: [ "Bow" ]
 	},
 	{
 		weapon: "Staff",
-		quality: "Destruction"
+		skills: [ "Alteration", "Conjuration", "Destruction", "Illusion", "Mysticism", "Restoration", "BloodMagic", "NatureMagic", "Necromancy", "ShadowMagic" ]
 	},
 	{
 		weapon: "Unarmed",
-		quality: "Unarmed"
+		skills: [ "Unarmed" ]
 	},
 	{
 		weapon: "One Handed Only",
-		quality: "OneHanded"
+		skills: [ "OneHanded" ]
 	},
 	{
 		weapon: "Shield Only",
-		quality: "Unarmed",
+		skills: [ "Unarmed", "Block" ],
 		useBlock: true
 	}
 ];
@@ -772,7 +772,7 @@ class CharacterStatus {
 		this.name = character.name;
 		this.injuryLevel = 0;
 
-		const weaponLevels = EQUIPPED_WEAPON.map(element => character.getSkill(element.quality));
+		const weaponLevels = EQUIPPED_WEAPON.map(element => Math.max(...element.skills.map(item => character.getSkill(item))));
 		this.equippedWeapon = weaponLevels.indexOf(Math.max(...weaponLevels));
 		
 		const armorLevels = WORN_ARMOR.map(element => character.getSkill(element));
