@@ -214,8 +214,8 @@ const supernaturalTransformations = [
 	{
 		parent: "Werewolf",
 		template: new CharacterTemplate("Werewolf Behemoth",
-		{ Strength: 4, Speed: 2, Endurance: 4 },
-		{ Strength: 4, Speed: 2, Endurance: 4 },
+		{ Strength: 8, Speed: 2, Endurance: 4 },
+		{ Strength: 8, Speed: 2, Endurance: 4 },
 		{ Perception: 1, Unarmed: 3 },
 		[],
 		[ "Poison" ]
