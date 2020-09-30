@@ -105,10 +105,13 @@
 					</div>
 					<div class="flexMe">
 						<div>
-							<label for="rollTarget">Target Player</label>
-							<select id="rollTarget" name="rollTarget"></select>
+							<label for="rollTarget" player-target>Target Player</label>
+							<select id="rollTarget" name="rollTarget" player-pet-target></select>
 						</div>
 						<div>
+							<div>
+								<button type="button" id="rollAttack">Attack!</button>
+							</div>
 							<div id="playerRollPanel">
 								<div>
 									<div>
@@ -124,19 +127,16 @@
 									<select id="rollStat" name="rollStat"></select>
 								</div>
 							</div>
-							<div>
-								<button type="button" id="rollAttack">Attack!</button>
-							</div>
 						</div>
 					</div>
 					<div class="flexMe">
 						<div class="flexMe">
-							<select id="playerContested1"></select>
+							<select id="playerContested1" player-target></select>
 							<select id="playerKey1"></select>
 						</div>
 						<button type="button" id="rollPlayerContested">Roll Against</button>
 						<div class="flexMe">
-							<select id="playerContested2"></select>
+							<select id="playerContested2" player-target></select>
 							<select id="playerKey2"></select>
 					</div>
 				</div>

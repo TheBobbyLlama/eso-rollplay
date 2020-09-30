@@ -206,7 +206,7 @@
 	margin-left: 8px;
 }
 
-#rollControls {
+#rollControls, #summonControls {
 	align-items: center;
 	border: solid 1px var(--content-border);
 	border-radius: 4px;
@@ -227,6 +227,14 @@
 #rollControls input {
 	margin-top: 4px;
 	width: 100%;
+}
+
+#summonControls select {
+	width: 100%;
+}
+
+#summonControls > * + * {
+	margin-left: 8px;
 }
 
 .flexMe {
@@ -315,9 +323,13 @@
 		padding: 10px;
 	}
 
-	#rollControls {
+	#rollControls, #summonControls {
 		align-items: stretch;
 		flex-direction: column;
+	}
+
+	#summonControls > * {
+		margin: 0;
 	}
 
 	#rollingSection section:last-child div:last-child {

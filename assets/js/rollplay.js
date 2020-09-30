@@ -1,11 +1,14 @@
 const statusClasses = [ "statusUnhurt", "statusInjured", "statusCritical", "statusIncapacitated", "statusHidden" ];
 const transformRevertLabel = "End Transformation";
+const playerInputSelector = "#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select, #summonControls button, #summonControls input, #summonControls select";
 
 var character = new CharacterSheet();
 var currentSession;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
 var forcedRoll; // Holds data for the roll we're making.
 var lazyMode = false; // Autoroll all forced rolls.
+
+var markupSummonOptions = "";
 
 var eventPane = $("#eventPane");
 
@@ -14,8 +17,6 @@ function initializePage() {
 
 	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
 	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
-	$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
-
 	for (var i = 0; i < EQUIPPED_WEAPON.length; i++) {
 		$("#playerWeapon").append("<option>" + EQUIPPED_WEAPON[i].weapon + "</option>");
 	}
@@ -23,6 +24,17 @@ function initializePage() {
 	for (var i = 0; i < WORN_ARMOR.length; i++) {
 		$("#playerArmor").append("<option>" + getQuality(WORN_ARMOR[i]).name + "</option>");
 	}
+
+	for (var i = 0; i < npcTemplates.length; i++) {
+		if (npcTemplates[i].allowSummon) {
+			markupSummonOptions += "<option>" + npcTemplates[i].name + "</option>";
+		}
+	}
+
+	setSummonControls(false);
+
+	$(playerInputSelector).attr("disabled", "true");
+
 
 	resetRollSelect();
 }
@@ -74,6 +86,36 @@ function requestTransformation() {
 	var transformation = $(this).attr("data-key");
 
 	dbPushEvent(new EventPlayerRequestTransform(character.name, transformation));
+}
+
+function setSummonControls(summoned) {
+	var controls = $("#summonControls");
+
+	if (summoned) {
+
+	} else {
+		controls.append("<div>" +
+				"<select id='summonTemplate'>" + markupSummonOptions + "</select>" +
+				"<p>" +
+					"<label for='summonName'>Name:</label>" +
+					"<input type='text' id='summonName' maxlength='30' placeholder='(Optional)'></input>" +
+				"</p>" +
+			"</div>" +
+			"<button id='summonExecute' type='button'>Summon!</button>"
+		);
+	}
+}
+
+function requestSummon() {
+	var template = $("#summonTemplate").val();
+	var summonName = $("#summonName").val();
+
+	forcePlayerRoll("Make a Conjuration roll to summon a " + template + ".", "", { key: "Conjuration", playerInitiated: true, summonTemplate: template, summonName, callback: resolveSummonRequest });
+	$("#summonName").val("");
+}
+
+function resolveSummonRequest() {
+	dbPushEvent(new EventPlayerRequestSummon(character.name, forcedRoll));
 }
 
 function performRoll() {
@@ -157,11 +199,11 @@ function addEventDisplay(event) {
 			break;
 		case "Close":
 			eventPane[0].textContent = "";
-			$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+			$(playerInputSelector).attr("disabled", "true");
 			dbLoadSessionByParticipant(character.name, loadSessionList);
 			break;
 		case "End":
-			$("#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+			$(playerInputSelector).attr("disabled", "true");
 			eventPane.append(event.toHTML());
 			dbClearEventSystem();
 			break;
@@ -244,6 +286,7 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerDamage":
+		case "PlayerSummonResolution":
 		case "RollPlayerContestedSubordinate":
 		case "RollSubordinateResolution":
 			$("#" + event.parent).append(event.toHTML());
@@ -381,7 +424,7 @@ function loadChar(event) {
 
 	$("#rollTarget").empty();
 	$("#charStatus button").remove();
-	$("#charStatus input, #charStatus select, #rollControls button, #rollControls input, #rollControls select").attr("disabled", "true");
+	$(playerInputSelector).attr("disabled", "true");
 	dbLoadCharacter(tmpName, characterLoaded)
 }
 
@@ -444,7 +487,7 @@ function sessionLoaded(loadMe) {
 				$("#playerWeapon").prop("selectedIndex", currentSession.statuses[i].equippedWeapon);
 				changeWeapon(false); // Why do I have to manually fire this???
 				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor);
-				$("#charStatus button, #charStatus input, #charStatus select").removeAttr("disabled");
+				$(playerInputSelector).removeAttr("disabled");
 			}
 		}
 
@@ -472,7 +515,7 @@ function sessionLoaded(loadMe) {
 }
 
 function eventSystemLoaded(loadMe) {
-	$("#rollControls button, #rollControls input, #rollControls select").removeAttr("disabled");
+	$(playerInputSelector).removeAttr("disabled");
 	dispatchMessages = true;
 
 	sendConnectEvent();
@@ -630,6 +673,7 @@ $("#charStatus").on("click", "#transformButton", requestTransformation);
 $("#charList").on("click", "li", launchCharacterProfile);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);
+$("#summonControls").on("click", "button#summonExecute", requestSummon);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);

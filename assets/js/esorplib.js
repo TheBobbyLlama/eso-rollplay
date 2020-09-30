@@ -53,6 +53,67 @@ class CharacterTemplate {
 	}
 }
 
+class NPCTemplate {
+	constructor(myName, myAttackBonus, myAttackType, myDamageBonus, myDefenseBonus, myToughnessBonus, myResist = [], myWeakness = [], canSummon = true) {
+		this.name = myName;
+		this.attackBonus = myAttackBonus;
+		this.attackType = myAttackType;
+		this.damageBonus = myDamageBonus;
+		this.defenseBonus = myDefenseBonus;
+		this.toughnessBonus = myToughnessBonus;
+		this.resist = myResist;
+		this.weakness = myWeakness;
+		this.allowSummon = canSummon;
+	}
+
+	makeRoll(key, event = null) {
+		var roll = { key, comment: "" };
+
+		switch(key) {
+			case "Attack":
+				roll.modifier = this.attackBonus;
+				break;
+			case "Damage":
+				roll.modifier = this.damageBonus;
+				roll.attackType = this.attackType;
+				break;
+			case "Defense":
+				roll.modifier = this.defenseBonus;
+				roll.npc = event.name;
+				break;
+			case "Toughness":
+				roll.modifier = this.toughnessBonus;
+				roll.armor = -1;
+				roll.armorMod = -1;
+				break;
+			default:
+				roll.modifier = 0;
+		}
+
+		if (event) {
+			roll.parent = event.id || event.parent;
+		}
+
+		if ((key == "Toughness") && (event)) {
+			roll.attackType = event.attackType;
+
+			if (this.resist.indexOf(SPECIAL_ATTACK_TYPES[event.attackType]) > -1) {
+				roll.result = Math.max(internalDieRoll(), internalDieRoll()) + roll.modifier;
+				roll.resist = true;
+			} else if (this.weakness.indexOf(SPECIAL_ATTACK_TYPES[event.attackType]) > -1) {
+				roll.result = Math.min(internalDieRoll(), internalDieRoll()) + roll.modifier;
+				roll.weak = true;
+			} else {
+				roll.result = internalDieRoll() + roll.modifier;
+			}
+		} else {
+			roll.result = internalDieRoll() + roll.modifier;
+		}
+
+		return roll;
+	}
+}
+
 const races = [
 	new CharacterTemplate("Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
@@ -189,38 +250,59 @@ const supernaturalTransformations = [
 	{
 		parent: "Werewolf",
 		template: new CharacterTemplate("Werewolf",
-		{ Strength: 2, Speed: 2, Endurance: 2 },
-		{ Strength: 2, Speed: 2, Endurance: 2 },
-		{ Perception: 1, Unarmed: 3 },
-		[],
-		[ "Poison" ]
+			{ Strength: 2, Speed: 2, Endurance: 2 },
+			{ Strength: 2, Speed: 2, Endurance: 2 },
+			{ Perception: 1, Unarmed: 3 },
+			[],
+			[ "Poison" ]
 		)
 	},
 	{
 		parent: "Vampire",
 		template: new CharacterTemplate("Blood Scion",
-		{ Endurance: 1 },
-		{ Endurance: 1 },
-		{ BloodMagic: 1, Unarmed: 1})
+			{ Endurance: 1 },
+			{ Endurance: 1 },
+			{ BloodMagic: 1, Unarmed: 1}
+		)
 	},
 	{
 		parent: "Vampire (Volkihar)",
 		template: new CharacterTemplate("Vampire Lord",
-		{ Speed: 2, Endurance: 2 },
-		{ Speed: 2, Endurance: 2 },
-		{ BloodMagic: 2, Destruction: 2, Illusion: 2, Mysticism: 2, Unarmed: 2})
+			{ Speed: 2, Endurance: 2 },
+			{ Speed: 2, Endurance: 2 },
+			{ BloodMagic: 2, Destruction: 2, Illusion: 2, Mysticism: 2, Unarmed: 2}
+		)
 	},
 	// SPECIAL - Werewwolf Behmoth, having the same parent as Werewolf, will only appear on GM Screen!
 	{
 		parent: "Werewolf",
 		template: new CharacterTemplate("Werewolf Behemoth",
-		{ Strength: 8, Speed: 2, Endurance: 4 },
-		{ Strength: 8, Speed: 2, Endurance: 4 },
-		{ Perception: 1, Unarmed: 3 },
-		[],
-		[ "Poison" ]
+			{ Strength: 8, Speed: 2, Endurance: 4 },
+			{ Strength: 8, Speed: 2, Endurance: 4 },
+			{ Perception: 1, Unarmed: 3 },
+			[],
+			[ "Poison" ]
 		)
 	}
+];
+
+// const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
+const npcTemplates = [
+// name, attack bonus, attack type, damage bonus, defense bonus, toughness bonus, resists, weaknesses, summonable
+	new NPCTemplate("Zombie",			0, 1, 0, -4, 0),
+	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2),
+	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "Physical" ], [ "Silver" ]),
+	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "Physical" ], [ "Silver "]),
+	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "Silver" ]),
+	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "Silver" ]),
+	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "Silver" ]),
+	new NPCTemplate("Flame Atronach",	3, 3, 4, 1, 0, [ "Flame" ], [ "Silver" ]),
+	new NPCTemplate("Frost Atronach",	2, 4, 3, 0, 4, [ "Frost" ], [ "Silver" ]),
+	new NPCTemplate("Storm Atronach",	2, 6, 3, 0, 2, [ "Shock" ], [ "Silver" ]),
+	new NPCTemplate("Winged Twilight",	2, 1, 2, 3, 0, [], [ "Silver" ]),
+	new NPCTemplate("Dremora",			6, 1, 2, 2, 2, [ "Flame" ], [ "Silver" ]),
+	new NPCTemplate("Daedroth",			4, 1, 3, 0, 4, [], [ "Silver" ]),
+	new NPCTemplate("Hunger",			4, 1, 3, 0, 2, [], [ "Silver" ])
 ];
 
 function getTemplate(name, list) {
@@ -398,25 +480,25 @@ class CharacterSheet {
 		var result = 0;
 		var tryMe = getTemplate(this.race, races);
 
-		if ((tryMe) && (getMe in tryMe.skills)) {
+		if ((tryMe) && (tryMe.skills) && (getMe in tryMe.skills)) {
 			result += tryMe.skills[getMe];
 		}
 
 		tryMe = getTemplate(this.supernatural, supernaturals);
 
-		if ((tryMe) && (getMe in tryMe.skills)) {
+		if ((tryMe) && (tryMe.skills) && (getMe in tryMe.skills)) {
 			result += tryMe.skills[getMe];
 		}
 
 		if (this.transformation) {
 			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
 
-			if ((tryMe) && (getMe in tryMe.template.skills)) {
+			if ((tryMe) && (tryMe.template.skills) && (getMe in tryMe.template.skills)) {
 				result += tryMe.template.skills[getMe];
 			}
 		}
 
-		if ((!noSlider) && (getMe in this.skills)) {
+		if ((!noSlider) && (this.skills) && (getMe in this.skills)) {
 			result += this.skills[getMe];
 		}
 
@@ -778,6 +860,18 @@ class CharacterStatus {
 		const armorLevels = WORN_ARMOR.map(element => character.getSkill(element));
 		this.wornArmor = armorLevels.indexOf(Math.max(...armorLevels));
 	}
+
+	addSummon(template, name) {
+		this.summon = {
+			name,
+			template,
+			injuryLevel: 0
+		};
+	}
+
+	removeSummon() {
+		delete this.summon;
+	}
 }
 
 class RoleplaySession {
@@ -837,8 +931,12 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerDefense.prototype);
 		case "PlayerDisconnect":
 			return Object.setPrototypeOf(event, EventPlayerDisconnect.prototype);
+		case "PlayerRequestSummon":
+			return Object.setPrototypeOf(event, EventPlayerRequestSummon.prototype);
 		case "PlayerRequestTransform":
 			return Object.setPrototypeOf(event, EventPlayerRequestTransform.prototype);
+		case "PlayerSummonResolution":
+			return Object.setPrototypeOf(event, EventPlayerSummonResolution.prototype);
 		case "PlayerToughness":
 			return Object.setPrototypeOf(event, EventPlayerToughnessRoll.prototype);
 		case "PlayerTransform":
@@ -863,6 +961,38 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventStart.prototype);
 		default:
 			return new EventError(event.eventType);
+	}
+}
+
+function setSummonEventData(event) {
+	if ((event.player.indexOf("»") > -1) && (currentSession) && (currentSession.statuses)) {
+		var parts = event.player.split("»");
+		var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+
+		if ((curStatus) && (curStatus.summon)) {
+			event.summonTemplate = curStatus.summon.template;
+			event.summonName = curStatus.summon.name;
+		}
+	}
+}
+
+function displayEventName(event, end=false) {
+	if (event.player.indexOf("»") > -1) {
+		var parts = event.player.split("»");
+
+		var petName = nameDecode(parts[0]) + "'s " + event.summonTemplate;
+
+		if (event.summonName) {
+			petName += ", " + event.summonName;
+			
+			if (!end) {
+				petName += ",";
+			}
+		}
+
+		return petName;
+	} else {
+		return event.player;
 	}
 }
 
@@ -1303,12 +1433,14 @@ class EventNPCAttack extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
+
+		setSummonEventData(this);
 	}
 
 	toHTML() {
 		return "<div class='gmInfo' id='" + this.id + "' attacker='" + this.name + "' target='" + this.player + "' countMe>" +
 				"<div>" +
-					"<p>" + this.name + " attacks (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.player + "!</p>" +
+					"<p>" + this.name + " attacks (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + displayEventName(this, true) + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1333,13 +1465,15 @@ class EventNPCAttackResolution extends SharedEvent {
 
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
+
+		setSummonEventData(this);
 	}
 
 	toHTML() {
 		if (this.success) {
 			return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + this.name + " hits " + this.player + "! (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
+					"<p>" + this.name + " hits " + displayEventName(this, true) + "! (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1523,6 +1657,7 @@ class EventPlayerDefense extends SharedRollEvent {
 		}
 
 		this.player = myPlayer;
+		setSummonEventData(this);
 	}
 
 	toHTML() {
@@ -1545,7 +1680,7 @@ class EventPlayerDefense extends SharedRollEvent {
 
 		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") vs. " + this.attacker + "'s attack" + rollType + "!</p>" +
+					"<p>" + displayEventName(this) + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") vs. " + this.attacker + "'s attack" + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1563,8 +1698,13 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		if (rollData) {
 			this.armor = rollData.armor;
 			this.armorMod = rollData.armorMod;
-			this.result += this.armorMod;
+
+			if (this.armorMod > 0) {
+				this.result += this.armorMod;
+			}
 		}
+
+		setSummonEventData(this);
 	}
 
 	toHTML() {
@@ -1587,7 +1727,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		
 		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
 				"<div>" +
-					"<p>" + this.player + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + " + " + this.armorMod + " armor)" + rollType + "</p>" +
+					"<p>" + displayEventName(this) + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ((this.armorMod >= 0) ? (" + " + this.armorMod + " armor)") : ")") + rollType + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1602,11 +1742,12 @@ class EventInjuryPlayer extends SharedEvent {
 	constructor(myPlayer, myStatus) {
 		super("InjuryPlayer");
 		this.player = myPlayer;
+		this.setSummonData(myPlayer);
 		this.status = myStatus;
 	}
 
 	toHTML() {
-		return "<div><span>" + this.player + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+		return "<div><span>" + displayEventName(this) + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
 	}
 }
 
@@ -1655,6 +1796,65 @@ class EventPlayerArmor extends SharedEvent {
 
 	toHTML() {
 		return "<div class='gmInfo'>" + this.name + " has equipped " + getQuality(WORN_ARMOR[this.armor]).name + ".</div>";
+	}
+}
+
+class EventPlayerRequestSummon extends SharedRollEvent {
+	constructor(myName, rollData) {
+		super("PlayerRequestSummon", rollData);
+		this.player = myName;
+		this.id = "RequestSummon_" + Date.now();
+
+		if (rollData) {
+			this.template = rollData.summonTemplate;
+			this.petName = nameEncode(rollData.summonName);
+		}
+	}
+
+	toHTML() {
+		var rollType;
+		var nameString = "";
+		var keyName = getQuality(this.key).name;
+
+		if (this.lucky) {
+			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+		} else if (this.unlucky) {
+			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
+		} else  {
+			rollType = " rolls " + keyName;
+		}
+
+		if (this.petName) {
+			nameString = " (named " + this.petName + ")";
+		}
+
+		return "<div id='" + this.id + "' data-player='" + this.player + "' data-template='" + this.template + "' data-pet-name='" + this.petName + "' countMe>" +
+				"<div>" +
+					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") to summon a " + this.template + nameString + ":" + "</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
+	}
+}
+
+class EventPlayerSummonResolution extends SharedEvent {
+	constructor(myName, mySuccess, myTemplate, myPetName, myComment, myParent) {
+		super("PlayerSummonResolution");
+		this.player = nameEncode(myName);
+		this.success = mySuccess;
+		this.template = myTemplate;
+		this.petName = nameEncode(myPetName);
+		this.comment = nameEncode(myComment);
+		this.parent = myParent;
+	}
+
+	toHTML() {
+		return "<div class='playersubordinate'><p>The summoning " + ((this.success) ? "succeeds" : "fails") + "!</p>" +
+		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+		"</div>";
 	}
 }
 

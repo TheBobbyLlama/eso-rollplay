@@ -14,6 +14,7 @@ var markupQualityOptions = "";
 var markupBonusOptions = "";
 var markupNPCOptions = "";
 var markupPlayerOptions = "";
+var markupPlayerPetOptions = "";
 
 function initializePage() {
 	var i;
@@ -67,7 +68,7 @@ function initializePage() {
 }
 
 // Create New Session button handler.
-function createNewSession() {
+function createNewSession(event) {
 	event.preventDefault();
 	var owner = $("input[name='gmPlayer']").val();
 
@@ -160,6 +161,27 @@ function addPlayer(event) {
 	}
 
 	$("input[name='newPlayer']").val("");
+}
+
+function showPlayerSummon(index) {
+	var playerListItem = $("#playerList li[data-index='" + index + "'");
+	playerListItem.find(".summonDisplay").remove();
+
+	if (currentSession.statuses[index].summon) {
+		var curSummon = currentSession.statuses[index].summon;
+
+		playerListItem.append("<div class='summonDisplay'>" +
+			"<div><em>" + ((curSummon.name) ? curSummon.name : curSummon.template) + "</em></div>" +
+			"<div>" +
+				"<select>" +
+					markupInjuryOptions +
+				"</select>" +
+				"<button type='button' name='unsummon'>X</button>" +
+			"</div>" +
+		"</div>");
+	}
+
+	updatePlayerList();
 }
 
 function setNPCAttackBonus() {
@@ -287,6 +309,14 @@ function makeRollPlain() {
 
 		dbPushEvent(new EventNPCRoll(nameEncode(name), bonus, internalDieRoll() + bonus, comment.val()));
 		comment.val("");
+	}
+}
+
+function setPlayerControls() {
+	if ($("#rollTarget").val().indexOf("»") > -1) {
+		$("#playerRollPanel button, #playerRollPanel select").attr("disabled", "true");
+	} else {
+		$("#playerRollPanel button, #playerRollPanel select").removeAttr("disabled");
 	}
 }
 
@@ -450,6 +480,22 @@ function sendSubordinateResult(target, pass) {
 	comment.val("");
 }
 
+function summonSuccess() {
+	sendSummonResult(this, true);
+}
+
+function summonFailure() {
+	sendSummonResult(this, false);
+}
+
+function sendSummonResult(target, result) {
+	var eventDiv = $(target).closest("div[id]");
+	var comment = $(target).closest("div.gmExtra").find("input[name='gmComment']");
+
+	dbPushEvent(new EventPlayerSummonResolution(eventDiv.attr("data-player"), result, eventDiv.attr("data-template"), eventDiv.attr("data-pet-name"), comment.val(), eventDiv.attr("id")));
+	comment.val("");
+}
+
 function allowTransformation() {
 	var eventDiv = $(this).closest("div[id]");
 	var comment = $(this).closest("div.gmExtra").find("input[name='gmComment']");
@@ -555,8 +601,23 @@ function addPlayerToList(name, index) {
 	);
 
 	$("#playerList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.statuses[index].injuryLevel);
+}
 
-	$("#rollTarget, #playerContested1, #playerContested2").append("<option>" + name + "</option>")
+function updatePlayerList() {
+	markupPlayerOptions = "";
+	markupPlayerPetOptions = "";
+
+	currentSession.statuses.forEach(curStatus => {
+		markupPlayerOptions += "<option>" + curStatus.name + "</option>";
+		markupPlayerPetOptions += "<option>" + curStatus.name + "</option>";
+
+		if (curStatus.summon) {
+			markupPlayerPetOptions += "<option value='" + nameEncode(curStatus.name + "»" + curStatus.summon.template) + "'> » " + (curStatus.summon.name || curStatus.summon.template) + "</option>";
+		}
+	});
+
+	$("select[player-pet-target]").html(markupPlayerPetOptions);
+	$("select[player-target]").html(markupPlayerOptions);
 }
 
 // Handler for incoming events.
@@ -574,6 +635,7 @@ function addEventDisplay(event) {
 		case "NPCAttackResolution":
 		case "NPCToughness":
 		case "PlayerDamage":
+		case "PlayerSummonResolution":
 		case "RollSubordinateResolution":
 			var holder = $("#" + event.parent);
 			holder.find("button, input, select").attr("disabled", "true");
@@ -708,6 +770,16 @@ function addEventDisplay(event) {
 				dbPushEvent(new EventNPCDefense(event.player, event.target, defense, internalDieRoll() + defense, eventPane.children("div:last-child").attr("id")));
 			}
 			break;
+		case "PlayerRequestSummon":
+			var holder = eventPane.children().last();
+			holder.append(
+				"<div class='gmExtra'>" +
+					"<button type='button' name='summonSuccess'>Success!</button>" +
+					"<button type='button' name='summonFailure'>Failure!</button>" +
+					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
+				"</div>"
+			);
+			break;
 		case "PlayerRequestTransform":
 			var holder = eventPane.children().last();
 			holder.append(
@@ -717,6 +789,16 @@ function addEventDisplay(event) {
 					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
+			break;
+		case "PlayerSummonResolution":
+			if ((dispatchMessages) && (event.success)) {
+				var playerIndex = currentSession.characters.indexOf(event.player);
+
+				console.log(playerIndex);
+				currentSession.statuses[playerIndex].addSummon(event.template, event.petName);
+				showPlayerSummon(playerIndex);
+				postSessionUpdate();
+			}
 			break;
 		case "Roll":
 			var holder = eventPane.children().last();
@@ -752,8 +834,40 @@ function addEventDisplay(event) {
 			break;
 	}
 
+	if ((dispatchMessages) && (event.player) && (event.player.indexOf("»") > -1)) {
+		dispatchSummonRoll(event);
+	}
+
 	var queue = $("#eventPane");
 	queue.scrollTop(queue[0].scrollHeight);
+}
+
+function dispatchSummonRoll(event) {
+	var parts = event.player.split("»");
+	var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+
+	if ((curStatus) && (curStatus.summon)) {
+		var template = npcTemplates.find(element => element.name == curStatus.summon.template);
+
+		if (template) {
+			switch(event.eventType) {
+				case "NPCAttack":
+					dbPushEvent(new EventPlayerDefense(event.player, template.makeRoll("Defense", event)));
+					break;
+				case "NPCAttackResolution":
+					if (event.success) {
+						dbPushEvent(new EventPlayerToughnessRoll(event.player, template.makeRoll("Toughness", event)));
+					}
+					break;
+				case "PlayerDefense":
+				case "InjuryPlayer":
+				case "PlayerToughness":
+					break;
+				default:
+					console.log("Received an invalid event type (" + event.type + ") for " + event.player + ".");
+			}
+		}
+	}
 }
 
 // Resets screen info and fills based on
@@ -770,6 +884,7 @@ function resetScreenInfo(enableMessages=true) {
 	eventPane.empty();
 	markupNPCOptions = "";
 	markupPlayerOptions = "";
+	markupPlayerPetOptions = "";
 
 	$("#NPCName").text("Current NPC");
 	$("#npcCurForm")[0].reset();
@@ -781,6 +896,7 @@ function resetScreenInfo(enableMessages=true) {
 
 	for (i = 0; i < currentSession.characters.length; i++) {
 		addPlayerToList(currentSession.characters[i], i);
+		showPlayerSummon(i);
 		dbLoadCharacter(currentSession.characters[i], characterReset);
 	}
 
@@ -946,6 +1062,7 @@ $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
 $("#playerList ol").on("click", "a", setPlayerActive);
 $("#playerControls").on("click", "button[name='transformButton']", forcePlayerTransform);
+$("#rollTarget").on("change", setPlayerControls);
 $("#rollPlain").on("click", makeRollPlain);
 $("#rollPrompt").on("click", sendRollPrompt);
 $("#rollContested").on("click", makeRollContested);
@@ -960,6 +1077,8 @@ $("#eventPane").on("click", "button[name='playerAttackHit']", subordinatePlayerA
 $("#eventPane").on("click", "button[name='playerAttackMiss']", subordinatePlayerAttackMiss);
 $("#eventPane").on("click", "button[name='subordinateSuccess']", subordinateSuccess);
 $("#eventPane").on("click", "button[name='subordinateFailure']", subordinateFailure);
+$("#eventPane").on("click", "button[name='summonSuccess']", summonSuccess);
+$("#eventPane").on("click", "button[name='summonFailure']", summonFailure);
 $("#eventPane").on("click", "button[name='transformAllow']", allowTransformation);
 $("#eventPane").on("click", "button[name='transformDeny']", denyTransformation);
 $("#printout").on("dblclick", copyOutput);

@@ -98,7 +98,7 @@ function changeSlider() {
 	} else {
 		character.skills[itemKey] = parseInt($(this).val()) - character.getSkill(itemKey, true);
 
-		if (!character.skills[itemKey]) {
+		if ((character.skills) && (!character.skills[itemKey])) {
 			delete character.skills[itemKey];
 		}
 	}

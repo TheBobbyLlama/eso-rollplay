@@ -143,6 +143,28 @@ h3 {
 	width: 100%;
 }
 
+.summonDisplay {
+	align-items: stretch !important;
+	display: flex;
+	justify-content: space-between;
+}
+
+.summonDisplay::before {
+	content: '» ';
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.summonDisplay > div {
+	align-items: center !important;
+	display: flex;
+}
+
+.summonDisplay button {
+	padding: 2px 4px;
+}
+
 @media screen and (max-width: 1100px) {
 	#encounterInfo {
 		min-width: initial;
@@ -187,6 +209,16 @@ h3 {
 }
 
 @media screen and (max-width: 575px) {
+	.summonDisplay > div:last-of-type {
+		align-items: flex-end !important;
+		display: flex;
+		flex-direction: column-reverse;
+	}
+
+	.summonDisplay button {
+		min-width: 30px;
+	}
+
 	#encounterInfo > form {
 		flex-direction: column;
 	}
