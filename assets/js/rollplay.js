@@ -651,6 +651,10 @@ function forcePlayerRoll(message, comment, rollInfo) {
 		$("#cancelForceRoll").toggle(!!forcedRoll.playerInitiated);
 		$("#forceRollContinue").hide();
 	}
+
+	if (navigator.vibrate) {
+		navigator.vibrate(200);
+	}
 }
 
 function doForcedRoll(event) {
