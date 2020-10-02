@@ -79,7 +79,9 @@ class NPCTemplate {
 				break;
 			case "Defense":
 				roll.modifier = this.defenseBonus;
-				roll.npc = event.name;
+				if (event) {
+					roll.npc = event.name;
+				}
 				break;
 			case "Toughness":
 				roll.modifier = this.toughnessBonus;
@@ -98,16 +100,16 @@ class NPCTemplate {
 			roll.attackType = event.attackType;
 
 			if (this.resist.indexOf(SPECIAL_ATTACK_TYPES[event.attackType]) > -1) {
-				roll.result = Math.max(internalDieRoll(), internalDieRoll()) + roll.modifier;
+				roll.result = Math.max(internalDieRoll(), internalDieRoll());
 				roll.resist = true;
 			} else if (this.weakness.indexOf(SPECIAL_ATTACK_TYPES[event.attackType]) > -1) {
-				roll.result = Math.min(internalDieRoll(), internalDieRoll()) + roll.modifier;
+				roll.result = Math.min(internalDieRoll(), internalDieRoll());
 				roll.weak = true;
 			} else {
-				roll.result = internalDieRoll() + roll.modifier;
+				roll.result = internalDieRoll();
 			}
 		} else {
-			roll.result = internalDieRoll() + roll.modifier;
+			roll.result = internalDieRoll();
 		}
 
 		return roll;
