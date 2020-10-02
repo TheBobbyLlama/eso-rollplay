@@ -853,14 +853,21 @@ const WORN_ARMOR = [ "LightArmor", "MediumArmor", "HeavyArmor" ];
 
 class CharacterStatus {
 	constructor(character) {
-		this.name = character.name;
-		this.injuryLevel = 0;
+		if (typeof character === 'string') {
+			this.name = character;
+			this.equippedWeapon = 0;
+			this.wornArmor = 0;
+		} else {
+			this.name = character.name;
 
-		const weaponLevels = EQUIPPED_WEAPON.map(element => Math.max(...element.skills.map(item => character.getSkill(item))));
-		this.equippedWeapon = weaponLevels.indexOf(Math.max(...weaponLevels));
-		
-		const armorLevels = WORN_ARMOR.map(element => character.getSkill(element));
-		this.wornArmor = armorLevels.indexOf(Math.max(...armorLevels));
+			const weaponLevels = EQUIPPED_WEAPON.map(element => Math.max(...element.skills.map(item => character.getSkill(item))));
+			this.equippedWeapon = weaponLevels.indexOf(Math.max(...weaponLevels));
+			
+			const armorLevels = WORN_ARMOR.map(element => character.getSkill(element));
+			this.wornArmor = armorLevels.indexOf(Math.max(...armorLevels));
+		}
+
+		this.injuryLevel = 0;
 	}
 
 	addSummon(template, name) {
@@ -949,6 +956,10 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerTransform.prototype);
 		case "PromptRoll":
 			return Object.setPrototypeOf(event, EventPromptRoll.prototype);
+		case "RemoveNPC":
+			return Object.setPrototypeOf(event, EventRemoveNPC.prototype);
+		case "RemovePlayer":
+			return Object.setPrototypeOf(event, EventRemovePlayer.prototype);
 		case "Roll":
 			return Object.setPrototypeOf(event, EventRoll.prototype);
 		case "RollContested":
@@ -1129,6 +1140,17 @@ class EventAddNPC extends SharedEvent {
 	}
 }
 
+class EventRemoveNPC extends SharedEvent {
+	constructor(myName) {
+		super("RemoveNPC");
+		this.name = myName;
+	}
+
+	toHTML() {
+		return "<div class='gmInfo'>NPC " + this.name + " has been removed the session.</div>";
+	}
+}
+
 class EventAddPlayer extends SharedEvent {
 	constructor(myPlayer) {
 		super("AddPlayer");
@@ -1137,6 +1159,17 @@ class EventAddPlayer extends SharedEvent {
 
 	toHTML() {
 		return "<div class='gmInfo'>Player " + this.player + " has been added to the session.</div>";
+	}
+}
+
+class EventRemovePlayer extends SharedEvent {
+	constructor(myPlayer) {
+		super("RemovePlayer");
+		this.player = myPlayer;
+	}
+
+	toHTML() {
+		return "<div class='gmInfo'>Player " + this.player + " has been removed from the session.</div>";
 	}
 }
 

@@ -196,12 +196,11 @@ function copyOutput(event) {
 }
 
 function updatePlayerDisplay() {
-	if (!currentSession) { return; }
-
 	var charList = $("#charList");
 
 	charList.empty();
 
+	if (!currentSession) { return; }
 
 	for (var i = 0; i < currentSession.characters.length; i++) {
 		var markup = "<li><div class='" + statusClasses[currentSession.statuses[i].injuryLevel] + "' title='Click to view profile'>" + currentSession.characters[i] + "</div>";
@@ -215,12 +214,12 @@ function updatePlayerDisplay() {
 }
 
 function updateNPCDisplay() {
-	if (!currentSession) { return; }
-
 	var npcList = $("#npcList");
 
 	npcList.empty();
 	markupNPCTargets = "";
+
+	if (!currentSession) { return; }
 
 	for (var i = 0; i < currentSession.npcs.length; i++) {
 		npcList.append("<li class='" + statusClasses[currentSession.npcs[i].status] + "'>" + currentSession.npcs[i].name + "</li>");
@@ -246,11 +245,12 @@ function addEventDisplay(event) {
 		case "AddPlayer":
 			if (dispatchMessages) {
 				currentSession.characters.push(event.player);
+				currentSession.statuses.push(new CharacterStatus(event.player));
 				updatePlayerDisplay();
 			}
 			break;
 		case "Close":
-			eventPane[0].textContent = "";
+			eventPane.empty();
 			$(playerInputSelector).attr("disabled", "true");
 			dbLoadSessionByParticipant(character.name, loadSessionList);
 			break;
@@ -372,6 +372,41 @@ function addEventDisplay(event) {
 		case "PromptRoll":
 			if ((dispatchMessages && (event.player == character.name))) {
 				forcePlayerRoll("Roll " + getQuality(event.key).name + "!", event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
+			}
+			break;
+		case "RemoveNPC":
+			if (dispatchMessages) {
+				var NPCIndex = currentSession.npcs.findIndex(element => element.name == event.name);
+
+				if (NPCIndex > -1) {
+					currentSession.npcs.splice(NPCIndex, 1);
+					updateNPCDisplay();
+				} else {
+					console.log("Error removing NPC '" + event.name + "' from the session - not found.");
+				}
+			}
+			break;
+		case "RemovePlayer":
+			if (dispatchMessages) {
+				if (event.player == character.name) {
+					dbClearSession();
+					eventPane.empty();
+					currentSession = null;
+					updatePlayerDisplay();
+					updateNPCDisplay();
+					$(playerInputSelector).attr("disabled", "true");
+					showErrorPopup("You have been removed from the session.");
+				} else {
+					var playerIndex = currentSession.characters.indexOf(event.player);
+
+					if (playerIndex > -1) {
+						currentSession.characters.splice(playerIndex, 1);
+						currentSession.statuses.splice(playerIndex, 1);
+						updatePlayerDisplay();
+					} else {
+						console.log("Error removing player'" + event.player + "' from the session - not found.");
+					}
+				}
 			}
 			break;
 		case "RollContested":

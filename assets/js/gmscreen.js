@@ -101,7 +101,7 @@ function addNPC(event) {
 		} else {
 			name = nameEncode(name);
 			currentSession.npcs.push(new NPC(name));
-			addNPCToList(name, currentSession.npcs.length-1);
+			updateNPCDisplay();
 			activateNPC(currentSession.npcs.length-1);
 			$("input[name='newNPC']").val("");
 			postSessionUpdate();
@@ -196,7 +196,7 @@ function forceUnsummon() {
 
 		dbPushEvent(new EventPlayerSummonDismiss(player, template, petName));
 	} else {
-		showPlayerSummon(owner); // Failsafe - clean up displayed summon if it somehow stuck around.
+		updatePlayerDisplay(); // Failsafe - force redraw of player list.
 	}
 }
 
@@ -276,15 +276,24 @@ function setPlayerInjuryStatus() {
 function activateNPC(index) {
 	dispatchMessages = false;
 	activeNPC = index;
-	$("#npcCurForm button, #npcCurForm input, #npcCurForm select").removeAttr("disabled");
-	$("#NPCName").text(nameDecode(currentSession.npcs[index].name));
-	$("select[name='npcAttackBonus']").val(currentSession.npcs[index].attackBonus);
-	$("select[name='npcDamageBonus']").val(currentSession.npcs[index].damageBonus);
-	$("select[name='npcAttackType']").prop("selectedIndex", currentSession.npcs[index].attackType-1);
-	$("select[name='npcDefenseBonus']").val(currentSession.npcs[index].defenseBonus);
-	$("select[name='npcToughnessBonus']").val(currentSession.npcs[index].toughnessBonus);
-	$("select[name='npcResist']").prop("selectedIndex", currentSession.npcs[index].resist);
-	$("select[name='npcWeakness']").prop("selectedIndex", currentSession.npcs[index].weakness);
+
+	if (index > -1) {
+		$("#npcCurForm button, #npcCurForm input, #npcCurForm select").removeAttr("disabled");
+		$("#NPCName").text(nameDecode(currentSession.npcs[index].name));
+		$("select[name='npcAttackBonus']").val(currentSession.npcs[index].attackBonus);
+		$("select[name='npcDamageBonus']").val(currentSession.npcs[index].damageBonus);
+		$("select[name='npcAttackType']").prop("selectedIndex", currentSession.npcs[index].attackType-1);
+		$("select[name='npcDefenseBonus']").val(currentSession.npcs[index].defenseBonus);
+		$("select[name='npcToughnessBonus']").val(currentSession.npcs[index].toughnessBonus);
+		$("select[name='npcResist']").prop("selectedIndex", currentSession.npcs[index].resist);
+		$("select[name='npcWeakness']").prop("selectedIndex", currentSession.npcs[index].weakness);
+	} else {
+		$("#npcCurForm button, #npcCurForm input, #npcCurForm select").attr("disabled", "true");
+		$("#NPCName").text("");
+		$("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus']").val(0);
+		$("select[name='npcAttackType'], select[name='npcResist'], select[name='npcWeakness']").prop("selectedIndex", 0);
+	}
+
 	dispatchMessages = true;
 }
 
@@ -294,18 +303,22 @@ function activatePlayer(index) {
 
 	$("#playerControls button[name='transformButton']").remove();
 
-	characterList[index].print("printout", true);
+	if (index > -1) {
+		characterList[index].print("printout", true);
 
-	if (characterList[index].transformation) {
-		$("#playerControls").append("<button type='button' name='transformButton' data-key=''>End Transformation</button>");
+		if (characterList[index].transformation) {
+			$("#playerControls").append("<button type='button' name='transformButton' data-key=''>End Transformation</button>");
+		} else {
+			var targetTransforms = supernaturalTransformations.filter(element => element.parent === characterList[index].supernatural);
+
+			targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>Transform into " + element.template.name + "</button>"));
+		}
+
+		if (currentSession.inactive) {
+			$("#playerControls button").attr("disabled", "true");
+		}
 	} else {
-		var targetTransforms = supernaturalTransformations.filter(element => element.parent === characterList[index].supernatural);
-
-		targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>Transform into " + element.template.name + "</button>"));
-	}
-
-	if (currentSession.inactive) {
-		$("#playerControls button").attr("disabled", "true");
+		$("#printout").empty();
 	}
 }
 
@@ -589,41 +602,94 @@ function confirmEndSession() {
 	dbPushEvent(new EventEnd(currentSession.owner));
 }
 
-// Displays a new NPC on the page.
-function addNPCToList(name, index) {
-	$("#npcList ol").append(
-		"<li data-index='" + index + "'>" +
-			"<div>" + 
-				"<a title='Click to view/edit'>" + name + "</a>" +
-				"<select>" +
-					markupInjuryOptions +
-					"<option>Hidden</option>" +
-				"</select>" +
-			"</div>" +
-		"</li>"
-	);
+function updateNPCDisplay() {
+	npcList = $("#npcList ol");
+	markupNPCOptions = "";
+	npcList.empty();
 
-	markupNPCOptions += "<option>" + name + "</option>";
+	for (var i = 0; i < currentSession.npcs.length; i++) {
+		npcList.append(
+			"<li data-index='" + i + "'>" +
+				"<div>" + 
+					"<a title='Click to view/edit'>" + currentSession.npcs[i].name + "</a>" +
+					"<select>" +
+						markupInjuryOptions +
+						"<option>Hidden</option>" +
+					"</select>" +
+					"<button type='button' name='removeNPC'>X</button>" +
+				"</div>" +
+			"</li>"
+		);
+	
+		markupNPCOptions += "<option>" + currentSession.npcs[i].name + "</option>";
+	
+		$("#npcList li[data-index='" + i + "'] select").prop("selectedIndex", currentSession.npcs[i].status);
+	}
 
-	$("#npcList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.npcs[index].status);
-
-	$("#rollNPC").append("<option>" + name + "</option>");
+	$("select[npc-list]").html(markupNPCOptions);
 }
 
-// Displays a new player on the page.
-function addPlayerToList(name, index) {
-	$("#playerList ol").append(
-		"<li data-index='" + index + "'>" +
+function promptRemoveNPC() {
+	var NPCId = $(this).closest("li").attr("data-index");
+	$("#confirmModal").attr("data-id", NPCId);
+	showConfirmPopup("Remove NPC <b>" + currentSession.npcs[NPCId].name + "</b> from the session?", removeNPC);
+}
+
+function removeNPC() {
+	var NPCId = $("#confirmModal").attr("data-id");
+	hidePopup();
+	
+	dbPushEvent(new EventRemoveNPC(currentSession.npcs[NPCId].name));
+}
+
+function promptRemovePlayer() {
+	var playerId = $(this).closest("li").attr("data-index");
+	$("#confirmModal").attr("data-id", playerId);
+	showConfirmPopup("Remove player <b>" + currentSession.characters[playerId] + "</b> from the session?", removePlayer);
+}
+
+function removePlayer() {
+	var playerId = $("#confirmModal").attr("data-id");
+	hidePopup();
+
+	dbPushEvent(new EventRemovePlayer(currentSession.characters[playerId]));
+}
+
+function updatePlayerDisplay() {
+	var playerList = $("#playerList ol");
+
+	playerList.empty();
+
+	for (var i = 0; i < currentSession.characters.length; i++) {
+		var markup = "<li data-index='" + i + "'>" +
 			"<div>" + 
-				"<a title='Click to view'>" + name + "</a>" +
+				"<a title='Click to view'>" + currentSession.characters[i] + "</a>" +
 				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
-			"</div>" +
-		"</li>"
-	);
+				"<button type='button' name='removePlayer'>X</button>" +
+			"</div>";
 
-	$("#playerList li[data-index='" + index + "'] select").prop("selectedIndex", currentSession.statuses[index].injuryLevel);
+		var curSummon = currentSession.statuses[i].summon;
+
+		if (curSummon) {
+			markup += "<div class='summonDisplay'>" +
+				"<div" + ((curSummon.name) ? " title='" + curSummon.template + "'": "") +"><em>" + ((curSummon.name) ? curSummon.name : curSummon.template) + "</em></div>" +
+				"<div>" +
+					"<select name>" +
+						markupInjuryOptions +
+					"</select>" +
+					"<button type='button' name='unsummon'>X</button>" +
+				"</div>" +
+			"</div>";
+		}
+
+		$("#playerList ol").append(markup + "</li>");
+	
+		$("#playerList li[data-index='" + i + "'] select").prop("selectedIndex", currentSession.statuses[i].injuryLevel);
+	}
+
+	updatePlayerList();
 }
 
 function updatePlayerList() {
@@ -745,7 +811,14 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerDefense":
-			var damageType = currentSession.npcs.find(element => element.name == event.attacker).attackType - 1;
+			var damageType = currentSession.npcs.find(element => element.name == event.attacker);
+
+			if (damageType) {
+				damageType = damageType.attackType - 1;
+			} else {
+				damageType = 0;
+			}
+
 			var holder = $("#" + event.parent);
 			holder.append(event.toHTML());
 			holder.children().last().append(
@@ -826,7 +899,7 @@ function addEventDisplay(event) {
 				var playerIndex = currentSession.characters.indexOf(event.player);
 
 				currentSession.statuses[playerIndex].removeSummon();
-				showPlayerSummon(playerIndex);
+				updatePlayerDisplay();
 				postSessionUpdate();
 			}
 		case "PlayerSummonResolution":
@@ -834,8 +907,51 @@ function addEventDisplay(event) {
 				var playerIndex = currentSession.characters.indexOf(event.player);
 
 				currentSession.statuses[playerIndex].addSummon(event.template, event.petName);
-				showPlayerSummon(playerIndex);
+				updatePlayerDisplay();
 				postSessionUpdate();
+			}
+			break;
+		case "RemoveNPC":
+			if (dispatchMessages) {
+				var NPCIndex = currentSession.npcs.findIndex(element => element.name == event.name);
+
+				if (NPCIndex > -1) {
+					currentSession.npcs.splice(NPCIndex, 1);
+					postSessionUpdate();
+					updateNPCDisplay();
+
+					if (NPCIndex == activeNPC) {
+						if (currentSession.npcs.length) {
+							activateNPC(0);
+						} else {
+							activateNPC(-1);
+						}
+					}
+				} else {
+					console.log("Error removing NPC '" + event.name + "' from the session - not found.");
+				}
+			}
+			break;
+		case "RemovePlayer":
+			if (dispatchMessages) {
+				var playerIndex = currentSession.characters.indexOf(event.player);
+
+				if (playerIndex > -1) {
+					currentSession.characters.splice(playerIndex, 1);
+					currentSession.statuses.splice(playerIndex, 1);
+					postSessionUpdate();
+					updatePlayerDisplay();
+
+					if (playerIndex == activePlayer) {
+						if (currentSession.characters.length) {
+							activatePlayer(0);
+						} else {
+							activatePlayer(-1);
+						}
+					}
+				} else {
+					console.log("Error removing player'" + event.player + "' from the session - not found.");
+				}
 			}
 			break;
 		case "Roll":
@@ -844,7 +960,7 @@ function addEventDisplay(event) {
 			holder.append(
 				"<div class='gmExtra'>" +
 					"<h4>Roll Against " +
-						"<select name='npc'>" +
+						"<select name='npc' npc-list>" +
 							markupNPCOptions +
 						"</select>" +
 					"</h4>" +
@@ -938,23 +1054,20 @@ function resetScreenInfo(enableMessages=true) {
 	$("#npcCurForm")[0].reset();
 	$("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus'], #rollBonus, #contestedBonus").prop("selectedIndex", 5);
 
-	for (i = 0; i < currentSession.npcs.length; i++) {
-		addNPCToList(currentSession.npcs[i].name, i);
-	}
+	updateNPCDisplay();
 
 	for (i = 0; i < currentSession.characters.length; i++) {
-		addPlayerToList(currentSession.characters[i], i);
-		showPlayerSummon(i);
 		dbLoadCharacter(currentSession.characters[i], characterReset);
 	}
+
+	updatePlayerDisplay();
 
 	$("#endSession, #npcManagement button, #npcManagement input, #npcManagement select, #playerManagement button, #playerManagement input, #playerManagement select, #rollingSection button, #rollingSection input, #rollingSection select").removeAttr("disabled");
 
 	if (currentSession.npcs.length) {
 		activateNPC(0);
 	} else {
-		activeNPC = 0;
-		$("#npcCurForm button, #npcCurForm input, #npcCurForm select").attr("disabled", "true");
+		activateNPC(-1);
 	}
 
 	dispatchMessages = enableMessages;
@@ -998,8 +1111,8 @@ function characterLoaded(loadMe) {
 			characterList.push(character);
 			currentSession.statuses.push(new CharacterStatus(character));
 			currentSession.characters.push(character.name);
-			addPlayerToList(character.name, currentSession.characters.length-1);
 			postSessionUpdate();
+			updatePlayerDisplay();
 			activatePlayer(currentSession.characters.length - 1);
 			dbPushEvent(new EventAddPlayer(character.name));
 		} else {
@@ -1064,10 +1177,9 @@ function launchProfileLink(event) {
 function showConfirmPopup(message, callback) {
 	$("#modalBG").addClass("show");
 	$("#confirmModal").addClass("show");
-	$("#confirmText").text(message);
+	$("#confirmText").html(message);
 	$("#confirmOk").off("click").on("click", callback);
 }
-
 
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
@@ -1098,6 +1210,7 @@ $('#endSession').on("click", endSession);
 $("#addNPC").on("click", addNPC);
 $("#npcList ol").on("change", "select", setNPCInjuryStatus);
 $("#npcList ol").on("click", "a", setNPCActive);
+$("#npcList ol").on("click", "button[name='removeNPC']", promptRemoveNPC);
 $("select[name='npcAttackBonus'").on("change", setNPCAttackBonus);
 $("select[name='npcAttackType'").on("change", setNPCAttackType);
 $("select[name='npcDamageBonus'").on("change", setNPCDamageBonus);
@@ -1109,7 +1222,8 @@ $("#searchPlayer").on("click", searchPlayer);
 $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
 $("#playerList ol").on("click", "a", setPlayerActive);
-$("#playerList").on("click", ".summonDisplay button[name='unsummon']", forceUnsummon);
+$("#playerList ol").on("click", "button[name='removePlayer']", promptRemovePlayer);
+$("#playerList ol").on("click", ".summonDisplay button[name='unsummon']", forceUnsummon);
 $("#playerControls").on("click", "button[name='transformButton']", forcePlayerTransform);
 $("#rollTarget").on("change", setPlayerControls);
 $("#rollPlain").on("click", makeRollPlain);

@@ -26,6 +26,10 @@ h3 {
 	justify-content: space-between;
 }
 
+#npcList button, #playerList button {
+	padding: 2px 4px;
+}
+
 #npcList form, #playerList form {
 	display: flex;
 	margin-top: 8px;
@@ -159,10 +163,6 @@ h3 {
 .summonDisplay > div {
 	align-items: center !important;
 	display: flex;
-}
-
-.summonDisplay button {
-	padding: 2px 4px;
 }
 
 @media screen and (max-width: 1100px) {
