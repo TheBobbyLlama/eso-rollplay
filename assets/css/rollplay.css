@@ -37,8 +37,17 @@
 	max-width: 75%;
 }
 
-#charList li {
+#charList li > div:first-child {
 	cursor: pointer;
+}
+
+#charList li > div:not(:first-child)::before {
+	color: var(--content-color);
+	content: '» ';
+}
+
+#charList li > div:not(:first-child) {
+	font-style: italic;
 }
 
 #charStatus {
@@ -229,8 +238,22 @@
 	width: 100%;
 }
 
+#summonControls em {
+	color: rgba(255, 255, 255, 0.5);
+}
+
 #summonControls select {
 	width: 100%;
+}
+
+#summonControls > div > div {
+	align-items: center;
+	display: flex;
+	justify-content: space-around;
+}
+
+#summonControls > div > div + div {
+	margin-top: 4px;
 }
 
 #summonControls > * + * {

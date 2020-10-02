@@ -935,6 +935,10 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerRequestSummon.prototype);
 		case "PlayerRequestTransform":
 			return Object.setPrototypeOf(event, EventPlayerRequestTransform.prototype);
+		case "PlayerSummonAttack":
+			return Object.setPrototypeOf(event, EventPlayerSummonAttack.prototype);
+		case "PlayerSummonDismiss":
+			return Object.setPrototypeOf(event, EventPlayerSummonDismiss.prototype);
 		case "PlayerSummonResolution":
 			return Object.setPrototypeOf(event, EventPlayerSummonResolution.prototype);
 		case "PlayerToughness":
@@ -1424,6 +1428,7 @@ class EventPlayerContestedRollSubordinate extends SharedRollEvent {
 }
 
 // COMBAT
+// Multipurpose - supports player or pet targets!
 class EventNPCAttack extends SharedEvent {
 	constructor(myName, myTarget, myMod, myResult, myComment) {
 		super("NPCAttack");
@@ -1450,6 +1455,7 @@ class EventNPCAttack extends SharedEvent {
 	}
 }
 
+// Multipurpose - supports player or pet targets!
 class EventNPCAttackResolution extends SharedEvent {
 	constructor(myName, myTarget, isHit, myType, myMod, myResult, myComment, parentId) {
 		super("NPCAttackResolution");
@@ -1486,6 +1492,7 @@ class EventNPCAttackResolution extends SharedEvent {
 	}
 }
 
+// Multipurpose - supports player or pet attackers!
 class EventNPCDefense extends SharedEvent {
 	constructor(myPlayer, myDefender, myMod, myResult, parentId) {
 		super("NPCDefense");
@@ -1494,12 +1501,14 @@ class EventNPCDefense extends SharedEvent {
 		this.modifier = myMod;
 		this.result = myResult;
 		this.parent = parentId;
+
+		setSummonEventData(this);
 	}
 
 	toHTML() {
 		return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + this.defender + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.player + "'s attack!" + "</p>" +
+					"<p>" + this.defender + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + displayEventName(this, true) + "'s attack!" + "</p>" +
 				"</div>" +
 				"<div class='rollResult'>" +
 					"Result: " + this.result +
@@ -1600,6 +1609,7 @@ class EventPlayerAttackResolution extends SharedEvent {
 	}
 }
 
+// Multipurpose - supports players or pets!
 class EventPlayerDamageRoll extends SharedRollEvent {
 	constructor(myPlayer, rollData) {
 		super("PlayerDamage", rollData);
@@ -1612,6 +1622,8 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 				this.result += this.shieldPenalty;
 			}
 		}
+
+		setSummonEventData(this);
 	}
 
 	toHTML() {
@@ -1634,7 +1646,7 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 
 		return "<div class='playersubordinate'>" +
 				"<div>" +
-					"<p>" + this.player + rollType + " for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
+					"<p>" + displayEventName(this) + rollType + " for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -1644,6 +1656,7 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 	}
 }
 
+// Multipurpose - supports players or pets!
 class EventPlayerDefense extends SharedRollEvent {
 	constructor(myPlayer, rollData) {
 		super("PlayerDefense", rollData);
@@ -1690,6 +1703,7 @@ class EventPlayerDefense extends SharedRollEvent {
 	}
 }
 
+// Multipurpose - supports players or pets!
 class EventPlayerToughnessRoll extends SharedRollEvent {
 	constructor(myPlayer, rollData) {
 		super("PlayerToughness", rollData);
@@ -1738,12 +1752,14 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 }
 
 // CONTROLLED BY GM
+// Multipurpose - supports players or pets!
 class EventInjuryPlayer extends SharedEvent {
 	constructor(myPlayer, myStatus) {
 		super("InjuryPlayer");
 		this.player = myPlayer;
-		this.setSummonData(myPlayer);
 		this.status = myStatus;
+
+		setSummonEventData(this);
 	}
 
 	toHTML() {
@@ -1855,6 +1871,44 @@ class EventPlayerSummonResolution extends SharedEvent {
 		return "<div class='playersubordinate'><p>The summoning " + ((this.success) ? "succeeds" : "fails") + "!</p>" +
 		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 		"</div>";
+	}
+}
+
+class EventPlayerSummonDismiss extends SharedEvent {
+	constructor(myName, myTemplate, myPetName) {
+		super("PlayerSummonDismiss");
+		this.player = myName;
+		this.template = myTemplate;
+		this.petName = myPetName;
+	}
+
+	toHTML() {
+		return "<div><p>" + this.player + "'s " + this.template + ((this.petName) ? (", " + this.petName + ",") : "") + " is dismissed!</p></div>";
+	}
+}
+
+class EventPlayerSummonAttack extends SharedRollEvent {
+	constructor(myPlayer, myTemplate, myPetName, rollData) {
+		super("PlayerSummonAttack", rollData);
+		this.id = "SummonAttack_" + Date.now();
+		this.player = myPlayer;
+		this.template = myTemplate;
+		this.petName = myPetName;
+		if (rollData) {
+			this.target = rollData.target;
+		}
+	}
+
+	toHTML() {
+		return "<div id='" + this.id + "' attacker='" + nameEncode(this.player) + "»" + this.template + "' target='" + this.target + "' data-key='" + this.key + "' countMe>" +
+				"<div>" +
+					"<p>" + this.player + "'s " + this.template + ((this.petName) ? (", " + this.petName + ",") : "") + " attacks (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + "!</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					"Result: " + this.result +
+				"</div>" +
+			"</div>";
 	}
 }
 

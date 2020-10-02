@@ -8,7 +8,7 @@ var dispatchMessages = false;  // Flag used differentiating between archived and
 var forcedRoll; // Holds data for the roll we're making.
 var lazyMode = false; // Autoroll all forced rolls.
 
-var markupSummonOptions = "";
+var markupNPCTargets = "";
 
 var eventPane = $("#eventPane");
 
@@ -24,14 +24,6 @@ function initializePage() {
 	for (var i = 0; i < WORN_ARMOR.length; i++) {
 		$("#playerArmor").append("<option>" + getQuality(WORN_ARMOR[i]).name + "</option>");
 	}
-
-	for (var i = 0; i < npcTemplates.length; i++) {
-		if (npcTemplates[i].allowSummon) {
-			markupSummonOptions += "<option>" + npcTemplates[i].name + "</option>";
-		}
-	}
-
-	setSummonControls(false);
 
 	$(playerInputSelector).attr("disabled", "true");
 
@@ -88,17 +80,36 @@ function requestTransformation() {
 	dbPushEvent(new EventPlayerRequestTransform(character.name, transformation));
 }
 
-function setSummonControls(summoned) {
+function setSummonControls() {
 	var controls = $("#summonControls");
+	var playerIndex = currentSession.characters.indexOf(character.name);
 
-	if (summoned) {
+	if (currentSession.statuses[playerIndex].summon) {
+		var summonName = currentSession.statuses[playerIndex].summon.name || currentSession.statuses[playerIndex].summon.template;
 
+		controls.html("<div>" +
+				"<div><em>" + summonName + "</em></div>" +
+				"<div>" +
+					"<button id='summonAttack' type='button'>Attack!</button>" +
+					"<select id='summonTarget' npc-target>" + markupNPCTargets + "</select>" +
+				"</div>" +
+				"<div><button id='summonDismiss' type='button'>Dismiss</button></div>" +
+			"</div>"
+		);
 	} else {
-		controls.append("<div>" +
+		var markupSummonOptions = "";
+
+		for (var i = 0; i < npcTemplates.length; i++) {
+			if (npcTemplates[i].allowSummon) {
+				markupSummonOptions += "<option>" + npcTemplates[i].name + "</option>";
+			}
+		}
+
+		controls.html("<div>" +
 				"<select id='summonTemplate'>" + markupSummonOptions + "</select>" +
 				"<p>" +
 					"<label for='summonName'>Name:</label>" +
-					"<input type='text' id='summonName' maxlength='30' placeholder='(Optional)'></input>" +
+					"<input type='text' id='summonName' maxlength='24' placeholder='(Optional)'></input>" +
 				"</p>" +
 			"</div>" +
 			"<button id='summonExecute' type='button'>Summon!</button>"
@@ -116,6 +127,35 @@ function requestSummon() {
 
 function resolveSummonRequest() {
 	dbPushEvent(new EventPlayerRequestSummon(character.name, forcedRoll));
+}
+
+function summonAttack() {
+	var playerIndex = currentSession.characters.indexOf(character.name);
+
+	if (currentSession.statuses[playerIndex].summon) {
+		var template = npcTemplates.find(element => element.name == currentSession.statuses[playerIndex].summon.template);
+
+		if (template) {
+			var result = template.makeRoll("Attack");
+			result.target = $("#summonTarget").val();
+
+			dbPushEvent(new EventPlayerSummonAttack(character.name, currentSession.statuses[playerIndex].summon.template, currentSession.statuses[playerIndex].summon.name, result));
+		}
+	} else {
+		updatePlayerDisplay();
+		setSummonControls();
+	}
+}
+
+function summonDismiss() {
+	var playerIndex = currentSession.characters.indexOf(character.name);
+
+	if (currentSession.statuses[playerIndex].summon) {
+		dbPushEvent(new EventPlayerSummonDismiss(character.name, currentSession.statuses[playerIndex].summon.template, currentSession.statuses[playerIndex].summon.name));
+	} else {
+		updatePlayerDisplay();
+		setSummonControls();
+	}
 }
 
 function performRoll() {
@@ -155,30 +195,42 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
-function addPlayerToList(name) {
-	$("#charList").append("<li class='" + statusClasses[0] + "' title='Click to view profile.'>" + name + "</li>");
-}
+function updatePlayerDisplay() {
+	if (!currentSession) { return; }
 
-function addNPCToList(name) {
-	var npcList = $("#npcList")
-	npcList.append("<li class='" + statusClasses[0] + "'>" + name + "</li>");
-	setNPCStatus(npcList.children().length - 1, currentSession.npcs[npcList.children().length - 1].status);
-}
+	var charList = $("#charList");
 
-function setPlayerStatus(index, status) {
-	var pElement = $("#charList li:nth-child(" + (index + 1) + ")");
+	charList.empty();
 
-	for (var i = 0; i < statusClasses.length; i++) {
-		pElement.toggleClass(statusClasses[i], (i == status));
+
+	for (var i = 0; i < currentSession.characters.length; i++) {
+		var markup = "<li><div class='" + statusClasses[currentSession.statuses[i].injuryLevel] + "' title='Click to view profile'>" + currentSession.characters[i] + "</div>";
+
+		if (currentSession.statuses[i].summon) {
+			markup += "<div class='" + statusClasses[currentSession.statuses[i].summon.injuryLevel] + "'" + ((currentSession.statuses[i].summon.name) ? " title='" + currentSession.statuses[i].summon.template + "'" : "") + ">" + (currentSession.statuses[i].summon.name || currentSession.statuses[i].summon.template) + "</div>";
+		}
+
+		charList.append(markup + "</li>");
 	}
 }
 
-function setNPCStatus(index, status) {
-	var pElement = $("#npcList li:nth-child(" + (index + 1) + ")");
+function updateNPCDisplay() {
+	if (!currentSession) { return; }
 
-	for (var i = 0; i < statusClasses.length; i++) {
-		pElement.toggleClass(statusClasses[i], (i == status));
+	var npcList = $("#npcList");
+
+	npcList.empty();
+	markupNPCTargets = "";
+
+	for (var i = 0; i < currentSession.npcs.length; i++) {
+		npcList.append("<li class='" + statusClasses[currentSession.npcs[i].status] + "'>" + currentSession.npcs[i].name + "</li>");
+
+		if (currentSession.npcs[i].status < statusClasses.length - 1) {
+			markupNPCTargets += "<option>" + currentSession.npcs[i].name + "</option>";
+		}
 	}
+
+	$("select[npc-target]").html(markupNPCTargets);
 }
 
 function addEventDisplay(event) {
@@ -188,13 +240,13 @@ function addEventDisplay(event) {
 		case "AddNPC":
 			if (dispatchMessages) {
 				currentSession.npcs.push(new NPC(event.name));
-				addNPCToList(event.name);
+				updateNPCDisplay();
 			}
 			break;
 		case "AddPlayer":
 			if (dispatchMessages) {
 				currentSession.characters.push(event.player);
-				addPlayerToList(event.player);
+				updatePlayerDisplay();
 			}
 			break;
 		case "Close":
@@ -223,7 +275,17 @@ function addEventDisplay(event) {
 			break;
 		case "InjuryPlayer":
 			if (dispatchMessages) {
-				setPlayerStatus(currentSession.characters.indexOf(event.player), event.status);
+				if (event.player.indexOf("»") > -1) {
+					var parts = event.player.split("»");
+					var playerIndex = currentSession.characters.indexOf(nameDecode(parts[0]));
+
+					currentSession.statuses[playerIndex].summon.injuryLevel = event.status;
+				} else {
+					var playerIndex = currentSession.characters.indexOf(event.player);
+					currentSession.statuses[playerIndex].injuryLevel = event.status;
+				}
+
+				updatePlayerDisplay();
 			}
 
 			eventPane.append(event.toHTML());
@@ -244,19 +306,8 @@ function addEventDisplay(event) {
 			break;
 		case "NPCStatus":
 				if (dispatchMessages) {
-					if (event.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
-						$("#rollTarget").append("<option>" + event.name + "</option>");
-					} else if (event.status == INJURY_LEVEL_DISPLAY.length - 1) {
-						var rollOptions = $("#rollTarget").children();
-
-						for (var i = 0; i < rollOptions.length; i++) {
-							if (rollOptions[i].value == event.name) {
-								rollOptions[i].remove();
-							}
-						}
-					}
-
-					setNPCStatus(currentSession.npcs.findIndex(element => element.name == event.name), event.status);
+					currentSession.npcs.find(element => element.name == event.name).status = event.status;
+					updateNPCDisplay();
 				}
 
 				eventPane.append(event.toHTML());
@@ -286,7 +337,6 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerDamage":
-		case "PlayerSummonResolution":
 		case "RollPlayerContestedSubordinate":
 		case "RollSubordinateResolution":
 			$("#" + event.parent).append(event.toHTML());
@@ -342,6 +392,26 @@ function addEventDisplay(event) {
 				} else if (event.player2 == character.name) {
 					forcePlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
 				}
+			}
+			break;
+		case "PlayerSummonDismiss":
+			eventPane.append(event.toHTML());
+
+			if (dispatchMessages) {
+				var charIndex = currentSession.characters.indexOf(event.player);
+				currentSession.statuses[charIndex].removeSummon();
+				updatePlayerDisplay();
+				setSummonControls();
+			}
+			break;
+		case "PlayerSummonResolution":
+			$("#" + event.parent).append(event.toHTML());
+
+			if ((dispatchMessages) && (event.success)) {
+				var charIndex = currentSession.characters.indexOf(event.player);
+				currentSession.statuses[charIndex].addSummon(event.template, event.petName);
+				updatePlayerDisplay();
+				setSummonControls();
 			}
 			break;
 		default:
@@ -479,15 +549,14 @@ function sessionLoaded(loadMe) {
 		Object.setPrototypeOf(currentSession, RoleplaySession.prototype);
 
 		for (i = 0; i < currentSession.statuses.length; i++) {
-			addPlayerToList(currentSession.characters[i]);
 			Object.setPrototypeOf(currentSession.statuses[i], CharacterStatus.prototype);
-			setPlayerStatus(i, currentSession.statuses[i].injuryLevel);
 
 			if (currentSession.characters[i] == character.name) {
 				$("#playerWeapon").prop("selectedIndex", currentSession.statuses[i].equippedWeapon);
 				changeWeapon(false); // Why do I have to manually fire this???
 				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor);
 				$(playerInputSelector).removeAttr("disabled");
+				setSummonControls();
 			}
 		}
 
@@ -498,13 +567,13 @@ function sessionLoaded(loadMe) {
 				if (currentSession.npcs[i].status < INJURY_LEVEL_DISPLAY.length - 1) {
 					$("#rollTarget").append("<option>" + currentSession.npcs[i].name + "</option>");
 				}
-
-				addNPCToList(currentSession.npcs[i].name);
-				setNPCStatus(i, currentSession.npcs[i].status);
 			}
 		} else {
 			currentSession.npcs = [];
 		}
+
+		updatePlayerDisplay();
+		updateNPCDisplay();
 
 		dispatchMessages = false;
 		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
@@ -670,10 +739,12 @@ $("#loadChar").on("click", loadChar);
 $("#playerWeapon").on("change", changeWeapon);
 $("#playerArmor").on("change", changeArmor);
 $("#charStatus").on("click", "#transformButton", requestTransformation);
-$("#charList").on("click", "li", launchCharacterProfile);
+$("#charList").on("click", "li > div:first-child", launchCharacterProfile);
 $("#rollExecute").on("click", performRoll);
 $("#attackExecute").on("click", performAttack);
 $("#summonControls").on("click", "button#summonExecute", requestSummon);
+$("#summonControls").on("click", "button#summonAttack", summonAttack);
+$("#summonControls").on("click", "button#summonDismiss", summonDismiss);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);

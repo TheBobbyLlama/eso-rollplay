@@ -56,7 +56,10 @@ function fillSection(sectionName, elements) {
 }
 
 function changeName() {
-	character.name = nameEncode($(this).val().trim());
+	// » is a special character for summons!  Absolutely verboten in character names!
+	var charName = $(this).val().trim().replace(/»/g, "");
+	$(this).val(charName);
+	character.name = nameEncode(charName);
 	updateCharacterSheet();
 }
 

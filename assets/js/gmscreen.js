@@ -171,17 +171,33 @@ function showPlayerSummon(index) {
 		var curSummon = currentSession.statuses[index].summon;
 
 		playerListItem.append("<div class='summonDisplay'>" +
-			"<div><em>" + ((curSummon.name) ? curSummon.name : curSummon.template) + "</em></div>" +
+			"<div" + ((curSummon.name) ? " title='" + curSummon.template + "'": "") +"><em>" + ((curSummon.name) ? curSummon.name : curSummon.template) + "</em></div>" +
 			"<div>" +
-				"<select>" +
+				"<select name>" +
 					markupInjuryOptions +
 				"</select>" +
 				"<button type='button' name='unsummon'>X</button>" +
 			"</div>" +
 		"</div>");
+
+		playerListItem.find(".summonDisplay select").prop("selectedIndex", curSummon.injuryLevel)
 	}
 
 	updatePlayerList();
+}
+
+function forceUnsummon() {
+	var owner = $(this).closest("li[data-index]").attr("data-index");
+
+	if (currentSession.statuses[owner].summon) {
+		var player = currentSession.characters[owner];
+		var template = currentSession.statuses[owner].summon.template;
+		var petName = currentSession.statuses[owner].summon.name;
+
+		dbPushEvent(new EventPlayerSummonDismiss(player, template, petName));
+	} else {
+		showPlayerSummon(owner); // Failsafe - clean up displayed summon if it somehow stuck around.
+	}
 }
 
 function setNPCAttackBonus() {
@@ -241,11 +257,18 @@ function setPlayerInjuryStatus() {
 	if (dispatchMessages) {
 		var value = $(this).prop("selectedIndex");
 		var owner = $(this).closest("li[data-index]").attr("data-index");
+		var name = currentSession.characters[owner];
 
-		currentSession.statuses[owner].injuryLevel = value;
+		if ($(this).closest(".summonDisplay").length) {
+			name += "»" + currentSession.statuses[owner].summon.template;
+			name = nameEncode(name);
+			currentSession.statuses[owner].summon.injuryLevel = value;
+		} else {
+			currentSession.statuses[owner].injuryLevel = value;
+		}
 
 		postSessionUpdate();
-		dbPushEvent(new EventInjuryPlayer(currentSession.characters[owner], value));
+		dbPushEvent(new EventInjuryPlayer(name, value));
 	}
 }
 
@@ -722,6 +745,7 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerDefense":
+			var damageType = currentSession.npcs.find(element => element.name == event.attacker).attackType - 1;
 			var holder = $("#" + event.parent);
 			holder.append(event.toHTML());
 			holder.children().last().append(
@@ -734,6 +758,8 @@ function addEventDisplay(event) {
 					"<input type='text' name='attackComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
+
+			holder.children().last().find("select").prop("selectedIndex", damageType);
 			break;
 		default:
 			eventPane.append(event.toHTML());
@@ -763,9 +789,14 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerAttack":
+		case "PlayerSummonAttack":
 			if (dispatchMessages) {
 				var curNPC = currentSession.npcs.find(element => element.name == event.target);
 				var defense = parseInt(curNPC.defenseBonus);
+
+				if (event.template) {
+					event.player = nameEncode(event.player) + "»" + event.template;
+				}
 
 				dbPushEvent(new EventNPCDefense(event.player, event.target, defense, internalDieRoll() + defense, eventPane.children("div:last-child").attr("id")));
 			}
@@ -790,11 +821,18 @@ function addEventDisplay(event) {
 				"</div>"
 			);
 			break;
+		case "PlayerSummonDismiss":
+			if (dispatchMessages) {
+				var playerIndex = currentSession.characters.indexOf(event.player);
+
+				currentSession.statuses[playerIndex].removeSummon();
+				showPlayerSummon(playerIndex);
+				postSessionUpdate();
+			}
 		case "PlayerSummonResolution":
 			if ((dispatchMessages) && (event.success)) {
 				var playerIndex = currentSession.characters.indexOf(event.player);
 
-				console.log(playerIndex);
 				currentSession.statuses[playerIndex].addSummon(event.template, event.petName);
 				showPlayerSummon(playerIndex);
 				postSessionUpdate();
@@ -859,12 +897,22 @@ function dispatchSummonRoll(event) {
 						dbPushEvent(new EventPlayerToughnessRoll(event.player, template.makeRoll("Toughness", event)));
 					}
 					break;
-				case "PlayerDefense":
+				case "PlayerAttackResolution":
+					if (event.success) {
+						var result = template.makeRoll("Damage", event);
+						result.npc = event.target;
+						dbPushEvent(new EventPlayerDamageRoll(event.player, result));
+					}
+					break;
 				case "InjuryPlayer":
+				case "NPCDefense":
+				case "PlayerDamage":
+				case "PlayerDefense":
+				case "PlayerSummonAttack":
 				case "PlayerToughness":
 					break;
 				default:
-					console.log("Received an invalid event type (" + event.type + ") for " + event.player + ".");
+					console.log("Received an invalid event type (" + event.eventType + ") for " + event.player + ".");
 			}
 		}
 	}
@@ -1061,6 +1109,7 @@ $("#searchPlayer").on("click", searchPlayer);
 $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
 $("#playerList ol").on("click", "a", setPlayerActive);
+$("#playerList").on("click", ".summonDisplay button[name='unsummon']", forceUnsummon);
 $("#playerControls").on("click", "button[name='transformButton']", forcePlayerTransform);
 $("#rollTarget").on("change", setPlayerControls);
 $("#rollPlain").on("click", makeRollPlain);
