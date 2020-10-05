@@ -8,6 +8,7 @@ const SKILL_DIFF_ESOTERIC = 3;
 
 const skillDifficultyNames = [ "Easy", "Moderate", "Hard", "Esoteric!" ];
 
+/// Base class for attributes or skills.
 class QualityTemplate {
 	constructor(myName, myDesc, myMin, myMax) {
 		this.name = myName;
@@ -39,6 +40,7 @@ class ExtraSkill extends QualityTemplate {
 	}
 }
 
+/// Used by races, supernatural types, and transformations.
 class CharacterTemplate {
 	constructor(myName, maleAttr, femaleAttr, skillMods, myResist = [], myWeakness = []) {
 		this.name = myName;
@@ -116,6 +118,7 @@ class NPCTemplate {
 	}
 }
 
+/// Playable race definitions.
 const races = [
 	new CharacterTemplate("Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
@@ -188,6 +191,7 @@ const races = [
 	),
 ];
 
+/// Supernatural type definitions.
 const supernaturals = [
 	new CharacterTemplate("", {}, {}, {}),
 	new CharacterTemplate("Werewolf",
@@ -248,6 +252,7 @@ const supernaturals = [
 	)
 ];
 
+/// Tranformation definitions.
 const supernaturalTransformations = [
 	{
 		parent: "Werewolf",
@@ -307,10 +312,12 @@ const npcTemplates = [
 	new NPCTemplate("Hunger",			4, 1, 3, 0, 2, [], [ "Silver" ])
 ];
 
+/// Gets a character template by name.
 function getTemplate(name, list) {
 	return list.find(element => element.name === name);
 }
 
+/// CHARACTER FIELD DEFINITION SECTION
 const classes = [ "", "Dragonknight", "Necromancer", "Nightblade", "Sorcerer", "Templar", "Warden" ];
 
 const attributes = [
@@ -365,7 +372,7 @@ const skillsCrafting = [
 	new Skill("Woodworking", "Agility", "How well you can create wooden items.")
 ];
 
-// These skills represent specialized knowledge.  There is no governing attribute associated!
+/// These skills represent specialized knowledge.  There is no governing attribute associated!
 const skillsKnowledge = [
 	new ExtraSkill("Altmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Altmer people, as well as their elvish language."),
 	new ExtraSkill("Akaviri Lore", SKILL_DIFF_HARD, "Knowledge of the continent of Akavir."),
@@ -398,8 +405,10 @@ const skillsKnowledge = [
 	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
 ];
 
+/// Master list that contains all the other attribute and skill lists.
 const masterQualityList = [ attributes, skillsCombat, skillsMagic, skillsGeneral, skillsCrafting, skillsKnowledge ];
 
+/// Gets a quality by its key.
 function getQuality(key) {
 	for (var i = 0; i < masterQualityList.length; i++) {
 		var tryMe = masterQualityList[i].find(element => element.key == key);
@@ -412,10 +421,12 @@ function getQuality(key) {
 	return undefined;
 }
 
+/// Rolls a d20.
 function internalDieRoll() {
 	return (1 + Math.floor(20 * Math.random()));
 }
 
+/// Object for holding a charcter's information.
 class CharacterSheet {
 	constructor() {
 		this.sex = SEX_MALE;
@@ -426,6 +437,7 @@ class CharacterSheet {
 		this.skills = {};
 	}
 
+	/// Gets either an attribute or skill by key.
 	getItem(getMe, noSlider=false) {
 		if (attributes.find(element => element.key == getMe)) {
 			return this.getAttribute(getMe, noSlider);
@@ -434,6 +446,7 @@ class CharacterSheet {
 		}
 	}
 
+	/// Gets an attribute by key. (noSlider means only the template modifiers)
 	getAttribute(getMe, noSlider=false) {
 		var result = 10;
 		var tryMe = getTemplate(this.race, races);
@@ -463,6 +476,7 @@ class CharacterSheet {
 		return result;
 	}
 
+	/// Gets the attribute modifier that is applied for buying skills.
 	getAttributeSkillModifier(key) {
 		var attrVal = this.getAttribute(key);
 		var result = attrVal - 10;
@@ -474,10 +488,12 @@ class CharacterSheet {
 		return result;
 	}
 
+	/// Gets the attribute modifier.
 	getAttributeModifier(key) {
 		return this.getAttribute(key) - 10;
 	}
 
+	/// Gets a skill by key. (noSlider means only the template modifiers)
 	getSkill(getMe, noSlider=false) {
 		var result = 0;
 		var tryMe = getTemplate(this.race, races);
@@ -507,6 +523,7 @@ class CharacterSheet {
 		return result;
 	}
 
+	/// Gets the types of damage the character is resistant to (minus those canceled out by weaknesses; internal parameter prevents this check)
 	getResists(internal=false) {
 		var result = [];
 		var tryMe = getTemplate(this.race, races);
@@ -542,6 +559,7 @@ class CharacterSheet {
 		return result;
 	}
 
+	/// Gets the types of damage the character is weak to (minus those canceled out by resistances; internal parameter prevents this check)
 	getWeaknesses(internal=false) {
 		var result = [];
 		var tryMe = getTemplate(this.race, races);
@@ -576,14 +594,17 @@ class CharacterSheet {
 		return result;
 	}
 
+	/// Helper function for checking damage resistance.
 	resistsDamage(attackType) {
 		return (this.getResists().indexOf(attackType) > -1);
 	}
 
+	/// Helper function for checking damage weakness.
 	weakToDamage(attackType) {
 		return (this.getWeaknesses().indexOf(attackType) > -1);
 	}
 
+	/// Figures out how to modify a roll based on a key.
 	getRollModifier(getMe) {
 		if (getMe == "Defense") {
 			return this.getAttributeModifier("Agility");
@@ -596,14 +617,17 @@ class CharacterSheet {
 		}
 	}
 
+	/// Calculates benefit from armor.
 	getArmorModifier(armor) {
 		return Math.floor(this.getSkill(WORN_ARMOR[armor]) / 2);
 	}
 
+	/// Calculates defensive benefit from using a shield.
 	getBlockModifier() {
 		return Math.floor(this.getSkill("Block") / 2);
 	}
 
+	/// All of a character's rolling logic in one handy function.
 	makeRoll(rollData) {
 		var result;
 		var rollCount = 0;
@@ -655,26 +679,7 @@ class CharacterSheet {
 		return result + modifier;
 	}
 
-	makeToughnessRoll(attackType) {
-		var result = this.makeRoll("Toughness");
-
-		if (this.resistsDamage(attackType)) {
-			result = Math.max(result, this.makeRoll("Toughness"));
-		} else if (this.weakToDamage(attackType)) {
-			result = Math.min(result, this.makeRoll("Toughness"));
-		}
-
-		return result;
-	}
-
-	loadValueHandler(loadMe) {
-		var loadList = Object.entries(loadMe);
-		
-		for (var i = 0; i < loadList.length; i ++) {
-			this[loadList[i][0]] = loadList[i][1];
-		}
-	}
-
+	/// Prints character sheet, optionally with a link to profile page.
 	print(id, profileLink=false) {
 		var i;
 		var printArr = [];
@@ -777,6 +782,7 @@ class CharacterSheet {
 		}
 	}
 
+	/// Helper function for printing character sheet.
 	loadSkillArray(list) {
 		var result = [];
 
@@ -792,6 +798,7 @@ class CharacterSheet {
 	}
 }
 
+/// Used for displaying character descriptions properly.
 function formatDescription(description) {
 	return description.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br />");
 }
@@ -799,6 +806,7 @@ function formatDescription(description) {
 const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
 const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!", "Hidden" ];
 
+/// NPC data to be used by game sessions.
 class NPC {
 	constructor(myName) {
 		this.name = myName;
@@ -813,6 +821,7 @@ class NPC {
 	}
 }
 
+/// Weapon definitions - skill data is for automatic selection of equipped weapon.
 const EQUIPPED_WEAPON = [
 	{
 		weapon: "Two Handed",
@@ -851,6 +860,7 @@ const EQUIPPED_WEAPON = [
 ];
 const WORN_ARMOR = [ "LightArmor", "MediumArmor", "HeavyArmor" ];
 
+/// Temporary character info used by game sessions.
 class CharacterStatus {
 	constructor(character) {
 		if (typeof character === 'string') {
@@ -883,6 +893,7 @@ class CharacterStatus {
 	}
 }
 
+/// Game session object.
 class RoleplaySession {
 	constructor(ownMe) {
 		this.owner = ownMe;
@@ -892,6 +903,7 @@ class RoleplaySession {
 	}
 }
 
+/// When events come out of the DB, they are plain objects.  This function typecasts them back to the proper class.
 function forceEventType(event) {
 	switch (event.eventType) {
 		case "AddNPC":
@@ -981,6 +993,7 @@ function forceEventType(event) {
 	}
 }
 
+/// Helper function to put summon information on an event if needed.
 function setSummonEventData(event) {
 	if ((event.player.indexOf("»") > -1) && (currentSession) && (currentSession.statuses)) {
 		var parts = event.player.split("»");
@@ -993,6 +1006,7 @@ function setSummonEventData(event) {
 	}
 }
 
+/// Helper function for dual use player/pet events, to display the name properly.
 function displayEventName(event, end=false) {
 	if (event.player.indexOf("»") > -1) {
 		var parts = event.player.split("»");
@@ -1013,6 +1027,7 @@ function displayEventName(event, end=false) {
 	}
 }
 
+/// Base class for all other events.
 class SharedEvent {
 	constructor(myType) {
 		this.eventType = myType;
@@ -1035,6 +1050,7 @@ class EventError extends SharedEvent {
 	}
 }
 
+/// Base class for any event that handles a die roll.
 class SharedRollEvent extends SharedEvent {
 	constructor(myType, rollData) {
 		super(myType);
@@ -1073,6 +1089,7 @@ class SharedRollEvent extends SharedEvent {
 	}
 }
 
+/// Events that are only for the GM - Rollplay screen will ignore them.
 const GM_EVENTS = [
 	"AddNPC",
 	"NPCDefense",

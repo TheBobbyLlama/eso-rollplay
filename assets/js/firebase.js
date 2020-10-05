@@ -5,6 +5,7 @@ var database;
 var sessionRef;
 var eventRef;
 
+/// Called in page startup functions.
 function initializeDB() {
 	var buildKey = "";
 
@@ -26,8 +27,8 @@ function initializeDB() {
 	database = firebase.database();
 }
 
+/// Adds HTML encoding to a given string.
 function nameEncode(name) {
-	//return name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/"/g, "&quot");
 	return name.replace(/[&<>'"]/g, function(match) {
 		switch (match)
 		{
@@ -47,8 +48,8 @@ function nameEncode(name) {
 	})
 }
 
+/// Removes HTML encoding from a given string.
 function nameDecode(name) {
-	//return name.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&apos;/g, "'").replace(/&amp;/g, "&");
 	return name.replace(/&amp;|&lt;|&gt;|&apos;|&quot;/g, function (match) {
 		switch (match)
 		{
@@ -68,13 +69,15 @@ function nameDecode(name) {
 	})
 }
 
-function dbSanitize(input) {
+/// Strips all non-alphanumeric characters from a string.
+function dbTransform(input) {
 	return nameDecode(input).replace(/[\s\W]/g, "").toLowerCase();
 }
 
+/// Saves a character to the database.
 function dbSaveCharacter(saveMe, description, successCallback = undefined, failureCallback = undefined) {
 	if ((saveMe.name) && (saveMe.player)) {
-		database.ref("characters/" + dbSanitize(saveMe.name)).set(saveMe)
+		database.ref("characters/" + dbTransform(saveMe.name)).set(saveMe)
 			.then(function() {
 				// Yay?
 			}).catch(function(error) {
@@ -84,7 +87,7 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 			}
 		);
 
-		database.ref("descriptions/" + dbSanitize(saveMe.name)).set(description)
+		database.ref("descriptions/" + dbTransform(saveMe.name)).set(description)
 			.then(function() {
 				// Yay?
 			}).catch(function(error) {
@@ -94,14 +97,14 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 			}
 		);
 		
-		database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).once("value").then(function(loadMe) {
+		database.ref("accounts/" + dbTransform(nameDecode(saveMe.player))).once("value").then(function(loadMe) {
 			var result = loadMe.val();
 
 			if (result) {
 				if (result.characters.indexOf(saveMe.name) < 0) {
 					result.characters.push(saveMe.name);
 					result.characters = result.characters.sort();
-					database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).set(result);
+					database.ref("accounts/" + dbTransform(nameDecode(saveMe.player))).set(result);
 				}
 			} else {
 				var newAccount = {
@@ -109,7 +112,7 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 					characters: [ saveMe.name ]
 				};
 
-				database.ref("accounts/" + dbSanitize(nameDecode(saveMe.player))).set(newAccount);
+				database.ref("accounts/" + dbTransform(nameDecode(saveMe.player))).set(newAccount);
 			}
 
 			successCallback();
@@ -121,38 +124,40 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 	}
 }
 
+/// Returns a list of characters that belong to the given player.
 function dbSearchCharacterByPlayerName(name, handler) {
-	database.ref("accounts/" + dbSanitize(name) + "/characters").once("value").then(handler);
+	database.ref("accounts/" + dbTransform(name) + "/characters").once("value").then(handler);
 }
 
+/// Loads a character from the database.
 function dbLoadCharacter(getMe, handler, descHandler=null) {
-	database.ref("characters/" + dbSanitize(getMe)).once("value").then(handler);
+	database.ref("characters/" + dbTransform(getMe)).once("value").then(handler);
 	dbLoadCharacterDescription(getMe, descHandler);
 }
 
+/// Loads a character description from the database.
 function dbLoadCharacterDescription(getMe, handler) {
 	if (handler) {
-		database.ref("descriptions/" + dbSanitize(getMe)).once("value").then(handler);
+		database.ref("descriptions/" + dbTransform(getMe)).once("value").then(handler);
 	}
 }
 
+/// Loads all characters from the database.
 function dbLoadCharacterList(handler) {
 	database.ref("characters/").orderByChild("name").once("value").then(handler);
 }
 
-function dbSaveSession(saveMe) {
-	database.ref("rp_sessions/" + dbSanitize(saveMe.owner)).set(saveMe);
-}
-
+/// Loads the session being run by the given owner.
 function dbLoadSessionByOwner(owner, handler) {
 	dbClearSession();
 
-	sessionRef = database.ref("rp_sessions/" + dbSanitize(owner));
+	sessionRef = database.ref("rp_sessions/" + dbTransform(owner));
 	sessionRef.once("value").then(handler);
 
 	return ((sessionRef != null) && (sessionRef != undefined));
 }
 
+/// Loads all sessions, then returns a list of the ones that the given character are participating in.
 function dbLoadSessionByParticipant(participant, handler) {
 	dbClearSession();
 
@@ -177,6 +182,7 @@ function dbLoadSessionByParticipant(participant, handler) {
 	});
 }
 
+/// Saves the current session on its reference.
 function dbSaveSession(saveMe) {
 	if (sessionRef) {
 		sessionRef.set(saveMe);
@@ -186,6 +192,7 @@ function dbSaveSession(saveMe) {
 	}
 }
 
+/// Deletes the current session in the database.
 function dbDeleteSession() {
 	if (sessionRef) {
 		sessionRef.remove();
@@ -196,6 +203,7 @@ function dbDeleteSession() {
 	}
 }
 
+/// Deletes open references to a session.
 function dbClearSession() {
 	sessionRef = null;
 
@@ -206,6 +214,7 @@ function dbClearSession() {
 	eventRef = null;
 }
 
+/// Sets a callback on the current session reference.
 function dbBindCallbackToSession(eventName, handler) {
 	if (sessionRef) {
 		sessionRef.on(eventName, handler);
@@ -215,18 +224,21 @@ function dbBindCallbackToSession(eventName, handler) {
 	}
 }
 
+/// Sets up an event system on the given owner's session.
 function dbLoadEventMessages(owner, handler) {
-	eventRef = database.ref("rp_session_events/" + dbSanitize(owner));
+	eventRef = database.ref("rp_session_events/" + dbTransform(owner));
 	eventRef.once("value").then(handler);
 
 	return ((eventRef != null) && (eventRef != undefined));
 }
 
+/// Deletes open event system reference.
 function dbClearEventSystem() {
 	dbClearEventCallbacks();
 	eventRef = null;
 }
 
+/// Pushes an event to the current event system reference.
 function dbPushEvent(event) {
 	if (eventRef) {
 		eventRef.push(event);
@@ -236,6 +248,7 @@ function dbPushEvent(event) {
 	}
 }
 
+/// Sets a callback on the current event system reference.
 function dbBindCallbackToEventSystem(eventName, handler) {
 	if (eventRef) {
 		eventRef.on(eventName, handler);
@@ -245,6 +258,7 @@ function dbBindCallbackToEventSystem(eventName, handler) {
 	}
 }
 
+/// Removes all callbacks onthe current event system reference.
 function dbClearEventCallbacks() {
 	if (eventRef) {
 		eventRef.off();

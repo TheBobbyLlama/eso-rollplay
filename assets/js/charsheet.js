@@ -6,6 +6,7 @@ var attrSpent = 0;
 var skillSpent = 0;
 var character = new CharacterSheet();
 
+/// Called on page startup.
 function initializePage() {
 	var i;
 	var tmpVal;
@@ -25,6 +26,7 @@ function initializePage() {
 
 	character.player = localStorage.getItem("ESORP[player]");
 	$("input[name='charPlayer']").val(character.player);
+	changePlayer();
 
 	for (i = 0; i < races.length; i++) {
 		raceSelect.append("<option>" + races[i].name + "</option>")
@@ -44,6 +46,7 @@ function initializePage() {
 	raceSelect.trigger("change");
 }
 
+/// Creates skill sliders for a given category.
 function fillSection(sectionName, elements) {
 	var parent = $("#" + sectionName);
 
@@ -55,6 +58,7 @@ function fillSection(sectionName, elements) {
 	}
 }
 
+/// Handles name entry.
 function changeName() {
 	// » is a special character for summons!  Absolutely verboten in character names!
 	var charName = $(this).val().trim().replace(/»/g, "");
@@ -63,32 +67,38 @@ function changeName() {
 	updateCharacterSheet();
 }
 
+/// Handles player entry.
 function changePlayer() {
 	character.player = nameEncode($(this).val().trim().replace(/@/g, ""));
 	localStorage.setItem("ESORP[player]", character.player);
 	updateCharacterSheet();
 }
 
+/// Handles race entry.
 function changeRace() {
 	character.race = $(this).val();
 	updateCharacterSheet();
 }
 
+/// Handles sex entry.
 function changeSex() {
 	character.sex = $(this).prop("selectedIndex");
 	updateCharacterSheet();
 }
 
+/// Handles supernatural entry.
 function changeSupernatural() {
 	character.supernatural = $(this).val();
 	updateCharacterSheet();
 }
 
+/// Handles class entry.
 function changeClass() {
 	character.class = $(this).val();
 	updateCharacterSheet();
 }
 
+/// Handles slider movement.
 function changeSlider() {
 	var itemKey = $(this).closest("*[data-key]").attr("data-key");
 
@@ -110,6 +120,7 @@ function changeSlider() {
 	checkHighlight(this);
 }
 
+/// Tabulates character info and displays it.
 function updateCharacterSheet() {
 	for (var idx = 0; idx < masterQualityList.length; idx++) {
 		var workingList = masterQualityList[idx];
@@ -153,6 +164,7 @@ function updateCharacterSheet() {
 	character.print("printout");
 }
 
+/// Sums all skill/attribute points and sets display if they're over the limit.
 function calculateTotalPoints() {
 	var i;
 	var result = true;
@@ -189,6 +201,7 @@ function calculateTotalPoints() {
 	return result;
 }
 
+/// Helper function to calculate skill cost as ranks increase.
 function costForNextSkillRank(key, rank) {
 	var skillObj = getQuality(key);
 	var governing = skillObj.governing || "Intelligence";
@@ -204,6 +217,7 @@ function costForNextSkillRank(key, rank) {
 	
 }
 
+/// Copies character sheet to clipboard.
 function copyOutput(event) {
 	event.stopPropagation();
 	var printout = $("#printout");
@@ -216,21 +230,26 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
+/// Hooks events into name selection iframe.
 function bindIframeEvents() {
 	$(this).contents().find("#results").on("click", "button", selectGeneratedName);
 }
 
+/// Inserts name selection into character sheet.
 function selectGeneratedName() {
 	$("input[name='charName']").val($(this).text());
+	changeName();
 	hidePopup();
 }
 
+/// Hides or expands skill sections - only exposed on mobile.
 function expandContractSection() {
 	if (screen.width <= 575) {
 		$(this).closest("section").toggleClass("expanded");
 	}
 }
 
+/// Used on mouseover for helpers at the bottom of the screen.
 function checkHighlight(checkMe) {
 	var root;
 
@@ -250,16 +269,19 @@ function checkHighlight(checkMe) {
 	}
 }
 
+/// Shows description info on helper at the bottom of the screen.
 function descriptionHelper() {
 	var desc = $(this);
 
 	showFooter("This is only a summary.  Please be brief! (" + desc.val().length + "/" + desc.prop("maxlength") + " characters)")
 }
 
+/// Hides the helper when the description is no longer being edited.
 function leaveDescription() {
 	showFooter(null);
 }
 
+/// Shows a message in the helper at the bottom of the screen.
 function showFooter(message) {
 	if (message) {
 		footer.text(message);
@@ -269,10 +291,12 @@ function showFooter(message) {
 	}
 }
 
+/// Displays the help modal.
 function showHelpPopup() {
 	$("#modalBG, #helpModal").addClass("show");
 }
 
+/// Displays the name selection modal.
 function showNamePopup() {
 	const myFrame = $("#nameModal iframe");
 	const url = "namegenerator.html?race=" + $("select[name='charRace']").val() + "&sex=" + $("select[name='charSex']").val();
@@ -284,15 +308,18 @@ function showNamePopup() {
 	$("#modalBG, #nameModal").addClass("show");
 }
 
+/// Displays the error modal.
 function showErrorPopup(message) {
 	$("#modalBG, #errorModal").addClass("show");
 	$("#errorText").text(message);
 }
 
+/// Hides all modals.
 function hidePopup() {
 	$("#modalBG, #modalBG > div").removeClass("show");
 }
 
+/// Saves the character to the database.
 function saveChar() {
 	if ((!character.name) || (!character.player)) {
 		showErrorPopup("Please enter a character name and a player name.");
@@ -307,10 +334,12 @@ function saveChar() {
 	dbSaveCharacter(character, $("textarea[name='charBackground']").val(), charSaveSuccess, showErrorPopup);
 }
 
+/// Notifies the user on successful save.
 function charSaveSuccess() {
 	showFooter("Character saved successfully!");
 }
 
+/// Requests a character from the database.
 function loadChar(event) {
 	event.preventDefault();
 
@@ -322,8 +351,9 @@ function loadChar(event) {
 	dbLoadCharacter(nameDecode(character.name), characterLoaded, descriptionLoaded);
 }
 
+/// Receives a character from the database.
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (dbSanitize(nameEncode(loadMe.val().player)) == dbSanitize(character.player))) {
+	if ((loadMe.val()) && (dbTransform(nameEncode(loadMe.val().player)) == dbTransform(character.player))) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		$("input[name='charName']").val(nameDecode(character.name));
@@ -339,12 +369,14 @@ function characterLoaded(loadMe) {
 	}
 }
 
+/// Receives a character description from the database.
 function descriptionLoaded(loadMe) {
 	if (loadMe.val()) {
 		$("textarea[name='charBackground']").val(loadMe.val());
 	}
 }
 
+/// Event registration.
 $("#buttonHelp").on("click", showHelpPopup);
 $("input[name='charName']").on("change", changeName);
 $("#generateName").on("click", showNamePopup);

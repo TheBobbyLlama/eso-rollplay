@@ -1,5 +1,6 @@
 var character;
 
+/// Called on page startup.
 function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
 	var minimal = new URLSearchParams(window.location.search).get("minimal");
@@ -23,11 +24,13 @@ function initializePage() {
 	}
 }
 
+/// Fired when a character is selected from the dropdown.
 function selectCharacter() {
 	$("#profileText div").empty();
 	dbLoadCharacter($(this).val(), characterLoaded, descriptionLoaded);
 }
 
+/// A character has been loaded to display.
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		character = loadMe.val();
@@ -39,6 +42,7 @@ function characterLoaded(loadMe) {
 	}
 }
 
+/// The character list is ready to be used in the selection dropdown.
 function characterListLoaded(loadMe) {
 	if (loadMe.val()) {
 		var results = Object.entries(loadMe.val());
@@ -52,6 +56,7 @@ function characterListLoaded(loadMe) {
 	}
 }
 
+/// The current character's description is ready to display.
 function descriptionLoaded(loadMe) {
 	if (loadMe.val()) {
 		$("#profileText div").append(formatDescription(loadMe.val()));

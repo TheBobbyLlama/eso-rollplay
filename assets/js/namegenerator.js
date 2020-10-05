@@ -2,6 +2,7 @@ const resultDiv = $("#results");
 var nameData
 var useTag = "p";
 
+/// Called on page startup, once the data JSON has been loaded.
 function initializePage(data) {
 	//console.log(data);
 	var setRace = new URLSearchParams(window.location.search).get("race");
@@ -23,7 +24,7 @@ function initializePage(data) {
 	}
 }
 
-// Dynamically create filter checkboxes based on what's available for the chosen race.
+/// Dynamically create filter checkboxes based on what's available for the chosen race.
 function createFilters() {
 	const raceIndex = $(this).prop("selectedIndex");
 	const filterList = [];
@@ -46,6 +47,7 @@ function createFilters() {
 	}
 }
 
+/// Collects filters and uses them to generate names.
 function generate(event) {
 	if (event) {
 		event.preventDefault();
@@ -73,7 +75,7 @@ function generate(event) {
 	}
 }
 
-// Applies our filters and returns an array valid component lists for each possible word in the name.
+/// Applies our filters and returns an array valid component lists for each possible word in the name.
 function getComponentLists(filter) {
 	var result = [];
 	var componentIndex = 1;
@@ -104,6 +106,7 @@ function getComponentLists(filter) {
 	}
 }
 
+/// Generates an individual name.
 function generateName(workingList) {
 	const result = [];
 
@@ -114,7 +117,7 @@ function generateName(workingList) {
 	return result;
 }
 
-// The heavy lifting of name generation - Chooses a component list and then builds a word from it.
+/// The heavy lifting of name generation - Chooses a component list and then builds a word from it.
 function createNameComponent(componentList) {
 	var count = 0;
 	var random;
@@ -158,10 +161,12 @@ function createNameComponent(componentList) {
 	return result.replace(/\+/g, "");
 }
 
+/// Helper function for random numbers.
 function getRandomIndex(max) {
 	return Math.floor(max * Math.random());
 }
 
+/// Event registration.
 $.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
 $("#race").on("change", createFilters);
 $("#generateButton").on("click", generate);

@@ -16,6 +16,7 @@ var markupNPCOptions = "";
 var markupPlayerOptions = "";
 var markupPlayerPetOptions = "";
 
+/// Called on page startup.
 function initializePage() {
 	var i;
 	var attackSelectors = $("select[name='npcAttackType']");
@@ -27,7 +28,7 @@ function initializePage() {
 
 	var player = localStorage.getItem("ESORP[player]");
 
-	// Only has basice injury options, special Hidden value will be added later for NPCs.
+	// Only has basic injury options, special Hidden value will be added later for NPCs.
 	for (i = 0; i < INJURY_LEVEL_DISPLAY.length - 1; i++) {
 		markupInjuryOptions += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
 	}
@@ -67,15 +68,15 @@ function initializePage() {
 	}
 }
 
-// Create New Session button handler.
+/// Create New Session button handler.
 function createNewSession(event) {
 	event.preventDefault();
 	var owner = $("input[name='gmPlayer']").val();
 
-	if (dbSanitize(owner)) {
+	if (dbTransform(owner)) {
 		if (!currentSession) {
 			dbLoadSessionByOwner(owner, sessionLoaded);
-		} else if (dbSanitize(owner) != dbSanitize(currentSession.owner)) {
+		} else if (dbTransform(owner) != dbTransform(currentSession.owner)) {
 			dbLoadSessionByOwner(owner, sessionLoaded);
 		} else {
 			showConfirmPopup("Opening another session will delete the current sessions.", confirmCreateSession);
@@ -85,12 +86,12 @@ function createNewSession(event) {
 	}
 }
 
-// End Session button handler, just fires a confirmation handler.
+/// End Session button handler, just fires a confirmation handler.
 function endSession() {
 	showConfirmPopup("Are you sure you want to end the session?", confirmEndSession);
 }
 
-// Button handler to add a new NPC to the session.
+/// Button handler to add a new NPC to the session.
 function addNPC(event) {
 	event.preventDefault();
 	var name = $("input[name='newNPC']").val();
@@ -112,17 +113,19 @@ function addNPC(event) {
 	}
 }
 
+/// Handler for ? button by character name.
 function searchPlayer() {
 	showPlayerSearchPopup();
 }
 
-function performPlayerSearch() {
+/// Takes input from player search popup and gets all characters associated with that player.
+function performPlayerSearch(event) {
 	event.preventDefault();
 	var name = $("#playerSearchName").val();
 
 	$("#playerSearchResults").empty();
 
-	if (dbSanitize(name)) {
+	if (dbTransform(name)) {
 		if (name.replace(/\s/g, "").toLowerCase() == "fuckingwaffles") {
 			name = "l337vv4ff135";
 		}
@@ -131,6 +134,7 @@ function performPlayerSearch() {
 	}
 }
 
+/// Fills character info into the player search popup.
 function populatePlayerSearch(loadMe) {
 	var result = loadMe.val();
 
@@ -141,12 +145,13 @@ function populatePlayerSearch(loadMe) {
 	}
 }
 
+/// Takes input from player search popup and loads that character.
 function performCharacterLoad() {
 	hidePopup();
 	dbLoadCharacter($(this).val(), characterLoaded);
 }
 
-// Button handler to add a new player to the session.
+/// Button handler to add a new player to the session.
 function addPlayer(event) {
 	if (event) {
 		event.preventDefault();
@@ -163,29 +168,7 @@ function addPlayer(event) {
 	$("input[name='newPlayer']").val("");
 }
 
-function showPlayerSummon(index) {
-	var playerListItem = $("#playerList li[data-index='" + index + "'");
-	playerListItem.find(".summonDisplay").remove();
-
-	if (currentSession.statuses[index].summon) {
-		var curSummon = currentSession.statuses[index].summon;
-
-		playerListItem.append("<div class='summonDisplay'>" +
-			"<div" + ((curSummon.name) ? " title='" + curSummon.template + "'": "") +"><em>" + ((curSummon.name) ? curSummon.name : curSummon.template) + "</em></div>" +
-			"<div>" +
-				"<select name>" +
-					markupInjuryOptions +
-				"</select>" +
-				"<button type='button' name='unsummon'>X</button>" +
-			"</div>" +
-		"</div>");
-
-		playerListItem.find(".summonDisplay select").prop("selectedIndex", curSummon.injuryLevel)
-	}
-
-	updatePlayerList();
-}
-
+/// Button handler for unsummoning.
 function forceUnsummon() {
 	var owner = $(this).closest("li[data-index]").attr("data-index");
 
@@ -200,41 +183,49 @@ function forceUnsummon() {
 	}
 }
 
+/// Handler for setting NPC attack bonus.
 function setNPCAttackBonus() {
 	currentSession.npcs[activeNPC].attackBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
+/// Handler for setting NPC attack type.
 function setNPCAttackType() {
 	currentSession.npcs[activeNPC].attackType = $(this).prop("selectedIndex") + 1;
 	postSessionUpdate();
 }
 
+/// Handler for setting NPC damage bonus.
 function setNPCDamageBonus() {
 	currentSession.npcs[activeNPC].damageBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
+/// Handler for setting NPC defense bonus.
 function setNPCDefenseBonus() {
 	currentSession.npcs[activeNPC].defenseBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
+/// Handler for setting NPC toughness bonus.
 function setNPCToughnessBonus() {
 	currentSession.npcs[activeNPC].toughnessBonus = parseInt($(this).val());
 	postSessionUpdate();
 }
 
+/// Handler for setting NPC damage resistance type.
 function setNPCResist() {
 	currentSession.npcs[activeNPC].resist = $(this).prop("selectedIndex");
 	postSessionUpdate();
 }
 
+/// Handler for setting NPC damage weakness type.
 function setNPCWeakness() {
 	currentSession.npcs[activeNPC].weakness = $(this).prop("selectedIndex");
 	postSessionUpdate();
 }
 
+/// Handler for changing NPC injury status.
 function setNPCInjuryStatus() {
 	if (dispatchMessages) {
 		var value = $(this).prop("selectedIndex");
@@ -253,6 +244,7 @@ function setNPCInjuryStatus() {
 	}
 }
 
+/// Handler for changing player (or pet) injury status.
 function setPlayerInjuryStatus() {
 	if (dispatchMessages) {
 		var value = $(this).prop("selectedIndex");
@@ -272,7 +264,7 @@ function setPlayerInjuryStatus() {
 	}
 }
 
-// Selects an NPC for editing.
+/// Selects an NPC for editing.
 function activateNPC(index) {
 	dispatchMessages = false;
 	activeNPC = index;
@@ -297,7 +289,7 @@ function activateNPC(index) {
 	dispatchMessages = true;
 }
 
-// Selects a player for viewing.
+/// Selects a player for viewing.
 function activatePlayer(index) {
 	activePlayer = index;
 
@@ -322,20 +314,24 @@ function activatePlayer(index) {
 	}
 }
 
+/// Handler for clicking to activate an NPC.
 function setNPCActive() {
 	activateNPC($(this).closest("li").attr("data-index"));
 }
 
+/// Handler for clicking to activate a player.
 function setPlayerActive() {
 	activatePlayer($(this).closest("li").attr("data-index"));
 }
 
+/// Handler for the GM sending a tranformation event to a player.
 function forcePlayerTransform() {
 	var button = $(this);
 
 	dbPushEvent(new EventPlayerTransform(currentSession.characters[activePlayer], button.attr("data-key"), null, ""));
 }
 
+/// Handler for making a simple roll.
 function makeRollPlain() {
 	var name = $("#rollNPC").val();
 
@@ -348,6 +344,7 @@ function makeRollPlain() {
 	}
 }
 
+/// Sets control status dependent on whether the current NPC is targeting a player or a pet.
 function setPlayerControls() {
 	if ($("#rollTarget").val().indexOf("»") > -1) {
 		$("#playerRollPanel button, #playerRollPanel select").attr("disabled", "true");
@@ -356,6 +353,7 @@ function setPlayerControls() {
 	}
 }
 
+/// Sends a roll prompt to the currently targeted player.
 function sendRollPrompt() {
 	var target = $("#rollTarget").val();
 
@@ -368,6 +366,7 @@ function sendRollPrompt() {
 	}
 }
 
+/// Starts a contested roll, which will be sent to the target player.
 function makeRollContested() {
 	var name = $("#rollNPC").val();
 	var target = $("#rollTarget").val();
@@ -382,6 +381,7 @@ function makeRollContested() {
 	}
 }
 
+/// Starts an attack roll, which will either be sent to the player or automatically resolved for pets.
 function makeRollAttack() {
 	var npc = $("#rollNPC").prop("selectedIndex");
 	var target = $("#rollTarget").val();
@@ -395,6 +395,7 @@ function makeRollAttack() {
 	}
 }
 
+/// Starts a contested roll between two players, which will be sent to both of them.
 function startPlayerContestedRoll() {
 	var player1 = nameEncode($("#playerContested1").val());
 	var player2 = nameEncode($("#playerContested2").val());
@@ -409,6 +410,7 @@ function startPlayerContestedRoll() {
 	}
 }
 
+/// Sends a GM Post to the players.
 function sendGMComment() {
 	var gmPost = $("#GMPost").val();
 
@@ -418,7 +420,7 @@ function sendGMComment() {
 	}
 }
 
-// Perform a roll in response to a player roll.
+/// Perform a roll in response to a player roll.
 function subordinateRollBonus() {
 	var eventDiv = $(this).closest("div[id]");
 	var curNPC = eventDiv.find("select[name='npc']").prop("selectedIndex");
@@ -430,7 +432,7 @@ function subordinateRollBonus() {
 	comment.val("");
 }
 
-// Perform a toughness roll in response to a player roll.
+/// Perform a toughness roll in response to a player roll.
 function subordinateRollToughness() {
 	var eventDiv = $(this).closest("div[id]");
 	var curNPC = eventDiv.find("select[name='npc']").prop("selectedIndex");
@@ -452,6 +454,7 @@ function subordinateRollToughness() {
 	comment.val("");
 }
 
+/// Handler for an NPC attack being declared a hit.
 function subordinateNPCAttackHit() {
 	var eventDiv = $(this).closest("div[id]");
 	var npc = nameEncode(eventDiv.attr("attacker"));
@@ -463,6 +466,7 @@ function subordinateNPCAttackHit() {
 	comment.val("");
 }
 
+/// Handler for an NPC attack being declared a miss.
 function subordinateNPCAttackMiss() {
 	var eventDiv = $(this).closest("div[id]");
 	var npc = eventDiv.attr("attacker");
@@ -474,6 +478,7 @@ function subordinateNPCAttackMiss() {
 	comment.val("");
 }
 
+/// Handler for a player attack being declared a hit.
 function subordinatePlayerAttackHit() {
 	var eventDiv = $(this).closest("div[id]");
 	var player = eventDiv.attr("attacker");
@@ -488,6 +493,7 @@ function subordinatePlayerAttackHit() {
 	eventDiv.find("button, input, select").attr("disabled", "true");
 }
 
+/// Handler for a player attack being declared a miss.
 function subordinatePlayerAttackMiss() {
 	var eventDiv = $(this).closest("div[id]");
 	var player = eventDiv.attr("attacker");
@@ -499,14 +505,17 @@ function subordinatePlayerAttackMiss() {
 	comment.val("");
 }
 
+/// Wrapper for subordinate rolls declared a success.
 function subordinateSuccess() {
 	sendSubordinateResult(this, true);
 }
 
+/// Wrapper for subordinate rolls declared a failure.
 function subordinateFailure() {
 	sendSubordinateResult(this, false);
 }
 
+/// Subordinate roll handler.
 function sendSubordinateResult(target, pass) {
 	var eventDiv = $(target).closest("div[id]");
 	var comment = $(target).closest("div.gmExtra").find("input[name='subordinateComment']");
@@ -516,14 +525,17 @@ function sendSubordinateResult(target, pass) {
 	comment.val("");
 }
 
+/// Wrapper for successful summons.
 function summonSuccess() {
 	sendSummonResult(this, true);
 }
 
+/// Wrapper for unsuccessful summons.
 function summonFailure() {
 	sendSummonResult(this, false);
 }
 
+/// Summon handler.
 function sendSummonResult(target, result) {
 	var eventDiv = $(target).closest("div[id]");
 	var comment = $(target).closest("div.gmExtra").find("input[name='gmComment']");
@@ -532,6 +544,7 @@ function sendSummonResult(target, result) {
 	comment.val("");
 }
 
+/// GM confirms a successful player transformation.
 function allowTransformation() {
 	var eventDiv = $(this).closest("div[id]");
 	var comment = $(this).closest("div.gmExtra").find("input[name='gmComment']");
@@ -541,6 +554,7 @@ function allowTransformation() {
 	comment.val("");
 }
 
+/// GM denies a successful player transformation.
 function denyTransformation() {
 	var eventDiv = $(this).closest("div[id]");
 	var key = eventDiv.attr("data-key");
@@ -558,7 +572,7 @@ function denyTransformation() {
 	comment.val("");
 }
 
-// Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
+/// Actual function for making a new session, triggered when the user clicks Ok in the confirmation popup.
 function confirmCreateSession() {
 	hidePopup();
 
@@ -593,6 +607,7 @@ function confirmCreateSession() {
 	localStorage.setItem("ESORP[player]", nameDecode(currentSession.owner));
 }
 
+/// Ends current session, after it's been confirmed via popup.
 function confirmEndSession() {
 	hidePopup();
 
@@ -602,6 +617,7 @@ function confirmEndSession() {
 	dbPushEvent(new EventEnd(currentSession.owner));
 }
 
+/// Redisplays NPC lists.
 function updateNPCDisplay() {
 	npcList = $("#npcList ol");
 	markupNPCOptions = "";
@@ -629,12 +645,14 @@ function updateNPCDisplay() {
 	$("select[npc-list]").html(markupNPCOptions);
 }
 
+/// Shows popup to confirm NPC removal.
 function promptRemoveNPC() {
 	var NPCId = $(this).closest("li").attr("data-index");
 	$("#confirmModal").attr("data-id", NPCId);
 	showConfirmPopup("Remove NPC <b>" + currentSession.npcs[NPCId].name + "</b> from the session?", removeNPC);
 }
 
+/// Executes NPC removal.
 function removeNPC() {
 	var NPCId = $("#confirmModal").attr("data-id");
 	hidePopup();
@@ -642,12 +660,14 @@ function removeNPC() {
 	dbPushEvent(new EventRemoveNPC(currentSession.npcs[NPCId].name));
 }
 
+/// Shows popup to confirm player removal.
 function promptRemovePlayer() {
 	var playerId = $(this).closest("li").attr("data-index");
 	$("#confirmModal").attr("data-id", playerId);
 	showConfirmPopup("Remove player <b>" + currentSession.characters[playerId] + "</b> from the session?", removePlayer);
 }
 
+/// Executes player removal.
 function removePlayer() {
 	var playerId = $("#confirmModal").attr("data-id");
 	hidePopup();
@@ -655,6 +675,7 @@ function removePlayer() {
 	dbPushEvent(new EventRemovePlayer(currentSession.characters[playerId]));
 }
 
+/// Redisplays player (+ pet) lists.
 function updatePlayerDisplay() {
 	var playerList = $("#playerList ol");
 
@@ -692,6 +713,7 @@ function updatePlayerDisplay() {
 	updatePlayerList();
 }
 
+/// Rebuilds player dropdown options.
 function updatePlayerList() {
 	markupPlayerOptions = "";
 	markupPlayerPetOptions = "";
@@ -709,7 +731,7 @@ function updatePlayerList() {
 	$("select[player-target]").html(markupPlayerOptions);
 }
 
-// Handler for incoming events.
+/// Handler for incoming events.
 function addEventDisplay(event) {
 	event = forceEventType(event);
 
@@ -996,6 +1018,7 @@ function addEventDisplay(event) {
 	queue.scrollTop(queue[0].scrollHeight);
 }
 
+/// Handles events that target pets, to instantly resolve any needed rolls.
 function dispatchSummonRoll(event) {
 	var parts = event.player.split("»");
 	var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
@@ -1034,7 +1057,7 @@ function dispatchSummonRoll(event) {
 	}
 }
 
-// Resets screen info and fills based on
+/// Resets screen info.
 function resetScreenInfo(enableMessages=true) {
 	var i;
 	var npcList = $("#npcList ol");
@@ -1073,6 +1096,7 @@ function resetScreenInfo(enableMessages=true) {
 	dispatchMessages = enableMessages;
 }
 
+/// Copies the current character sheet to clipboard.
 function copyOutput(event) {
 	event.stopPropagation();
 	var printout = $("#printout");
@@ -1085,6 +1109,7 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
+/// Handles loaded characters that don't need to be added to the session.
 function characterReset(loadMe) {
 	if (loadMe.val()) {
 		var character = loadMe.val();
@@ -1102,6 +1127,7 @@ function characterReset(loadMe) {
 	}
 }
 
+/// Handles loaded characters that need to be added to the session.
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		var character = loadMe.val();
@@ -1123,6 +1149,7 @@ function characterLoaded(loadMe) {
 	}
 }
 
+/// Session is ready to use.
 function sessionLoaded(loadMe) {
 	if ((loadMe) && (loadMe.val())) {
 		var i;
@@ -1130,7 +1157,6 @@ function sessionLoaded(loadMe) {
 		currentSession = loadMe.val();
 		Object.setPrototypeOf(currentSession, RoleplaySession.prototype);
 
-		// Weird bug, arrays only half exist unless they're created explicitly???
 		if ((!currentSession.npcs) || (!currentSession.npcs.length)) { currentSession.npcs = []; }
 		if ((!currentSession.characters) || (!currentSession.characters.length)) { currentSession.characters = []; }
 		if ((!currentSession.statuses) || (!currentSession.statuses.length)) { currentSession.statuses = []; }
@@ -1152,28 +1178,33 @@ function sessionLoaded(loadMe) {
 	}
 }
 
+/// Fired when all 'stale' events have come in from the DB.
 function eventSystemLoaded(loadMe) {
 	dispatchMessages = true;
 }
 
+/// Fired when an event comes in from the DB.
 function eventAddedCallback(loadMe) {
 	if (loadMe.val()) {
 		addEventDisplay(loadMe.val());
 	}
 }
 
+/// Saves current session.
 function postSessionUpdate() {
 	if (dispatchMessages) {
 		dbSaveSession(currentSession);
 	}
 }
-6
+
+/// Displays character profile from the current character sheet.
 function launchProfileLink(event) {
 	event.preventDefault();
 
 	showProfilePopup($(this).attr("href"));
 }
 
+/// Displays confirm modal.
 function showConfirmPopup(message, callback) {
 	$("#modalBG").addClass("show");
 	$("#confirmModal").addClass("show");
@@ -1181,12 +1212,14 @@ function showConfirmPopup(message, callback) {
 	$("#confirmOk").off("click").on("click", callback);
 }
 
+/// Displays error modal.
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
 	$("#errorModal").addClass("show");
 	$("#errorText").text(message);
 }
 
+/// Displays player search modal.
 function showPlayerSearchPopup() {
 	$("#playerSearchName").val("");
 	$("#playerSearchResults").empty();
@@ -1194,17 +1227,20 @@ function showPlayerSearchPopup() {
 	$("#playerSearchModal").addClass("show");
 }
 
+/// Displays player profile modal.
 function showProfilePopup(link) {
 	$("#modalBG").addClass("show");
 	$("#profileModal").addClass("show");
 	$("#profileModal iframe").attr("src", link);
 }
 
+/// Hides all modals.
 function hidePopup() {
 	$("#modalBG").removeClass("show");
 	$("#modalBG > div").removeClass("show");
 }
 
+/// Event registration.
 $("#createNewSession").on("click", createNewSession);
 $('#endSession').on("click", endSession);
 $("#addNPC").on("click", addNPC);

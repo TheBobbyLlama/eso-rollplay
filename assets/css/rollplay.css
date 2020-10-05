@@ -72,7 +72,7 @@
 	max-width: initial !important;
 }
 
-#forceRollGMComment {
+#dieRollGMComment {
 	background-color: var(--comment-background);
 	border-radius: 4px;
 	display: none;
@@ -80,7 +80,7 @@
 	padding: 2px 8px;
 }
 
-#forceRollPanel {
+#dieRollPanel {
 	background-color: var(--page-background);
 	display: flex;
 	height: 216px;
@@ -89,12 +89,12 @@
 	width: 216px;
 }
 
-#forceRollPanel.double {
+#dieRollPanel.double {
 	transition: 0.5s ease-in-out;
 	width: 432px;
 }
 
-#forceRollPanel.triple {
+#dieRollPanel.triple {
 	transition: 0.5s ease-in-out;
 	width: 648px;
 }
@@ -110,14 +110,14 @@
 	100% { opacity: 0; }
 }
 
-#forceRollPanel div {
+#dieRollPanel div {
 	height: 200px;
 	margin: 8px;
 	position: relative;
 	width: 200px;
 }
 
-#forceRollPanel div > div {
+#dieRollPanel div > div {
 	animation: showDie;
 	animation-duration: 1s;
 	animation-fill-mode: both;
@@ -130,15 +130,15 @@
 	text-align: center;
 }
 
-#forceRollPanel div.bad > div {
+#dieRollPanel div.bad > div {
 	background-image: url("../images/d20-bad.png");
 }
 
-#forceRollPanel div.good > div {
+#dieRollPanel div.good > div {
 	background-image: url("../images/d20-good.png");
 }
 
-#forceRollPanel div::after {
+#dieRollPanel div::after {
 	animation: flashDieStatus;
 	animation-duration: 1s;
 	animation-fill-mode: both;
@@ -152,42 +152,42 @@
 	top: 0;
 }
 
-#forceRollPanel div.lucky::after {
+#dieRollPanel div.lucky::after {
 	content: "Lucky!";
 }
 
-#forceRollPanel div.resist::after {
+#dieRollPanel div.resist::after {
 	content: "Resist!";
 }
 
-#forceRollPanel div.unlucky::after {
+#dieRollPanel div.unlucky::after {
 	color: var(--common-alert);
 	content: "Unlucky!";
 }
 
-#forceRollPanel div.weak::after {
+#dieRollPanel div.weak::after {
 	color: var(--common-alert);
 	content: "Weak!";
 }
 
-#forceRollPanel div.discarded > div {
+#dieRollPanel div.discarded > div {
 	opacity: 0.25 !important;
 	transition: 1s;
 }
 
-#forceRollPanel div:nth-of-type(2)::after {
+#dieRollPanel div:nth-of-type(2)::after {
 	animation-delay: 1.5s;
 }
 
-#forceRollPanel div:nth-of-type(2) > div {
+#dieRollPanel div:nth-of-type(2) > div {
 	animation-delay: 2s;
 }
 
-#forceRollPanel div:nth-of-type(3)::after {
+#dieRollPanel div:nth-of-type(3)::after {
 	animation-delay: 3.5s;
 }
 
-#forceRollPanel div:nth-of-type(3) > div {
+#dieRollPanel div:nth-of-type(3) > div {
 	animation-delay: 4s;
 }
 
@@ -314,30 +314,30 @@
 		justify-content: center;
 	}
 
-	#forceRollPanel {
+	#dieRollPanel {
 		height: 116px;
 		width: 116px;
 	}
 	
-	#forceRollPanel.double {
+	#dieRollPanel.double {
 		width: 232px;
 	}
 	
-	#forceRollPanel.triple {
+	#dieRollPanel.triple {
 		width: 348px;
 	}
 
-	#forceRollPanel div {
+	#dieRollPanel div {
 		height: 100px;
 		width: 100px;
 	}
 
-	#forceRollPanel div::after {
+	#dieRollPanel div::after {
 		font-size: 24px;
 		padding-top: 32px;
 	}
 
-	#forceRollPanel div > div {
+	#dieRollPanel div > div {
 		font-size: 18px;
 		padding-top: 22px;
 	}

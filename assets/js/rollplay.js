@@ -5,18 +5,20 @@ const playerInputSelector = "#charStatus input, #charStatus select, #charStatus 
 var character = new CharacterSheet();
 var currentSession;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
-var forcedRoll; // Holds data for the roll we're making.
-var lazyMode = false; // Autoroll all forced rolls.
+var queuedRoll; // Holds data for the roll we're making.
+var lazyMode = false; // Automatically complete all rolls.
 
 var markupNPCTargets = "";
 
 var eventPane = $("#eventPane");
 
+/// Called on page startup.
 function initializePage() {
 	initializeDB();
 
 	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
 	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
+
 	for (var i = 0; i < EQUIPPED_WEAPON.length; i++) {
 		$("#playerWeapon").append("<option>" + EQUIPPED_WEAPON[i].weapon + "</option>");
 	}
@@ -27,10 +29,10 @@ function initializePage() {
 
 	$(playerInputSelector).attr("disabled", "true");
 
-
 	resetRollSelect();
 }
 
+/// Populates attribute/skill dropdown based on the character's selections.
 function resetRollSelect() {
 	var i;
 	var rollSelector = $("#rollSelect");
@@ -55,6 +57,7 @@ function resetRollSelect() {
 	}
 }
 
+/// Handles player's weapon selection.
 function changeWeapon(event) {
 	var newWeapon = $("#playerWeapon").prop("selectedIndex");
 	currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = newWeapon;
@@ -65,6 +68,7 @@ function changeWeapon(event) {
 	}
 }
 
+/// Handles player's armor selection.
 function changeArmor() {
 	var newArmor = $("#playerArmor").prop("selectedIndex");
 	currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = newArmor;
@@ -74,12 +78,14 @@ function changeArmor() {
 	}
 }
 
+/// Handles player's request to transform.
 function requestTransformation() {
 	var transformation = $(this).attr("data-key");
 
 	dbPushEvent(new EventPlayerRequestTransform(character.name, transformation));
 }
 
+/// Creates UI elements dependent on whether the player has a summoned pet or not.
 function setSummonControls() {
 	var controls = $("#summonControls");
 	var playerIndex = currentSession.characters.indexOf(character.name);
@@ -117,18 +123,22 @@ function setSummonControls() {
 	}
 }
 
+/// Handles player's request to summon a pet.
 function requestSummon() {
 	var template = $("#summonTemplate").val();
-	var summonName = $("#summonName").val();
+	var summonEl = $("#summonName");
+	var summonName = summonEl.val();
 
-	forcePlayerRoll("Make a Conjuration roll to summon a " + template + ".", "", { key: "Conjuration", playerInitiated: true, summonTemplate: template, summonName, callback: resolveSummonRequest });
-	$("#summonName").val("");
+	doPlayerRoll("Make a Conjuration roll to summon a " + template + ".", "", { key: "Conjuration", playerInitiated: true, summonTemplate: template, summonName, callback: resolveSummonRequest });
+	summonEl.val("");
 }
 
+/// Takes player's summoning roll and passes it to an event.
 function resolveSummonRequest() {
-	dbPushEvent(new EventPlayerRequestSummon(character.name, forcedRoll));
+	dbPushEvent(new EventPlayerRequestSummon(character.name, queuedRoll));
 }
 
+/// Handles attacks made by player's summoned pet.
 function summonAttack() {
 	var playerIndex = currentSession.characters.indexOf(character.name);
 
@@ -147,6 +157,7 @@ function summonAttack() {
 	}
 }
 
+/// Handles dismissal of player's summoned pet.
 function summonDismiss() {
 	var playerIndex = currentSession.characters.indexOf(character.name);
 
@@ -158,31 +169,37 @@ function summonDismiss() {
 	}
 }
 
+/// Handles player making a plain roll against an attribute or skill.
 function performRoll() {
 	var key = $("#rollSelect").val();
 
-	forcePlayerRoll("Make a roll using " + getQuality(key).name + ".", "", { key, playerInitiated: true, callback: resolveRoll });
+	doPlayerRoll("Make a roll using " + getQuality(key).name + ".", "", { key, playerInitiated: true, callback: resolveRoll });
 }
 
+/// Takes player's plain roll and passes it to an event.
 function resolveRoll() {
-	dbPushEvent(new EventRoll(character.name, forcedRoll));
+	dbPushEvent(new EventRoll(character.name, queuedRoll));
 }
 
+/// Handles player making an attack against an NPC.
 function performAttack() {
 	var target = nameEncode($("#rollTarget").val());
 	var key = $("#rollSelect").val();
 
-	forcePlayerRoll("Make an attack using " + getQuality(key).name + ".", "", { target, key, playerInitiated: true, callback: resolveAttack });
+	doPlayerRoll("Make an attack using " + getQuality(key).name + ".", "", { target, key, playerInitiated: true, callback: resolveAttack });
 }
 
+/// Takes player's attack roll and passes it to an event.
 function resolveAttack() {
-	dbPushEvent(new EventPlayerAttack(character.name, forcedRoll));
+	dbPushEvent(new EventPlayerAttack(character.name, queuedRoll));
 }
 
+/// Toggles automatic handling of rolls.
 function toggleLazyMode() {
 	lazyMode = $(this).prop("checked");
 }
 
+/// Copies character sheet to clipboard.
 function copyOutput(event) {
 	event.stopPropagation();
 	var printout = $("#printout");
@@ -195,6 +212,7 @@ function copyOutput(event) {
 	sel.removeAllRanges();
 }
 
+/// Redsiplays the players in the session and their pets.
 function updatePlayerDisplay() {
 	var charList = $("#charList");
 
@@ -213,6 +231,7 @@ function updatePlayerDisplay() {
 	}
 }
 
+/// Redisplays the NPCs in the session.  Hidden NPCs will not be shown.
 function updateNPCDisplay() {
 	var npcList = $("#npcList");
 
@@ -232,6 +251,7 @@ function updateNPCDisplay() {
 	$("select[npc-target]").html(markupNPCTargets);
 }
 
+/// Handler for session events.
 function addEventDisplay(event) {
 	event = forceEventType(event);
 
@@ -292,13 +312,13 @@ function addEventDisplay(event) {
 			break;
 		case "NPCAttack":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				forcePlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
+				doPlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
 			}
 			break;
 		case "NPCAttackResolution":
 			if (event.success) {
 				if ((dispatchMessages) && (event.player == character.name)) {
-					forcePlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
+					doPlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
 				}
 			} else {
 				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
@@ -330,7 +350,7 @@ function addEventDisplay(event) {
 		case "PlayerAttackResolution":
 			if ((dispatchMessages) && (event.success)) {
 				if (event.player == character.name) {
-					forcePlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+					doPlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
 				}
 			} else {
 				$("#" + event.parent).append(event.toHTML());
@@ -371,7 +391,7 @@ function addEventDisplay(event) {
 			break;
 		case "PromptRoll":
 			if ((dispatchMessages && (event.player == character.name))) {
-				forcePlayerRoll("Roll " + getQuality(event.key).name + "!", event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
+				doPlayerRoll("Roll " + getQuality(event.key).name + "!", event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
 			}
 			break;
 		case "RemoveNPC":
@@ -411,7 +431,7 @@ function addEventDisplay(event) {
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				forcePlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
+				doPlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
 			}
 			break;
 		case "RollContestedSubordinate":
@@ -423,9 +443,9 @@ function addEventDisplay(event) {
 
 			if (dispatchMessages) {
 				if (event.player1 == character.name) {
-					forcePlayerRoll("Roll " + getQuality(event.key1).name + " vs. " + nameDecode(event.player2) + "!", event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
+					doPlayerRoll("Roll " + getQuality(event.key1).name + " vs. " + nameDecode(event.player2) + "!", event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
 				} else if (event.player2 == character.name) {
-					forcePlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
+					doPlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
 				}
 			}
 			break;
@@ -455,61 +475,68 @@ function addEventDisplay(event) {
 			}
 	}
 
-	var queue = $("#eventPane");
-	queue.scrollTop(queue[0].scrollHeight);
+	eventPane.scrollTop(eventPane[0].scrollHeight);
 }
 
+/// Takes player's roll against an NPC and passes it to an event.
 function resolveContestedRoll() {
-	dbPushEvent(new EventContestedResponse(character.name, forcedRoll));
+	dbPushEvent(new EventContestedResponse(character.name, queuedRoll));
 }
 
+/// Takes player's roll against another player and passes it to an event.
 function resolvePlayerContestedRoll() {
-	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, forcedRoll));
+	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, queuedRoll));
 }
 
+/// Takes player's defense roll against an attack and passes it to an event.
 function resolveNPCAttack() {
 	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
 
 	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
-		forcedRoll.useBlock = true;
-		forcedRoll.blockMod = character.getBlockModifier();
+		queuedRoll.useBlock = true;
+		queuedRoll.blockMod = character.getBlockModifier();
 	}
 
-	dbPushEvent(new EventPlayerDefense(character.name, forcedRoll));
+	dbPushEvent(new EventPlayerDefense(character.name, queuedRoll));
 }
 
+/// Takes players toughness roll against damage and passes it to an event.
 function resolveNPCDamage() {
 	var armorIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor;
 
-	forcedRoll.armor = armorIndex;
-	forcedRoll.armorMod = character.getArmorModifier(armorIndex);
+	queuedRoll.armor = armorIndex;
+	queuedRoll.armorMod = character.getArmorModifier(armorIndex);
 
-	dbPushEvent(new EventPlayerToughnessRoll(character.name, forcedRoll));
+	dbPushEvent(new EventPlayerToughnessRoll(character.name, queuedRoll));
 }
 
+/// Takes player's damage roll against an NPC and passes it to an event.
 function resolvePlayerDamage() {
 	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
 
 	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
-		forcedRoll.shieldPenalty = true;
-		forcedRoll.shieldMod = -2;
+		queuedRoll.shieldPenalty = true;
+		queuedRoll.shieldMod = -2;
 	}
 
-	dbPushEvent(new EventPlayerDamageRoll(character.name, forcedRoll));
+	dbPushEvent(new EventPlayerDamageRoll(character.name, queuedRoll));
 }
 
+/// Sends player connection event to the session.
 function sendConnectEvent() {
 	if ((character) && (currentSession)) {
 		dbPushEvent(new EventPlayerConnect(character.name));
 	}
 }
 
+/// Sends player disconnect event to the session.
 function sendDisconnectEvent() {
 	if ((character) && (currentSession)) {
 		dbPushEvent(new EventPlayerDisconnect(character.name));
 	}
 }
 
+/// Displays popup with character description when player clicks on them in the list.
 function launchCharacterProfile(event) {
 	event.preventDefault();
 	window.getSelection().removeAllRanges();
@@ -517,6 +544,7 @@ function launchCharacterProfile(event) {
 	showProfilePopup($(this).text());
 }
 
+/// Requests a character from the database.
 function loadChar(event) {
 	event.preventDefault();
 	var tmpName = $("input[name='charName']").val();
@@ -533,8 +561,9 @@ function loadChar(event) {
 	dbLoadCharacter(tmpName, characterLoaded)
 }
 
+/// Receives a character from the database.
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (dbSanitize(loadMe.val().player) == dbSanitize($("input[name='charPlayer']").val()))) {
+	if ((loadMe.val()) && (dbTransform(loadMe.val().player) == dbTransform($("input[name='charPlayer']").val()))) {
 		character = loadMe.val();
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		localStorage.setItem("ESORP[name]", nameDecode(character.name));
@@ -560,6 +589,7 @@ function characterLoaded(loadMe) {
 	}
 }
 
+/// Determines how to load character into a session.
 function loadSessionList(result) {
 	switch (result.length) {
 		case 0:
@@ -573,6 +603,7 @@ function loadSessionList(result) {
 	}
 }
 
+/// Receives a session from the database.
 function sessionLoaded(loadMe) {
 	var result = loadMe.val();
 
@@ -618,6 +649,7 @@ function sessionLoaded(loadMe) {
 	}
 }
 
+/// Fired when the page connects to the session's event system.
 function eventSystemLoaded(loadMe) {
 	$(playerInputSelector).removeAttr("disabled");
 	dispatchMessages = true;
@@ -625,18 +657,21 @@ function eventSystemLoaded(loadMe) {
 	sendConnectEvent();
 }
 
+/// Catches events that are coming from the event system.
 function eventAddedCallback(loadMe) {
 	if (loadMe.val()) {
 		addEventDisplay(loadMe.val());
 	}
 }
 
+/// Displays error modal.
 function showErrorPopup(message) {
 	$("#modalBG").addClass("show");
 	$("#errorModal").addClass("show");
 	$("#errorText").text(message);
 }
 
+/// Display modal for choosing which session to join.
 function showSessionSelection(sessionList) {
 	$("#sessionList").empty();
 
@@ -648,43 +683,44 @@ function showSessionSelection(sessionList) {
 	$("#sessionModal").addClass("show");
 }
 
+/// Loads session selected in session modal.
 function performSessionLoad() {
 	hidePopup();
 	dbLoadSessionByOwner($(this).val(), sessionLoaded);
 }
 
-function forcePlayerRoll(message, comment, rollInfo) {
+/// Shows rolling modal, or automatically completes the roll if in lazy mode.
+function doPlayerRoll(message, comment, rollInfo) {
 	if (!dispatchMessages) {
 		return;
-	} else if ((forcedRoll) || ($("#modalBG").hasClass("show"))) {
+	} else if ((queuedRoll) || ($("#modalBG").hasClass("show"))) {
 		dbPushEvent(new EventPlayerBusy(character.name, rollInfo.parent));
 		return;
 	}
 
 	/* npc, key, attackType, parent, callback */
-	forcedRoll = rollInfo;
+	queuedRoll = rollInfo;
 
-	character.makeRoll(forcedRoll);
+	character.makeRoll(queuedRoll);
 
 	if (lazyMode) {
-		forcedRoll.comment = "Lazy mode.";
-		acceptForcedRoll();
+		queuedRoll.comment = "Lazy mode.";
+		acceptPlayerRoll();
 	} else {
-		if (forcedRoll.playerInitiated) {
+		if (queuedRoll.playerInitiated) {
 			$("#rollModal h3").text("Make a Roll");
 		} else {
 			$("#rollModal h3").text("Roll Needed!");
 		}
 
-		$("#forceRollComment").val("");
+		$("#dieRollComment").val("");
 		$("#modalBG").addClass("show");
 		$("#rollModal").addClass("show");
-		$("#forceRollText").text(message);
-		$("#forceRollGMComment").text(comment);
-		$("#forceRollGMComment").toggleClass("show", !!(comment));
+		$("#dieRollText").text(message);
+		$("#dieRollGMComment").text(comment).toggleClass("show", !!(comment));
 		$("#rollModal button, #rollModal input").removeAttr("disabled");
-		$("#cancelForceRoll").toggle(!!forcedRoll.playerInitiated);
-		$("#forceRollContinue").hide();
+		$("#cancelPlayerRoll").toggle(!!queuedRoll.playerInitiated);
+		$("#dieRollContinue").hide();
 	}
 
 	if (navigator.vibrate) {
@@ -692,86 +728,91 @@ function forcePlayerRoll(message, comment, rollInfo) {
 	}
 }
 
-function doForcedRoll(event) {
+/// Displays dice rolls in the rolling modal.
+function executePlayerRoll(event) {
 	event.preventDefault();
-	var rollPanel = $("#forceRollPanel");
+	var rollPanel = $("#dieRollPanel");
 	var chosenRoll = 0;
 
 	$(this).parent().find("button, input").attr("disabled", "true");
-	forcedRoll.comment = $("#forceRollComment").val();
+	queuedRoll.comment = $("#dieRollComment").val();
 
-	rollPanel.append("<div><div>" + forcedRoll.rolls[0] + "</div></div>");
+	rollPanel.append("<div><div>" + queuedRoll.rolls[0] + "</div></div>");
 
-	if (forcedRoll.rolls.length > 1) {
+	if (queuedRoll.rolls.length > 1) {
 		var curRoll = 1;
 
-		if (forcedRoll.resist) {
-			rollPanel.append("<div class='good resist'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+		if (queuedRoll.resist) {
+			rollPanel.append("<div class='good resist'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
-		if (forcedRoll.lucky) {
-			rollPanel.append("<div class='good lucky'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+		if (queuedRoll.lucky) {
+			rollPanel.append("<div class='good lucky'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
-		if (forcedRoll.weak) {
-			rollPanel.append("<div class='bad weak'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+		if (queuedRoll.weak) {
+			rollPanel.append("<div class='bad weak'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
-		if (forcedRoll.unlucky) {
-			rollPanel.append("<div class='bad unlucky'><div>" + forcedRoll.rolls[curRoll] + "</div></div>");
+		if (queuedRoll.unlucky) {
+			rollPanel.append("<div class='bad unlucky'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
 		setTimeout(function() { rollPanel.addClass("double"); }, 1000);
 
-		if (forcedRoll.rolls.length > 2) {
+		if (queuedRoll.rolls.length > 2) {
 			setTimeout(function() { rollPanel.addClass("triple"); }, 3000);
 		}
 
-		chosenRoll = forcedRoll.rolls.indexOf(forcedRoll.result);
-		setTimeout(finalizeForcedRoll, 2000 * forcedRoll.rolls.length - 500);
+		chosenRoll = queuedRoll.rolls.indexOf(queuedRoll.result);
+		setTimeout(finalizePlayerRoll, 2000 * queuedRoll.rolls.length - 500);
 	} else {
-		setTimeout(finalizeForcedRoll, 1000);
+		setTimeout(finalizePlayerRoll, 1000);
 	}
 
 	if (chosenRoll > -1) {
-		$("#forceRollPanel > div:nth-of-type(" + (chosenRoll + 1) + ")").attr("chosen", "true");
+		$("#dieRollPanel > div:nth-of-type(" + (chosenRoll + 1) + ")").attr("chosen", "true");
 	}
-
-	
 }
 
-function finalizeForcedRoll() {
-	$("#forceRollPanel > div:not([chosen])").addClass("discarded");
-	$("#forceRollContinue").show();
+/// Fires once dice roll display has completed.
+function finalizePlayerRoll() {
+	$("#dieRollPanel > div:not([chosen])").addClass("discarded");
+	$("#dieRollContinue").show();
 }
 
-function acceptForcedRoll() {
-	forcedRoll.callback();
-	forcedRoll = null;
+/// Completes the roll, firing its associated callback.
+function acceptPlayerRoll() {
+	queuedRoll.callback();
+	queuedRoll = null;
 	hidePopup();
-	$("#forceRollPanel").removeClass("double triple").empty();
+	$("#dieRollPanel").removeClass("double triple").empty();
 }
 
+/// Cancels the roll in progress.  This is only available on rolls the player initiated.
 function cancelPlayerRoll() {
-	forcedRoll = null;
+	queuedRoll = null;
 	hidePopup();
 }
 
+/// Displays profile modal.
 function showProfilePopup(name) {
 	$("#modalBG").addClass("show");
 	$("#profileModal").addClass("show");
 	$("#profileModal iframe").attr("src", "profile.html?character=" + name + "&minimal=true");
 }
 
+/// Hides all modals.
 function hidePopup() {
 	$("#modalBG").removeClass("show");
 	$("#modalBG > div").removeClass("show");
 }
 
+/// Event registration.
 $(window).on("online", sendDisconnectEvent);
 $(window).on("offline, unload", sendDisconnectEvent);
 $("#loadChar").on("click", loadChar);
@@ -787,9 +828,9 @@ $("#summonControls").on("click", "button#summonDismiss", summonDismiss);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);
-$("#makeForceRoll").on("click", doForcedRoll);
-$("#forceRollContinue").on("click", acceptForcedRoll);
-$("#cancelForceRoll").on("click", cancelPlayerRoll);
+$("#makeDieRoll").on("click", executePlayerRoll);
+$("#dieRollContinue").on("click", acceptPlayerRoll);
+$("#cancelDieRoll").on("click", cancelPlayerRoll);
 $("#errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);
 
 initializePage();
