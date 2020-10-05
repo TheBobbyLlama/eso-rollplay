@@ -106,7 +106,7 @@ function setSummonControls() {
 		var markupSummonOptions = "";
 
 		for (var i = 0; i < npcTemplates.length; i++) {
-			if (npcTemplates[i].allowSummon) {
+			if (npcTemplates[i].summonSkill) {
 				markupSummonOptions += "<option>" + npcTemplates[i].name + "</option>";
 			}
 		}
@@ -125,12 +125,15 @@ function setSummonControls() {
 
 /// Handles player's request to summon a pet.
 function requestSummon() {
-	var template = $("#summonTemplate").val();
+	var templateName = $("#summonTemplate").val();
 	var summonEl = $("#summonName");
 	var summonName = summonEl.val();
+	var template = npcTemplates.find(element => element.name == templateName);
 
-	doPlayerRoll("Make a Conjuration roll to summon a " + template + ".", "", { key: "Conjuration", playerInitiated: true, summonTemplate: template, summonName, callback: resolveSummonRequest });
-	summonEl.val("");
+	if (template) {
+		doPlayerRoll("Make a " + getQuality(template.summonSkill).name + " roll to summon a " + templateName + ".", "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
+		summonEl.val("");
+	}
 }
 
 /// Takes player's summoning roll and passes it to an event.

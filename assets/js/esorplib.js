@@ -56,7 +56,7 @@ class CharacterTemplate {
 }
 
 class NPCTemplate {
-	constructor(myName, myAttackBonus, myAttackType, myDamageBonus, myDefenseBonus, myToughnessBonus, myResist = [], myWeakness = [], canSummon = true) {
+	constructor(myName, myAttackBonus, myAttackType, myDamageBonus, myDefenseBonus, myToughnessBonus, myResist = [], myWeakness = [], mySkill = "") {
 		this.name = myName;
 		this.attackBonus = myAttackBonus;
 		this.attackType = myAttackType;
@@ -65,7 +65,7 @@ class NPCTemplate {
 		this.toughnessBonus = myToughnessBonus;
 		this.resist = myResist;
 		this.weakness = myWeakness;
-		this.allowSummon = canSummon;
+		this.summonSkill = mySkill;
 	}
 
 	makeRoll(key, event = null) {
@@ -295,21 +295,27 @@ const supernaturalTransformations = [
 
 // const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
 const npcTemplates = [
-// name, attack bonus, attack type, damage bonus, defense bonus, toughness bonus, resists, weaknesses, summonable
-	new NPCTemplate("Zombie",			0, 1, 0, -4, 0),
-	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2),
-	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "Physical" ], [ "Silver" ]),
-	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "Physical" ], [ "Silver "]),
-	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "Silver" ]),
-	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "Silver" ]),
-	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "Silver" ]),
-	new NPCTemplate("Flame Atronach",	3, 3, 4, 1, 0, [ "Flame" ], [ "Silver" ]),
-	new NPCTemplate("Frost Atronach",	2, 4, 3, 0, 4, [ "Frost" ], [ "Silver" ]),
-	new NPCTemplate("Storm Atronach",	2, 6, 3, 0, 2, [ "Shock" ], [ "Silver" ]),
-	new NPCTemplate("Winged Twilight",	2, 1, 2, 3, 0, [], [ "Silver" ]),
-	new NPCTemplate("Dremora",			6, 1, 2, 2, 2, [ "Flame" ], [ "Silver" ]),
-	new NPCTemplate("Daedroth",			4, 1, 3, 0, 4, [], [ "Silver" ]),
-	new NPCTemplate("Hunger",			4, 1, 3, 0, 2, [], [ "Silver" ])
+// name, attack bonus, attack type, damage bonus, defense bonus, toughness bonus, resists, weaknesses, summon skill (leave blank for unsummonable)
+	new NPCTemplate("Zombie",			0, 1, 0, -4, 0, [], [], "Conjuration"),
+	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2, [], [], "Conjuration"),
+	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "Physical" ], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "Physical" ], [ "Silver "], "Conjuration"),
+	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Flame Atronach",	3, 3, 4, 1, 0, [ "Flame" ], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Frost Atronach",	2, 4, 3, 0, 4, [ "Frost" ], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Storm Atronach",	2, 6, 3, 0, 2, [ "Shock" ], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Winged Twilight",	2, 1, 2, 3, 0, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Dremora",			6, 1, 2, 2, 2, [ "Flame" ], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Daedroth",			4, 1, 3, 0, 4, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Hunger",			4, 1, 3, 0, 2, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Familiar",			2, 1, 0, 2, -2, [], [], "Conjuration"),
+	new NPCTemplate("Wolf",				2, 1, 0, 2, -2, [], [], "HandleAnimal"),
+	new NPCTemplate("Bear",				2, 1, 4, 0, 3, [], [], "HandleAnimal"),
+	new NPCTemplate("Small Animal",		0, 1, -2, 4, -2, [], [], "HandleAnimal"),
+	new NPCTemplate("Medium Animal",	2, 1, 0, 0, 0, [], [], "HandleAnimal"),
+	new NPCTemplate("Large Animal",		2, 1, 3, 0, 4, [], [], "HandleAnimal"),
 ];
 
 /// Gets a character template by name.
