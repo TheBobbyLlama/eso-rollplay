@@ -30,18 +30,22 @@ function createFilters() {
 	const filterList = [];
 	const filterDiv = $("#sourceFilters");
 
-	filterDiv.empty().append("<p>Filters:</p>");
+	filterDiv.empty()
+	
+	if (nameData[raceIndex].subcategories.length > 1) {
+		filterDiv.append("<p>Filters:</p>");
 
-	for (let x = 0; x < nameData[raceIndex].subcategories.length; x++) {
-		let curSet = nameData[raceIndex].subcategories[x].componentList.components;
+		for (let x = 0; x < nameData[raceIndex].subcategories.length; x++) {
+			let curSet = nameData[raceIndex].subcategories[x].componentList.components;
 
-		for (let i = 0; i < curSet.length; i++) {
-			if (filterList.indexOf(curSet[i].source) < 0) {
-				filterList.push(curSet[i].source);
-				filterDiv.append("<div>" +
-									"<input type='checkbox' name='" + curSet[i].source + "' value='" + curSet[i].source + "' checked></input>" +
-									"<label for='" + curSet[i].source + "'>" + curSet[i].source + "</label>" +
-								"</div>");
+			for (let i = 0; i < curSet.length; i++) {
+				if (filterList.indexOf(curSet[i].source) < 0) {
+					filterList.push(curSet[i].source);
+					filterDiv.append("<div>" +
+										"<input type='checkbox' name='" + curSet[i].source + "' value='" + curSet[i].source + "' checked></input>" +
+										"<label for='" + curSet[i].source + "'>" + curSet[i].source + "</label>" +
+									"</div>");
+				}
 			}
 		}
 	}
@@ -90,7 +94,7 @@ function getComponentLists(filter) {
 			if ((curSet.componentList.index == componentIndex) && ((!curSet.name) || (curSet.name == $("#sex").val()))) {
 
 				for (let i = 0; i < curSet.componentList.components.length; i++) {
-					if (filter.indexOf(curSet.componentList.components[i].source) > -1) {
+					if ((!curSet.componentList.components[i].source) || (filter.indexOf(curSet.componentList.components[i].source) > -1)) {
 						tmpResults.push(curSet.componentList.components[i]);
 					}
 				}
