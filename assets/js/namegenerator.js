@@ -173,7 +173,7 @@ function getRandomIndex(max) {
 }
 
 /// Event registration.
-$.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
-//$.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
+//$.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
+$.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
 $("#race").on("change", createFilters);
 $("#generateButton").on("click", generate);
