@@ -761,44 +761,6 @@
 
 	},
 	{
-		"race": "Maormer",
-		"subcategories": [
-			{
-				"name": "Male",
-				"componentList": {
-					"index": 1,
-					"components": [
-						{
-							"length": 2,
-							"list": [ "Arst+", "Eilg+", "Jykl+", "Larn+", "Mort+", "Neir+", "Orgn+", "Pel+", "Qraal+", "Rodr+", "Uld+", "Urls+", "+al", "+ar", "+el", "+eth", "+il", "+ius", "+or", "+os", "+ul", "+um", "+un" ]
-						},
-						{
-							"length": 3,
-							"list": [ "Ac+", "Al+", "Ary+", "Cam+", "Cing+", "Col+", "Hec+", "Iph+", "Is+", "Kan+", "Konn+", "Lin+", "Linv+", "Mall+", "Morm+", "Nor+", "Nory+", "Ohm+", "Par+", "Ten+", "Tild+", "Tunn+", "Ul+", "Uum+", "Val+", "Visc+", "+aadr+", "+aam+", "+al+", "+am+", "+an+", "+and+", "+anm+", "+ar+", "+arn+", "+eb+", "+elc+", "+en+", "+er+", "+ern+", "+es+", "+et+", "+ev+", "+id+", "+iv+", "+ond+", "+ug+", "+ul+", "+ulny+", "+und+", "+uv+", "+a", "+an", "+ar", "+as", "+e", "+ial", "+il", "+ion", "+o", "+oa", "+on", "+or", "+oth", "+us" ]
-						}
-					]
-				}
-			},
-			{
-				"name": "Female",
-				"componentList": {
-					"index": 1,
-					"components": [
-						{
-							"length": 2,
-							"list": [ "Chrys+", "Hetsh+", "Neid+", "Sam+", "Um+", "+a", "+eht", "+eis", "+ir", "+uor" ]
-						},
-						{
-							"length": 3,
-							"list": [ "An+", "Brey+", "Cast+", "Cect+", "Cin+", "Desp+", "Guld+", "Has+", "Il+", "Ir+", "Ism+", "Jahl+", "Oh+", "Pan+", "Pen+", "Querg+", "Ter+", "Vind+", "Vir+", "Yal+", "+air+", "+al+", "+an+", "+anl+", "+ar+", "+ard+", "+asr+", "+ass+", "+aw+", "+ell+", "+en+", "+id+", "+in+", "+ind+", "+inw+", "+ir+", "+irw+", "+or+", "+orn+", "+ur+", "+urm+", "+yd+", "+yr+", "+a", "+e", "+en", "+i", "+ia", "+il", "+ion", "+ol" ]
-						}
-					]
-				}
-			}
-		]
-
-	},
-	{
 		"race": "Nord",
 		"subcategories": [
 			{
@@ -1081,5 +1043,43 @@
 				}
 			}
 		]
+	},
+	{
+		"race": "Maormer",
+		"subcategories": [
+			{
+				"name": "Male",
+				"componentList": {
+					"index": 1,
+					"components": [
+						{
+							"length": 2,
+							"list": [ "Arst+", "Eilg+", "Jykl+", "Larn+", "Mort+", "Neir+", "Orgn+", "Pel+", "Qraal+", "Rodr+", "Uld+", "Urls+", "+al", "+ar", "+el", "+eth", "+il", "+ius", "+or", "+os", "+ul", "+um", "+un" ]
+						},
+						{
+							"length": 3,
+							"list": [ "Ac+", "Al+", "Ary+", "Cam+", "Cing+", "Col+", "Hec+", "Iph+", "Is+", "Kan+", "Konn+", "Lin+", "Linv+", "Mall+", "Morm+", "Nor+", "Nory+", "Ohm+", "Par+", "Ten+", "Tild+", "Tunn+", "Ul+", "Uum+", "Val+", "Visc+", "+aadr+", "+aam+", "+al+", "+am+", "+an+", "+and+", "+anm+", "+ar+", "+arn+", "+eb+", "+elc+", "+en+", "+er+", "+ern+", "+es+", "+et+", "+ev+", "+id+", "+iv+", "+ond+", "+ug+", "+ul+", "+ulny+", "+und+", "+uv+", "+a", "+an", "+ar", "+as", "+e", "+ial", "+il", "+ion", "+o", "+oa", "+on", "+or", "+oth", "+us" ]
+						}
+					]
+				}
+			},
+			{
+				"name": "Female",
+				"componentList": {
+					"index": 1,
+					"components": [
+						{
+							"length": 2,
+							"list": [ "Chrys+", "Hetsh+", "Neid+", "Sam+", "Um+", "+a", "+eht", "+eis", "+ir", "+uor" ]
+						},
+						{
+							"length": 3,
+							"list": [ "An+", "Brey+", "Cast+", "Cect+", "Cin+", "Desp+", "Guld+", "Has+", "Il+", "Ir+", "Ism+", "Jahl+", "Oh+", "Pan+", "Pen+", "Querg+", "Ter+", "Vind+", "Vir+", "Yal+", "+air+", "+al+", "+an+", "+anl+", "+ar+", "+ard+", "+asr+", "+ass+", "+aw+", "+ell+", "+en+", "+id+", "+in+", "+ind+", "+inw+", "+ir+", "+irw+", "+or+", "+orn+", "+ur+", "+urm+", "+yd+", "+yr+", "+a", "+e", "+en", "+i", "+ia", "+il", "+ion", "+ol" ]
+						}
+					]
+				}
+			}
+		]
+
 	}
 ]
