@@ -69,7 +69,7 @@ function changeName() {
 
 /// Handles player entry.
 function changePlayer() {
-	character.player = nameEncode($(this).val().trim().replace(/@/g, ""));
+	character.player = nameEncode($("input[name='charPlayer']").val().trim().replace(/@/g, ""));
 	localStorage.setItem("ESORP[player]", character.player);
 	updateCharacterSheet();
 }
@@ -299,7 +299,13 @@ function showHelpPopup() {
 /// Displays the name selection modal.
 function showNamePopup() {
 	const myFrame = $("#nameModal iframe");
-	const url = "namegenerator.html?race=" + $("select[name='charRace']").val() + "&sex=" + $("select[name='charSex']").val();
+	var charRace = $("select[name='charRace']").val();
+
+	if (charRace.indexOf(" (") > -1) {
+		charRace = charRace.substring(0, charRace.indexOf(" ("));
+	}
+
+	const url = "namegenerator.html?race=" + charRace + "&sex=" + $("select[name='charSex']").val();
 
 	if (myFrame.attr("src") != url) {
 		myFrame.attr("src", url);
