@@ -758,7 +758,6 @@
 				}
 			}
 		]
-
 	},
 	{
 		"race": "Nord",
@@ -920,26 +919,75 @@
 					"components": [
 						{
 							"source": "Morrowind",
-							"length": 1,
-							"list": [ "Atulg", "Azuk", "Bagamul", "Bakh", "Baronk", "Bashag", "Bazgulub", "Bogakh", "Bologra", "Borug", "Both", "Bugdul", "Bugharz", "Bugrash", "Bugrol", "Bumbub", "Burul", "Dul", "Dular", "Duluk", "Duma", "Dumbuk", "Dumburz", "Dur", "Durbul", "Durgash", "Durz", "Durzol", "Durzub", "Durzum", "Garothmuk", "Garzonk", "Gashna", "Ghamborz", "Ghamonk", "Ghoragdush", "Ghorlorz", "Glush", "Grat", "Gruzgob", "Guarg", "Gurak", "Khadba", "Khagra", "Khargol", "Koffutto", "Largakh", "Lorbumol", "Lorzub", "Lugdum", "Lugrub", "Lurog", "Mash", "Matuk", "Mauhul", "Mazorn", "Moghakh", "Mol", "Morbash", "Mug", "Mugdul", "Muk", "Murag", "Murkub", "Murzol", "Muzgonk", "Nag", "Nar", "Nash", "Ogrul", "Ogrumbu", "Olfin", "Olumba", "Orakh", "Rogdul", "Shakh", "Shamar", "Shamob", "Shargam", "Sharkub", "Shat", "Shazgob", "Shulong", "Shura", "Shurkul", "Shuzug", "Snaglak", "Snakha", "Snat", "Ugdumph", "Ughash", "Ulam", "Umug", "Uram", "Urim", "Urul", "Urzog", "Ushamph", "Ushat", "Yadba", "Yagak", "Yak", "Yam", "Yambagorn", "Yambul", "Yargol", "Yashnarz", "Yatur" ]
+							"length": 2,
+							"list": [ "Ba+", "Bo+", "Du+", "Glu+", "Gra+", "Gua+", "Ma+", "Mo+", "Mu+", "Na+", "Na+", "Na+", "Sha+", "Sha+", "Ya+", "Ya+", "+g", "+k", "+kh", "+m", "+l", "+r", "+rg", "+sh", "+t", "+th" ]
+						},
+						{
+							"source": "Morrowind",
+							"length": 2,
+							"list": [ "At+", "Az+", "Bar+", "Bash+", "Bog+", "Bor+", "Bugd+", "Bugh+", "Bugr+", "Bumb+", "Bur+", "Dul+", "Dum+", "Dumb+", "Durb+", "Durg+", "Durz+", "Garz+", "Gashn+", "Gham+", "Ghamb+", "Ghorl+", "Gruzg+", "Gur+", "Khadb+", "Khagr+", "Kharg+", "Larg+", "Lorz+", "Lugd+", "Lugr+", "Lur+", "Mat+", "Mauh+", "Maz+", "Mogh+", "Morb+", "Mugd+", "Mur+", "Murk+", "Murz+", "Muzg+", "Ogr+", "Olf+", "Or+", "Rogd+", "Sham+", "Sharg+", "Shark+", "Shazg+", "Shul+", "Shur+", "Shurk+", "Shuz+", "Snagl+", "Snakh+", "Ugd+", "Ugh+", "Ul+", "Um+", "Ur+", "Urz+", "Ush+", "Yadb+", "Yag+", "Yamb+", "Yarg+", "Yashn+", "Yat+", "+a", "+ag", "+ak", "+akh", "+am", "+amph", "+ar", "+arz", "+ash", "+at", "+im", "+in", "+ob", "+og", "+ol", "+ong", "+onk", "+orn", "+orz", "+ub", "+ug", "+uk", "+ul", "+ulg", "+um", "+umph", "+ur", "+urz" ]
+						},
+						{
+							"source": "Morrowind",
+							"length": 3,
+							"list": [ "Bag+", "Bazg+", "Bol+", "Gar+", "Ghor+", "Koff+", "Lorb+", "Ogr+", "Ol+", "Yamb+", "+ag+", "+agd+", "+am+", "+ogr+", "+othm+", "+ul+", "+um+", "+umb+", "+utt+", "+a", "+o", "+ol", "+orn", "+u", "+ub", "+uk", "+ul", "+ush" ]
 						},
 						{
 							"source": "Oblivion",
-							"length": 1,
-							"list": [ "Agronak", "Bat", "Bazur", "Brugo", "Bogrum", "Brag", "Brokil", "Bugak", "Buramog", "Burz", "Dubok", "Dul", "Dulfish", "Dulphumph", "Dumag", "Gaturn", "Ghola", "Ghorub", "Gogron", "Gorgo", "Graklak", "Graman", "Grommok", "Gul", "Hanz", "Krognak", "Kurdan", "Kurz", "Lum", "Lumdum", "Luronk", "Magra", "Magub", "Maknok", "Mug", "Orok", "Rugdumph", "Shagol", "Shagrol", "Shobob", "Shum", "Ulmug", "Urbul", "Urul", "Ushnar", "Uzul" ]
+							"length": 2,
+							"list": [ "Ba+", "Bra+", "Bu+", "Du+", "Gu+", "Ha+", "Ku+", "Lu+", "Mu+", "Shu+", "+g", "+l", "+m", "+nz", "+rz", "+t" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 2,
+							"list": [ "Baz+", "Bogr+", "Brok+", "Brug+", "Bug+", "Dub+", "Dulf+", "Dulph+", "Dum+", "Gat+", "Ghol+", "Ghor+", "Gogr+", "Gorg+", "Grakl+", "Gram+", "Gromm+", "Krogn+", "Kurd+", "Lumd+", "Lur+", "Mag+", "Magr+", "Makn+", "Or+", "Rugd+", "Shag+", "Shagr+", "Shob+", "Ulm+", "Ur+", "Urb+", "Ushn+", "Uz+", "+a", "+ag", "+ak", "+an", "+ar", "+il", "+ish", "+o", "+ob", "+ok", "+ol", "+on", "+onk", "+ub", "+ug", "+ul", "+um", "+umph", "+ur", "+urn" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 3,
+							"list": [ "Agr+", "Bur+", "+am+", "+on+", "+ak", "+og" ]
 						},
 						{
 							"source": "Skyrim",
-							"length": 1,
-							"list": [ "Balagog", "Bashnag", "Borkul", "Burguk", "Durak", "Dushnamub", "Gadba", "Gat", "Ghamorz", "Ghorbash", "Ghunzul", "Grogmar", "Grushnag", "Gularzob", "Kharag", "Larak", "Lob", "Lurbuk", "Mahk", "Makhel", "Malkus", "Mauhulakh", "Mogrul", "Moth", "Mul", "Mulush", "Nagrub", "Oglub", "Ogol", "Olur", "Ulag", "Umurn", "Urag", "Yamarz", "Yar" ]
+							"length": 2,
+							"list": [ "Ga+", "Lo+", "Ma+", "Mo+", "Mu+", "Ya+", "+b", "+hk", "+l", "+r", "+t", "+th" ]
+						},
+						{
+							"source": "Skyrim",
+							"length": 2,
+							"list": [ "Bashn+", "Bork+", "Burg+", "Dur+", "Gadb+", "Gham+", "Ghorb+", "Ghunz+", "Grogm+", "Grushn+", "Khar+", "Lar+", "Lurb+", "Makh+", "Malk+", "Mod+", "Mogr+", "Mul+", "Nagr+", "Og+", "Ogl+", "Ol+", "Ul+", "Um+", "Ur+", "Yam+", "+a", "+ag", "+ak", "+ar", "+arz", "+ash", "+el", "+ig", "+ol", "+orz", "+ub", "+uk", "+ul", "+ur", "+urn", "+us", "+ush" ]
+						},
+						{
+							"source": "Skyrim",
+							"length": 3,
+							"list": [ "Bal+", "Dushn+", "Gul+", "Mauh+", "+ag+", "+am+", "+arz+", "+ul+", "+akh", "+ob", "+og", "+ub" ]
 						},
 						{
 							"source": "Online",
+							"length": 2,
+							"list": [ "Ba+", "Bo+", "Bro+", "Bu+", "Du+", "Fhe+", "Ga+", "Gha+", "Gho+", "Ghru+", "Gla+", "Glo+", "Gloo+", "Glu+", "Go+", "Gro+", "Groo+", "Gru+", "Gu+", "Hru+", "Kha+", "Kla+", "Kro+", "Ku+", "Lo+", "Lu+", "Mo+", "Mu+", "Na+", "Oo+", "Rho+", "Roo+", "Sha+", "Sma+", "Smau+", "Sna+", "Sne+", "Snoo+", "Snu+", "So+", "Sto+", "Tha+", "Tho+", "Thoo+", "Thra+", "Thre+", "Thru+", "To+", "U+", "Uu+", "Vu+", "Wo+", "Ya+", "Yo+", "Za+", "Zbu+", "Zgo+", "Zho+", "Zo+", "+b", "+d", "+g", "+gb", "+gg", "+gh", "+h", "+k", "+kh", "+kk", "+l", "+lg", "+lph", "+lth", "+m", "+mth", "+ng", "+np", "+rd", "+rg", "+rgh", "+rkh", "+rn", "+rnt", "+rsh", "+rt", "+rz", "+rzh", "+sh", "+sn", "+t", "+th", "+z", "+zb", "+zg", "+zh" ]
+						},
+						{
+							"source": "Online",
+							"length": 2,
+							"list": [ "Abz+", "Abzr+", "Ag+", "Agh+", "Agn+", "Agr+", "Agst+", "Ahz+", "Argh+", "Ashz+", "At+", "Avr+", "Az+", "Azr+", "Bal+", "Balkn+", "Balm+", "Balr+", "Balz+", "Barg+", "Bargr+", "Batgr+", "Bazr+", "Beg+", "Begn+", "Bekhw+", "Bhagr+", "Bikn+", "Blodr+", "Boag+", "Bogh+", "Bogn+", "Bogz+", "Bold+", "Bolgr+", "Bor+", "Borb+", "Borg+", "Borm+", "Borz+", "Braad+", "Bragh+", "Brogd+", "Brugd+", "Brul+", "Bug+", "Bugn+", "Bull+", "Bulz+", "Bumn+", "Bur+", "Burzgr+", "Buz+", "Carz+", "Charlv+", "Cogn+", "Dagn+", "Dorz+", "Drag+", "Drom+", "Drud+", "Dug+", "Dugr+", "Dugt+", "Dul+", "Dulr+", "Dum+", "Dur+", "Dush+", "Dushg+", "Dushk+", "Fang+", "Farb+", "Gah+", "Gahgd+", "Gahzn+", "Gar+", "Garg+", "Garm+", "Garn+", "Gash+", "Gashd+", "Gashz+", "Gez+", "Gezd+", "Ghagr+", "Ghak+", "Ghakn+", "Gham+", "Ghamr+", "Ghash+", "Ghat+", "Ghatr+", "Ghob+", "Ghog+", "Ghorn+", "Ghrat+", "Ghromr+", "Gladb+", "Glagb+", "Glam+", "Glaz+", "Glazg+", "Gleg+", "Gloor+", "Gloth+", "Glund+", "Glunr+", "Glurd+", "Glush+", "Gluth+", "Gob+", "Godr+", "Gog+", "Gogb+", "Gogr+", "Goh+", "Golb+", "Goorg+", "Gor+", "Gorb+", "Gorbl+", "Gord+", "Gorg+", "Gorgr+", "Gorl+", "Gorr+", "Gorz+", "Goth+", "Goz+", "Graal+", "Grag+", "Gralt+", "Grash+", "Grashb+", "Grav+", "Grazhw+", "Grezg+", "Grishd+", "Gron+", "Grubd+", "Grugn+", "Grul+", "Grulb+", "Gruld+", "Grulz+", "Grund+", "Gruny+", "Grushb+", "Grushn+", "Gruud+", "Gruzd+", "Gruzn+", "Gul+", "Gulb+", "Gulz+", "Gund+", "Gunr+", "Gur+", "Gurl+", "Gush+", "Gwilh+", "Hag+", "Hazb+", "Hor+", "Hothm+", "Ilth+", "Kadr+", "Kargn+", "Kaz+", "Kelr+", "Kent+", "Kharsth+", "Khart+", "Khral+", "Kirg+", "Klov+", "Kog+", "Krad+", "Krod+", "Krogr+", "Kur+", "Kurl+", "Lag+", "Lagr+", "Lahkg+", "Lakh+", "Lakhd+", "Lar+", "Larh+", "Lashb+", "Lat+", "Laur+", "Lazg+", "Logb+", "Lorb+", "Lothd+", "Lothg+", "Lozr+", "Lozw+", "Lug+", "Lugb+", "Lugd+", "Lugn+", "Lugr+", "Lugz+", "Lumg+", "Lungr+", "Lur+", "Luzm+", "Maag+", "Mag+", "Magr+", "Makh+", "Marg+", "Marz+", "Maug+", "Mauh+", "Mazgr+", "Meg+", "Mek+", "Mogr+", "Mokh+", "Mokhr+", "Monr+", "Mordr+", "Morg+", "Morgbr+", "Morl+", "Mud+", "Mugl+", "Mugr+", "Mul+", "Mulg+", "Mulz+", "Mungr+", "Mur+", "Murg+", "Murgr+", "Murl+", "Murz+", "Muzb+", "Muzdr+", "Muzg+", "Nag+", "Nagr+", "Nahz+", "Nahzgr+", "Nakh+", "Nar+", "Narh+", "Nashr+", "Nen+", "Norg+", "Nug+", "Nugw+", "Nunk+", "Obd+", "Obg+", "Obr+", "Ofgl+", "Og+", "Ogm+", "Ogr+", "Ogz+", "Okr+", "Olf+", "Olfr+", "Olg+", "Ood+", "Oogr+", "Oorg+", "Oorl+", "Ord+", "Org+", "Ornt+", "Orz+", "Osgr+", "Oth+", "Othb+", "Othz+", "Oz+", "Perg+", "Put+", "Rabl+", "Ragb+", "Ragn+", "Ram+", "Razg+", "Rogb+", "Rogn+", "Rogr+", "Rok+", "Roogh+", "Roogl+", "Rorb+", "Roz+", "Rugdr+", "Rugm+", "Ruzgr+", "Sgag+", "Sgol+", "Shag+", "Shagr+", "Shakh+", "Sham+", "Shaml+", "Sharg+", "Sharn+", "Shog+", "Shugr+", "Shuk+", "Shulth+", "Shurk+", "Shurr+", "Skag+", "Skagw+", "Skalg+", "Skar+", "Skord+", "Skorg+", "Skulz+", "Slagw+", "Slay+", "Slegb+", "Snagb+", "Snagd+", "Snakz+", "Snal+", "Snarg+", "Snaz+", "Snegb+", "Snegh+", "Snikhb+", "Snug+", "Snushb+", "Spag+", "Stugbr+", "Szugb+", "Targ+", "Tazg+", "Thag+", "Thagb+", "Thagbr+", "Thak+", "Thar+", "Thark+", "Thaz+", "Thazn+", "Theg+", "Ther+", "Thol+", "Thorzh+", "Thrag+", "Thragd+", "Thrun+", "Thukb+", "Thungd+", "Todr+", "Togbr+", "Togr+", "Tor+", "Tug+", "Tungth+", "Ufth+", "Ug+", "Ugd+", "Uggn+", "Ul+", "Ulgh+", "Ungr+", "Unr+", "Unthr+", "Ur+", "Urdb+", "Urgd+", "Ush+", "Uug+", "Uulg+", "Uzn+", "Varg+", "Vulm+", "Vundr+", "Wagh+", "Ward+", "Wuzg+", "Yag+", "Yak+", "Yar+", "Yarg+", "Yarn+", "Yat+", "Ygg+", "Yggn+", "Yggr+", "Yzzg+", "Zagr+", "Zeg+", "Zhag+", "Zhas+", "Zilb+", "Zogb+", "Zugn+", "Zulb+", "Zulg+", "Zulgr+", "Zum+", "Zung+", "Zunl+", "+a", "+ab", "+ad", "+ag", "+agg", "+ahg", "+ain", "+ak", "+akh", "+al", "+alg", "+alt", "+am", "+an", "+ang", "+ar", "+ard", "+arg", "+argh", "+arkh", "+arth", "+arz", "+ash", "+ast", "+at", "+ath", "+aug", "+auk", "+az", "+azz", "+eg", "+egg", "+ek", "+el", "+erg", "+erm", "+esh", "+ig", "+ik", "+ikh", "+im", "+im*", "+in", "+o", "+ob", "+od", "+og", "+ogg", "+ok", "+okh", "+ol", "+olg", "+om", "+on", "+onk", "+onkh", "+ook", "+ooth", "+oq", "+or", "+org", "+orgh", "+orkh", "+orn", "+orz", "+os", "+osh", "+ot", "+oth", "+ots", "+ov", "+oz", "+u", "+ub", "+ud", "+uf", "+ug", "+ugd", "+ugg", "+ugh", "+uk", "+ukh", "+ul", "+ulg", "+ulz", "+um", "+umph", "+un", "+unh", "+ur", "+urg", "+urgh", "+url", "+urn", "+urz", "+us", "+ush", "+ut", "+uth", "+uz" ]
+						},
+						{
+							"source": "Online",
+							"length": 3,
+							"list": [ "Agg+", "Agr+", "Arghr+", "Az+", "Azg+", "Bash+", "Beg+", "Bisq+", "Bog+", "Bogg+", "Bor+", "Borz+", "Both+", "Brug+", "Brugh+", "Bul+", "Bur+", "Burz+", "Dug+", "Dulph+", "Gag+", "Ghorn+", "Ghrub+", "Glorgz+", "Gloth+", "Glun+", "Gob+", "Goh+", "Gor+", "Grod+", "Grom+", "Grud+", "Gun+", "Gur+", "Gurg+", "Gush+", "In+", "Kham+", "Khor+", "Log+", "Loz+", "Lugd+", "Lurb+", "Lurg+", "Makh+", "Maz+", "Mog+", "Mor+", "Morbr+", "Mord+", "Moth+", "Muh+", "Mul+", "Murd+", "Murg+", "Muz+", "Nam+", "Nargb+", "Nark+", "Narkh+", "Obg+", "Og+", "Ol+", "Ont+", "Ood+", "Org+", "Orgd+", "Orgdr+", "Orzb+", "Osg+", "Oth+", "Ram+", "Razg+", "Rog+", "Rugd+", "Shakh+", "Sham+", "Shark+", "Smagb+", "Snab+", "Snarb+", "Snegb+", "Stugb+", "Szug+", "Tug+", "Tum+", "Ug+", "Ugr+", "Ul+", "Ulgd+", "Ulm+", "Und+", "Undr+", "Ur+", "Usn+", "Yagr+", "Yam+", "Yarn+", "Zagh+", "Zul+", "Zulg+", "+ab+", "+ag+", "+agd+", "+agr+", "+aim+", "+am+", "+an+", "+ar+", "+at+", "+aw+", "+azb+", "+azg+", "+azk+", "+azz+", "+eg+", "+er+", "+ig+", "+igh+", "+imb+", "+ob+", "+od+", "+og+", "+ogr+", "+oh+", "+ol+", "+on+", "+or+", "+org+", "+ot+", "+oth+", "+othm+", "+oz+", "+uel+", "+ug+", "+ugb+", "+ugr+", "+uk+", "+ul+", "+um+", "+ung+", "+unt+", "+ur+", "+urb+", "+urg+", "+uth+", "+uz+", "+a", "+ag", "+ak", "+akh", "+al", "+alg", "+ar", "+arg", "+arz", "+as", "+ash", "+ek", "+ig", "+ikh", "+in", "+o", "+ob", "+od", "+og", "+ol", "+or", "+orn", "+osh", "+oth", "+u", "+ub", "+ud", "+ug", "+uk", "+ukh", "+ul", "+ulg", "+ur", "+ush", "+usk", "+uz", "+yk" ]
+						}
+					]
+				}
+			},
+			{
+				"name": "Male",
+				"componentList": {
+					"index": 2,
+					"components": [
+						{
 							"length": 1,
-							"list": [
-								"Abzag", "Abzrolg", "Abzug", "Agganor", "Aghurz", "Agnar", "Agrakh", "Agrobal", "Agstarg", "Aguz", "Ahzug", "Arghragdush", "Arghur", "Ashzu", "Aturgh", "Avreg", "Azarg", "Azgarub", "Azimbul", "Azogu", "Azrath", "Azulg", "Balarkh", "Balknakh", "Balmeg", "Balorgh", "Baloth", "Balrook", "Balzag", "Bargo", "Bargrug", "Bash", "Bashagorn", "Batgrul", "Bazrag", "Begnar", "Begok", "Begozug", "Bekhwug", "Bhagrun", "Biknuk", "Bisquelas", "Blodrat", "Boagog", "Boggeryk", "Bogham", "Bognash", "Bogodug", "Bogzul", "Boldarkh", "Bolg", "Bolgrul", "Borab", "Boragrul", "Borbuz", "Borgath", "Borgh", "Bormolg", "Borolg", "Borth", "Borz", "Borzighu", "Borzugh", "Bothamul", "Braadoth", "Braghul", "Brog", "Brogdul", "Brokk", "Brugagikh", "Brugdush", "Brughamug", "Brulak", "Bugnerg", "Bugunh", "Bulg", "Bullig", "Bulugbek", "Bulzog", "Bulozog", "Bumnog", "Buragrub", "Burush", "Burzgrag", "Burzunguk", "Burzura", "Buzog", "Carzog", "Charlvain", "Cognor", "Dagnub", "Dorzogg", "Dragom", "Dromash", "Drudun", "Dugakh", "Dugan", "Dugroth", "Dugtosh", "Dugug", "Dugugikh", "Dular", "Dulph", "Dulphago", "Dulrat", "Dumolg", "Durak", "Durang", "Dushgor", "Dushkul", "Dushugg", "Fangoz", "Farbalg", "Fheg", "Gag", "Gagogru", "Gahar", "Gahgdar", "Gahznar", "Gard", "Gargak", "Garikh", "Garmeg", "Garnikh", "Gashdug", "Gasheg", "Gezdak", "Gezorz", "Ghagrub", "Ghak", "Ghaknag", "Ghakorz", "Ghamokh", "Ghamosh", "Ghamron", "Ghamulg", "Ghash", "Ghashugg", "Ghashur", "Ghatrugh", "Ghaturn", "Ghaz", "Ghobargh", "Ghogurz", "Ghorn", "Ghornag", "Ghornugag", "Ghrategg", "Ghromrash", "Ghrubugbash", "Ghrum", "Gladba", "Glag", "Glagbor", "Glamalg", "Glarg", "Glaz", "Glazgor", "Glazulg", "Glegokh", "Gloorag", "Gloorot", "Gloorz", "Glorgzorgo", "Gloth", "Glothozug", "Glothun", "Glud", "Glundeg", "Glunrum", "Glunurgakh", "Glurdag", "Glurnt", "Glushonkh", "Gluthob", "Gluthush", "Gobur", "Goburbak", "Godrun", "Gogaz", "Gogbag", "Gogrikh", "Goh", "Gohazgu", "Gohorg", "Golbag", "Golg", "Goorgul", "Goragol", "Gorak", "Goramalg", "Gorbakh", "Gorblad", "Gorbu", "Gordag", "Gorgath", "Gorgrolg", "Gorlar", "Gorotho", "Gorrath", "Goruz", "Gorzesh", "Gothag", "Gothurg", "Gozarth", "Graalug", "Graguz", "Gralturg", "Grashbag", "Grashegg", "Grashub", "Gravik", "Grazhwu", "Grezgor", "Grishduf", "Grodagur", "Grodoguz", "Grog", "Gromazgu", "Gronov", "Grookh", "Grubdosh", "Grudogub", "Grugnur", "Grulbash", "Gruldum", "Gruloq", "Gruluk", "Grulzul", "Grumth", "Grundu", "Grunyun", "Grushbub", "Grushnag", "Gruudus", "Gruzdash", "Gruznak", "Gulargh", "Gulburz", "Gulug", "Gulzog", "Gunagud", "Gunda", "Gunran", "Gurag", "Gurg", "Gurgozod", "Gurlak", "Guruzug", "Gushagub", "Gushorg", "Guzg", "Gwilherm", "Hagard", "Hazbur", "Horak", "Hothmuk", "Hruz", "Ilthag", "Inazzur", "Kadrun", "Kargnuth", "Kazok", "Kelrog", "Kentosh", "Khal", "Khamagash", "Kharsh", "Kharsthun", "Khartag", "Khoruzoth", "Khralek", "Kurog", "Kirgut", "Klang", "Klovag", "Kogaz", "Kradauk", "Krodak", "Krog", "Krogrash", "Kulth", "Kurd", "Kurlash", "Lagarg", "Lagrog", "Lahkgarg", "Lakhalg", "Lakhdosh", "Larhoth", "Larob", "Lashbag", "Latumph", "Laurig", "Lazgel", "Lob", "Logbur", "Logogru", "Lorbash", "Lothdush", "Lothgud", "Lozotusk", "Lozruth", "Lozwug", "Lug", "Lugbagg", "Lugbur", "Lugdakh", "Lugdugul", "Lugnikh", "Lugolg", "Lugrots", "Lugrun", "Lugulg", "Lugzod", "Lum", "Lumgol", "Lungruk", "Lurash", "Lurbozog", "Lurg", "Lurgonash", "Luzmash", "Maaga", "Mag", "Magrol", "Magunh", "Makhoguz", "Makhug", "Margog", "Marzul", "Maugash", "Mauhoth", "Mazabakh", "Mazgro", "Mazogug", "Megorz", "Mekag", "Mog", "Mogazgur", "Mogrub", "Mokhrul", "Mokhul", "Monru", "Morbrogug", "Mordrog", "Mordugul", "Mordularg", "Morgaz", "Morgbrath", "Morlak", "Morothmash", "Morotub", "Mort", "Mothozog", "Muduk", "Mudush", "Muglugd", "Mugrub", "Muhaimin", "Mulatub", "Mulgargh", "Mulgu", "Mulur", "Mulzalt", "Murdodosh", "Murgonak", "Murgoz", "Murgrud", "Murkh", "Murlog", "Murukh", "Murzog", "Muzb", "Muzbar", "Muzdrulz", "Muzgalg", "Muzgash", "Muzgu", "Muzogu", "Nagoth", "Nagrul", "Nahzgra", "Nahzush", "Nakhul", "Namoroth", "Narazz", "Nargbagorn", "Narhag", "Narkhagikh", "Narkhozikh", "Narkhukulg", "Narkularz", "Nash", "Nashruth", "Nenesh", "Norgol", "Nugok", "Nugwugg", "Nunkuk", "Obdeg", "Obgol", "Obgurob", "Obrash", "Ofglog", "Ogmash", "Ogodosh", "Ogog", "Ogorosh", "Ogozod", "Ogruk", "Ogularz", "Ogumalg", "Ogzar", "Ogzor", "Okrat", "Olfim", "Olfin", "Olfrig", "Olgol", "Olugush", "Ontogu", "Oodeg", "Oodegu", "Oogron", "Oorg", "Oorgurn", "Oorlug", "Oosh", "Ordooth", "Orgak", "Orgdragog", "Orgdugrash", "Orgotash", "Orgush", "Orntosh", "Orzbara", "Orzuk", "Osgrikh", "Osgulug", "Othbug", "Othigu", "Othogor", "Othohoth", "Otholug", "Othukul", "Othulg", "Othzog", "Ozor", "Pergol", "Putor", "Rablarz", "Ragbul", "Ragbur", "Ragnast", "Ramash", "Ramazbur", "Ramorgol", "Ramosh", "Razgor", "Razgugul", "Razgurug", "Rhosh", "Rogbum", "Rognar", "Rogrug", "Rogurog", "Roguzog", "Rokaug", "Rokut", "Roog", "Rooghub", "Rooglag", "Rorburz", "Rozag", "Rugdugbash", "Rugdrulz", "Rugmeg", "Ruzgrol", "Sgagul", "Sgolag", "Shab", "Shagol", "Shagrod", "Shakh", "Shakharg", "Shakhighu", "Shamagug", "Shamar", "Shamlakh", "Shargarkh", "Shargunh", "Sharkagub", "Sharkuzog", "Sharnag", "Shogarz", "Shogorn", "Shugral", "Shukul", "Shulthog", "Shurkol", "Shurrog", "Skagurn", "Skagwar", "Skalgunh", "Skalguth", "Skarath", "Skordo", "Skorgat", "Skulzak", "Slagwug", "Slayag", "Slegbash", "Smagbogoth", "Smauk", "Snabazkur", "Snagbash", "Snagdurl", "Snagg", "Snagh", "Snakh", "Snakzut", "Snalikh", "Snarbugag", "Snargorg", "Snazumph", "Sneg", "Snegbug", "Snegburgak", "Snegh", "Sneghar", "Snikhbat", "Snoog", "Snoorg", "Snugar", "Snugok", "Snukh", "Snushbat", "Sogh", "Spagel", "Storgh", "Stugbrulz", "Stugbulukh", "Szugburg", "Szugogroth", "Targak", "Targoth", "Tazgol", "Tazgul", "Thagam", "Thagbruth", "Thagbush", "Thakaz", "Thakh", "Thakush", "Tharag", "Tharkul", "Thaz", "Thazeg", "Thaznog", "Thegur", "Thereg", "Tholog", "Thoogh", "Thorkh", "Thorzh", "Thorzhul", "Thrag", "Thragdosh", "Thragosh", "Threg", "Thrug", "Thrugb", "Thrunikh", "Thukbug", "Thungdosh", "Todrak", "Togbrig", "Tograz", "Torg", "Torug", "Tugam", "Tugawuz", "Tumuthag", "Tungthu", "Ufthag", "Ugdush", "Uggnath", "Ugorz", "Ugruntuk", "Uguntig", "Ugurz", "Ulagash", "Ulagug", "Ulang", "Ulgdagorn", "Ulghesh", "Ulmamug", "Ulozikh", "Undrigug", "Undugar", "Ungruk", "Unrahg", "Unthrikh", "Uragor", "Urak", "Urdbug", "Urgdosh", "Urok", "Ushang", "Usn", "Usnagikh", "Uugus", "Uulgarg", "Uuth", "Uznom", "Vargos", "Vulmon", "Vundrum", "Vunp", "Waghuth", "Wardush", "Wort", "Wuzgu", "Yagarg", "Yagorkh", "Yagramak", "Yakegg", "Yamukuz", "Yargob", "Yargonk", "Yarnabakh", "Yarnag", "Yarulg", "Yat", "Yatog", "Yggnast", "Yggoz", "Yggruk", "Yggurz", "Yozth", "Yzzgol", "Zagh", "Zaghurbak", "Zagrakh", "Zagrugh", "Zbulg", "Zegol", "Zgog", "Zhagush", "Zhasim", "Zhosh", "Zilbash", "Zogbag", "Zosh", "Zugnor", "Zulbash", "Zulbek", "Zulgozu", "Zulgroth", "Zulgukh", "Zulohoth", "Zumog", "Zungarg", "Zunlog",
-								"Dugrul", "Gashzug", "Kharg", "Luz", "Molg", "Morg", "Mungro", "Ograt", "Smagg"
-							]
+							"list": [ "gro-" ]
 						}
 					]
 				}
@@ -951,26 +999,137 @@
 					"components": [
 						{
 							"source": "Morrowind",
-							"length": 1,
-							"list": [ "Agrob", "Badbog", "Bashuk", "Bogdub", "Bugdurash", "Bula", "Bulak", "Bulfim", "Bum", "Burub", "Burzob", "Dura", "Durgat", "Durz", "Gashnakh", "Ghob", "Glasha", "Glob", "Gluronk", "Gonk", "Grat", "Grazob", "Gulfim", "Kharzug", "Lagakh", "Lambug", "Lazgar", "Mogak", "Morn", "Murob", "Murzush", "Nargol", "Orbul", "Ragash", "Rolfish", "Rulfim", "Shadbak", "Shagar", "Shagdub", "Sharn", "Sharog", "Shelur", "Sloomalah", "Uloth", "Ulumpha", "Urzoth", "Urzul", "Ushug", "Yazgash" ]
+							"length": 2,
+							"list": [ "Bu+", "Du+", "Gho+", "Glo+", "Go+", "Gra+", "Mo+", "Sha+", "+b", "+m", "+nk", "+rn", "+rz", "+t" ]
+						},
+						{
+							"source": "Morrowind",
+							"length": 2,
+							"list": [ "Agr+", "Badb+", "Bash+", "Bogd+", "Bul+", "Bulf+", "Bur+", "Burz+", "Dur+", "Durg+", "Gashn+", "Glash+", "Glur+", "Graz+", "Gulf+", "Kharz+", "Lag+", "Lamb+", "Lazg+", "Mog+", "Mur+", "Murz+", "Narg+", "Orb+", "Rag+", "Rolf+", "Rulf+", "Shadb+", "Shag+", "Shagd+", "Shar+", "Shel+", "Ul+", "Urz+", "Ush+", "Yazg+", "+a", "+ak", "+akh", "+ar", "+ash", "+at", "+im", "+ish", "+ob", "+og", "+ol", "+onk", "+oth", "+ub", "+ug", "+uk", "+ul", "+ur", "+ush" ]
+						},
+						{
+							"source": "Morrowind",
+							"length": 3,
+							"list": [ "Bugd+", "Sloom+", "Ul+", "+al+", "+umph+", "+ur+", "+a", "+ah", "+ash" ]
 						},
 						{
 							"source": "Oblivion",
-							"length": 1,
-							"list": [ "Batul", "Borba", "Bumph", "Homraz", "Mazoga", "Mog", "Mor", "Oghash", "Orag", "Rogbut", "Rogmesh", "Snak", "Ugak", "Umar", "Umog" ]
+							"length": 2,
+							"list": [ "Bu+", "Mo+", "Sna+", "+g", "+k", "+mph", "+r" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 2,
+							"list": [ "Bat+", "Borb+", "Homr+", "Ogh+", "Or+", "Rogb+", "Rogm+", "Ug+", "Um+", "+a", "+ag", "+ak", "+ar", "+ash", "+az", "+esh", "+og", "+ul", "+ut" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 3,
+							"list": [ "Maz+", "+og+", "+a" ]
 						},
 						{
 							"source": "Skyrim",
-							"length": 1,
-							"list": [ "Arob", "Atub", "Bagrak", "Batum", "Bolar", "Bor", "Borgakh", "Dulug", "Garakh", "Ghak", "Gharol", "Ghorza", "Gul", "Lash", "Mogdurz", "Murbul", "Sharamph", "Shel", "Shuftharz", "Ugor", "Urog", "Urzoga", "Yag", "Yatul" ]
+							"length": 2,
+							"list": [ "Bo+", "Gha+", "Gu+", "La+", "She+", "Ya+", "+g", "+k", "+l", "+r", "+sh" ]
+						},
+						{
+							"source": "Skyrim",
+							"length": 2,
+							"list": [ "Ar+", "At+", "Bagr+", "Bat+", "Bol+", "Borg+", "Dul+", "Gar+", "Ghar+", "Ghorz+", "Lush+", "Mogd+", "Murb+", "Shar+", "Shufth+", "Ug+", "Ur+", "Yat+", "+a", "+ak", "+akh", "+amph", "+ar", "+arz", "+ob", "+og", "+ol", "+or", "+ub", "+ug", "+ul", "+um", "+urz" ]
+						},
+						{
+							"source": "Skyrim",
+							"length": 3,
+							"list": [ "Urz+", "+og+", "+a" ]
 						},
 						{
 							"source": "Online",
+							"length": 2,
+							"list": [ "Baa+", "Ga+", "Gha+", "Gla+", "Gle+", "Glu+", "Gnu+", "Gra+", "Gua+", "Gu+", "Guu+", "Gu+", "I+", "Ku+", "Li+", "Sgu+", "Shgra+", "Sho+", "Slu+", "Snoo+", "The+", "U+", "Vo+", "Vu+", "Zaa+", "Zu+", "+g", "+gh", "+lg", "+rl", "+rn", "+rz", "+sh", "+t", "+th", "+z", "+zh" ]
+						},
+						{
+							"source": "Online",
+							"length": 2,
+							"list": [ "Adk+", "Agd+", "Agl+", "Agr+", "Agz+", "Ak+", "Akgr+", "Akkr+", "Akl+", "Alg+", "Algr+", "Ar+", "Arz+", "Ashg+", "Az+", "Azg+", "Baag+", "Bad+", "Bag+", "Bagd+", "Barz+", "Bhagr+", "Bizr+", "Blug+", "Bol+", "Bolg+", "Bor+", "Borbg+", "Borgh+", "Borz+", "Brekg+", "Bugb+", "Bugh+", "Bul+", "Bulf+", "Bumb+", "Drienn+", "Drok+", "Drug+", "Dufb+", "Dulfr+", "Dulkh+", "Dulr+", "Dur+", "Durg+", "Durh+", "Dush+", "Fnagd+", "Gahgr+", "Garg+", "Garl+", "Ghamz+", "Ghesh+", "Ghob+", "Ghog+", "Ghor+", "Ghorb+", "Glag+", "Glath+", "Gleg+", "Glorg+", "Gloth+", "Glurd+", "Glurmgh+", "Glurz+", "Gluth+", "Gog+", "Golg+", "Gonb+", "Goorg+", "Gorsh+", "Grab+", "Gragh+", "Grah+", "Grahl+", "Grakg+", "Graklh+", "Grash+", "Grashl+", "Grazd+", "Grenb+", "Grodd+", "Grub+", "Grugl+", "Grul+", "Grumgh+", "Grund+", "Gul+", "Gulz+", "Gunzg+", "Gur+", "Gurh+", "Gursth+", "Guurz+", "Guz+", "Hagh+", "Harfz+", "Harz+", "Jorth+", "Junl+", "Khag+", "Khagr+", "Khar+", "Kharz+", "Khazr+", "Kor+", "Korgh+", "Krithgr+", "Krom+", "Kruag+", "Kuhl+", "Lagb+", "Lagr+", "Lahzg+", "Lam+", "Lamb+", "Larzg+", "Lash+", "Lashb+", "Lashg+", "Lashz+", "Lazgh+", "Legd+", "Logr+", "Lokr+", "Lor+", "Lork+", "Lug+", "Lugh+", "Lulgr+", "Lurg+", "Mabgr+", "Maugr+", "Mazgr+", "Mazr+", "Megr+", "Mog+", "Mogd+", "Mogr+", "Mordr+", "Morg+", "Morn+", "Mornd+", "Mozg+", "Mug+", "Mul+", "Mulgr+", "Mult+", "Mulz+", "Murzg+", "Nar+", "Narzb+", "Narzd+", "Nazh+", "Nulr+", "Nunch+", "Nuz+", "Ogz+", "Oorg+", "Oorz+", "Orb+", "Othr+", "Ozr+", "Pruz+", "Pruzg+", "Rakh+", "Ran+", "Rog+", "Rogb+", "Rogz+", "Rok+", "Rolfz+", "Rolg+", "Ron+", "Rulbz+", "Ruld+", "Rulf+", "Rulfz+", "Rulg+", "Sgal+", "Sgrugb+", "Sgrugh+", "Sgrul+", "Shab+", "Shabgr+", "Shagr+", "Shak+", "Shal+", "Sham+", "Shar+", "Sharbz+", "Shard+", "Sharg+", "Shargr+", "Shaz+", "Sheb+", "Shelb+", "Sher+", "Shufd+", "Shufgr+", "Shug+", "Shugz+", "Shurk+", "Shuzr+", "Snarg+", "Sneeh+", "Snilg+", "Snushb+", "Solgr+", "Stilg+", "Strod+", "Stug+", "Stughr+", "Stulg+", "Thegb+", "Theshg+", "Thog+", "Thogr+", "Thrugr+", "Thugn+", "Thulg+", "Thushl+", "Torgh+", "Tugh+", "Ud+", "Ufg+", "Ufgr+", "Ufth+", "Ugd+", "Ugr+", "Ul+", "Ulg+", "Ulsh+", "Und+", "Urbz+", "Urshr+", "Ush+", "Uth+", "Uzk+", "Vumn+", "Vush+", "Yakh+", "Yarl+", "Yatz+", "Zagl+", "Zazsh+", "Zuug+", "Zuuth+", "+a", "+aag", "+aal", "+ag", "+ah", "+ahz", "+ai", "+ak", "+akh", "+al", "+amph", "+an", "+ar", "+arkh", "+arsh", "+arz", "+ash", "+az", "+azh", "+e", "+eg", "+eh", "+ekh", "+el", "+esh", "+et", "+i", "+ik", "+ikh", "+ilkh", "+ish", "+ock", "+og", "+ogg", "+oi", "+ol", "+on", "+or", "+orz", "+osh", "+oth", "+u", "+ual", "+uan", "+uar", "+ub", "+ug", "+uhl", "+uk", "+ul", "+um", "+un", "+ur", "+urz", "+ush", "+ut", "+uur" ]
+						},
+						{
+							"source": "Online",
+							"length": 3,
+							"list": [ "Ab+", "Adl+", "Ag+", "Agr+", "Ak+", "Alz+", "Anb+", "Arg+", "Arz+", "Ash+", "Ashg+", "Ashr+", "At+", "Atz+", "Az+", "Azhn+", "Azl+", "Bafth+", "Bag+", "Bagr+", "Bar+", "Bash+", "Bashg+", "Bat+", "Bazb+", "Bazg+", "Bol+", "Borb+", "Borgb+", "Borgd+", "Borgr+", "Bum+", "Bumz+", "Dag+", "Dar+", "Dul+", "Dulfr+", "Dulz+", "Dum+", "Dur+", "Durg+", "Er+", "Gar+", "Gham+", "Ghar+", "Ghorz+", "Ghrat+", "Glar+", "Glolb+", "Glur+", "Glurb+", "Gluth+", "Gol+", "Golg+", "Gonb+", "Gond+", "Grash+", "Grat+", "Graz+", "Grub+", "Gruzb+", "Gul+", "Gulg+", "Gulz+", "Gur+", "Guzm+", "Hur+", "Irs+", "Kash+", "Kel+", "Khag+", "Kharz+", "Lag+", "Lagb+", "Lagd+", "Lagr+", "Lakh+", "Lam+", "Lamb+", "Lamz+", "Lashb+", "Lashd+", "Lashg+", "Lazd+", "Lazg+", "Lhazb+", "Lob+", "Logd+", "Logl+", "Lor+", "Lug+", "Lugl+", "Lugr+", "Lur+", "Mabg+", "Mabgr+", "Mag+", "Mar+", "Maz+", "Mogl+", "Mor+", "Mornd+", "Mug+", "Mulg+", "Mulz+", "Mur+", "Murb+", "Muzgr+", "Nar+", "Naz+", "Nazd+", "Nazh+", "Nog+", "Oorz+", "Or+", "Orc+", "Ord+", "Org+", "Orl+", "Orth+", "Orz+", "Orzb+", "Orzd+", "Oshg+", "Oth+", "Othb+", "Othg+", "Othr+", "Rag+", "Ragb+", "Rak+", "Raz+", "Razb+", "Rog+", "Rolb+", "Rolf+", "Rulb+", "Ruldz+", "Rulf+", "Shab+", "Shag+", "Shagd+", "Shald+", "Shar+", "Sharb+", "Shard+", "Shardz+", "Sharg+", "Shargd+", "Shel+", "Shub+", "Shufth+", "Sloobd+", "Sloog+", "Snab+", "Snabgr+", "Snag+", "Snagh+", "Snar+", "Snarg+", "Snarz+", "Tam+", "Thegsh+", "Thesh+", "Thishn+", "Ubz+", "Uf+", "Ufg+", "Ug+", "Ul+", "Uld+", "Ull+", "Um+", "Umb+", "Umg+", "Umz+", "Und+", "Uns+", "Ur+", "Urb+", "Urdb+", "Urg+", "Urz+", "Ush+", "Ushr+", "Yagr+", "Yar+", "Yash+", "Yat+", "Yaz+", "Yazgr+", "Zag+", "Zelg+", "Zub+", "Zuuth+", "+ab+", "+adh+", "+ag+", "+agm+", "+ak+", "+akh+", "+al+", "+alg+", "+am+", "+an+", "+ar+", "+arg+", "+arh+", "+arl+", "+arn+", "+ash+", "+at+", "+ath+", "+av+", "+az+", "+azg+", "+ek+", "+ekh+", "+el+", "+en+", "+esh+", "+eshg+", "+et+", "+ezh+", "+ic+", "+ig+", "+igb+", "+ik+", "+ikh+", "+ikl+", "+imf+", "+is+", "+og+", "+ogb+", "+ogd+", "+ogn+", "+ol+", "+olg+", "+or+", "+org+", "+ot+", "+oth+", "+oz+", "+ub+", "+ud+", "+ug+", "+ugb+", "+ugh+", "+uk+", "+ukh+", "+ul+", "+ulg+", "+ull+", "+um+", "+un+", "+ur+", "+urb+", "+urg+", "+urkg+", "+urth+", "+urz+", "+ush+", "+ushn+", "+ut+", "+uth+", "+uz+", "+a", "+ab", "+ag", "+ah", "+ai", "+ak", "+akh", "+al", "+am", "+an", "+ar", "+ash", "+at", "+az", "+eg", "+ek", "+esh", "+i", "+ob", "+og", "+ol", "+orz", "+u", "+ub", "+uk", "+ul", "+urn" ]
+						}
+					]
+				}
+			},
+			{
+				"name": "Female",
+				"componentList": {
+					"index": 2,
+					"components": [
+						{
 							"length": 1,
-							"list": [
-								"Abimfash", "Adkul", "Adlugbuk", "Agazu", "Agdesh", "Aglash", "Agli", "Agral", "Agrash", "Agrulla", "Agzurz", "Akarah", "Akash", "Akgruhl", "Akkra", "Aklash", "Akur", "Alga", "Algrakh", "Alzula", "Anbarah", "Arakh", "Argurgol", "Arzakh", "Arzorag", "Ashaka", "Ashgara", "Ashgel", "Ashrashag", "Atarga", "Atoga", "Atorag", "Atugol", "Atzurbesh", "Aza", "Azabesh", "Azadhai", "Azga", "Azhnakha", "Azhnolga", "Azhnura", "Azilkh", "Azlakha", "Azulga", "Baag", "Baagug", "Badush", "Bafthaka", "Bagda", "Bagrugbesh", "Bagul", "Bagula", "Barza", "Barazal", "Bashgara", "Bashotha", "Batara", "Batasha", "Batorabesh", "Bazbava", "Bazgabesh", "Bazgara", "Bhagruan", "Bizra", "Bluga", "Bolaag", "Bolash", "Bolgar", "Bolugbeka", "Borbgur", "Borbuga", "Borgburakh", "Borgdorga", "Borghak", "Borgrara", "Boroth", "Borzog", "Brekgun", "Bugbekh", "Bugbesh", "Bugha", "Bulag", "Bularkh", "Bulfor", "Bumava", "Bumbuk", "Bumzuna", "Dagarha", "Darezha", "Drienne", "Droka", "Druga", "Dufbash", "Dulasha", "Dulfra", "Dulfraga", "Dulkhi", "Dulroi", "Dulzugha", "Dumoga", "Dumuguk", "Dumula", "Dumurzog", "Duragma", "Durash", "Durga", "Durgura", "Durhaz", "Durogbesh", "Dushug", "Erisa", "Fnagdesh", "Gahgra", "Gargahz", "Gargum", "Garl", "Garlor", "Garlub", "Garotusha", "Ghamzeh", "Gharakul", "Gharn", "Ghat", "Gheshol", "Ghobub", "Ghogogg", "Ghoral", "Ghorbog", "Ghorzolga", "Ghratutha", "Glagag", "Glagosh", "Glarikha", "Glash", "Glath", "Glatha", "Glathuhl", "Glathut", "Glega", "Glesh", "Glolbikla", "Glorgel", "Glothum", "Glurbasha", "Glurduk", "Glurmghal", "Glurzul", "Gluth", "Gluthesh", "Gluthogna", "Gnush", "Gogul", "Golakha", "Golga", "Golgakul", "Gonbubal", "Gonbush", "Gondubaga", "Goorga", "Grabash", "Graghesh", "Grahla", "Grahuar", "Grakguhl", "Graklha", "Grash", "Grashla", "Grashorag", "Grashug", "Gratorga", "Grazda", "Grazdar", "Grazubesha", "Grenbet", "Groddi", "Grubalash", "Grubathag", "Grubazh", "Grubesha", "Grugleg", "Grularz", "Grumgha", "Grundag", "Gruzbura", "Guazh", "Gula", "Gulara", "Gulgula", "Gulorz", "Gulugash", "Gulza", "Gulzurgol", "Gunzga", "Gurhul", "Gurikha", "Gursthuk", "Gurum", "Guth", "Guurzash", "Guuth", "Guz", "Guzash", "Guzmara", "Haghai", "Harfza", "Harza", "Hurabesh", "Ilg", "Irsugha", "Jorthan", "Junlock", "Kashurthag", "Kelagi", "Khagral", "Khagruk", "Khaguga", "Khaguur", "Kharekh", "Kharza", "Kharzolga", "Khazrakh", "Kora", "Korgha", "Krithgra", "Kroma", "Kruaga", "Kuhlon", "Kurz", "Lagabul", "Laganakh", "Lagbaal", "Lagbuga", "Lagdabash", "Lagra", "Lagruda", "Lahzga", "Lakhazga", "Lamazh", "Lambur", "Lamburak", "Lamugbek", "Lamur", "Lamzakha", "Larzgug", "Lashakh", "Lashbesh", "Lashbura", "Lashdura", "Lashgikh", "Lashgurgol", "Lashza", "Lazdutha", "Lazghal", "Lazgara", "Legdul", "Lhazbura", "Lig", "Logdotha", "Loglorag", "Logru", "Lokra", "Lorak", "Lorku", "Lorogdu", "Luga", "Lugharz", "Luglorash", "Lugrugha", "Lugurzog", "Lulgra", "Lurgush", "Luruzesh", "Lurz", "Mabgikha", "Mabgrolabesh", "Mabgrorga", "Mabgrubaga", "Mabgruhl", "Magula", "Maraka", "Marutha", "Maugruhl", "Mazgroth", "Mazrah", "Mazuka", "Megruk", "Mogdal", "Moglurkgul", "Mograg", "Mogul", "Mordra", "Morga", "Morndag", "Mornamph", "Morndolag", "Morushna", "Mozgosh", "Mugaga", "Mugumurn", "Muguur", "Mula", "Mulgabesh", "Mulgrul", "Multa", "Mulzah", "Mulzara", "Murboga", "Murotha", "Murzgut", "Muzgraga", "Naroga", "Narol", "Narzbash", "Narzdush", "Nazdura", "Nazhag", "Nazhataga", "Nazubesh", "Noguza", "Nulra", "Nunchak", "Nuza", "Ogzaz", "Oorga", "Oorza", "Oorzuka", "Orbuhl", "Orcolag", "Ordasha", "Ordatha", "Orgotha", "Orlozag", "Orlugash", "Orluguk", "Orthuna", "Orutha", "Orzbara", "Orzdara", "Orzorga", "Oshgana", "Othbekha", "Othgozag", "Othikha", "Othrag", "Othrika", "Ozrog", "Pruzag", "Pruzga", "Ragbarlag", "Ragushna", "Rakhaz", "Rakuga", "Ranarsh", "Razasha", "Razbela", "Rogag", "Rogba", "Rogbual", "Rogoga", "Rogzesh", "Roku", "Rolbutha", "Rolfikha", "Rolfzal", "Rolga", "Rulbagab", "Rulbza", "Ruldor", "Ruldzusha", "Rulfala", "Rulfub", "Rulfuna", "Rulfzub", "Rulgum", "Sgala", "Sgrugbesh", "Sgrugha", "Sgrula", "Shabaga", "Shabeg", "Shabeshga", "Shabgrut", "Shabon", "Shagareg", "Shagduka", "Shagora", "Shagrum", "Shagrush", "Shagugbeka", "Shagura", "Shakul", "Shaldagan", "Shalug", "Shamuk", "Shamush", "Shara", "Sharbarga", "Sharbzur", "Sharduka", "Shardush", "Shardzozag", "Sharga", "Shargalash", "Shargduguk", "Shargra", "Sharuk", "Sharushnam", "Shaza", "Shebakh", "Shelboth", "Sheluka", "Shera", "Shgrag", "Sholg", "Shubesha", "Shufdal", "Shufgrut", "Shufthakul", "Shuga", "Shugzur", "Shurkul", "Shuzrag", "Sloobdakha", "Sloogolga", "Sluz", "Snabgrara", "Snabugha", "Snagara", "Snaghusha", "Snarataga", "Snarga", "Snargara", "Snaruga", "Snarzikha", "Sneehash", "Snilga", "Snoogh", "Snushbesh", "Solgra", "Stilga", "Stroda", "Stuga", "Stughrush", "Tamozag", "Theg", "Thegbesh", "Thegshakul", "Thegshalash", "Theshaga", "Theshgoth", "Thishnaku", "Thoga", "Thogra", "Thrugrak", "Thugnekh", "Thulga", "Thushleg", "Torghi", "Tugha", "Ubzigub", "Udai", "Ufalga", "Ufgabesh", "Ufgalash", "Ufgaz", "Ufgel", "Ufgra", "Uftheg", "Ugarnesh", "Ugduk", "Ugrash", "Ugrush", "Uldushna", "Ulg", "Ulgush", "Ulliceta", "Ulsha", "Ulu", "Ulubesh", "Uluga", "Ulukhaz", "Umbaka", "Umbugbek", "Umgubesh", "Umutha", "Umzolabesh", "Undorga", "Undush", "Undusha", "Unsulag", "Uratag", "Urbalash", "Urbutha", "Urbzag", "Urdboga", "Urgarlag", "Urshra", "Uruka", "Urzula", "Usha", "Ushaga", "Ushenat", "Ushruka", "Ushuta", "Ushutha", "Uthik", "Uzka", "Vosh", "Vumnish", "Vush", "Vusha", "Yagrigbesh", "Yakhu", "Yarlak", "Yarulorz", "Yashurah", "Yatanakh", "Yatava", "Yatular", "Yatzog", "Yazara", "Yazgruga", "Yazoga", "Zaag", "Zagla", "Zagula", "Zazsha", "Zelguma", "Zubesha", "Zugh", "Zuugarz", "Zuuthag", "Zuuthusha",
-								"Barazal", "Ghamarguk", "Glurala", "Gorsha", "Lobamob", "Magarakh", "Moramat", "Ronag", "Sgugh", "Stulga"
-							]
+							"list": [ "gra-" ]
+						}
+					]
+				}
+			},
+			{
+				"componentList": {
+					"index": 3,
+					"components": [
+						{
+							"source": "Morrowind",
+							"length": 2,
+							"list": [ "Ba+", "Bo+", "Bu+", "Du+", "Ga+", "Gha+", "Glu+", "Kha+", "La+", "Lu+", "Ma+", "Mu+", "Ri+", "Ru+", "Sha+", "Ya+", "+g", "+k", "+l", "+m", "+mph", "+r", "+rn", "+rz", "+sh", "+t" ]
+						},
+						{
+							"source": "Morrowind",
+							"length": 2,
+							"list": [ "Ag+", "Agl+", "At+", "Badb+", "Bag+", "Bagd+", "Bagr+", "Bam+", "Barg+", "Bashn+", "Bat+", "Bog+", "Bogh+", "Bogl+", "Bogr+", "Bol+", "Borb+", "Bug+", "Bul+", "Bulf+", "Bur+", "Burb+", "Buzg+", "Dug+", "Dul+", "Dum+", "Dur+", "Durg+", "Gash+", "Ghol+", "Gholf+", "Ghor+", "Gilg+", "Glorz+", "Glurk+", "Gorz+", "Gramb+", "Gulf+", "Gur+", "Kash+", "Khagd+", "Kharb+", "Khashn+", "Khat+", "Khaz+", "Lagd+", "Larg+", "Lazg+", "Log+", "Logh+", "Logr+", "Lorg+", "Lum+", "Lumb+", "Lurk+", "Luzg+", "Mag+", "Magr+", "Mar+", "Mashn+", "Mogd+", "Mogh+", "Mugh+", "Mul+", "Mur+", "Murg+", "Muzg+", "Og+", "Ogd+", "Ol+", "Rug+", "Rush+", "Shadb+", "Shagd+", "Shagr+", "Sham+", "Shar+", "Sharb+", "Sharg+", "Shat+", "Shaz+", "Shug+", "Shugh+", "Shul+", "Shumb+", "Shuzg+", "Skand+", "Snag+", "Snagd+", "Ufth+", "Ul+", "Ulf+", "Urg+", "Ush+", "Uz+", "Uzg+", "Yag+", "Yarg+", "Yarz+", "+a", "+ag", "+ak", "+akh", "+am", "+amph", "+an", "+ar", "+arn", "+arz", "+ash", "+at", "+el", "+im", "+imph", "+ish", "+ob", "+og", "+ol", "+olg", "+or", "+u", "+ub", "+uf", "+ug", "+uk", "+ul", "+ulg", "+um", "+umph", "+ur", "+urn", "+ush" ]
+						},
+						{
+							"source": "Morrowind",
+							"length": 3,
+							"list": [ "Ag+", "Az+", "Bog+", "Ghash+", "Ol+", "Orb+", "Ugr+", "+adb+", "+am+", "+arz+", "+ork+", "+um+", "+urb+", "+a", "+akh", "+ol", "+u" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 2,
+							"list": [ "Bha+", "Bo+", "Bro+", "Bu+", "Ga+", "Gha+", "Gho+", "Go+", "Kha+", "Sha+", "Shu+", "+g", "+gk", "+k", "+l", "+mph", "+nk", "+r", "+rg", "+rz", "+sh", "+th" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 2,
+							"list": [ "Ag+", "Bar+", "Barg+", "Bolm+", "Bugl+", "Bur+", "Burb+", "Cobl+", "Cromg+", "Drag+", "Gal+", "Gam+", "Glurz+", "Golp+", "Grul+", "Hubr+", "Mag+", "Mal+", "Mar+", "Mog+", "Morgr+", "Murg+", "Muzg+", "Or+", "Ork+", "Rugd+", "Shar+", "Shat+", "Shur+", "Shurg+", "Ugd+", "Urg+", "Uz+", "Uzg+", "Yar+", "+a", "+ad", "+ag", "+ak", "+akh", "+am", "+amph", "+ash", "+ob", "+og", "+ok", "+ol", "+orn", "+oth", "+ub", "+ug", "+ul", "+ulg", "+um", "+ump", "+ur", "+ush" ]
+						},
+						{
+							"source": "Oblivion",
+							"length": 3,
+							"list": [ "Na+", "Shadb+", "+org+", "+yb+", "+ek", "+ob" ]
+						},
+						{
+							"source": "Skyrim",
+							"length": 2,
+							"list": [ "Ba+", "Shu+", "+b", "+r" ]
+						},
+						{
+							"source": "Skyrim",
+							"length": 2,
+							"list": [ "Bag+", "Burz+", "Dushn+", "Gat+", "Gilg+", "Gortw+", "Larg+", "Nol+", "Ragd+", "Sharg+", "Shug+", "Shurk+", "+ag", "+akh", "+am", "+ar", "+ash", "+ikh", "+ob", "+og", "+ol", "+uk", "+ul", "+urz" ]
+						},
+						{
+							"source": "Online",
+							"length": 2,
+							"list": [ "Ba+", "Be+", "Bo+", "Bu+", "Dro+", "Du+", "Gha+", "Gho+", "Graau+", "Gru+", "Gu+", "Ko+", "Kree+", "Kru+", "Ku+", "Lo+", "Ma+", "Na+", "Ra+", "Ru+", "Ruu+", "Sha+", "Shu+", "Stu+", "+b", "+g", "+gg", "+gh", "+k", "+kh", "+l", "+m", "+msh", "+nk", "+r", "+rn", "+rt", "+rz", "+sh", "+ts" ]
+						},
+						{
+							"source": "Online",
+							"length": 2,
+							"list": [ "Agd+", "Agl+", "Arz+", "Badb+", "Bag+", "Barb+", "Bashn+", "Baz+", "Bazg+", "Birg+", "Borg+", "Bug+", "Bum+", "Burb+", "Burg+", "Burk+", "Buzb+", "Das+", "Drubl+", "Dugr+", "Dul+", "Dumb+", "Durb+", "Durg+", "Dushn+", "Fak+", "Garb+", "Gat+", "Ghamm+", "Ghral+", "Gold+", "Gorz+", "Grum+", "Gul+", "Gurb+", "Guthr+", "Izb+", "Kham+", "Khamb+", "Kharg+", "Khaz+", "Khazg+", "Kor+", "Korl+", "Korm+", "Ladb+", "Logd+", "Lorg+", "Lum+", "Lumb+", "Lur+", "Madb+", "Makl+", "Mal+", "Marg+", "Mash+", "Mor+", "Mork+", "Mur+", "Murg+", "Murkh+", "Murt+", "Nam+", "Narz+", "Ogl+", "Ol+", "Org+", "Othm+", "Rim+", "Rug+", "Sgrugd+", "Shag+", "Shagr+", "Shar+", "Shat+", "Shazg+", "Sheg+", "Shel+", "Shugd+", "Shugh+", "Shuhgh+", "Shurg+", "Shurk+", "Stugb+", "Thorm+", "Ugr+", "Ul+", "Ur+", "Urk+", "Uz+", "Uzg+", "Vort+", "Wrogg+", "Yarz+", "Yashn+", "Yggr+", "+a", "+ad", "+ag", "+ak", "+akh", "+al", "+amph", "+ar", "+arz", "+ash", "+at", "+az", "+ee", "+ik", "+ikh", "+in", "+ish", "+ith", "+o", "+ob", "+og", "+ok", "+ol", "+olg", "+onk", "+or", "+orn", "+orz", "+oth", "+u", "+ub", "+uf", "+ug", "+uk", "+ul", "+ulg", "+um", "+un", "+ur", "+urg", "+urn", "+urz", "+ush", "+uz" ]
+						},
+						{
+							"source": "Online",
+							"length": 3,
+							"list": [ "Barkb+", "Bulf+", "Goldf+", "Kham+", "Lar+", "Nogr+", "Ogd+", "Othm+", "Shugd+", "Ur+", "Ush+", "+ag+", "+ark+", "+em+", "+im+", "+ish+", "+it+", "+oll+", "+ul+", "+urb+", "+urg+", "+a", "+ak", "+am", "+ash", "+e", "+or", "+orn", "+u", "+y" ]
 						}
 					]
 				}

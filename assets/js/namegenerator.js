@@ -71,7 +71,7 @@ function generate(event) {
 	componentBucket = getComponentLists(selectedFilters);
 	
 	for (let i = 0; i < count; i++) {
-		var name = generateName(componentBucket).join(" ");
+		var name = generateName(componentBucket).join(" ").replace(/-/g, "-");
 
 		if (name) {
 			resultDiv.append("<li><" + useTag + ">" + name + "</" + useTag + "></li>");
