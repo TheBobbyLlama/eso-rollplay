@@ -26,28 +26,30 @@ function initializePage(data) {
 
 /// Dynamically create filter checkboxes based on what's available for the chosen race.
 function createFilters() {
+	var addedAny = false;
 	const raceIndex = $(this).prop("selectedIndex");
 	const filterList = [];
 	const filterDiv = $("#sourceFilters");
 
-	filterDiv.empty()
-	
-	if (nameData[raceIndex].subcategories.length > 1) {
-		filterDiv.append("<p>Filters:</p>");
+	filterDiv.empty().append("<p>Filters:</p>");
 
-		for (let x = 0; x < nameData[raceIndex].subcategories.length; x++) {
-			let curSet = nameData[raceIndex].subcategories[x].componentList.components;
+	for (let x = 0; x < nameData[raceIndex].subcategories.length; x++) {
+		let curSet = nameData[raceIndex].subcategories[x].componentList.components;
 
-			for (let i = 0; i < curSet.length; i++) {
-				if (filterList.indexOf(curSet[i].source) < 0) {
-					filterList.push(curSet[i].source);
-					filterDiv.append("<div>" +
-										"<input type='checkbox' name='" + curSet[i].source + "' value='" + curSet[i].source + "' checked></input>" +
-										"<label for='" + curSet[i].source + "'>" + curSet[i].source + "</label>" +
-									"</div>");
-				}
+		for (let i = 0; i < curSet.length; i++) {
+			if ((curSet[i].source) && (filterList.indexOf(curSet[i].source) < 0)) {
+				filterList.push(curSet[i].source);
+				filterDiv.append("<div>" +
+									"<input type='checkbox' name='" + curSet[i].source + "' value='" + curSet[i].source + "' checked></input>" +
+									"<label for='" + curSet[i].source + "'>" + curSet[i].source + "</label>" +
+								"</div>");
+				addedAny = true;
 			}
 		}
+	}
+
+	if (!addedAny) {
+		filterDiv.empty();
 	}
 }
 
@@ -71,7 +73,7 @@ function generate(event) {
 	componentBucket = getComponentLists(selectedFilters);
 	
 	for (let i = 0; i < count; i++) {
-		var name = generateName(componentBucket).join(" ").replace(/-/g, "-");
+		var name = generateName(componentBucket).join(" ").replace(/- /g, "-");
 
 		if (name) {
 			resultDiv.append("<li><" + useTag + ">" + name + "</" + useTag + "></li>");
@@ -171,7 +173,7 @@ function getRandomIndex(max) {
 }
 
 /// Event registration.
-//$.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
-$.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
+$.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
+//$.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
 $("#race").on("change", createFilters);
 $("#generateButton").on("click", generate);
