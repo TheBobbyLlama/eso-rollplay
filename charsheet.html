@@ -6,26 +6,32 @@
 	<title>ESO Rollplay - Character Sheet</title>
 	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
 	<link rel="stylesheet" href="./assets/css/style.css" />
 	<link rel="stylesheet" href="./assets/css/charsheet.css" />
 </head>
 <body>
-	<div id="helpPanel">
-		<button type="button" id="buttonHelp">Help</button>
-	</div>
-	<aside><a id="referLink" href="rollplay.html">Use your character! →</a></aside>
-	<h1>ESO Rollplay - Character Sheet</h1>
-	<section>
+	<nav>
+		<div id="helpPanel">
+			<button type="button" id="buttonHelp">Help</button>
+		</div>
+		<h1 title="Return to Dashboard">ESO Rollplay</h1>
+		<div id="logout">
+			<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+		</div>
+	</nav>
+	<div id="loading"></div>
+	<section class="hideMe">
 		<form>
-			<label for="charName">Name:</label>
-			<span id="charInput">
-				<input type="text" name="charName" maxlength="25"></input>
-				<button id="generateName" type="button" title="Generate a random name.">?</button>
-			</span>
-			<label for="charPlayer">@</label>
-			<input type="text" name="charPlayer" placeholder="Account Name" maxlength="25"></input>
-			<button id="saveChar" type="button">Save</button>
-			<button id="loadChar" type="submit">Load</button>
+			<div id="nameEntry" class="hideMe">
+				<label for="charName">Name:</label>
+				<span id="charInput">
+					<input type="text" name="charName" maxlength="25"></input>
+					<button id="generateName" type="button" title="Generate a random name.">?</button>
+				</span>
+			</div>
+			<h2 id="nameDisplay"></h2>
+			<button id="saveChar" type="submit" disabled="true">Save</button>
 		</form>
 		<div>
 			<label for="charRace">Race:</label>
@@ -41,11 +47,11 @@
 			<select name="charClass"></select>
 		</div>
 	</section>
-	<div id="points">
+	<div id="points" class="hideMe">
 		<h3>Attribute Points: <span id="attributePoints">0/10</span></h3>
 		<h3>Skill Points: <span id="skillPoints">0/30</span></h3>
 	</div>
-	<div id="main">
+	<div id="main" class="hideMe">
 		<section>
 			<h3>Attributes</h3>
 			<div id="attributes"></div>
@@ -71,7 +77,7 @@
 			<div id="skillsKnowledge"></div>
 		</section>
 	</div>
-	<div id="bottomInfo">
+	<div id="bottomInfo" class="hideMe">
 		<div>
 			<h2>Character Printout</h2>
 			<div id="printout" title="Double click to copy character sheet."></div>
@@ -109,10 +115,17 @@
 			<p id="errorText"></p>
 			<button id="errorButton" type="button">Ok</button>
 		</div>
+		<div id="confirmModal">
+			<h3>Confirm</h3>
+			<p id="confirmText"></p>
+			<button id="confirmOk" type="button">Ok</button>
+			<button id="confirmCancel" type="button">Cancel</button>
+		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/charsheet.js"></script>

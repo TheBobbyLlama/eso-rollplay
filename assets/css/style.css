@@ -49,7 +49,13 @@ a:visited {
 	color: var(--link-visited);
 }
 
-button {
+#auth-panel button {
+	color: initial;
+	line-height: initial;
+	text-transform: initial;
+}
+
+button, #auth-panel button {
 	background-color: #e0e0e0;
 	border-bottom: solid 2px #808080;
 	border-left: solid 2px silver;
@@ -61,8 +67,12 @@ button {
 	padding: 2px 8px;
 }
 
-button:hover {
+button:hover, #auth-panel button:hover {
 	background-color: #f0f0f0;
+}
+
+button[disabled] {
+	cursor: default;
 }
 
 h1, h2, h3, h4 {
@@ -81,7 +91,55 @@ h1::before {
 	width: 40px;
 }
 
-section {
+label.firebaseui-label[for='name'] {
+	color: rgba(1, 1, 1, 0) !important;
+	position: relative;
+	overflow: visible;
+}
+
+label.firebaseui-label::after {
+	display: none;
+}
+
+label.firebaseui-label[for='name']::before {
+	bottom: 0px;
+	color: rgba(0, 0, 0, 0.54);
+	content: 'ESO Username';
+	left: 0px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+
+div.is-dirty label.firebaseui-label[for='name']::before, div.is-focused label.firebaseui-label[for='name']::before {
+	color: rgb(117, 117, 117);
+	top: -6px;
+}
+
+nav {
+	position: relative;
+	top: 0;
+}
+
+nav h1 {
+	font-size: 28px;
+	margin-top: 8px;
+	padding-bottom: 12px !important;
+}
+
+nav h1:not(.nopointer) {
+	border-radius: 50px;
+	cursor: pointer;
+	display: inline-block;
+	padding: 0px 20px;
+}
+
+nav h1:not(.nopointer):hover {
+	background-color: var(--gm-background);
+	transition: 0.5s;
+}
+
+section, #auth-panel .firebaseui-container {
 	background-color: var(--content-background);
 	border-radius: 8px;
 	margin: 10px;
@@ -114,6 +172,49 @@ ul {
 	display: block !important;
 }
 
+#auth-panel .firebaseui-container {
+	margin: 40px auto 0px auto;
+}
+
+#auth-panel .firebaseui-container h1, #auth-panel .firebaseui-container h1 label {
+	color: var(--content-color);
+}
+
+#auth-panel .firebaseui-container input {
+	background-color: var(--content-color);
+}
+
+.firebaseui-container h1 label::after {
+	background-color: var(--page-background);
+}
+
+#auth-panel .firebaseui-container h1::before {
+	display: none;
+}
+
+#logout {
+	align-items: center;
+	border-radius: 16px;
+	bottom: 8px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	opacity: 0.5;
+	padding: 4px 12px 4px 8px;
+	position: absolute;
+	right: 8px;
+	top: 8px;
+	transform: scale(-1, 1);
+	transition: 0.5s;
+	vertical-align: middle;
+	width: 32px;
+}
+
+#logout:hover {
+	background-color: var(--gm-background);
+	opacity: 1.0;
+}
+
 #modalBG.show {
 	display: flex !important;
 }
@@ -134,6 +235,13 @@ ul {
 #profileModal {
 	padding: 0px 0px 10px 0px !important;
 	width: 500px;
+}
+
+#loading {
+	background-image: url('../images/loading.gif');
+	height: 100px;
+	margin: 100px auto 0px auto;
+	width: 100px;
 }
 
 #modalBG iframe {
@@ -307,6 +415,10 @@ ul {
 	flex-wrap: wrap;
 }
 
+.hideMe {
+	display: none !important;
+}
+
 .redFlag {
 	color: var(--common-alert);
 }
@@ -357,6 +469,12 @@ ul {
 
 	#eventPane {
 		max-height: 300px;
+	}
+
+	#logout {
+		background-color: var(--gm-background);
+		max-height: 40px;
+		top: 0px;
 	}
 }
 

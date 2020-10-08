@@ -2,6 +2,8 @@ var characterList = [];
 var currentSession;
 var dispatchMessages = false;
 
+var userInfo = null
+
 var activeNPC = 0;
 var activePlayer = 0;
 
@@ -17,16 +19,18 @@ var markupPlayerOptions = "";
 var markupPlayerPetOptions = "";
 
 /// Called on page startup.
-function initializePage() {
+function initializePage(myUser) {
+	if (!myUser) {
+		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
+		return;
+	}
+
 	var i;
 	var attackSelectors = $("select[name='npcAttackType']");
 	var resistSelectors = $("select[name='npcResist'], select[name='npcWeakness']");
 	var qualitySelectors = $("#rollStat, #playerKey1, #playerKey2");
 	var bonusSelectors = $("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus'], #rollBonus, #contestedBonus");
-
-	initializeDB();
-
-	var player = localStorage.getItem("ESORP[player]");
+	userInfo = myUser;
 
 	// Only has basic injury options, special Hidden value will be added later for NPCs.
 	for (i = 0; i < INJURY_LEVEL_DISPLAY.length - 1; i++) {
@@ -61,17 +65,26 @@ function initializePage() {
 
 	$("#endSession, #npcManagement button, #npcManagement input, #npcManagement select, #playerManagement button, #playerManagement input, #playerManagement select, #rollingSection button, #rollingSection input, #rollingSection select").attr("disabled", "true");
 
-	if (player) {
-		$("input[name='gmPlayer']").val(player);
-		currentSession = new RoleplaySession(player);
-		dbLoadSessionByOwner(player, sessionLoaded);
-	}
+	currentSession = new RoleplaySession(userInfo.display);
+	dbLoadSessionByOwner(userInfo.display, sessionLoaded);
+}
+
+function doLogout() {
+	showConfirmPopup("Log out of your account?", confirmLogout);
+}
+
+function confirmLogout() {
+	firebase.auth().signOut().then(function() {
+		// Sign-out successful.
+	  }).catch(function(error) {
+		// An error happened.
+	  });
 }
 
 /// Create New Session button handler.
 function createNewSession(event) {
 	event.preventDefault();
-	var owner = $("input[name='gmPlayer']").val();
+	var owner = userInfo.display;
 
 	if (dbTransform(owner)) {
 		if (!currentSession) {
@@ -576,28 +589,22 @@ function denyTransformation() {
 function confirmCreateSession() {
 	hidePopup();
 
-	var isSameOwner = (currentSession.owner == $("input[name='gmPlayer']").val());
-
 	$("#playerControls button").remove();
 
-	if (isSameOwner) {
-		if (!eventRef) {
-			dbLoadEventMessages(currentSession.owner, confirmCreateSession);
-			return;
-		}
-
-		if (currentSession.characters.length) {
-			dbPushEvent(new EventClose(currentSession.owner));
-		}
-
-		dbDeleteSession();
-		dbClearEventCallbacks();
-	} else {
-		dbLoadEventMessages($("input[name='gmPlayer']").val(), eventSystemLoaded);
+	if (!eventRef) {
+		dbLoadEventMessages(currentSession.owner, confirmCreateSession);
+		return;
 	}
 
+	if (currentSession.characters.length) {
+		dbPushEvent(new EventClose(currentSession.owner));
+	}
+
+	dbDeleteSession();
+	dbClearEventCallbacks();
+
 	dbBindCallbackToEventSystem("child_added", eventAddedCallback);
-	currentSession = new RoleplaySession($("input[name='gmPlayer']").val());
+	currentSession = new RoleplaySession(userInfo.display);
 	resetScreenInfo();
 
 	postSessionUpdate();
@@ -1173,6 +1180,8 @@ function sessionLoaded(loadMe) {
 		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
 		dbBindCallbackToEventSystem("child_added", eventAddedCallback);
 		resetScreenInfo(false);
+		$("#loading").remove();
+		$("#main").removeClass("hideMe");
 	} else {
 		confirmCreateSession();
 	}
@@ -1240,7 +1249,18 @@ function hidePopup() {
 	$("#modalBG > div").removeClass("show");
 }
 
+initializeDB();
+firebase.auth().onAuthStateChanged(function(user) {
+	if (user) {
+		dbLoadAccountInfo(user.displayName, initializePage);
+	} else {
+		divertToLogin();
+	}
+});
+
 /// Event registration.
+$("nav h1").on("click", divertToDashboard);
+$("#logout").on("click", doLogout);
 $("#createNewSession").on("click", createNewSession);
 $('#endSession').on("click", endSession);
 $("#addNPC").on("click", addNPC);
@@ -1285,5 +1305,3 @@ $("#printout").on("click", "a", launchProfileLink);
 $("#playerSearchButton").on("click", performPlayerSearch);
 $("#playerSearchResults").on("click", "button", performCharacterLoad);
 $("#confirmCancel, #errorButton, #playerSearchCancel, #profileDone").on("click", hidePopup);
-
-initializePage();

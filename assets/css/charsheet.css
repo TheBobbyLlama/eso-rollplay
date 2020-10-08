@@ -23,6 +23,12 @@ footer.shown {
 	bottom: 0px;
 }
 
+form {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}
+
 section {
 	display: inline-block;
 }
@@ -155,18 +161,8 @@ section > div[id] {
 	}
 
 	form {
-		display: grid;
-		grid-template-columns: auto auto auto auto;
-
-	}
-
-	form button:first-of-type {
-		grid-column-start: 2;
-	}
-
-	form input[type='text'], form span {
-		grid-column-start: 2;
-  		grid-column-end: 5;
+		align-items: stretch;
+		flex-direction: column-reverse;
 	}
 
 	h1 {
@@ -225,6 +221,12 @@ section > div[id] {
 
 	#main section:last-child {
 		flex-basis: initial;
+	}
+
+	#nameEntry {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
 	}
 
 	#printout {

@@ -2,6 +2,7 @@ const statusClasses = [ "statusUnhurt", "statusInjured", "statusCritical", "stat
 const transformRevertLabel = "End Transformation";
 const playerInputSelector = "#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select, #summonControls button, #summonControls input, #summonControls select";
 
+var userInfo = null;
 var character = new CharacterSheet();
 var currentSession;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
@@ -13,11 +14,15 @@ var markupNPCTargets = "";
 var eventPane = $("#eventPane");
 
 /// Called on page startup.
-function initializePage() {
-	initializeDB();
+function initializePage(myUser) {
+	if (!myUser) {
+		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
+		return;
+	}
 
-	$("input[name='charName']").val(localStorage.getItem("ESORP[name]"));
-	$("input[name='charPlayer']").val(localStorage.getItem("ESORP[player]"));
+	userInfo = myUser;
+
+	var inCharacter = localStorage.getItem("ESORP[character]");
 
 	for (var i = 0; i < EQUIPPED_WEAPON.length; i++) {
 		$("#playerWeapon").append("<option>" + EQUIPPED_WEAPON[i].weapon + "</option>");
@@ -30,6 +35,12 @@ function initializePage() {
 	$(playerInputSelector).attr("disabled", "true");
 
 	resetRollSelect();
+
+	if (inCharacter) {
+		dbLoadCharacter(inCharacter, characterLoaded);
+	} else {
+		showErrorPopup("No character selected.", divertToDashboard);
+	}
 }
 
 /// Populates attribute/skill dropdown based on the character's selections.
@@ -55,6 +66,18 @@ function resetRollSelect() {
 			}
 		}
 	}
+}
+
+function doLogout() {
+	showConfirmPopup("Log out of your account?", confirmLogout);
+}
+
+function confirmLogout() {
+	firebase.auth().signOut().then(function() {
+		// Sign-out successful.
+	  }).catch(function(error) {
+		// An error happened.
+	  });
 }
 
 /// Handles player's weapon selection.
@@ -547,30 +570,13 @@ function launchCharacterProfile(event) {
 	showProfilePopup($(this).text());
 }
 
-/// Requests a character from the database.
-function loadChar(event) {
-	event.preventDefault();
-	var tmpName = $("input[name='charName']").val();
-	var tmpPlayer = $("input[name='charPlayer']").val();
-
-	if ((!tmpName) || (!tmpPlayer)) {
-		showErrorPopup("Please enter a character name and a player name.");
-		return;
-	}
-
-	$("#rollTarget").empty();
-	$("#charStatus button").remove();
-	$(playerInputSelector).attr("disabled", "true");
-	dbLoadCharacter(tmpName, characterLoaded)
-}
-
 /// Receives a character from the database.
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (dbTransform(loadMe.val().player) == dbTransform($("input[name='charPlayer']").val()))) {
-		character = loadMe.val();
+	var tmpChar = loadMe.val();
+
+	if ((tmpChar) && (dbTransform(tmpChar.player) == dbTransform(userInfo.display))) {
+		character = tmpChar;
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
-		localStorage.setItem("ESORP[name]", nameDecode(character.name));
-		localStorage.setItem("ESORP[player]", nameDecode(character.player));
 
 		var targetTransform = supernaturalTransformations.find(element => element.parent === character.supernatural);
 
@@ -584,18 +590,25 @@ function characterLoaded(loadMe) {
 
 		eventPane.empty();
 		dbLoadSessionByParticipant(character.name, loadSessionList);
-		
+
+		$("#loading").remove();
+		$("#main").removeClass("hideMe");
 	} else {
-		showErrorPopup("Character not found.");
-		$("input[name='charName']").val(character.name);
-		$("input[name='charPlayer']").val(character.player || localStorage.getItem("ESORP[player]"));
+		showErrorPopup("Character not found.", divertToDashboard);
 	}
+}
+
+/// Button handler to manually load session.
+function loadCharacterSession() {
+	$("#loadSession").attr("disabled");
+	dbLoadSessionByParticipant(character.name, loadSessionList);
 }
 
 /// Determines how to load character into a session.
 function loadSessionList(result) {
 	switch (result.length) {
 		case 0:
+			$("#loadSession").removeAttr("disabled");
 			showErrorPopup("This character is not part of an active roleplaying session.  Check with your Game Master.");
 			break;
 		case 1:
@@ -667,11 +680,22 @@ function eventAddedCallback(loadMe) {
 	}
 }
 
+/// Displays confirm modal.
+function showConfirmPopup(message, callback) {
+	$("#modalBG, #confirmModal").addClass("show");
+	$("#confirmText").html(message);
+	$("#confirmOk").off("click").on("click", callback);
+}
+
 /// Displays error modal.
-function showErrorPopup(message) {
-	$("#modalBG").addClass("show");
-	$("#errorModal").addClass("show");
+function showErrorPopup(message, callback=null) {
+	$("#modalBG, #errorModal").addClass("show");
 	$("#errorText").text(message);
+	$("#errorButton").off("click").on("click", hidePopup);
+	
+	if (callback) {
+		$("#errorButton").on("click", callback);
+	}
 }
 
 /// Display modal for choosing which session to join.
@@ -815,10 +839,21 @@ function hidePopup() {
 	$("#modalBG > div").removeClass("show");
 }
 
+initializeDB();
+firebase.auth().onAuthStateChanged(function(user) {
+	if (user) {
+		dbLoadAccountInfo(user.displayName, initializePage);
+	} else {
+		divertToLogin();
+	}
+});
+
 /// Event registration.
+$("nav h1").on("click", divertToDashboard);
+$("#logout").on("click", doLogout);
 $(window).on("online", sendDisconnectEvent);
 $(window).on("offline, unload", sendDisconnectEvent);
-$("#loadChar").on("click", loadChar);
+$("#loadSession").on("click", loadCharacterSession);
 $("#playerWeapon").on("change", changeWeapon);
 $("#playerArmor").on("change", changeArmor);
 $("#charStatus").on("click", "#transformButton", requestTransformation);
@@ -834,6 +869,4 @@ $("#sessionList").on("click", "button", performSessionLoad);
 $("#makeDieRoll").on("click", executePlayerRoll);
 $("#dieRollContinue").on("click", acceptPlayerRoll);
 $("#cancelDieRoll").on("click", cancelPlayerRoll);
-$("#errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);
-
-initializePage();
+$("#confirmCancel, #errorButton, #sessionSelectionCancel, #profileDone").on("click", hidePopup);

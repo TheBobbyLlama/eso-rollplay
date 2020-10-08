@@ -6,23 +6,24 @@
 	<title>ESO Rollplay - GM's Screen</title>
 	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
 	<link rel="stylesheet" href="./assets/css/style.css" />
 	<link rel="stylesheet" href="./assets/css/gmscreen.css" />
 </head>
 <body>
-	<h1>ESO Rollplay - GM's Screen</h1>
-	<div id="main">
+	<nav>
+		<h1 title="Return to Dashboard">ESO Rollplay</h1>
+		<div id="logout">
+			<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+		</div>
+	</nav>
+	<div id="loading"></div>
+	<div id="main" class="hideMe">
 		<section id="encounterInfo">
 			<h2>Current Session</h2>
 			<form>
-				<div>
-					<label for="gmPlayer">Owner: @</label>
-					<input type="text" name="gmPlayer" placeholder="Account Name" maxlength="25"></input>
-				</div>
-				<div>
-					<button type="submit" id="createNewSession">Open Session</button>
-					<button type="button" id="endSession">End Session</button>
-				</div>
+				<button type="submit" id="createNewSession">Open Session</button>
+				<button type="button" id="endSession">End Session</button>
 			</form>
 			<div>
 				<h3>NPCs</h3>
@@ -181,6 +182,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/gmscreen.js"></script>

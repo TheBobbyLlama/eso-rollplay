@@ -1,3 +1,4 @@
+var userInfo = null;
 var footer = $("footer");
 
 const ATTRIBUTE_POINT_LIMIT = 10;
@@ -7,11 +8,17 @@ var skillSpent = 0;
 var character = new CharacterSheet();
 
 /// Called on page startup.
-function initializePage() {
-	var i;
-	var tmpVal;
+function initializePage(myUser) {
+	if (!myUser) {
+		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
+		return;
+	}
 
-	initializeDB();
+	var i;
+	var inCharacter = localStorage.getItem("ESORP[character]");
+
+	userInfo = myUser;
+	character.player = userInfo.display;
 
 	fillSection("attributes", attributes);
 	fillSection("skillsCombat", skillsCombat);
@@ -23,10 +30,6 @@ function initializePage() {
 	var raceSelect = $("select[name='charRace']");
 	var superSelect = $("select[name='charSupernatural']");
 	var classSelect = $("select[name='charClass']");
-
-	character.player = localStorage.getItem("ESORP[player]");
-	$("input[name='charPlayer']").val(character.player);
-	changePlayer();
 
 	for (i = 0; i < races.length; i++) {
 		raceSelect.append("<option>" + races[i].name + "</option>")
@@ -42,8 +45,22 @@ function initializePage() {
 		classSelect.append("<option>" + classes[i] + "</option>")
 	}
 
-	// Event handler isn't catching our default race, so force it!
 	raceSelect.trigger("change");
+
+	if (inCharacter) {
+		$("#nameEntry").remove();
+		$("#saveChar").removeAttr("disabled");
+		dbLoadCharacter(inCharacter, characterLoaded, descriptionLoaded);
+	} else {
+		$("#nameDisplay").remove();
+		$("#nameEntry").removeClass("hideMe");
+		finishDraw();
+	}
+}
+
+function finishDraw() {
+	$("#loading").remove();
+	$("body > *").removeClass("hideMe");
 }
 
 /// Creates skill sliders for a given category.
@@ -58,19 +75,31 @@ function fillSection(sectionName, elements) {
 	}
 }
 
+function doLogout() {
+	showConfirmPopup("Log out of your account?", confirmLogout);
+}
+
+function confirmLogout() {
+	firebase.auth().signOut().then(function() {
+		// Sign-out successful.
+	  }).catch(function(error) {
+		// An error happened.
+	  });
+}
+
 /// Handles name entry.
 function changeName() {
 	// » is a special character for summons!  Absolutely verboten in character names!
 	var charName = $(this).val().trim().replace(/»/g, "");
 	$(this).val(charName);
 	character.name = nameEncode(charName);
-	updateCharacterSheet();
-}
 
-/// Handles player entry.
-function changePlayer() {
-	character.player = nameEncode($("input[name='charPlayer']").val().trim().replace(/@/g, ""));
-	localStorage.setItem("ESORP[player]", character.player);
+	if (charName) {
+		$("#saveChar").removeAttr("disabled");
+	} else {
+		$("#saveChar").attr("disabled", "true");
+	}
+
 	updateCharacterSheet();
 }
 
@@ -315,9 +344,21 @@ function showNamePopup() {
 }
 
 /// Displays the error modal.
-function showErrorPopup(message) {
+function showErrorPopup(message, callback=null) {
 	$("#modalBG, #errorModal").addClass("show");
 	$("#errorText").text(message);
+	$("#errorButton").off("click").on("click", hidePopup);
+	
+	if (callback) {
+		$("#errorButton").on("click", callback);
+	}
+}
+
+/// Displays confirm modal.
+function showConfirmPopup(message, callback) {
+	$("#modalBG, #confirmModal").addClass("show");
+	$("#confirmText").html(message);
+	$("#confirmOk").off("click").on("click", callback);
 }
 
 /// Hides all modals.
@@ -326,9 +367,11 @@ function hidePopup() {
 }
 
 /// Saves the character to the database.
-function saveChar() {
-	if ((!character.name) || (!character.player)) {
-		showErrorPopup("Please enter a character name and a player name.");
+function saveChar(event) {
+	event.preventDefault();
+
+	if (!character.name) {
+		showErrorPopup("Please enter a character name.");
 		return;
 	}
 
@@ -337,41 +380,45 @@ function saveChar() {
 		return;
 	}
 
-	dbSaveCharacter(character, $("textarea[name='charBackground']").val(), charSaveSuccess, showErrorPopup);
+	dbLoadCharacter(character.name, checkCharacterSave);
+}
+
+function checkCharacterSave(loadMe) {
+	var tmpChar = loadMe.val();
+
+	if ((tmpChar) && (dbTransform(tmpChar.player) != dbTransform(userInfo.display))) {
+		showErrorPopup("This character has already been created by another player! (" + nameDecode(tmpChar.player) + ")");
+	} else {
+		dbSaveCharacter(character, $("textarea[name='charBackground']").val(), charSaveSuccess, showErrorPopup);
+	}
 }
 
 /// Notifies the user on successful save.
 function charSaveSuccess() {
-	showFooter("Character saved successfully!");
-}
-
-/// Requests a character from the database.
-function loadChar(event) {
-	event.preventDefault();
-
-	if ((!character.name) || (!character.player)) {
-		showErrorPopup("Please enter a character name and a player name.");
-		return;
-	}
-
-	dbLoadCharacter(nameDecode(character.name), characterLoaded, descriptionLoaded);
+	showFooter("Character saved successfully! You may return to the dashboard.");
 }
 
 /// Receives a character from the database.
 function characterLoaded(loadMe) {
-	if ((loadMe.val()) && (dbTransform(nameEncode(loadMe.val().player)) == dbTransform(character.player))) {
-		character = loadMe.val();
-		Object.setPrototypeOf(character, CharacterSheet.prototype);
-		$("input[name='charName']").val(nameDecode(character.name));
-		$("input[name='charPlayer']").val(nameDecode(character.player));
-		$("select[name='charRace']").val(character.race);
-		$("select[name='charSex']").prop("selectedIndex", character.sex);
-		$("select[name='charSupernatural']").val(character.supernatural);
-		$("select[name='charClass']").val(character.class);
-		$("textarea[name='charBackground']").val("");
-		updateCharacterSheet();
+	var tmpChar = loadMe.val();
+	if (tmpChar) {
+		if (dbTransform(tmpChar.player) == dbTransform(userInfo.display)) {
+			character = tmpChar;
+			Object.setPrototypeOf(character, CharacterSheet.prototype);
+			$("input[name='charName']").val(nameDecode(character.name));
+			$("#nameDisplay").text(nameDecode(character.name));
+			$("select[name='charRace']").val(character.race);
+			$("select[name='charSex']").prop("selectedIndex", character.sex);
+			$("select[name='charSupernatural']").val(character.supernatural);
+			$("select[name='charClass']").val(character.class);
+			$("textarea[name='charBackground']").val("");
+			updateCharacterSheet();
+			finishDraw();
+		} else {
+			showErrorPopup("You cannot edit a character that is not yours!", divertToDashboard);
+		}
 	} else {
-		showErrorPopup("Character not found.");
+		showErrorPopup("Character not found.", divertToDashboard);
 	}
 }
 
@@ -382,17 +429,26 @@ function descriptionLoaded(loadMe) {
 	}
 }
 
+initializeDB();
+firebase.auth().onAuthStateChanged(function(user) {
+	if (user) {
+		dbLoadAccountInfo(user.displayName, initializePage);
+	} else {
+		divertToLogin();
+	}
+});
+
 /// Event registration.
+$("nav h1").on("click", divertToDashboard);
+$("#logout").on("click", doLogout);
 $("#buttonHelp").on("click", showHelpPopup);
 $("input[name='charName']").on("change", changeName);
 $("#generateName").on("click", showNamePopup);
-$("input[name='charPlayer']").on("change", changePlayer);
 $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
 $("select[name='charClass']").on("change", changeClass);
 $("#saveChar").on("click", saveChar);
-$("#loadChar").on("click", loadChar);
 $("section").on("input change", "input[type='range']", changeSlider);
 $("#main section > h3").on("click", expandContractSection);
 $("#errorButton, #nameCancel, #helpDone").on("click", hidePopup);
@@ -401,5 +457,4 @@ $("textarea[name='charBackground']").on("focus, keydown", descriptionHelper);
 $("textarea[name='charBackground']").on("blur", leaveDescription);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
 $("#nameModal iframe").on("load", bindIframeEvents);
-
-initializePage();
+$("#confirmCancel, #errorButton").on("click", hidePopup);

@@ -5,7 +5,6 @@ function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
 	var minimal = new URLSearchParams(window.location.search).get("minimal");
 
-
 	initializeDB();
 
 	if (loadChar) {
@@ -37,6 +36,8 @@ function characterLoaded(loadMe) {
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
 		$("#profileText h2").text(nameDecode(character.name));
 		character.print("printout");
+		$("#loading").remove();
+		$("h1, #main").removeClass("hideMe");
 	} else {
 		showErrorPopup("Character not found.");
 	}

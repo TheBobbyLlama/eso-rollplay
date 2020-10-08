@@ -22,6 +22,9 @@ function initializePage(data) {
 		useTag = "button";
 		generate(null);
 	}
+
+	$("#loading").remove();
+	$("h1, section").removeClass("hideMe");
 }
 
 /// Dynamically create filter checkboxes based on what's available for the chosen race.

@@ -475,7 +475,7 @@ class CharacterSheet {
 			}
 		}
 
-		if ((!noSlider) && (getMe in this.attributes)) {
+		if ((!noSlider) && (this.attributes) && (getMe in this.attributes)) {
 			result += this.attributes[getMe];
 		}
 

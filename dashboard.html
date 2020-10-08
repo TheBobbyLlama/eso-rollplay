@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Rollplay</title>
+	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
+	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+	<link rel="stylesheet" href="./assets/css/style.css" />
+	<link rel="stylesheet" href="./assets/css/dashboard.css" />
+</head>
+<body>
+	<nav>
+		<h1 class="nopointer">ESO Rollplay</h1>
+		<div id="userOptions">
+			<span class="oi" data-glyph="wrench" title="Account Options" aria-hidden="true"></span>
+		</div>
+		<div id="logout">
+			<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+		</div>
+	</nav>
+	<section>
+		<h2 id="welcomeHeader">&nbsp;</h2>
+		<div id="main">
+			<div id="loading"></div>
+			<div id="characterCenter" class="hideMe">
+				<div id="newUserPrompt" class="hideMe">
+					<h3>Get Started!</h3>
+					<button type="button" name="createCharacter">Make a Character</button>
+				</div>
+				<div id="charListHolder" class="hideMe">
+					<ol id="characterList">
+						<li>Test Item</li>
+					</ol>
+				</div>
+				<div id="characterCommands" class="hideMe">
+					<div id="printout"></div>
+					<div id="characterButtons">
+						<button type="button" id="playCharacter" disabled="true">Play!</button>
+						<button type="button" id="editCharacter" disabled="true">Edit</button>
+						<button type="button" id="deleteCharacter" disabled="true">Delete</button>
+					</div>
+				</div>
+			</div>
+			<div id="miscTasks" class="hideMe">
+				<h3>Other Tasks</h3>
+				<div id="taskHolder"></div>
+			</div>
+		</div>
+	</section>
+	<div id="modalBG">
+		<div id="errorModal">
+			<h3>Error</h3>
+			<p id="errorText"></p>
+			<button id="errorButton" type="button">Ok</button>
+		</div>
+		<div id="confirmModal">
+			<h3>Confirm</h3>
+			<p id="confirmText"></p>
+			<button id="confirmOk" type="button">Ok</button>
+			<button id="confirmCancel" type="button">Cancel</button>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/esorplib.js"></script>
+	<script src="./assets/js/dashboard.js"></script>
+</body>
+</html>

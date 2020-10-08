@@ -1,0 +1,193 @@
+#characterButtons {
+	align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding-left: 20px;
+}
+
+#characterButtons button:first-of-type {
+	height: 50px;
+	margin: 10px 0;
+	width: 100%;
+}
+
+#characterButtons button + button {
+	margin-top: 20px;
+}
+
+#characterCenter {
+	align-items: stretch;
+	background-color: var(--inset-background);
+	border-radius: 12px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	min-height: 400px;
+}
+
+#characterCommands {
+	align-items: stretch;
+	background-color: var(--content-background);
+	border-radius: 8px;
+	display: flex;
+	margin: 20px;
+	padding: 10px 20px;
+}
+
+#charListHolder {
+	overflow: auto;
+	width: 288px;
+}
+
+#characterList {
+	align-items: flex-start;
+	counter-reset: character;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: 10px;
+}
+
+#characterList li {
+	align-items: center;
+	display: flex;
+	list-style: none;
+	margin: 10px;
+	width: 240px;
+}
+
+
+#characterList li button {
+	margin: 0 auto;
+}
+
+#characterList li.charItem {
+	background-color: var(--gm-background);
+	border-radius: 8px;
+	cursor: pointer;
+	padding: 10px 20px 10px 36px;
+	position: relative;
+	top: 0;
+}
+
+#characterList li.charItem::before {
+	align-items: center;
+	bottom: 0px;
+	color: rgba(255, 255, 255, 0.5);
+	counter-increment: character;
+	content: counter(character);
+	display: flex;
+	position: absolute;
+	top: 0px;
+	left: 16px;
+}
+
+#characterList li:hover {
+	background-color: var(--important-background);
+}
+
+#main {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+#miscTasks {
+	padding: 0 20px;
+}
+
+#miscTasks h3 {
+	margin-top: 20px;
+}
+
+#newUserPrompt {
+	align-items: center;
+	background-color: var(--content-background);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding-top: 32px;
+	width: 400px;
+}
+
+#newUserPrompt button {
+	height: 32px;
+	padding: 0 20px;
+}
+
+#printout {
+	min-width: 240px;
+}
+
+#taskHolder {
+	border: solid 1px var(--content-border);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	padding: 10px 8px;
+}
+
+#taskHolder button + button {
+	margin-top: 12px;
+}
+
+#userOptions {
+	align-items: center;
+	border-radius: 16px;
+	bottom: 8px;
+	cursor: pointer;
+	display: flex;
+	opacity: 0.5;
+	padding: 4px 8px;
+	position: absolute;
+	right: 48px;
+	top: 8px;
+	transition: 0.5s;
+	vertical-align: middle;
+	width: 32px;
+}
+
+#userOptions:hover {
+	background-color: var(--gm-background);
+	opacity: 1.0;
+}
+
+#welcomeHeader {
+	margin-bottom: 12px;
+}
+
+@media screen and (max-width: 575px) {
+	#characterButtons {
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-around;
+		padding: 0;
+	}
+
+	#characterButtons button + button {
+		margin-bottom: 10px;
+		margin-top: 0px;
+	}
+
+	#characterCommands {
+		flex-direction: column-reverse;
+	}
+
+	#charListHolder, #characterList li {
+		margin-right: 20px;
+		width: 100% !important;
+	}
+
+	#userOptions {
+		background-color: var(--gm-background);
+		max-height: 40px;
+		top: 0px;
+	}
+
+	#taskHolder {
+		min-height: initial;
+	}
+}

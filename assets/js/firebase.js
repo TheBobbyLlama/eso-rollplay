@@ -69,9 +69,49 @@ function nameDecode(name) {
 	})
 }
 
+/// Helper function to send user back to login.
+function divertToLogin() {
+	location.replace("./index.html");
+}
+
+/// Helper function to send user to dashboard.
+function divertToDashboard() {
+	location.replace("./dashboard.html");
+}
+
 /// Strips all non-alphanumeric characters from a string.
 function dbTransform(input) {
 	return nameDecode(input).replace(/[\s\W]/g, "").toLowerCase();
+}
+
+/// Loads info for the given player.
+function dbLoadAccountInfo(name, handler) {
+	database.ref("accounts/" + dbTransform(name)).once("value").then((loadMe) => {
+		var result = loadMe.val();
+
+		if (result) {
+			if (!result.characters) {
+				result.characters = [];
+			}
+		}
+
+		handler(result);
+	});
+}
+
+/// Saves info for the given player.
+function dbSaveAccountInfo(name, accountInfo, successCallback = undefined, failureCallback = undefined) {
+	database.ref("accounts/" + dbTransform(nameDecode(name))).set(accountInfo)
+		.then(function() {
+			if (successCallback) {
+				successCallback();
+			}
+		})
+		.catch(function(error) {
+			if (failureCallback) {
+				failureCallback(error);
+			}
+		});
 }
 
 /// Saves a character to the database.
@@ -101,6 +141,10 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 			var result = loadMe.val();
 
 			if (result) {
+				if (!result.characters) {
+					result.characters = [];
+				}
+
 				if (result.characters.indexOf(saveMe.name) < 0) {
 					result.characters.push(saveMe.name);
 					result.characters = result.characters.sort();
@@ -115,13 +159,40 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 				database.ref("accounts/" + dbTransform(nameDecode(saveMe.player))).set(newAccount);
 			}
 
-			successCallback();
+			if (successCallback) {
+				successCallback();
+			}
 		}).catch(function(error) {
 			if (failureCallback) {
 				failureCallback(error);
 			}
 		});
 	}
+}
+
+/// Removes a character from the database.
+function dbDeleteCharacter(killMe, successCallback = undefined, failureCallback = undefined) {
+	killMe = dbTransform(killMe);
+
+	database.ref("characters/" + killMe).remove()
+		.then(function() {
+			database.ref("descriptions/" + killMe).remove()
+			.then(function() {
+				if (successCallback) {
+					successCallback();
+				}
+			})
+			.catch(function(error) {
+				if (failureCallback) {
+					failureCallback(error);
+				}
+			});
+		})
+		.catch(function(error) {
+			if (failureCallback) {
+				failureCallback(error);
+			}
+		});
 }
 
 /// Returns a list of characters that belong to the given player.

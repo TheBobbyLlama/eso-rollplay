@@ -8,28 +8,8 @@
 	min-width: 320px;
 }
 
-#charInfo form {
-	display: grid;
-}
-
 #charInfo #printout h3 {
 	text-align: left;
-}
-
-#charInfo label {
-	padding-right: 4px;
-	text-align: right;
-	width: 100%;
-}
-
-#charInfo input {
-	grid-column-start: 2;
-}
-
-#charInfo .buttonHolder {
-	grid-column: 1 / span 2;
-	padding: 4px;
-	text-align: center;
 }
 
 #charList, #npcList {
@@ -238,6 +218,11 @@
 	width: 100%;
 }
 
+#sessionControls {
+	display: flex;
+	justify-content: center;
+}
+
 #summonControls em {
 	color: rgba(255, 255, 255, 0.5);
 }
@@ -290,10 +275,6 @@
 }
 
 @media screen and (max-width: 700px) {
-	#charInfo form {
-		grid-template-columns: 1fr 4fr;
-	}
-
 	#main {
 		flex-direction: column;
 		align-items: stretch;
