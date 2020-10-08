@@ -83,7 +83,7 @@
 	left: 16px;
 }
 
-#characterList li:hover {
+#characterList li.charItem:hover {
 	background-color: var(--important-background);
 }
 

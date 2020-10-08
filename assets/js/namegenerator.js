@@ -18,13 +18,14 @@ function initializePage(data) {
 	if ((setRace) && (setSex)) {
 		$("#race").val(setRace);
 		$("#sex").val(setSex);
-		$("h1, form > div:first-child").addClass("hideMe");
+		$("form > div:first-child").addClass("hideMe");
+		$("h2, nav").remove();
 		useTag = "button";
 		generate(null);
 	}
 
 	$("#loading").remove();
-	$("h1, section").removeClass("hideMe");
+	$("h2, nav, section").removeClass("hideMe");
 }
 
 /// Dynamically create filter checkboxes based on what's available for the chosen race.
@@ -93,6 +94,7 @@ function getComponentLists(filter) {
 	while (true) {
 		let tmpResults = [];
 
+		console.log(raceIndex);
 		for (let x = 0; x < nameData[raceIndex].subcategories.length; x++) {
 			let curSet = nameData[raceIndex].subcategories[x];
 
@@ -175,8 +177,14 @@ function getRandomIndex(max) {
 	return Math.floor(max * Math.random());
 }
 
+/// Send the user back to their dashboard.
+function sendToDashboard() {
+	window.location.assign("./dashboard.html");
+}
+
 /// Event registration.
 //$.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
 $.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
+$("nav h1").on("click", sendToDashboard);
 $("#race").on("change", createFilters);
 $("#generateButton").on("click", generate);
