@@ -138,6 +138,7 @@
 	align-items: center;
 	border-radius: 16px;
 	bottom: 8px;
+	color: rgb(146, 113, 30); /* TEMPORARY WHILE UNDER CONSTRUCTION */
 	cursor: pointer;
 	display: flex;
 	opacity: 0.5;
