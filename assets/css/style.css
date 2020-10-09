@@ -96,6 +96,10 @@ nav h1 {
 	padding-bottom: 12px !important;
 }
 
+nav h1.nopointer {
+	cursor: default;
+}
+
 nav h1:not(.nopointer) {
 	border-radius: 50px;
 	cursor: pointer;

@@ -34,7 +34,9 @@ section, #call-to-action, #auth-panel .firebaseui-container {
 
 /* Normal styles */
 #auth-panel {
+	height: 260px;
 	padding-right: 20px;
+	width: 306px;
 }
 
 #auth-panel button {
@@ -50,13 +52,6 @@ section, #call-to-action, #auth-panel .firebaseui-container {
 
 #call-to-action > p {
 	width: 400px;
-}
-
-/* Override default style to approximate the size of the incoming login panel */
-#loading {
-	height: 240px;
-	margin-top: 0;
-	width: 286px;
 }
 
 #main {
