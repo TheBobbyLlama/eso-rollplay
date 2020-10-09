@@ -12,6 +12,7 @@ function initializePage() {
 				provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
 			}
 		],
+		credentialHelper: firebaseui.auth.CredentialHelper.NONE,
 		callbacks: {
 			uiShown: function() {
 				$("#loading").hide();
