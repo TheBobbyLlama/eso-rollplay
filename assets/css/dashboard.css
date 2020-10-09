@@ -1,3 +1,8 @@
+input.invalid {
+	border-color: var(--common-alert);
+	color: var(--common-alert);
+}
+
 #characterButtons {
 	align-items: flex-start;
 	display: flex;
@@ -134,11 +139,18 @@
 	margin-top: 12px;
 }
 
+#settingsModal > div {
+	margin-top: 10px;
+}
+
+#settingsModal p {
+	margin: 8px 0px 0px 0px !important;
+}
+
 #userOptions {
 	align-items: center;
 	border-radius: 16px;
 	bottom: 8px;
-	color: rgb(146, 113, 30); /* TEMPORARY WHILE UNDER CONSTRUCTION */
 	cursor: pointer;
 	display: flex;
 	opacity: 0.5;
@@ -158,6 +170,15 @@
 
 #welcomeHeader {
 	margin-bottom: 12px;
+}
+
+.settingGroup {
+	border: solid 1px var(--content-border);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	padding: 8px;
+	vertical-align: middle;
 }
 
 @media screen and (max-width: 575px) {

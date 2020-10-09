@@ -14,6 +14,13 @@ function initializePage(myUser) {
 	$("#welcomeHeader").text("Welcome, " + userInfo.display + "!");
 	populateCharacterList();
 
+	fillTaskHolder();
+
+	$("#loading").remove();
+	$("#characterCenter, #miscTasks").removeClass("hideMe");
+}
+
+function fillTaskHolder() {
 	taskHolder.empty();
 
 	if (userInfo.gameMaster) {
@@ -21,9 +28,6 @@ function initializePage(myUser) {
 	}
 
 	taskHolder.append("<button type='button' id='nameGenerator'>Generate Lore Friendly Names</button>");
-
-	$("#loading").remove();
-	$("#characterCenter, #miscTasks").removeClass("hideMe");
 }
 
 function doLogout() {
@@ -128,6 +132,47 @@ function goToGMSCreen() {
 	location.replace("./gmscreen.html");
 }
 
+function checkPasswordEntries() {
+	var match = ($("#newPassword").val() === $("#confirmPassword").val());
+
+	$("#newPassword, #confirmPassword").toggleClass("invalid", !match);
+
+	if (match) {
+		$("#settingsOk").removeAttr("disabled");
+	} else {
+		$("#settingsOk").attr("disabled", "true");
+	}
+}
+
+function confirmSettingsChange() {
+	if ($("#optGM").prop("checked") != userInfo.gameMaster) {
+		if (userInfo.gameMaster) {
+			delete userInfo.gameMaster;
+		} else {
+			userInfo.gameMaster = true;
+		}
+
+		fillTaskHolder();
+		dbSaveAccountInfo(userInfo.display, userInfo, null, showErrorPopup);
+	}
+
+	var pw1 = $("#newPassword").val();
+	var pw2 = $("#confirmPassword").val();
+
+	if ((pw1 !== "") && (pw1 === pw2)) {
+		var user = firebase.auth().currentUser;
+
+		user.updatePassword(pw1).then(function() {
+			console.log("Password successfully changed.");
+		}).catch(function(error) {
+			showErrorPopup("Password " + error);
+		});
+	}
+
+	$("#newPassword, #confirmPassword").val("");
+	hidePopup();
+}
+
 /// Displays confirm modal.
 function showConfirmPopup(message, callback) {
 	$("#modalBG, #confirmModal").addClass("show");
@@ -146,6 +191,13 @@ function showErrorPopup(message, callback=null) {
 	}
 }
 
+function showSettingsPopup() {
+	$("#optGM").prop("checked", userInfo.gameMaster);
+	$("#newPassword, #confirmPassword").val("");
+	checkPasswordEntries(); // Reset formatting.
+	$("#modalBG, #settingsModal").addClass("show");
+}
+
 /// Hides all modals.
 function hidePopup() {
 	$("#modalBG").removeClass("show");
@@ -162,6 +214,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 /// Event registration
+$("#userOptions").on("click", showSettingsPopup);
 $("#logout").on("click", doLogout);
 $("#characterCenter").on("click", "button[name='createCharacter']", createNewCharacter);
 $("#characterList").on("click", "li.charItem", activateCharacter);
@@ -170,4 +223,6 @@ $("#editCharacter").on("click", editCharacter);
 $("#deleteCharacter").on("click", deleteCharacter);
 $("#miscTasks").on("click", "#nameGenerator", goToNameGenerator)
 	.on("click", "#gmScreen", goToGMSCreen);
-$("#confirmCancel, #errorButton").on("click", hidePopup);
+$("#newPassword, #confirmPassword").on("change", checkPasswordEntries);
+$("#settingsOk").on("click", confirmSettingsChange);
+$("#confirmCancel, #errorButton, #settingsCancel").on("click", hidePopup);

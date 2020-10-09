@@ -61,6 +61,29 @@
 			<button id="confirmOk" type="button">Ok</button>
 			<button id="confirmCancel" type="button">Cancel</button>
 		</div>
+		<div id="settingsModal">
+			<h3>Account Settings</h3>
+			<div class="settingGroup">
+				<div>
+					<input type="checkbox" id="optGM" />
+					<label for="optGM">GameMaster</label>
+				</div>
+				<p>
+					<em>Enable this option for access<br />to the GM Screen.</em>
+				</p>
+			</div>
+			<div class="settingGroup">
+				<h4>Change Password</h4>
+				<label for="newPassword">New Password</label>
+				<input type="password" id="newPassword" />
+				<label for="confirmPassword">Confirm Password</label>
+				<input type="password" id="confirmPassword" />
+			</div>
+			<div>
+				<button id="settingsOk" type="button">Ok</button>
+				<button id="settingsCancel" type="button">Cancel</button>
+			</div>
+		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
