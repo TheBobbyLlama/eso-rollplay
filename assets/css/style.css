@@ -49,12 +49,6 @@ a:visited {
 	color: var(--link-visited);
 }
 
-#auth-panel button {
-	color: initial;
-	line-height: initial;
-	text-transform: initial;
-}
-
 button, #auth-panel button {
 	background-color: #e0e0e0;
 	border-bottom: solid 2px #808080;
@@ -91,31 +85,6 @@ h1::before {
 	width: 40px;
 }
 
-label.firebaseui-label[for='name'] {
-	color: rgba(1, 1, 1, 0) !important;
-	position: relative;
-	overflow: visible;
-}
-
-label.firebaseui-label::after {
-	display: none;
-}
-
-label.firebaseui-label[for='name']::before {
-	bottom: 0px;
-	color: rgba(0, 0, 0, 0.54);
-	content: 'ESO Username';
-	left: 0px;
-	position: absolute;
-	right: 0px;
-	top: 0px;
-}
-
-div.is-dirty label.firebaseui-label[for='name']::before, div.is-focused label.firebaseui-label[for='name']::before {
-	color: rgb(117, 117, 117);
-	top: -6px;
-}
-
 nav {
 	position: relative;
 	top: 0;
@@ -139,7 +108,7 @@ nav h1:not(.nopointer):hover {
 	transition: 0.5s;
 }
 
-section, #auth-panel .firebaseui-container {
+section {
 	background-color: var(--content-background);
 	border-radius: 8px;
 	margin: 10px;
@@ -166,6 +135,7 @@ ul {
 	position: fixed;
 	right: 0;
 	top: 0;
+	z-index: 1000;
 }
 
 .show {
@@ -239,6 +209,8 @@ ul {
 
 #loading {
 	background-image: url('../images/loading.gif');
+	background-position: center;
+	background-repeat: no-repeat;
 	height: 100px;
 	margin: 100px auto 0px auto;
 	width: 100px;

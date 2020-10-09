@@ -7,13 +7,27 @@
 	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
 	<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
-	<link rel="stylesheet" href="./assets/css/style.css" />
 	<script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+	<link rel="stylesheet" href="./assets/css/style.css" />
+	<link rel="stylesheet" href="./assets/css/login.css" />
 </head>
 <body>
-	<h1>ESO Rollplay - Welcome!</h1>
-	<div id="auth-panel">
-		<div id="loading"></div>
+	<h1>ESO Rollplay</h1>
+	<div id="mainHolder">
+	<div id="main">
+		<div id="call-to-action">
+			<h2>Welcome to Rollplay!</h2>
+			<p>Rollplay is a dice rolling supplement for roleplayers in <a href="https://www.elderscrollsonline.com/" target="_blank">The Elder Scrolls Online</a>.  The system closely mimics tabletop play, where a game master controls the action for other players.  Players can create their own characters and join in on their computer or phone.</p>
+			<div class="slideshow">
+				<div class="slide waiting" style="background: url('./assets/images/slideshow/CharSheet.jpg')"></div>
+				<div class="slide waiting"></div>
+				<div class="caption"><p></p></div>
+			</div>
+		</div>
+		<div id="auth-panel">
+			<div id="loading"></div>
+		</div>
+	</div>
 	</div>
 	<div id="modalBG">
 		<div id="errorModal">
@@ -34,5 +48,6 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
 	<script src="./assets/js/auth.js"></script>
+	<script src="./assets/js/cta.js"></script>
 </body>
 </html>

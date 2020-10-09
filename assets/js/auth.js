@@ -15,7 +15,6 @@ function initializePage() {
 		callbacks: {
 			uiShown: function() {
 				$("#loading").hide();
-				console.log(authUI);
 			},
 			signInSuccessWithAuthResult: function(authResult, redirectUrl) {
 				if (authResult.additionalUserInfo.isNewUser) {
