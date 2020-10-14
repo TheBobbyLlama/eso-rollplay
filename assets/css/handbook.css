@@ -197,10 +197,9 @@ section ol, section ul {
 #handbook nav li {
 	display: block;
 	margin: 0px;
-}
-
-#handbook nav li + li {
-	margin-top: 16px;
+	min-height: 36px;
+	position: relative;
+	top: 6px;
 }
 
 #handbook nav a {
@@ -313,6 +312,10 @@ section ol, section ul {
 	#handbook nav > ul {
 		flex-direction: row;
 		flex-wrap: wrap;
+	}
+
+	#handbook nav h4 {
+		margin-right: 8px;
 	}
 
 	#handbook nav li {
