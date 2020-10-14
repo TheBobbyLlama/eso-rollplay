@@ -147,27 +147,6 @@ input.invalid {
 	margin: 8px 0px 0px 0px !important;
 }
 
-#userOptions {
-	align-items: center;
-	border-radius: 16px;
-	bottom: 8px;
-	cursor: pointer;
-	display: flex;
-	opacity: 0.5;
-	padding: 4px 8px;
-	position: absolute;
-	right: 48px;
-	top: 8px;
-	transition: 0.5s;
-	vertical-align: middle;
-	width: 32px;
-}
-
-#userOptions:hover {
-	background-color: var(--gm-background);
-	opacity: 1.0;
-}
-
 #welcomeHeader {
 	margin-bottom: 12px;
 }
@@ -201,12 +180,6 @@ input.invalid {
 	#charListHolder, #characterList li {
 		margin-right: 20px;
 		width: 100% !important;
-	}
-
-	#userOptions {
-		background-color: var(--gm-background);
-		max-height: 40px;
-		top: 0px;
 	}
 
 	#taskHolder {

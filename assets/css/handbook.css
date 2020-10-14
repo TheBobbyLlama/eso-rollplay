@@ -49,14 +49,28 @@ a:visited {
 }
 
 a[target='_blank']:not(.notail)::after {
-	content: 'ꜛ';
+	content:' \e064';
+	font-family: 'Icons';
+	font-size: 11.25px;
 }
 
-aside {
+aside, blockquote {
 	background-color: var(--comment-background);
 	border: solid 1px var(--content-border);
 	border-radius: 8px;
 	padding: 2px 8px;
+}
+
+aside:not(:first-child), blockquote:not(:first-child) {
+	margin-top: 10px;
+}
+
+aside:not(:last-child), blockquote:not(:last-child) {
+	margin-bottom: 10px;
+}
+
+blockquote {
+	font-style: italic;
 }
 
 button, #handbook nav a {
@@ -81,6 +95,10 @@ button[disabled] {
 
 h1, h2, h3, h4 {
 	font-weight: bold;
+}
+
+h3:not(:first-child), h4:not(:first-child) {
+	margin-top: 10px;
 }
 
 h4 {
@@ -201,8 +219,77 @@ section ol, section ul {
 	width: 100px;
 }
 
+.attributeBreakdown {
+	column-gap: 10px;
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-template-rows: auto auto;
+	justify-content: start;
+}
+
+.attributeBreakdown > div:first-child {
+	align-self: center;
+	grid-row: 1 / span 2;
+}
+
+.attributeBreakdown > div:nth-child(2), .attributeBreakdown > div:nth-child(4) {
+	font-style: italic;
+}
+
+.damage-disease {
+	color: #e0f0c0;
+}
+
+.damage-flame {
+	color: #ffd0b0;
+}
+
+.damage-frost {
+	color: #c0e0ff;
+}
+
+.damage-none {
+	color: #808090;
+}
+
+.damage-poison {
+	color: #c0ffd0;
+}
+
+.damage-shock {
+	color: #d0c0ff;
+}
+
+.damage-silver {
+	color: silver;
+}
+
 .descList p {
 	margin-left: 8px;
+}
+
+.injury-critical {
+	color: var(--common-red);
+}
+
+.injury-incapacitated {
+	color: #808090;
+}
+
+.injury-injured {
+	color: var(--common-gold);
+}
+
+.injury-uninjured {
+	color: var(--common-green);
+}
+
+.negative {
+	color: var(--common-red);
+}
+
+.positive {
+	color: var(--common-green);
 }
 
 @media screen and (max-width: 575px) {
@@ -226,6 +313,11 @@ section ol, section ul {
 	#handbook nav > ul {
 		flex-direction: row;
 		flex-wrap: wrap;
+	}
+
+	#handbook nav li {
+		display: block;
+		margin: 0px;
 	}
 
 	#handbook nav li + li {

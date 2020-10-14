@@ -6,6 +6,7 @@
 	<title>ESO Rollplay - Handbook</title>
 	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
 	<link rel="stylesheet" href=".././assets/css/handbook.css" />
 </head>
 <body>
@@ -14,7 +15,115 @@
 	</nav>
 	<h2>ESO Rollplay - Rolling</h2>
 	<section>
-		<h3>TODO</h3>
+		<h3>Overview</h3>
+		<p>
+			ESO Rollplay uses a d20 (i.e. 20-sided die) system for all of its rolls.  This system doesn't function like Dungeons &amp; Dragons, so you may want to take some time to familiarize yourself with how it works.
+		</p>
+		<p>
+			The rolling system is built on the principle of "the GM has the final say", the same way tabletop gaming is.
+		</p>
+		<h4>Attribute Modifiers</h4>
+		<p>
+			There will be several times in this document where attribute modifiers will be added to rolls.  Unlike Dungeons &amp; Dragons, attribute modifiers are calculated by taking the attribute's <em>full value</em> minus 10.  An attribute score of 15 would result in an attribute modifier of +5.
+		</p>
+		<h4>Topic Categories</h4>
+		<ol>
+			<li>
+				<a href="#injury-system">Injury System</a>
+			</li>
+			<li>
+				<a href="#combat">Combat</a>
+			</li>
+			<li>
+				<a href="#damage-resistance-weakness">Damage Resistance/Weakness</a>
+			</li>
+			<li>
+				<a href="#lucky-unlucky-rolls">Lucky/Unlucky Rolls</a>
+			</li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="injury-system">Injury System</a></h3>
+		<p>
+			In order to reduce bookkeeping, Rollplay does not use a traditional hit point system.  Instead, it uses a "three strikes and you're out" injury level system.  However, it is also not a system where all characters are equally durable - a character's chance to get injured is determined by their attributes and skills.  The status levels are as follows:
+		</p>
+		<ul>
+			<li>
+				<strong class="injury-uninjured">Uninjured</strong>:
+				Your character hasn’t taken damage, or their injuries are very minor.
+			</li>
+			<li>
+				<strong class="injury-injured">Injured</strong>:
+				Your character has taken some damage, but nothing life threatening.
+			</li>
+			<li>
+				<strong class="injury-critical">Critical</strong>:
+				Your character is in danger! Cue the annoying beeping until they receive healing.
+			</li>
+			<li>
+				<strong class="injury-incapacitated">Incapacitated!</strong>
+				Your character has fainted and is unable to battle.
+			</li>
+		</ul>
+		<p>
+			By default, there is no way for your character to actually "die" in this system if they take too much damage, unless you ultimately decide you want character death to take place.  Instead, your character will be marked as <span class="injury-incapacitated">Incapacitated</span> and will be unable to perform in combat until they are successfully healed.  Incapacitated characters will still be able to actively engage in the RP portions of events if you like, so even if you’re out of combat, you can still emote.
+		</p>
+	</section>
+	<section>
+		<h3><a name="combat">Combat</a></h3>
+		<p>
+			Rolls in combat all follow the same format:
+		</p>
+		<ol>
+			<li>
+				A character initiates the attack.  They make an <strong>Attack</strong> roll, with the <em>appropriate skill</em> added directly to the roll.
+			</li>
+			<li>
+				The defending character tries to avoid the attack.  They make a <strong>Defense</strong> roll, with their <em>Agility</em> modifier added directly to the roll.  If the defender has a shield equipped, they also add <em>half</em> of their <a href="./skills.html#block">Block</a> skill to the roll.
+			</li>
+			<li>
+				The GM evaluates the rolls and decides if the attack hits or not.  If the attack is a <em>miss</em>, then the attack sequence is ended.
+			</li>
+			<li>
+				If the attacker <em>hits</em>, they make a <strong>Damage</strong> roll to determine how effective their attack was.  They add the modifier for the <em>governing attribute</em> of the skill used directly to the roll.
+			</li>
+			<li>
+				The defender determines if they take significant damage from the attack by making a <strong>Toughness</strong> roll, adding their <em>Endurance </em> directly to the roll.  They also add <em>half their skill rank</em> for whichever armor type they are wearing.
+			</li>
+			<li>
+				The GM once again evaluates the rolls.  If they decide the attacker's damage roll succeeded, then they can increase the defender's injury level.  If the damage roll is not succeeded, this can be roleplayed as the defender only taking superficial damage (it's just a scratch!), rolling with the attack, etc.
+			</li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="damage-resistance-weakness">Damage Resistance/Weakness</a></h3>
+		<p>
+			<strong>Toughness</strong> roll to resist damage can be made tougher or easier by damage resistance or weakness.
+		</p>
+		<p>
+			If the character <span class="positive">resists</span> the incoming damage type, they roll an extra die, and take the <em>better</em> result.
+		</p>
+		<p>
+			If the character is <span class="negative">weak</span> to the incoming damage type, they roll an extra die, and take the <em>worse</em> result.
+		</p>
+		<p>
+			Note that it in scenarios where a character could both resist and be weak to a damage type (such as a <a href="./races.html#dunmer">Dunmer</a> that is a <a href="./supernatural.html#vampire">Vampire</a> in regard to <span class="damage-flame">Flame</span> damage), the weakness and resistance cancel out, and the character makes a normal roll.
+		</p>
+	</section>
+	<section>
+		<h3><a name="lucky-unlucky-rolls">Lucky/Unlucky Rolls</a></h3>
+		<p>
+			In the main Elder Scrolls games, Luck is said to "affect everything you do in a small way".  So what does that mean in ESO Rollplay?  It means your Luck modifier has a chance to grant a <em>lucky</em> or <em>unlucky</em> roll.  A character with a Luck of 10 has no modifier and thus will not receive any special rolls.
+		</p>
+		<p>
+			If your Luck modifer is <em>positive</em>, it grants a 5% chance per point for a <span class="positive">lucky</span> roll.  On a lucky roll, an extra die is rolled, and you take the <em>better</em> result.
+		</p>
+		<p>
+			If your Luck modifier is <em>negative</em>, it grants a 5% chance per point for a <span class="negative">unlukcy</span> roll.  On an unlucky roll, an extra die is rolled, and you take the <em>worse</em> result.
+		</p>
+		<p>
+			Lucky/unlucky rolls can add to or cancel out the extra die added by damage resistance or weakness.  An <span class="negative">unlucky</span> <strong>Toughness</strong> roll against a damage type you resist will cancel out to a normal roll.  A <span class="positive">lucky</span> <strong>Toughness</strong> roll against a damage type you resist means <em>three</em> dice will be rolled and you take the best result!
+		</p>
 	</section>
 </body>
 </html>
