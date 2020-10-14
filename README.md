@@ -1,18 +1,15 @@
-# Roleplay System for Elder Scrolls Online
+# ESO Rollplay
 
-This is a site to facillitate roleplaying in the game [The Elder Scrolls Online](https://www.elderscrollsonline.com/).  It is a effectively a dice rolling system that emulates the tabletop gaming experience one would have with a game like Dungeons & Dragons - players participate in encounters designed by a Game Master.
+This is a site to facillitate roleplaying in the game [The Elder Scrolls Online](https://www.elderscrollsonline.com/).  It is a dice rolling system that emulates the tabletop gaming experience one would have with a game like Dungeons & Dragons - players participate in encounters designed by a game master.
 
-## Player Portal
-This includes:
-- A character sheet page where players can create and save their characters for use in the system.
-- A 'Rollplay' page where players can participate in roleplaying sessions by making dice rolls.
+## Pages
+- A dashboard for players to manage their characters or navigate to the other pages.
+- A character sheet page where players can create and save their characters.
+- A Rollplay session page where players can participate in game sessions by making dice rolls.
+- A GM Screen page where the game master controls the action.
+- A name generation page which creates lore friendly names.
 - A profile page where characters can be browsed and viewed.
 
-## GM Screen
-The GM Screen is where the Game Master controls the action.  From here, the GM can design encounters by adding players and enemies.  The GM can initiate rolls against players which they must respond to, or deal with rolls the players have made.  The GM has complete control over the outcomes, the system does not call success or failure for them.  The facillitate this, any rolling the GM does is hidden from players, they only see the results the GM decides.
+Deployed application: https://thebobbyllama.github.io/eso-roleplay/
 
-Player Portal link: https://thebobbyllama.github.io/eso-roleplay/
-
-GM Screen link: https://thebobbyllama.github.io/eso-roleplay/gmscreen.html
-
-![Character Screen](/charsheet.png)
+![Character Screen](/snapshot.gif)
