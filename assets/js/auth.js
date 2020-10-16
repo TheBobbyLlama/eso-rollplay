@@ -32,8 +32,13 @@ function initializePage() {
 
 function checkAccountInfo(result) {
 	if (result) {
-		showErrorPopup("The " + initializingUser.displayName + " account already exists!  Your new account is now linked.", divertToDashboard);
-		// TODO - Error handling!  This should delete the account and make the user start over.
+		var accountName = initializingUser.displayName;
+
+		initializingUser.delete().then(() => {
+			showErrorPopup("The ESO Username " + accountName + " is already in use.", divertToLogin);
+		}).catch(function(error) {
+			showErrorPopup(error, divertToLogin);
+		})
 	} else {
 		result = {
 			display: initializingUser.displayName
