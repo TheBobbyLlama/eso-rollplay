@@ -1037,7 +1037,7 @@ function displayEventName(event, end=false) {
 class SharedEvent {
 	constructor(myType) {
 		this.eventType = myType;
-		this.timeStamp = new Date().toLocaleString("en-US")
+		this.timeStamp = Date.now();
 	}
 
 	toHTML() {
@@ -1102,7 +1102,6 @@ const GM_EVENTS = [
 	"NPCRoll",
 	"NPCToughness",
 	"PlayerBusy",
-	"PlayerConnect",
 	"PlayerDisconnect",
 	"RollSubordinate"
 ];
@@ -1115,7 +1114,7 @@ class EventStart extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div>" + this.owner + " opened this session. (" + this.timeStamp + ")</div>";
+		return "<div>" + this.owner + " opened this session. (" + new Date(this.timeStamp).toLocaleString("en-US") + ")</div>";
 	}
 }
 
@@ -1126,7 +1125,7 @@ class EventEnd extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div><p>The session has been ended by " + this.owner + ". (" + this.timeStamp + ")</p><p>Thanks for playing!</p></div>";
+		return "<div><p>The session has been ended by " + this.owner + ". (" + new Date(this.timeStamp).toLocaleString("en-US") + ")</p><p>Thanks for playing!</p></div>";
 	}
 }
 
@@ -1203,7 +1202,7 @@ class EventPlayerConnect extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.player + " has connected to the session.</div>";
+		return "<div class='gmInfo'>" + this.player + " has connected to the session (" + new Date(this.timeStamp).toLocaleString("en-US") + ").</div>";
 	}
 }
 
@@ -1214,7 +1213,7 @@ class EventPlayerDisconnect extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.player + " has disconnected from the session.</div>";
+		return "<div class='gmInfo'>" + this.player + " has disconnected from the session (" + new Date(this.timeStamp).toLocaleString("en-US") + ").</div>";
 	}
 }
 

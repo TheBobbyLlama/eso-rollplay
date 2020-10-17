@@ -5,6 +5,7 @@ const playerInputSelector = "#charStatus input, #charStatus select, #charStatus 
 var userInfo = null;
 var character = new CharacterSheet();
 var currentSession;
+var connectId = null;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
 var queuedRoll; // Holds data for the roll we're making.
 var lazyMode = false; // Automatically complete all rolls.
@@ -382,6 +383,12 @@ function addEventDisplay(event) {
 				$("#" + event.parent).append(event.toHTML());
 			}
 			break;
+		case "PlayerConnect":
+			if ((dispatchMessages) && (event.player == character.name) && (event.timeStamp != connectId)) {
+				dbClearEventSystem(); // Kill the event system, we're leaving!
+				showErrorPopup("Players can only maintain one connection to a session.  This player has connected from somewhere else.", divertToDashboard);
+			}
+			break;
 		case "PlayerDamage":
 		case "RollPlayerContestedSubordinate":
 		case "RollSubordinateResolution":
@@ -551,7 +558,9 @@ function resolvePlayerDamage() {
 /// Sends player connection event to the session.
 function sendConnectEvent() {
 	if ((character) && (currentSession)) {
-		dbPushEvent(new EventPlayerConnect(character.name));
+		var connectionEvent = new EventPlayerConnect(character.name);
+		connectId = connectionEvent.timeStamp;
+		dbPushEvent(connectionEvent);
 	}
 }
 
