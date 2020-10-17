@@ -9,7 +9,7 @@ function initializePage() {
 
 	if (loadChar) {
 		if (minimal) {
-			$("h1").remove();
+			$("nav").remove();
 			$("section div:first-child").remove();
 			$("body").addClass("minimal");
 		} else {
@@ -20,6 +20,7 @@ function initializePage() {
 	} else {
 		$("section div:first-child select").on("change", selectCharacter);
 		dbLoadCharacterList(characterListLoaded);
+		$("nav h1").on("click", sendToDashboard);
 	}
 }
 
@@ -37,7 +38,7 @@ function characterLoaded(loadMe) {
 		$("#profileText h2").text(nameDecode(character.name));
 		character.print("printout");
 		$("#loading").remove();
-		$("h1, #main").removeClass("hideMe");
+		$("nav, #main").removeClass("hideMe");
 	} else {
 		showErrorPopup("Character not found.");
 	}
@@ -62,6 +63,11 @@ function descriptionLoaded(loadMe) {
 	if (loadMe.val()) {
 		$("#profileText div").append(formatDescription(loadMe.val()));
 	}
+}
+
+/// Send the user back to their dashboard.
+function sendToDashboard() {
+	window.location.assign("./dashboard.html");
 }
 
 initializePage();

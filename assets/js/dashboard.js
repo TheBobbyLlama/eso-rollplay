@@ -27,6 +27,7 @@ function fillTaskHolder() {
 		taskHolder.append("<button type='button' id='gmScreen'>GM Screen</button>")
 	}
 
+	taskHolder.append("<button type='button' id='profileViewer'>Browse Characters</button>");
 	taskHolder.append("<button type='button' id='nameGenerator'>Generate Lore Friendly Names</button>");
 }
 
@@ -128,6 +129,10 @@ function goToNameGenerator() {
 	location.replace("./namegenerator.html");
 }
 
+function goToProfileViewer() {
+	location.replace("./profile.html");
+}
+
 function goToGMSCreen() {
 	location.replace("./gmscreen.html");
 }
@@ -222,6 +227,7 @@ $("#playCharacter").on("click", goToRollplay);
 $("#editCharacter").on("click", editCharacter);
 $("#deleteCharacter").on("click", deleteCharacter);
 $("#miscTasks").on("click", "#nameGenerator", goToNameGenerator)
+	.on("click", "#profileViewer", goToProfileViewer)
 	.on("click", "#gmScreen", goToGMSCreen);
 $("#newPassword, #confirmPassword").on("change", checkPasswordEntries);
 $("#settingsOk").on("click", confirmSettingsChange);
