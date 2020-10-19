@@ -755,7 +755,7 @@ function doPlayerRoll(message, comment, rollInfo) {
 		$("#dieRollText").text(message);
 		$("#dieRollGMComment").text(comment).toggleClass("show", !!(comment));
 		$("#rollModal button, #rollModal input").removeAttr("disabled");
-		$("#cancelPlayerRoll").toggle(!!queuedRoll.playerInitiated);
+		$("#cancelDieRoll").toggle(queuedRoll.playerInitiated === true);
 		$("#dieRollContinue").hide();
 	}
 
