@@ -784,7 +784,7 @@ class CharacterSheet {
 		}
 
 		if (profileLink) {
-			printout.append("<a href='profile.html?character=" + this.name + "&minimal=true' target='_blank'>View Profile</a>");
+			printout.append("<a href='profile.html?character=" + this.name + "&minimal=true' target='_blank'>View Description</a>");
 		}
 	}
 

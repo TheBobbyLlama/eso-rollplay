@@ -15,7 +15,133 @@
 	</nav>
 	<h2>ESO Rollplay - GM's Guide</h2>
 	<section>
-		<h3>Coming Soon!</h3>
+		<h3>Getting Started</h3>
+		<p>
+			Becoming a GM is easy - simply open your Settings from your Dashboard (wrench icon) and set yourself as a Game Master.  Once you do this, a <em>GM Screen</em> option will appear on your Dashboard.
+		</p>
+		<h3>The GM Screen</h3>
+		<p>
+			The GM Screen allows you to run Rollplay sessions of your own.  As GM, you will be the arbiter of the action.  Remember that you always have <em>the final say</em>.  You are free to fudge or even disregard the die results if the situation warrants.
+		</p>
+		<ol>
+			<li><a href="#session-controls">Session Controls</a></li>
+			<li><a href="#npc-controls">NPC Controls</a></li>
+			<li><a href="#player-controls">Player Controls</a></li>
+			<li><a href="#session-history">Session History</a></li>
+			<li><a href="#rolling-controls">Rolling Controls</a></li>
+			<li><a href="#handling-player-rolls">Handling Player Rolls</a></li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="session-controls">Session Controls</a></h3>
+		<ul>
+			<li>
+				<strong>Open Session</strong> Button &mdash;
+				Use this button to start a new session.  Your account can only have a single session open at a time, so starting a new session will overwrite any previous session you had running!
+			</li>
+			<li>
+				<strong>End Session</strong> Button &mdash;
+				Use this button when your session has been completed.  This will make the session inactive, and players will no longer be able to join.  When the session is in this state, you can still view it from the GM Screen if you want to review the events that transpired - so long as you haven't killed it by opening another session.
+			</li>
+		</ul>
+	</section>
+	<section>
+		<h3><a name="npc-controls">NPC Controls</a></h3>
+		<p>
+			At the bottom of the NPCs section, you can enter an NPC's name and use the <em>Add</em> button to add them to the session.  The added NPC will then appear in a list on the left side of the section.  NPCs begin with a status of <em>Hidden</em>, which means the players in your session can't see them.  You can set their status to any of the standard <a href="./rolling.html#injury-system">injury levels</a> for them to appear to players.  Finally, you can click the <em>X</em> by an NPC's entry in the list to remove that NPC from the session.
+		</p>
+		<p>
+			Clicking on an NPC in the list will display its stats in the lighter colored panel on the right side (when you add an NPC, it will be selected automatically for this).  On that panel, you can set the NPC's stats.  These stats are much simpler than what player characters use, because Rollplay only needs to know their combat capabilities.
+		</p>
+	</section>
+	<section>
+		<h3><a name="player-controls">Player Controls</a></h3>
+		<p>
+			At the bottom of the Players section, you can enter a player's name and use the <em>Add</em> button to add them to the session.  Alternatively, if you're not sure how to spell a character's name, you can use the <em>?</em> button to search by player name.  Like NPCs, you can set players' <a href="./rolling.html#injury-system">injury status</a> or use the <em>X</em> to remove them from the session.
+		</p>
+		<p>
+			Additionally, summoned creatures will display below the player that owns them.  Like players, you can set their <a href="./rolling.html#injury-system">injury status</a> or use the <em>X</em> button to force them to unsummon.
+		</p>
+		<p>
+			Clicking on a player in the list will display their stat printout in the lighter colored panel on the right side (when you add a player, it will be selected automatically for this).  On that panel, there is also a link to view that character's description.  Underneath the panel, transformation options will appear if the character has a <a href="./supernatural.html">supernatural type</a> that's capable of it - you can force the player to start or end a transformation.
+		</p>
+		<aside>
+			<p>
+				These tranformation options include a secret option for werewolves that only the GM is allowed to select for a player - Werewolf Behemoths!
+			</p>
+			<div>
+				<strong>Attributes:</strong>
+				<span class="positive">+9 STR</span>,
+				<span class="positive">+1 AGI</span>,
+				<span class="positive">+2 SPD</span>,
+				<span class="positive">+5 END</span>
+			</div>
+			<div>
+				<strong>Skill Bonuses:</strong> <a href="./skills.html#perception">Perception</a> +4; <a href="./skills.html#survival">Survival</a> +2; <a href="./skills.html#unarmed">Unarmed</a> +3.
+			</div>
+			<div>
+				<strong>Resists:</strong> <span class="damage-disease">Disease</span>
+			</div>
+			<div>
+				<strong>Weak to:</strong> <span class="damage-poison">Poison</span>, <span class="damage-silver">Silver</span>
+			</div>
+		</aside>
+	</section>
+	<section>
+		<h3><a name="session-history">Session History</a></h3>
+		<p>
+			This panel shows you the events that have transpired so far in the Rollplay session.  Compared to the player's Rollplay session screen, you can see more information here.  Events that only the GM can see will be shown with a darker background.
+		</p>
+		<p>
+			Additionally, many events will require you to make a determination of their success.  This will be done with buttons that appear directly on the event.
+		</p>
+	</section>
+	<section>
+		<h3><a name="rolling-controls">Rolling Controls</a></h3>
+		<p>
+			These are your main controls for running a session.  At the top, you will find a dropdown for selecting an NPC.  This selection will choose which NPC to use for anything that doesn't have its own specialized selection.  Also here is a comment field that will be used for all of the rolls on this panel.
+		</p>
+		<ol>
+			<li>
+				<strong>Roll!</strong> Button &mdash;
+				This button is used to make a simple roll, optionally with a modifier selected from the adjacent dropdown.  Use this to make rolls that don't interact with anything else, like an NPC rolling against Alchemy to brew a potion.
+			</li>
+			<li>
+				<strong>Target Player</strong> &mdash;
+					This section starts with a dropdown you can use to target a player or a summoned pet.  This target will be used for the different roll types
+				<ul>
+					<li>
+						<em>Attack!</em> Button - Using the NPC selected at the top of the panel, initate <a href="./rolling.html#combat">an attack</a> against the selected player/pet target.  All of the NPC's rolls will be made for you automatically.
+					</li>
+					<li>
+						<em>Prompt for Roll</em> Button - This sends a roll to the selected player (it cannot be selected for pets), making them roll using the skill or attribute selected in the <em>vs.</em> dropdown to the right.
+					</li>
+					<li>
+						<em>Contested Roll</em> Button - This sends a roll to the selected player (it cannot be selected for pets), making them roll the skill or attribute selected in the <em>vs.</em> dropdown to the right.  This roll is opposed by another roll from the NPC selected at the top of the panel, made automatically for you, using the modifier you select to the left of the button.  Once the player makes their roll, you can determine if the player's roll succeeded or not.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>Player Roll Against Player</strong> &mdash;
+				This section has a lot of dropdowns to prompt two players to roll a skill/attribute against each other.  You might use this for two players that are wrestling by having them roll Strength against Strength, for example.  Also note that you must select two different players for this, you can't make a character struggle against themself!
+			</li>
+			<li>
+				<strong>Make a GM Post</strong> &mdash;
+				This section is used for conveying information to players that can't be done easily through roll comments.  For example, if you have all the players in the session roll <a href="./skills.html#perception">Perception</a> against your hidden NPCs, you can use a GM Post to tell the players the results (<i>e.g.</i> "Devlan, Skjolda, and Orlug would hear soft footsteps and low growls in the woods around the camp.").
+			</li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="handling-player-rolls">Handling Player Rolls</a></h3>
+		<p>
+			When you send a roll to a player, keep in mind that it may take some time for them to make their roll.  If you try to send a roll and it says that the player is busy, that means they are currently using the <a href="./guide-player.html#rolling-popup">Rolling Popup</a> to perform another roll.  You will need to wait for that roll to come in and try again.
+		</p>
+		<p>
+			Make sure you pay attention to the events that are coming into the Session History.  Many of them require input from you before they can "complete".  Ideally, you shouldn't leave any events unresolved in the Session History feed.
+		</p>
+		<p>
+			Special care should be taken when processing <a href="./rolling.html#combat">attack rolls</a>.  When you determine whether the attack roll succeeds, or fails, you will also need to use the in-game description of the attack to determine the damage type.  Be sure to set the appropriate type here so it interacts with <a href="./rolling.html#damage-resistance-weakness">damage resistance/weakness</a> correctly.
+		</p>
 	</section>
 </body>
 </html>
