@@ -28,7 +28,6 @@ input.invalid {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	min-height: 400px;
 }
 
 #characterCommands {
@@ -41,6 +40,7 @@ input.invalid {
 }
 
 #charListHolder {
+	min-height: 400px;
 	overflow: auto;
 	width: 288px;
 }
@@ -113,13 +113,19 @@ input.invalid {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
+	max-width: 400px;
 	padding-top: 32px;
-	width: 400px;
 }
 
 #newUserPrompt button {
 	height: 32px;
+	margin-bottom: 20px;
 	padding: 0 20px;
+}
+
+#newUserPrompt p {
+	margin-bottom: 20px;
+	max-width: 320px;
 }
 
 #printout {
