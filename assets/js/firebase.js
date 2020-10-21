@@ -71,7 +71,7 @@ function nameDecode(name) {
 
 /// Helper function to send user back to login.
 function divertToLogin() {
-	location.replace("./index.html");
+	location.replace("./");
 }
 
 /// Helper function to send user to dashboard.
