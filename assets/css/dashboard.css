@@ -102,6 +102,7 @@ input.invalid {
 	padding: 10px 20px 10px 36px;
 	position: relative;
 	top: 0;
+	transition: 0.5s;
 }
 
 #characterList li.charItem::before {

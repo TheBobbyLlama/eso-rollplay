@@ -39,6 +39,7 @@
 						<ol></ol>
 						<form>
 							<input type="text" name="newNPC" placeholder="New NPC name here" maxlength="25"></input>
+							<button type="button" id="addNPCTemplate" title="Add NPC from template.">?</button>
 							<button type="submit" id="addNPC">Add</button>
 						</form>
 					</div>
@@ -171,6 +172,35 @@
 			<p id="confirmText"></p>
 			<button id="confirmOk" type="button">Ok</button>
 			<button id="confirmCancel" type="button">Cancel</button>
+		</div>
+		<div id="NPCTemplateModal">
+			<h3>Add NPC from Template</h3>
+			<p id="templateText">Adding a new NPC:</p>
+			<form>
+				<div>
+					<select id="NPCTemplateOptions"></select>
+				</div>
+				<div id="NPCTemplateValues">
+					<div>Attack Bonus:</div>
+					<div name="attackBonus"></div>
+					<div>Attack Type:</div>
+					<div name="attackType"></div>
+					<div>Damage Bonus:</div>
+					<div name="damageBonus"></div>
+					<div>Defense Bonus:</div>
+					<div name="defenseBonus"></div>
+					<div>Toughness Bonus:</div>
+					<div name="toughnessBonus"></div>
+					<div>Resists:</div>
+					<div name="resists"></div>
+					<div>Weak to:</div>
+					<div name="weakTo"></div>
+				</div>
+				<div>
+					<button type="submit" id="NPCTemplateAdd">Add</button>
+					<button type="button" id="NPCTemplateCancel">Cancel</button>
+				</div>
+			</form>
 		</div>
 		<div id="playerSearchModal">
 			<h3>Player Search</h3>

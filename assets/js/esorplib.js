@@ -432,6 +432,14 @@ function internalDieRoll() {
 	return (1 + Math.floor(20 * Math.random()));
 }
 
+function formatPositiveNegative(value) {
+	if (value >= 0) {
+		return "+" + value.toString();
+	} else {
+		return value.toString();
+	}
+}
+
 /// Object for holding a charcter's information.
 class CharacterSheet {
 	constructor() {

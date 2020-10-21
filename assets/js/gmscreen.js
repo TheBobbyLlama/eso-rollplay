@@ -30,6 +30,7 @@ function initializePage(myUser) {
 	var resistSelectors = $("select[name='npcResist'], select[name='npcWeakness']");
 	var qualitySelectors = $("#rollStat, #playerKey1, #playerKey2");
 	var bonusSelectors = $("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus'], #rollBonus, #contestedBonus");
+	var npcTemplateList = $("#NPCTemplateOptions");
 	userInfo = myUser;
 
 	// Only has basic injury options, special Hidden value will be added later for NPCs.
@@ -51,6 +52,10 @@ function initializePage(myUser) {
 		for (var idx = 0; idx < workingList.length; idx++) {
 			markupQualityOptions += "<option value='" + workingList[idx].key + "'>" + workingList[idx].name + "</option>";
 		}
+	}
+
+	for (i = 0; i < npcTemplates.length; i++) {
+		npcTemplateList.append("<option>" + npcTemplates[i].name + "</option>");
 	}
 
 	for (i = -5; i <= 10; i++) {
@@ -102,6 +107,78 @@ function createNewSession(event) {
 /// End Session button handler, just fires a confirmation handler.
 function endSession() {
 	showConfirmPopup("Are you sure you want to end the session?", confirmEndSession);
+}
+
+function addNPCTemplate() {
+	var name = $("input[name='newNPC']").val();
+
+	if (name) {
+		$("#templateText").text("Adding " + name + ":");
+	} else {
+		$("#templateText").text("Adding a new NPC:");
+	}
+
+	$("#NPCTemplateOptions").prop("selectedIndex", 0);
+	showNPCTemplate(0);
+
+	$("#modalBG").addClass("show");
+	$("#NPCTemplateModal").addClass("show");
+}
+
+function showNPCTemplate(index) {
+	var templateInfo = $("#NPCTemplateValues");
+
+	templateInfo.find("*[name='attackBonus']").text(formatPositiveNegative(npcTemplates[index].attackBonus));
+	templateInfo.find("*[name='attackType']").text(SPECIAL_ATTACK_TYPES[npcTemplates[index].attackType]);
+	templateInfo.find("*[name='damageBonus']").text(formatPositiveNegative(npcTemplates[index].damageBonus));
+	templateInfo.find("*[name='defenseBonus']").text(formatPositiveNegative(npcTemplates[index].defenseBonus));
+	templateInfo.find("*[name='toughnessBonus']").text(formatPositiveNegative(npcTemplates[index].toughnessBonus));
+	templateInfo.find("*[name='resists']").text(npcTemplates[index].resist.join("/"));
+	templateInfo.find("*[name='weakTo']").text(npcTemplates[index].weakness.join("/"));
+}
+
+function confirmNPCTemplate(event) {
+	event.preventDefault();
+
+	var templateIndex = $("#NPCTemplateOptions").prop("selectedIndex");
+	var newName = $("input[name='newNPC']").val() || npcTemplates[templateIndex].name;
+	var lastFound = currentSession.npcs.length;
+
+	newName = nameEncode(newName);
+
+	while (--lastFound >= 0) {
+		if (currentSession.npcs[lastFound].name.indexOf(newName) == 0) {
+			break;
+		}
+	}
+
+	if (lastFound > -1) {
+		var nameParts = currentSession.npcs[lastFound].name.split(" ");
+		var tryMe = parseInt(nameParts[nameParts.length - 1]);
+
+		if (isNaN(tryMe)) {
+			newName = newName + " 2";
+		} else {
+			newName = newName + " " + (tryMe + 1);
+		}
+	}
+
+	var addMe = new NPC(newName);
+	addMe.attackBonus = npcTemplates[templateIndex].attackBonus;
+	addMe.attackType = npcTemplates[templateIndex].attackType;
+	addMe.damageBonus = npcTemplates[templateIndex].damageBonus;
+	addMe.defenseBonus = npcTemplates[templateIndex].defenseBonus;
+	addMe.toughnessBonus = npcTemplates[templateIndex].toughnessBonus;
+	addMe.resist = npcTemplates[templateIndex].resist.length ? SPECIAL_ATTACK_TYPES.indexOf(npcTemplates[templateIndex].resist[0]) : 0;
+	addMe.weakness = npcTemplates[templateIndex].resist.length ? SPECIAL_ATTACK_TYPES.indexOf(npcTemplates[templateIndex].weakness[0]) : 0;
+
+	currentSession.npcs.push(addMe);
+	updateNPCDisplay();
+	activateNPC(currentSession.npcs.length-1);	
+	postSessionUpdate();
+	dbPushEvent(new EventAddNPC(newName));
+	$("input[name='newNPC']").val("");
+	hidePopup();
 }
 
 /// Button handler to add a new NPC to the session.
@@ -1263,6 +1340,7 @@ $("nav h1").on("click", divertToDashboard);
 $("#logout").on("click", doLogout);
 $("#createNewSession").on("click", createNewSession);
 $('#endSession').on("click", endSession);
+$("#addNPCTemplate").on("click", addNPCTemplate);
 $("#addNPC").on("click", addNPC);
 $("#npcList ol").on("change", "select", setNPCInjuryStatus);
 $("#npcList ol").on("click", "a", setNPCActive);
@@ -1302,6 +1380,8 @@ $("#eventPane").on("click", "button[name='transformAllow']", allowTransformation
 $("#eventPane").on("click", "button[name='transformDeny']", denyTransformation);
 $("#printout").on("dblclick", copyOutput);
 $("#printout").on("click", "a", launchProfileLink);
+$("#NPCTemplateOptions").on("change", () => { showNPCTemplate($("#NPCTemplateOptions").prop("selectedIndex")); })
+$("#NPCTemplateAdd").on("click", confirmNPCTemplate);
 $("#playerSearchButton").on("click", performPlayerSearch);
 $("#playerSearchResults").on("click", "button", performCharacterLoad);
-$("#confirmCancel, #errorButton, #playerSearchCancel, #profileDone").on("click", hidePopup);
+$("#confirmCancel, #errorButton, #NPCTemplateCancel, #playerSearchCancel, #profileDone").on("click", hidePopup);
