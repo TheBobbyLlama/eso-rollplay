@@ -935,7 +935,10 @@ function addEventDisplay(event) {
 						"<input type='text' name='subordinateComment' placeholder='Comment' maxlength='100'></input>" +
 					"</div>"
 				);
-				playSound("alert");
+
+				if (event.type == "RollContestedSubordinate") {
+					playSound("alert");
+				}
 				break;
 		case "PlayerConnect":
 		case "PlayerDisconnect":

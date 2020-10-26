@@ -75,13 +75,13 @@ function setCharacterActive(newIndex) {
 	if (activeChar > -1) {
 		var testIndex = characterCache.findIndex(element => element.name == userInfo.characters[activeChar]);
 
+		$("#printout").empty();
+
 		if (testIndex > -1) {
 			displayCharacter(characterCache[testIndex]);
 		} else {
 			dbLoadCharacter(userInfo.characters[activeChar], characterLoaded);
 		}
-
-		$("#printout").empty();
 	} else {
 		$("#printout").text("Please select a character.");
 	}
