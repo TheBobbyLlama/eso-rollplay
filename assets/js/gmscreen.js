@@ -18,6 +18,15 @@ var markupNPCOptions = "";
 var markupPlayerOptions = "";
 var markupPlayerPetOptions = "";
 
+var soundLibrary = {
+	alert: {
+		audio: new Audio("./assets/audio/alert.mp3")
+	}/*,
+	damage: {
+		audio: new Audio("./assets/audio/damage.mp3")
+	}*/
+}
+
 /// Called on page startup.
 function initializePage(myUser) {
 	if (!myUser) {
@@ -72,6 +81,11 @@ function initializePage(myUser) {
 
 	currentSession = new RoleplaySession(userInfo.display);
 	dbLoadSessionByOwner(userInfo.display, sessionLoaded);
+
+	// Set alert volume levels.
+	Object.getOwnPropertyNames(soundLibrary).forEach((element) => {
+		soundLibrary[element].audio.volume = userInfo.alertVolume || 1;
+	});
 }
 
 function doLogout() {
@@ -829,7 +843,6 @@ function addEventDisplay(event) {
 		case "GMDeny":
 		case "NPCAttackResolution":
 		case "NPCToughness":
-		case "PlayerDamage":
 		case "PlayerSummonResolution":
 		case "RollSubordinateResolution":
 			var holder = $("#" + event.parent);
@@ -856,12 +869,25 @@ function addEventDisplay(event) {
 					"<input type='text' name='attackComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
+			playSound("alert");
 			break;
 		case "NPCToughness":
 		case "PlayerBusy":
-		case "PlayerToughness":
-		case "RollPlayerContestedSubordinate":
 			$("#" + event.parent).append(event.toHTML());
+			break;
+		case "RollPlayerContestedSubordinate":
+		case "PlayerToughness":
+			$("#" + event.parent).append(event.toHTML());
+			playSound("alert");
+			break;
+		case "PlayerDamage":
+			var holder = $("#" + event.parent);
+			holder.find("button, input, select").attr("disabled", "true");
+			holder.append(event.toHTML());
+
+			if (event.player.indexOf("»") == -1) {
+				playSound("alert");
+			}
 			break;
 		case "PlayerTransform":
 			var playerIndex = currentSession.characters.indexOf(event.player);
@@ -909,6 +935,7 @@ function addEventDisplay(event) {
 						"<input type='text' name='subordinateComment' placeholder='Comment' maxlength='100'></input>" +
 					"</div>"
 				);
+				playSound("alert");
 				break;
 		case "PlayerConnect":
 		case "PlayerDisconnect":
@@ -937,8 +964,8 @@ function addEventDisplay(event) {
 					"<input type='text' name='attackComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
-
 			holder.children().last().find("select").prop("selectedIndex", damageType);
+			playSound("alert");
 			break;
 		default:
 			eventPane.append(event.toHTML());
@@ -989,6 +1016,7 @@ function addEventDisplay(event) {
 					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
+			playSound("alert");
 			break;
 		case "PlayerRequestTransform":
 			var holder = eventPane.children().last();
@@ -999,6 +1027,7 @@ function addEventDisplay(event) {
 					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
+			playSound("alert");
 			break;
 		case "PlayerSummonDismiss":
 			if (dispatchMessages) {
@@ -1088,9 +1117,8 @@ function addEventDisplay(event) {
 					"<input type='text' name='rollComment' placeholder='Comment' maxlength='100'></input>" +
 				"</div>"
 			);
-
 			holder.find("select[name='bonus']").prop("selectedIndex", 5);
-			
+			playSound("alert");
 			break;
 	}
 
@@ -1288,6 +1316,15 @@ function launchProfileLink(event) {
 	event.preventDefault();
 
 	showProfilePopup($(this).attr("href"));
+}
+
+/// Helper function to play a sound for us.
+function playSound(soundName) {
+	if (dispatchMessages) {
+		if (soundLibrary[soundName].audio.volume) {
+			soundLibrary[soundName].audio.play();
+		}
+	}
 }
 
 /// Displays confirm modal.

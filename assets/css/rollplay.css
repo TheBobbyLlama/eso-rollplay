@@ -1,3 +1,15 @@
+body {
+	transition: background-color 1s;
+}
+
+body.damage {
+	background-color: var(--common-alert);
+}
+
+body.healed {
+	background-color: var(--common-green);
+}
+
 #main {
 	display: flex;
 	min-height: 720px;

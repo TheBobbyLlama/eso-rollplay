@@ -14,6 +14,15 @@ var markupNPCTargets = "";
 
 var eventPane = $("#eventPane");
 
+var soundLibrary = {
+	alert: {
+		audio: new Audio("./assets/audio/alert.mp3")
+	},
+	damage: {
+		audio: new Audio("./assets/audio/damage.mp3")
+	}
+}
+
 /// Called on page startup.
 function initializePage(myUser) {
 	if (!myUser) {
@@ -42,6 +51,11 @@ function initializePage(myUser) {
 	} else {
 		showErrorPopup("No character selected.", divertToDashboard);
 	}
+
+	// Set alert volume levels.
+	Object.getOwnPropertyNames(soundLibrary).forEach((element) => {
+		soundLibrary[element].audio.volume = userInfo.alertVolume || 1;
+	});
 }
 
 /// Populates attribute/skill dropdown based on the character's selections.
@@ -322,6 +336,23 @@ function addEventDisplay(event) {
 			break;
 		case "InjuryPlayer":
 			if (dispatchMessages) {
+				if (event.player == character.name) {
+					var body = $("body");
+					var playerIndex = currentSession.characters.indexOf(event.player);
+
+					if (event.status > currentSession.statuses[playerIndex].injuryLevel) {
+						playSound("damage");
+
+						body.addClass("damage");
+
+						setTimeout(() => { body.removeClass("damage") }, 100);
+					} else if (event.status < currentSession.statuses[playerIndex].injuryLevel) {
+						body.addClass("healed");
+
+						setTimeout(() => { body.removeClass("healed") }, 100);
+					}
+				}
+
 				if (event.player.indexOf("»") > -1) {
 					var parts = event.player.split("»");
 					var playerIndex = currentSession.characters.indexOf(nameDecode(parts[0]));
@@ -375,11 +406,18 @@ function addEventDisplay(event) {
 				currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = event.weapon;
 				break;
 		case "PlayerAttackResolution":
-			if ((dispatchMessages) && (event.success)) {
-				if (event.player == character.name) {
-					doPlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+			if (dispatchMessages) {
+				if (event.success) {
+					if (event.player == character.name) {
+						doPlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+					}
+				} else {
+					playSound("alert");
 				}
-			} else {
+			}
+			
+			if (!event.success)
+			{
 				$("#" + event.parent).append(event.toHTML());
 			}
 			break;
@@ -419,6 +457,7 @@ function addEventDisplay(event) {
 					}
 
 					character.print("printout");
+					playSound("alert");
 				}
 				eventPane.append(event.toHTML());
 			break;
@@ -501,6 +540,11 @@ function addEventDisplay(event) {
 				updatePlayerDisplay();
 				setSummonControls();
 			}
+
+			if (event.player == character.name) {
+				playSound("alert");
+			}
+
 			break;
 		default:
 			if (GM_EVENTS.indexOf(event.eventType) < 0) {
@@ -725,6 +769,15 @@ function performSessionLoad() {
 	dbLoadSessionByOwner($(this).val(), sessionLoaded);
 }
 
+/// Helper function to play a sound for us.
+function playSound(soundName) {
+	if (dispatchMessages) {
+		if (soundLibrary[soundName].audio.volume) {
+			soundLibrary[soundName].audio.play();
+		}
+	}
+}
+
 /// Shows rolling modal, or automatically completes the roll if in lazy mode.
 function doPlayerRoll(message, comment, rollInfo) {
 	if (!dispatchMessages) {
@@ -759,8 +812,12 @@ function doPlayerRoll(message, comment, rollInfo) {
 		$("#dieRollContinue").hide();
 	}
 
-	if (navigator.vibrate) {
-		navigator.vibrate(200);
+	if (!queuedRoll.playerInitiated) {
+		if (navigator.vibrate) {
+			navigator.vibrate(200);
+		}
+
+		playSound("alert");
 	}
 }
 

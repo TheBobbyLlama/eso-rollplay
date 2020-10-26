@@ -70,7 +70,6 @@ function activateCharacter() {
 function setCharacterActive(newIndex) {
 	activeChar = newIndex;
 
-	$("#printout").empty();
 	$("#characterButtons button").attr("disabled", "true");
 	
 	if (activeChar > -1) {
@@ -81,6 +80,10 @@ function setCharacterActive(newIndex) {
 		} else {
 			dbLoadCharacter(userInfo.characters[activeChar], characterLoaded);
 		}
+
+		$("#printout").empty();
+	} else {
+		$("#printout").text("Please select a character.");
 	}
 }
 
@@ -150,6 +153,13 @@ function checkPasswordEntries() {
 }
 
 function confirmSettingsChange() {
+	var shouldSave = false;
+
+	if ($("#optVolume").val() != userInfo.alertVolume) {
+		userInfo.alertVolume = $("#optVolume").val();
+		shouldSave = true;
+	}
+
 	if ($("#optGM").prop("checked") != userInfo.gameMaster) {
 		if (userInfo.gameMaster) {
 			delete userInfo.gameMaster;
@@ -158,7 +168,8 @@ function confirmSettingsChange() {
 		}
 
 		fillTaskHolder();
-		dbSaveAccountInfo(userInfo.display, userInfo, null, showErrorPopup);
+
+		shouldSave = true;
 	}
 
 	var pw1 = $("#newPassword").val();
@@ -172,6 +183,10 @@ function confirmSettingsChange() {
 		}).catch(function(error) {
 			showErrorPopup("Password " + error);
 		});
+	}
+
+	if (shouldSave) {
+		dbSaveAccountInfo(userInfo.display, userInfo, null, showErrorPopup);
 	}
 
 	$("#newPassword, #confirmPassword").val("");
@@ -197,6 +212,7 @@ function showErrorPopup(message, callback=null) {
 }
 
 function showSettingsPopup() {
+	$("#optVolume").val(userInfo.alertVolume || 1.0);
 	$("#optGM").prop("checked", userInfo.gameMaster);
 	$("#newPassword, #confirmPassword").val("");
 	checkPasswordEntries(); // Reset formatting.
