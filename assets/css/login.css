@@ -64,6 +64,28 @@ section, #call-to-action, #auth-panel .firebaseui-container {
 	padding: 10px;
 }
 
+#main #other-links {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+#main #other-links ul {
+	display: flex;
+	justify-content: center;
+}
+
+#main #other-links li {
+	display: block;
+	margin: 0px;
+	padding: 0px;
+}
+
+#main #other-links li:not(:last-child)::after {
+	content: '•';
+	margin: 0px 8px;
+}
+
 #mainHolder {
 	display: inline-block;
 	margin: 0 auto;
