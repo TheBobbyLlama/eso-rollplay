@@ -300,6 +300,8 @@ const npcTemplates = [
 	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2, [], [], "Conjuration"),
 	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "Physical" ], [ "Silver" ], "Conjuration"),
 	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "Physical" ], [ "Silver "], "Conjuration"),
+	new NPCTemplate("Vampire",			4, 1, 3, 3, 0, [], [ "Flame" ]),
+	new NPCTemplate("Bloodfiend",		2, 1, 2, 0, 0, [], [ "Flame" ]),
 	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "Silver" ], "Conjuration"),
 	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "Silver" ], "Conjuration"),
 	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "Silver" ], "Conjuration"),
@@ -316,6 +318,7 @@ const npcTemplates = [
 	new NPCTemplate("Small Animal",		0, 1, -2, 4, -2, [], [], "HandleAnimal"),
 	new NPCTemplate("Medium Animal",	2, 1, 0, 0, 0, [], [], "HandleAnimal"),
 	new NPCTemplate("Large Animal",		2, 1, 3, 0, 4, [], [], "HandleAnimal"),
+	new NPCTemplate("Werewolf",			3, 1, 4, 1, 4, [], [ "Silver" ]),
 ];
 
 /// Gets a character template by name.
