@@ -183,7 +183,7 @@ function sendToDashboard() {
 }
 
 /// Event registration.
-//$.getJSON( "https://thebobbyllama.github.io/eso-roleplay/assets/data/namedata.json?raw=true", initializePage);
+//$.getJSON( "https://thebobbyllama.github.io/eso-rollplay/assets/data/namedata.json?raw=true", initializePage);
 $.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
 $("nav h1").on("click", sendToDashboard);
 $("#race").on("change", createFilters);
