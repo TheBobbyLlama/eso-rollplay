@@ -115,7 +115,7 @@ function dbSaveAccountInfo(name, accountInfo, successCallback = undefined, failu
 }
 
 /// Saves a character to the database.
-function dbSaveCharacter(saveMe, description, successCallback = undefined, failureCallback = undefined) {
+function dbSaveCharacter(saveMe, profile, successCallback = undefined, failureCallback = undefined) {
 	if ((saveMe.name) && (saveMe.player)) {
 		database.ref("characters/" + dbTransform(saveMe.name)).set(saveMe)
 			.then(function() {
@@ -127,7 +127,7 @@ function dbSaveCharacter(saveMe, description, successCallback = undefined, failu
 			}
 		);
 
-		database.ref("descriptions/" + dbTransform(saveMe.name)).set(description)
+		database.ref("profiles/" + dbTransform(saveMe.name)).set(profile)
 			.then(function() {
 				// Yay?
 			}).catch(function(error) {
@@ -201,15 +201,15 @@ function dbSearchCharacterByPlayerName(name, handler) {
 }
 
 /// Loads a character from the database.
-function dbLoadCharacter(getMe, handler, descHandler=null) {
+function dbLoadCharacter(getMe, handler, profileHandler=null) {
 	database.ref("characters/" + dbTransform(getMe)).once("value").then(handler);
-	dbLoadCharacterDescription(getMe, descHandler);
+	dbLoadCharacterProfile(getMe, profileHandler);
 }
 
-/// Loads a character description from the database.
-function dbLoadCharacterDescription(getMe, handler) {
+/// Loads a character profile from the database.
+function dbLoadCharacterProfile(getMe, handler) {
 	if (handler) {
-		database.ref("descriptions/" + dbTransform(getMe)).once("value").then(handler);
+		database.ref("profiles/" + dbTransform(getMe)).once("value").then(handler);
 	}
 }
 

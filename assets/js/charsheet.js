@@ -6,6 +6,7 @@ const SKILL_POINT_BASE = 10;
 var attrSpent = 0;
 var skillSpent = 0;
 var character = new CharacterSheet();
+var profile = {};
 
 /// Called on page startup.
 function initializePage(myUser) {
@@ -50,7 +51,7 @@ function initializePage(myUser) {
 	if (inCharacter) {
 		$("#nameEntry").remove();
 		$("#saveChar").removeAttr("disabled");
-		dbLoadCharacter(inCharacter, characterLoaded, descriptionLoaded);
+		dbLoadCharacter(inCharacter, characterLoaded, profileLoaded);
 	} else {
 		$("#nameDisplay").remove();
 		$("#nameEntry").removeClass("hideMe");
@@ -298,15 +299,15 @@ function checkHighlight(checkMe) {
 	}
 }
 
-/// Shows description info on helper at the bottom of the screen.
-function descriptionHelper() {
+/// Shows short description info on helper at the bottom of the screen.
+function shortDescriptionHelper() {
 	var desc = $(this);
 
 	showFooter("This is only a summary.  Please be brief! (" + desc.val().length + "/" + desc.prop("maxlength") + " characters)")
 }
 
-/// Hides the helper when the description is no longer being edited.
-function leaveDescription() {
+/// Hides the helper when the short description is no longer being edited.
+function leaveShortDescription() {
 	showFooter(null);
 }
 
@@ -386,10 +387,12 @@ function saveChar(event) {
 function checkCharacterSave(loadMe) {
 	var tmpChar = loadMe.val();
 
+	profile.description = $("textarea[name='charBackground']").val();
+
 	if ((tmpChar) && (dbTransform(tmpChar.player) != dbTransform(userInfo.display))) {
 		showErrorPopup("This character has already been created by another player! (" + nameDecode(tmpChar.player) + ")");
 	} else {
-		dbSaveCharacter(character, $("textarea[name='charBackground']").val(), charSaveSuccess, showErrorPopup);
+		dbSaveCharacter(character, profile, charSaveSuccess, showErrorPopup);
 	}
 }
 
@@ -422,10 +425,13 @@ function characterLoaded(loadMe) {
 	}
 }
 
-/// Receives a character description from the database.
-function descriptionLoaded(loadMe) {
-	if (loadMe.val()) {
-		$("textarea[name='charBackground']").val(loadMe.val());
+/// Receives a character profile from the database.
+function profileLoaded(loadMe) {
+	var myProfile = loadMe.val();
+
+	if (myProfile) {
+		profile = myProfile;
+		$("textarea[name='charBackground']").val(profile.description);
 	}
 }
 
@@ -453,8 +459,8 @@ $("section").on("input change", "input[type='range']", changeSlider);
 $("#main section > h3").on("click", expandContractSection);
 $("#errorButton, #nameCancel, #helpDone").on("click", hidePopup);
 $("#printout").on("dblclick", copyOutput);
-$("textarea[name='charBackground']").on("focus, keydown", descriptionHelper);
-$("textarea[name='charBackground']").on("blur", leaveDescription);
+$("textarea[name='charBackground']").on("focus, keydown", shortDescriptionHelper);
+$("textarea[name='charBackground']").on("blur", leaveShortDescription);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
 $("#nameModal iframe").on("load", bindIframeEvents);
 $("#confirmCancel, #errorButton").on("click", hidePopup);

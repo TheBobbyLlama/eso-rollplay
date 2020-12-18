@@ -1,4 +1,5 @@
 var character;
+var converter = converter = new showdown.Converter();
 
 /// Called on page startup.
 function initializePage() {
@@ -16,7 +17,7 @@ function initializePage() {
 			$("h1").text("Character Profile");
 			$("section div:first-child select").remove();
 		}
-		dbLoadCharacter(loadChar, characterLoaded, descriptionLoaded);
+		dbLoadCharacter(loadChar, characterLoaded, profileLoaded);
 	} else {
 		$("section div:first-child select").on("change", selectCharacter);
 		dbLoadCharacterList(characterListLoaded);
@@ -27,7 +28,7 @@ function initializePage() {
 /// Fired when a character is selected from the dropdown.
 function selectCharacter() {
 	$("#profileText div").empty();
-	dbLoadCharacter($(this).val(), characterLoaded, descriptionLoaded);
+	dbLoadCharacter($(this).val(), characterLoaded, profileLoaded);
 }
 
 /// A character has been loaded to display.
@@ -59,9 +60,11 @@ function characterListLoaded(loadMe) {
 }
 
 /// The current character's description is ready to display.
-function descriptionLoaded(loadMe) {
-	if (loadMe.val()) {
-		$("#profileText div").append(formatDescription(loadMe.val()));
+function profileLoaded(loadMe) {
+	var myProfile = loadMe.val();
+
+	if (myProfile) {
+		$("#profileText div").append(converter.makeHtml(myProfile.description));
 	}
 }
 
