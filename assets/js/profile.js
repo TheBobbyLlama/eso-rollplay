@@ -1,21 +1,30 @@
+const characteristicList = [
+	[ "Alignment", "alignment" ],
+	[ "Birthsign", "birthsign" ],
+	[ "Primary Residence", "residence" ],
+	[ "Organizations", "organizations" ],
+	[ "Alliances", "alliances" ],
+	[ "Relationships", "relationships" ],
+];
+
 var character;
+var minimal;
 var converter = converter = new showdown.Converter();
 
 /// Called on page startup.
 function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
-	var minimal = new URLSearchParams(window.location.search).get("minimal");
+	minimal = new URLSearchParams(window.location.search).get("minimal");
 
 	initializeDB();
 
 	if (loadChar) {
 		if (minimal) {
 			$("nav").remove();
-			$("section div:first-child").remove();
-			$("body").addClass("minimal");
+			$("#charListing, #characteristics, #biography").remove();
 		} else {
 			$("h1").text("Character Profile");
-			$("section div:first-child select").remove();
+			$("#charListing select").remove();
 		}
 		dbLoadCharacter(loadChar, characterLoaded, profileLoaded);
 	} else {
@@ -29,20 +38,6 @@ function initializePage() {
 function selectCharacter() {
 	$("#profileText div").empty();
 	dbLoadCharacter($(this).val(), characterLoaded, profileLoaded);
-}
-
-/// A character has been loaded to display.
-function characterLoaded(loadMe) {
-	if (loadMe.val()) {
-		character = loadMe.val();
-		Object.setPrototypeOf(character, CharacterSheet.prototype);
-		$("#profileText h2").text(nameDecode(character.name));
-		character.print("printout");
-		$("#loading").remove();
-		$("nav, #main").removeClass("hideMe");
-	} else {
-		showErrorPopup("Character not found.");
-	}
 }
 
 /// The character list is ready to be used in the selection dropdown.
@@ -59,12 +54,55 @@ function characterListLoaded(loadMe) {
 	}
 }
 
-/// The current character's description is ready to display.
+/// A character has been loaded to display.
+function characterLoaded(loadMe) {
+	if (loadMe.val()) {
+		character = loadMe.val();
+		Object.setPrototypeOf(character, CharacterSheet.prototype);
+		$("h2").text(nameDecode(character.name));
+		character.print("printout");
+		$("#loading").remove();
+		$("nav, #main").removeClass("hideMe");
+	} else {
+		showErrorPopup("Character not found.");
+	}
+}
+
+function fillCharacteristics(myProfile) {
+	var found = false;
+	var myDiv = $("#characteristics");
+	myDiv.empty();
+
+	for (let i = 0; i < characteristicList.length; i++) {
+		let tmpVal = myProfile[characteristicList[i][1]];
+		
+		if (tmpVal) {
+			found = true;
+
+			myDiv.append("<div><h4>" + characteristicList[i][0] + ":</h4> " + converter.makeHtml(tmpVal) + "</div>");
+		}
+	}
+
+	myDiv.toggle(found);
+}
+
+/// The current character's profile is ready to display.
 function profileLoaded(loadMe) {
 	var myProfile = loadMe.val();
 
 	if (myProfile) {
-		$("#profileText div").append(converter.makeHtml(myProfile.description));
+		$("#charImage")[0].style.background =  myProfile.image ? "url('" + myProfile.image + ")" : "";
+		$("#charImage").toggle(!!myProfile.image);
+		$("#profileShort").empty().append(converter.makeHtml(myProfile.description));
+
+		if (!minimal) {
+			fillCharacteristics(myProfile);
+			$("#biography").empty().append(converter.makeHtml(myProfile.biography)).toggle(!!myProfile.biography);
+		}
+	} else {
+		$("#charImage, #characteristics").toggle(false);
+		$("#profileShort, #biography").empty();
+		$("#biography").toggle(false);
 	}
 }
 

@@ -2,29 +2,72 @@ p + p {
 	margin-top: 12px;
 }
 
-section {
-	display: flex;
-}
-
-section div:last-child {
-	flex-basis: 100%;
-	margin-left: 20px;
-	padding: 20px;
-}
-
 select {
 	margin: 20px;
 }
 
 #printout {
+	margin-bottom: 20px;
 	min-width: 300px;
 }
 
-#profileText > div {
+#profileHeader, #profileBody {
+	display: flex;
+}
+
+#profileCard {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+#profileBody {
+	margin: 0 20px;
+}
+
+#charImage {
+	background-color: black;
+	background-position: center !important;
+	background-size: cover !important;
+	border: solid 1px var(--content-border);
+	border-radius: 4px;
+	height: 300px;
+	margin: 0 auto;
+	min-width: 300px;
+	width: 300px;
+}
+
+#characteristics {
+	flex-basis: 100%;
+	margin: 10px 20px;
+}
+
+#characteristics div {
+	align-items: flex-start;
+	display: flex;
+}
+
+#characteristics h4 {
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
+#profileShort {
 	background-color: #f0f0f0;
 	border: solid 2px var(--content-border);
 	border-radius: 8px;
 	color: black;
+	margin: 20px;
+	padding: 8px;
+}
+
+#biography {
+	margin: 20px;
+}
+
+#biography h1, #biography h2, #biography h3, #biography h4, #biography h5 {
+	margin: 10px 0;
+	text-align: center;
 }
 
 .minimal {
@@ -37,27 +80,29 @@ select {
 	width: 100%;
 }
 
-.minimal #profileText {
-	margin: 0;
+.minimal #profileShort {
+	margin: 0 20px;
 	padding: 0;
 }
 
-.minimal #profileText > div {
-	margin: 0 20px;
+@media screen and (max-width: 1000px) {
+	#profileBody {
+		flex-direction: column;
+	}
 }
 
 @media screen and (max-width: 575px) {
-	section {
+	#profileHeader {
+		align-items: stretch;
 		flex-direction: column;
 	}
 
-	section > div:first-child {
-		order: 2;
+	#profileBody {
+		margin: 0;
 	}
 
-	section div:last-child {
-		margin-left: 0px;
-		padding: 10px;
+	#profileShort {
+		margin: 10px 0px 0px 0px;
 	}
 
 	select {

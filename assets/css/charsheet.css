@@ -46,20 +46,98 @@ section > div[id] {
 	transition: 1s;
 }
 
-#bottomInfo {
+#profileInfo {
 	display: flex;
 }
 
-#bottomInfo > div:last-child {
+#shortProfile {
 	flex-basis: 100%;
+	flex-wrap: nowrap;
+	max-height: initial !important;
 	padding: 0px 20px;
 }
 
-#bottomInfo > div:last-child textarea {
+#shortProfile textarea {
 	border-radius: 8px;
-	height: 300px;
-	margin-top: 20px;
+	height: 240px;
+	margin-bottom: 10px;
 	padding: 8px;
+	resize: none;
+	width: 100%;
+}
+
+#profileGeneral {
+	display: flex;
+}
+
+#profileGeneral form {
+	align-items: flex-start;
+	flex-direction: column;
+}
+
+#imageInfo {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+#imageInfo form, #imageInfo input {
+	width: 100%;
+}
+
+#charImage {
+	background-color: black;
+	background-position: center !important;
+	background-size: cover !important;
+	border: solid 1px var(--content-border);
+	border-radius: 4px;
+	height: 256px;
+	margin-top: 8px;
+	width: 256px;
+}
+
+#otherInfo {
+	align-items: center;
+	display: flex;
+	flex-basis: 100%;
+	flex-direction: column;
+	justify-content: space-between;
+	margin-left: 20px;
+}
+
+#otherInfo > div:last-child {
+	margin-top: 10px;
+}
+
+#characteristics {
+	width: 100%;
+}
+
+#characteristics > div > *:first-child {
+	flex-basis: 30%;
+}
+
+#characteristics > div > input {
+	flex-basis: 70%;
+}
+
+#characteristics, #imageInfo {
+	border: solid 1px var(--content-border);
+	border-radius: 8px;
+	padding: 8px;
+}
+
+#longProfile {
+	display: block;
+}
+
+#longProfile textarea {
+	border-radius: 8px;
+	height: 240px;
+	margin-bottom: 10px;
+	min-height: 240px;
+	padding: 8px;
+	resize: vertical;
 	width: 100%;
 }
 
@@ -169,7 +247,7 @@ section > div[id] {
 		margin-top: 50px;
 	}
 
-	section, section input, #bottomInfo, #main {
+	section, section input, #profileInfo, #main {
 		width: 100%;
 	}
 	
@@ -177,12 +255,34 @@ section > div[id] {
 		max-height: initial;
 	}
 
-	#bottomInfo {
+	#profileInfo {
 		flex-direction: column;
 	}
 
-	#bottomInfo > div:last-child {
+	#shortProfile {
 		padding: 0px 10px;
+	}
+
+	#profileGeneral {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	#profileGeneral label::after {
+		content: ": ";
+	}
+
+	#otherInfo {
+		margin: 8px 0 0 0;
+	}
+
+	#characteristics > div + div {
+		margin-top: 6px;
+	}
+
+	#characteristics > div * {
+		flex-basis: 100% !important;
+		width: 100%;
 	}
 
 	#helpPanel {

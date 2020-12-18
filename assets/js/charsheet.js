@@ -308,7 +308,49 @@ function shortDescriptionHelper() {
 
 /// Hides the helper when the short description is no longer being edited.
 function leaveShortDescription() {
+	var tmpDesc = $("textarea[name='charBackground']");
 	showFooter(null);
+
+	if (tmpDesc.val().length <= tmpDesc.prop("maxlength")) {
+		tmpDesc.removeClass("redFlag");
+		profile.description = tmpDesc.val();
+	} else {
+		tmpDesc.addClass("redFlag");
+	}
+}
+
+/// Checks image url vs. a regex.
+function checkImageUrl(url) {
+	// Supports:
+	// - http: or https: prefix
+	// - BMP, GIF, JPG, or PNG (case insensitive)
+	// - Query params (might be there if coming from Github)
+	return url.match(/^(https?:\/\/)?[A-Za-z0-9-_]+\.[A-Za-z0-9-_.]+[A-Za-z0-9]+\/[A-Za-z0-9-_/]+(\.[Bb][Mm][Pp]|\.[Gg][Ii][Ff]|\.[Jj][Pp][Gg]|\.[Pp][Nn][Gg])(\?[\w=&]+)*$/g);
+}
+
+function setImageUrl() {
+	var tmpUrl = $(this).val();
+	profile.image = displayImage(tmpUrl) ? tmpUrl : profile.image;
+}
+
+function displayImage(url) {
+	var test = checkImageUrl(url);
+
+	$("#charImage")[0].style.background = (test) ? "url('" + url + "')" : "";
+	$("input[name='imageUrl']").toggleClass("redFlag", !test);
+
+	return !!test;
+}
+
+function setProfileField() {
+	var tmpEl = $(this);
+	var tmpName = tmpEl.attr("name");
+
+	profile[tmpName] = tmpEl.val();
+}
+
+function leaveBiography() {
+	profile.biography = $(this).val();
 }
 
 /// Shows a message in the helper at the bottom of the screen.
@@ -387,8 +429,6 @@ function saveChar(event) {
 function checkCharacterSave(loadMe) {
 	var tmpChar = loadMe.val();
 
-	profile.description = $("textarea[name='charBackground']").val();
-
 	if ((tmpChar) && (dbTransform(tmpChar.player) != dbTransform(userInfo.display))) {
 		showErrorPopup("This character has already been created by another player! (" + nameDecode(tmpChar.player) + ")");
 	} else {
@@ -432,6 +472,14 @@ function profileLoaded(loadMe) {
 	if (myProfile) {
 		profile = myProfile;
 		$("textarea[name='charBackground']").val(profile.description);
+		$("input[name='imageUrl']").val(displayImage(profile.image)? profile.image : "");
+		$("#characteristics select[name='alignment']").val(profile.alignment);
+		$("#characteristics select[name='birthsign']").val(profile.birthsign);
+		$("#characteristics input[name='residence']").val(profile.residence);
+		$("#characteristics input[name='organizations']").val(profile.organizations);
+		$("#characteristics input[name='alliances']").val(profile.alliances);
+		$("#characteristics input[name='relationships']").val(profile.relationships);
+		$("textarea[name='charBiography']").val(profile.biography);
 	}
 }
 
@@ -454,13 +502,15 @@ $("select[name='charRace']").on("change", changeRace);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
 $("select[name='charClass']").on("change", changeClass);
-$("#saveChar").on("click", saveChar);
+$("#saveChar, #saveProfile").on("click", saveChar);
 $("section").on("input change", "input[type='range']", changeSlider);
 $("#main section > h3").on("click", expandContractSection);
 $("#errorButton, #nameCancel, #helpDone").on("click", hidePopup);
 $("#printout").on("dblclick", copyOutput);
-$("textarea[name='charBackground']").on("focus, keydown", shortDescriptionHelper);
-$("textarea[name='charBackground']").on("blur", leaveShortDescription);
+$("textarea[name='charBackground']").on("focus, keydown", shortDescriptionHelper).on("blur", leaveShortDescription);
+$("input[name='imageUrl']").on("focus", function() { $(this).removeClass("redFlag"); }).on("blur", setImageUrl);
+$("#characteristics input, #characteristics select").on("blur, change", setProfileField);
+$("textarea[name='charBiography']").on("blur", leaveBiography);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
 $("#nameModal iframe").on("load", bindIframeEvents);
 $("#confirmCancel, #errorButton").on("click", hidePopup);

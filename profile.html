@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>ESO Rollplay - Character Profiles</title>
 		<link rel="icon" href="./assets/images/logo.png" type="image/png" />
-		<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+		<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css" />
 		<link rel="stylesheet" href="./assets/css/style.css" />
 		<link rel="stylesheet" href="./assets/css/profile.css" />
 	</head>
@@ -15,14 +15,22 @@
 		<h1>ESO Rollplay</h1>
 	</nav>
 	<section id="main" class="hideMe">
-		<div>
-			<select id="characters"></select>
-			<div id="printout" title="Double click to copy character sheet."></div>
+		<div id="profileHeader">
+			<div id="charListing">
+				<select id="characters"></select>
+				<div id="printout" title="Double click to copy character sheet."></div>
+			</div>
+			<div id="profileCard">
+				<h2></h2>
+				<div id="profileBody">
+					<div id="charImage"></div>
+					<div id="characteristics"></div>
+				</div>
+				<div id="profileShort">
+				</div>
+			</div>
 		</div>
-		<div id="profileText">
-			<h2></h2>
-			<div></div>
-		</div>
+		<div id="biography"></div>
 	</section>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>

@@ -84,16 +84,87 @@
 			<div id="skillsKnowledge"></div>
 		</section>
 	</div>
-	<div id="bottomInfo" class="hideMe">
+	<section id="profileInfo" class="hideMe">
 		<div>
-			<h2>Character Printout</h2>
 			<div id="printout" title="Double click to copy character sheet."></div>
 		</div>
-		<div>
-			<h2>Short Description</h2>
-			<textarea type="textarea" name="charBackground" maxlength="1000" rows="10"></textarea>
+		<div id="shortProfile">
+			<h2>Character Profile</h2>
+			<h3>Short Description</h3>
+			<textarea type="textarea" name="charBackground" maxlength="1000" rows="10" placeholder="This is what players will see if they click your character during a Rollplay session."></textarea>
+			<h3>General Information</h3>
+			<div id="profileGeneral">
+				<div id="imageInfo">
+					<form>
+						<h4>Character Image</h4>
+						<input type="text" name="imageUrl" maxlength="1024" placeholder="Image URL"></input>
+					</form>
+					<div id="charImage"></div>
+				</div>
+				<div id="otherInfo">
+					<div id="characteristics">
+						<div class="flexMe">
+							<label for="alignment">Alignment</label>
+							<select name="alignment">
+								<option value="">-- Not Set --</option>
+								<option>Lawful Good</option>
+								<option>Neutral Good</option>
+								<option>Chaotic Good</option>
+								<option>Lawful Neutral</option>
+								<option>Neutral</option>
+								<option>Chaotic Neutral</option>
+								<option>Lawful Evil</option>
+								<option>Neutral Evil</option>
+								<option>Chaotic Evil</option>
+							</select>
+						</div>
+						<div class="flexMe">
+							<label for="birthsign">Birthsign</label>
+							<select name="birthsign">
+								<option value="">-- Not Set --</option>
+								<option>The Apprentice</option>
+								<option>The Atronach</option>
+								<option>The Lady</option>
+								<option>The Lord</option>
+								<option>The Lover</option>
+								<option>The Mage</option>
+								<option>The Ritual</option>
+								<option>The Serpent</option>
+								<option>The Shadow</option>
+								<option>The Steed</option>
+								<option>The Thief</option>
+								<option>The Tower</option>
+								<option>The Warrior</option>
+							</select>
+						</div>
+						<div class="flexMe">
+							<label for="residence">Primary Residence</label>
+							<input type="text" name="residence" maxlength="256" placeholder="Where you live."></input>
+						</div>
+						<div class="flexMe">
+							<label for="organizations">Organizations</label>
+							<input type="text" name="organizations" maxlength="1000" placeholder="Any groups you belong to."></input>
+						</div>
+						<div class="flexMe">
+							<label for="alliances">Alliances</label>
+							<input type="text" name="alliances" maxlength="1000" placeholder="Any groups you are friendly to."></input>
+						</div>
+						<div class="flexMe">
+							<label for="relationships">Relationships</label>
+							<input type="text" name="relationships" maxlength="1000" placeholder="Other characters you are close to."></input>
+						</div>
+					</div>
+					<div>
+						<button type="button" id="saveProfile">Save</button>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
+	</section>
+	<section id="longProfile" class="hideMe">
+		<h2>Biography</h2>
+		<textarea type="textarea" name="charBiography" maxlength="10000" rows="20" placeholder="Write a detailed background here, if you like."></textarea>
+	</section>
 	<footer></footer>
 	<div id="modalBG">
 		<div id="helpModal">
@@ -107,8 +178,8 @@
 				<p>Skills are added much like attributes, but they increase in cost as you increase in rank. However, the governing attribute of a skill controls how quickly the increase occurs.</p>
 				<h3>Knowledge Skills</h3>
 				<p>Knowledge skills are a special class of skill that always have Intelligence as their governing attribute.  Some are more difficult to learn and increase in difficulty more quickly.</p>
-				<h3>Finishing Touches</h3>
-				<p>Below your skill selections, you can see your character's stat summary.  There is a field to enter a brief description of your character as well.</p>
+				<h3>Profile Info</h3>
+				<p>Below your skill selections, you can enter more information for your character.  All fields support <a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> formatting!</p>
 			</div>
 			<button id="helpDone" type="button">Ok</button>
 		</div>

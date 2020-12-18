@@ -73,7 +73,7 @@ h1, h2, h3, h4 {
 	font-weight: bold;
 }
 
-h1::before {
+nav h1::before {
 	background-image: url('../images/logo.png');
 	background-size: cover;
 	content: '';
