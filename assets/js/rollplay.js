@@ -407,12 +407,12 @@ function addEventDisplay(event) {
 				break;
 		case "PlayerAttackResolution":
 			if (dispatchMessages) {
-				if (event.success) {
-					if (event.player == character.name) {
-						doPlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+				if (event.player == character.name) {
+					if (event.success) {
+						doPlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing || event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+					} else {
+						playSound("alert");
 					}
-				} else {
-					playSound("alert");
 				}
 			}
 			
