@@ -129,6 +129,14 @@ h3 {
 	overflow: auto;
 }
 
+#profileDone {
+	margin-top: 10px;
+}
+
+#profileModal iframe {
+	border-radius: 0;
+}
+
 #readOut {
 	flex-basis: 100%;
 }

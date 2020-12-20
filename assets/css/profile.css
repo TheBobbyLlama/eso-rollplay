@@ -13,6 +13,7 @@ select {
 
 #profileHeader, #profileBody {
 	display: flex;
+	margin: 0 20px;
 }
 
 #profileCard {
@@ -53,16 +54,14 @@ select {
 }
 
 #profileShort {
-	background-color: #f0f0f0;
-	border: solid 2px var(--content-border);
-	border-radius: 8px;
-	color: black;
-	margin: 20px;
-	padding: 8px;
+	margin: 10px 20px;
 }
 
 #biography {
-	margin: 20px;
+	background-color: var(--page-background);
+	border-radius: 8px;
+	margin: 0px 20px 10px 20px;
+	padding: 10px 20px;
 }
 
 #biography h1, #biography h2, #biography h3, #biography h4, #biography h5 {
@@ -70,19 +69,15 @@ select {
 	text-align: center;
 }
 
-.minimal {
-	background-color: #404040;
+.minimal #profileShort a:link, .minimal #profileShort a:hover, .minimal #profileShort a:visited {
+	color: white;
+	cursor: text;
+	text-decoration: none;
 }
 
-.minimal section {
-	margin: 0;
-	padding: 10px 0;
-	width: 100%;
-}
-
-.minimal #profileShort {
-	margin: 0 20px;
-	padding: 0;
+.nodesc {
+	font-style: italic;
+	text-align: center;
 }
 
 @media screen and (max-width: 1000px) {
@@ -92,9 +87,20 @@ select {
 }
 
 @media screen and (max-width: 575px) {
+	#biography {
+		margin: 20px 0px 10px 0px;
+	}
+
+	#characteristics {
+		border-bottom: solid 1px var(--page-background);
+		margin: 10px 0px;
+		padding-bottom: 20px;
+	}
+
 	#profileHeader {
 		align-items: stretch;
 		flex-direction: column;
+		margin: 0px 10px;
 	}
 
 	#profileBody {

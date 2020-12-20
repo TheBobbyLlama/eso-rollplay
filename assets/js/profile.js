@@ -1,3 +1,4 @@
+const emptyTemplate = "<div class='nodesc'>No description given.</div>"
 const characteristicList = [
 	[ "Alignment", "alignment" ],
 	[ "Birthsign", "birthsign" ],
@@ -20,6 +21,7 @@ function initializePage() {
 
 	if (loadChar) {
 		if (minimal) {
+			$("body").addClass("minimal");
 			$("nav").remove();
 			$("#charListing, #characteristics, #biography").remove();
 		} else {
@@ -93,7 +95,7 @@ function profileLoaded(loadMe) {
 	if (myProfile) {
 		$("#charImage")[0].style.background =  myProfile.image ? "url('" + myProfile.image + ")" : "";
 		$("#charImage").toggle(!!myProfile.image);
-		$("#profileShort").empty().append(converter.makeHtml(myProfile.description));
+		$("#profileShort").empty().append(myProfile.description ? converter.makeHtml(myProfile.description.trim()) : emptyTemplate);
 
 		if (!minimal) {
 			fillCharacteristics(myProfile);
@@ -101,7 +103,7 @@ function profileLoaded(loadMe) {
 		}
 	} else {
 		$("#charImage, #characteristics").toggle(false);
-		$("#profileShort, #biography").empty();
+		$("#profileShort, #biography").empty().append(emptyTemplate);
 		$("#biography").toggle(false);
 	}
 }
@@ -112,3 +114,6 @@ function sendToDashboard() {
 }
 
 initializePage();
+
+// Eat links when in minimal view.
+$(".minimal #profileShort").on("click", "a", function(event) { event.preventDefault(); });
