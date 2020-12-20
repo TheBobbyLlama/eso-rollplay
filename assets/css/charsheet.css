@@ -85,6 +85,11 @@ section > div[id] {
 	width: 100%;
 }
 
+#charBackgroundPreview {
+	align-self: center;
+	margin-bottom: 20px;
+}
+
 #charImage {
 	background-color: black;
 	background-position: center !important;
@@ -128,7 +133,9 @@ section > div[id] {
 }
 
 #longProfile {
-	display: block;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
 }
 
 #longProfile textarea {
@@ -190,6 +197,21 @@ section > div[id] {
 	height: 500px;
 	margin: 10px 0;
 	max-height: 85%;
+}
+
+#previewModal {
+	max-width: 500px !important;
+	width: 500px;
+}
+
+#previewModal div {
+	background-color: var(--page-background);
+	border-radius: 8px;
+	margin: 10px;
+	max-height: 500px;
+	overflow-y: auto;
+	padding: 10px;
+	text-align: left;
 }
 
 #printout {
@@ -332,6 +354,10 @@ section > div[id] {
 	#printout {
 		margin: 0 10px 20px 10px;
 		max-width: 360px;
+	}
+
+	#previewModal {
+		max-width: 100% !important;
 	}
 }
 

@@ -92,6 +92,7 @@
 			<h2>Character Profile</h2>
 			<h3>Short Description</h3>
 			<textarea type="textarea" name="charBackground" maxlength="1000" rows="10" placeholder="This is what players will see if they click your character during a Rollplay session.  This is a good place to mention physical characteristics and publicly known information about your character!"></textarea>
+			<button id="charBackgroundPreview" type="button" data-id="charBackground">Preview</button>
 			<h3>General Information</h3>
 			<div id="profileGeneral">
 				<div id="imageInfo">
@@ -168,6 +169,7 @@
 	<section id="longProfile" class="hideMe">
 		<h2>Biography</h2>
 		<textarea type="textarea" name="charBiography" maxlength="10000" rows="20" placeholder="Write a detailed background here, if you like."></textarea>
+		<button id="charBiographyPreview" type="button" data-id="charBiography">Preview</button>
 	</section>
 	<footer></footer>
 	<div id="modalBG">
@@ -192,6 +194,11 @@
 			<iframe></iframe>
 			<button id="nameCancel" type="button">Cancel</button>
 		</div>
+		<div id="previewModal">
+			<h3>Preview</h3>
+			<div></div>
+			<button id="previewOk" type="button">Ok</button>
+		</div>
 		<div id="errorModal">
 			<h3>Error</h3>
 			<p id="errorText"></p>
@@ -205,6 +212,7 @@
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>

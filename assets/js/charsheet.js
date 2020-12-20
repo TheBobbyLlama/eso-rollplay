@@ -1,5 +1,6 @@
 var userInfo = null;
 var footer = $("footer");
+var converter = converter = new showdown.Converter();
 
 const ATTRIBUTE_POINT_LIMIT = 10;
 const SKILL_POINT_BASE = 10;
@@ -404,6 +405,18 @@ function showConfirmPopup(message, callback) {
 	$("#confirmOk").off("click").on("click", callback);
 }
 
+function previewHandler() {
+	var field = $(this).attr("data-id");
+	showMarkdownPreview($("textarea[name='" + field + "'").val());
+}
+
+/// Displays Markdown preview.
+function showMarkdownPreview(text) {
+	console.log(text);
+	$("#previewModal div").empty().append(converter.makeHtml(text));
+	$("#modalBG, #previewModal").addClass("show");
+}
+
 /// Hides all modals.
 function hidePopup() {
 	$("#modalBG, #modalBG > div").removeClass("show");
@@ -505,12 +518,13 @@ $("select[name='charClass']").on("change", changeClass);
 $("#saveChar, #saveProfile").on("click", saveChar);
 $("section").on("input change", "input[type='range']", changeSlider);
 $("#main section > h3").on("click", expandContractSection);
-$("#errorButton, #nameCancel, #helpDone").on("click", hidePopup);
+$("#previewOk, #errorButton, #nameCancel, #helpDone").on("click", hidePopup);
 $("#printout").on("dblclick", copyOutput);
 $("textarea[name='charBackground']").on("focus, keydown", shortDescriptionHelper).on("blur", leaveShortDescription);
 $("input[name='imageUrl']").on("focus", function() { $(this).removeClass("redFlag"); }).on("blur", setImageUrl);
 $("#characteristics input, #characteristics select").on("blur, change", setProfileField);
 $("textarea[name='charBiography']").on("blur", leaveBiography);
+$("#charBackgroundPreview, #charBiographyPreview").on("click", previewHandler);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
 $("#nameModal iframe").on("load", bindIframeEvents);
 $("#confirmCancel, #errorButton").on("click", hidePopup);
