@@ -178,7 +178,8 @@ function getRandomIndex(max) {
 }
 
 /// Send the user back to their dashboard.
-function sendToDashboard() {
+function sendToDashboard(event) {
+	event.preventDefault();
 	window.location.assign("./dashboard.html");
 }
 

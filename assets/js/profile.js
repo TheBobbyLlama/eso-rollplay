@@ -9,6 +9,7 @@ const characteristicList = [
 ];
 
 var character;
+var characterCache = {};
 var minimal;
 var converter = converter = new showdown.Converter();
 
@@ -25,10 +26,10 @@ function initializePage() {
 			$("nav").remove();
 			$("#charListing, #characteristics, #biography").remove();
 		} else {
-			$("h1").text("Character Profile");
+			$("h1 a").text("Character Profile");
 			$("#charListing select").remove();
 		}
-		dbLoadCharacter(loadChar, characterLoaded, profileLoaded);
+		loadCharacter(loadChar);
 	} else {
 		$("section div:first-child select").on("change", selectCharacter);
 		dbLoadCharacterList(characterListLoaded);
@@ -39,7 +40,7 @@ function initializePage() {
 /// Fired when a character is selected from the dropdown.
 function selectCharacter() {
 	$("#profileText div").empty();
-	dbLoadCharacter($(this).val(), characterLoaded, profileLoaded);
+	loadCharacter($(this).val());
 }
 
 /// The character list is ready to be used in the selection dropdown.
@@ -56,18 +57,35 @@ function characterListLoaded(loadMe) {
 	}
 }
 
+function loadCharacter(name) {
+	character = characterCache[dbTransform(name)];
+
+	if (character) {
+		setCharacterInfo();
+		setCharacterProfile(character.profile);
+	} else {
+		dbLoadCharacter(name, characterLoaded, profileLoaded);
+	}
+}
+
 /// A character has been loaded to display.
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		character = loadMe.val();
-		Object.setPrototypeOf(character, CharacterSheet.prototype);
-		$("h2").text(nameDecode(character.name));
-		character.print("printout");
-		$("#loading").remove();
-		$("nav, #main").removeClass("hideMe");
+		characterCache[dbTransform(nameDecode(character.name))] = character;
+		setCharacterInfo();
 	} else {
 		showErrorPopup("Character not found.");
+		$("#loading").remove();
 	}
+}
+
+function setCharacterInfo() {
+	Object.setPrototypeOf(character, CharacterSheet.prototype);
+	$("h2").text(nameDecode(character.name));
+	character.print("printout");
+	$("#loading").remove();
+	$("nav, #main").removeClass("hideMe");	
 }
 
 function fillCharacteristics(myProfile) {
@@ -93,13 +111,21 @@ function profileLoaded(loadMe) {
 	var myProfile = loadMe.val();
 
 	if (myProfile) {
-		$("#charImage")[0].style.background =  myProfile.image ? "url('" + myProfile.image + ")" : "";
-		$("#charImage").toggle(!!myProfile.image);
-		$("#profileShort").empty().append(myProfile.description ? converter.makeHtml(myProfile.description.trim()) : emptyTemplate);
+		characterCache[dbTransform(nameDecode(character.name))].profile = myProfile;
+	}
+
+	setCharacterProfile(myProfile);
+}
+
+function setCharacterProfile(profile) {
+	if (profile) {
+		$("#charImage")[0].style.background =  profile.image ? "url('" + profile.image + ")" : "";
+		$("#charImage").toggle(!!profile.image);
+		$("#profileShort").empty().append(profile.description ? converter.makeHtml(profile.description.trim()) : emptyTemplate);
 
 		if (!minimal) {
-			fillCharacteristics(myProfile);
-			$("#biography").empty().append(converter.makeHtml(myProfile.biography)).toggle(!!myProfile.biography);
+			fillCharacteristics(profile);
+			$("#biography").empty().append(converter.makeHtml(profile.biography)).toggle(!!profile.biography);
 		}
 	} else {
 		$("#charImage, #characteristics").toggle(false);
@@ -108,8 +134,22 @@ function profileLoaded(loadMe) {
 	}
 }
 
+/// Displays error modal.
+function showErrorPopup(message) {
+	$("#modalBG").addClass("show");
+	$("#errorModal").addClass("show");
+	$("#errorText").text(message);
+}
+
+/// Hides all modals.
+function hidePopup() {
+	$("#modalBG").removeClass("show");
+	$("#modalBG > div").removeClass("show");
+}
+
 /// Send the user back to their dashboard.
-function sendToDashboard() {
+function sendToDashboard(event) {
+	event.preventDefault();
 	window.location.assign("./dashboard.html");
 }
 
@@ -117,3 +157,4 @@ initializePage();
 
 // Eat links when in minimal view.
 $(".minimal #profileShort").on("click", "a", function(event) { event.preventDefault(); });
+$("#errorButton").on("click", hidePopup);

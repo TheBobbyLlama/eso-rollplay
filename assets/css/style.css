@@ -85,6 +85,12 @@ nav h1::before {
 	width: 40px;
 }
 
+nav h1 a:link, nav h1 a:hover, nav h1 a:visited {
+	color: white;
+	text-decoration: none;
+}
+
+
 nav {
 	position: relative;
 	top: 0;

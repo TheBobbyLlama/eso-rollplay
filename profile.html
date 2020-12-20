@@ -12,7 +12,7 @@
 <body>
 	<div id="loading"></div>
 	<nav class="hideMe">
-		<h1>ESO Rollplay</h1>
+		<h1><a href="/">ESO Rollplay</a></h1>
 	</nav>
 	<section id="main" class="hideMe">
 		<div id="profileHeader">
@@ -32,6 +32,13 @@
 		</div>
 		<div id="biography"></div>
 	</section>
+	<div id="modalBG">
+		<div id="errorModal">
+			<h3>Error</h3>
+			<p id="errorText"></p>
+			<button id="errorButton" type="button">Ok</button>
+		</div>
+	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
