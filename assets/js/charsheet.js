@@ -412,7 +412,6 @@ function previewHandler() {
 
 /// Displays Markdown preview.
 function showMarkdownPreview(text) {
-	console.log(text);
 	$("#previewModal div").empty().append(converter.makeHtml(text));
 	$("#modalBG, #previewModal").addClass("show");
 }
