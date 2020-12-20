@@ -5,6 +5,7 @@ const characteristicList = [
 	[ "Primary Residence", "residence" ],
 	[ "Organizations", "organizations" ],
 	[ "Alliances", "alliances" ],
+	[ "Enemies", "enemies" ],
 	[ "Relationships", "relationships" ],
 ];
 
