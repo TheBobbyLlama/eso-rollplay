@@ -132,6 +132,11 @@ section > div[id] {
 	padding: 8px;
 }
 
+#saveProfile {
+	height: 40px;
+	width: 80px;
+}
+
 #longProfile {
 	align-items: center;
 	display: flex;
