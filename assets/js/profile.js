@@ -76,7 +76,10 @@ function characterLoaded(loadMe) {
 		characterCache[dbTransform(nameDecode(character.name))] = character;
 		setCharacterInfo();
 	} else {
-		showErrorPopup("Character not found.");
+		showErrorPopup("Character not found.", event => {
+			event.preventDefault();
+			window.location.assign("./profile.html");
+		});
 		$("#loading").remove();
 	}
 }
@@ -136,10 +139,14 @@ function setCharacterProfile(profile) {
 }
 
 /// Displays error modal.
-function showErrorPopup(message) {
-	$("#modalBG").addClass("show");
-	$("#errorModal").addClass("show");
+function showErrorPopup(message, callback=null) {
+	$("#modalBG, #errorModal").addClass("show");
 	$("#errorText").text(message);
+	$("#errorButton").off("click").on("click", hidePopup);
+	
+	if (callback) {
+		$("#errorButton").on("click", callback);
+	}
 }
 
 /// Hides all modals.
