@@ -40,11 +40,15 @@ function checkAccountInfo(result) {
 			showErrorPopup(error, divertToLogin);
 		})
 	} else {
+		// Don't let new users use '@' at the beginning of their account name.
 		result = {
-			display: initializingUser.displayName
+			display: initializingUser.displayName.replace(/^@/, "")
 		}
 
-		dbSaveAccountInfo(initializingUser.displayName, result, divertToDashboard, showErrorPopup);
+		console.log(initializingUser, result);
+
+		//dbSaveAccountInfo(initializingUser.displayName, result, divertToDashboard, showErrorPopup);
+		dbSaveAccountInfo(initializingUser.displayName, result, () => {}, showErrorPopup);
 	}
 }
 
