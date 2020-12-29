@@ -11,7 +11,7 @@ function initializePage(myUser) {
 	}
 
 	userInfo = myUser;
-	$("#welcomeHeader").text("Welcome, " + userInfo.display + "!");
+	$("#welcomeHeader").text("Welcome, " + userInfo.display.replace(/^@/, "") + "!");
 	populateCharacterList();
 
 	fillTaskHolder();

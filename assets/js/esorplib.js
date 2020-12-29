@@ -711,7 +711,7 @@ class CharacterSheet {
 		printout.append("===============================<br />")
 
 		if (this.player) {
-			printout.append("@" + nameDecode(this.player) + "<br />");
+			printout.append(((this.player[0] == "@") ? "" : "@") + nameDecode(this.player) + "<br />");
 		}
 
 		if (this.race) {
