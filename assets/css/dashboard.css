@@ -1,19 +1,28 @@
 footer {
-	margin-bottom: 20px;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	margin: 0px 20px 20px 20px;
+	text-align: left;
 }
 
-footer a {
+footer div + div {
+	margin-top: 10px;
+}
+
+footer a.buttonLink {
 	border-radius: 24px;
 	margin-left: 4px;
 	padding: 8px;
 	transition: 0.5s;
 }
 
-footer a:hover {
+footer a.buttonLink:hover {
 	background-color: var(--gm-background);
 }
 
-footer a img {
+footer a.buttonLink img {
 	height: 32px;
 	margin-right: 4px;
 	opacity: 0.75;
@@ -22,7 +31,7 @@ footer a img {
 	transition: 1s;
 }
 
-footer a:hover img {
+footer a.buttonLink:hover img {
 	opacity: 1;
 }
 
@@ -196,11 +205,15 @@ input.invalid {
 }
 
 @media screen and (max-width: 575px) {
-	footer a {
+	footer {
+		align-items: flex-start;
+	}
+
+	footer a.buttonLink {
 		background-color: var(--gm-background);
 	}
 
-	footer a img {
+	footer a.buttonLink img {
 		opacity: 1;
 	}
 
@@ -227,5 +240,10 @@ input.invalid {
 
 	#taskHolder {
 		min-height: initial;
+	}
+
+	.smolbreak {
+		display: block;
+		margin-left: 20px;
 	}
 }
