@@ -155,6 +155,15 @@ section, #call-to-action, #auth-panel .firebaseui-container {
 	#call-to-action > p {
 		width: 280px;
 	}
+
+	#main #other-links ul {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+	
+	#main #other-links li:not(:last-child)::after {
+		content: '';
+	}
 	
 	.slideshow {
 		height: 210px;
