@@ -203,7 +203,7 @@ function calculateTotalPoints() {
 	var max = ATTRIBUTE_POINT_LIMIT;
 	var attrDisplay = $("#attributePoints");
 	var skillDisplay = $("#skillPoints");
-	var workingList = Object.entries(character.attributes);
+	var workingList = Object.entries(character.attributes || {});
 
 	for (i = 0; i < workingList.length; i++) {
 		total += workingList[i][1];
@@ -215,7 +215,7 @@ function calculateTotalPoints() {
 
 	total = 0;
 	max = SKILL_POINT_BASE + 2 * character.getAttribute("Intelligence");
-	workingList = Object.entries(character.skills);
+	workingList = Object.entries(character.skills || {});
 
 	for (i = 0; i < workingList.length; i++) {
 		var curRank = character.getSkill(workingList[i][0]);
@@ -335,7 +335,7 @@ function setImageUrl() {
 }
 
 function displayImage(url) {
-	var test = checkImageUrl(url);
+	var test = checkImageUrl(url || "");
 
 	$("#charImage")[0].style.background = (test) ? "url('" + url + "')" : "";
 	$("input[name='imageUrl']").toggleClass("redFlag", !test);

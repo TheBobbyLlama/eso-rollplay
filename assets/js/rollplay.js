@@ -62,7 +62,7 @@ function initializePage(myUser) {
 function resetRollSelect() {
 	var i;
 	var rollSelector = $("#rollSelect");
-	var charItems = Object.entries(character.skills);
+	var charItems = Object.entries(character.skills || {});
 	
 	rollSelector.empty();
 
