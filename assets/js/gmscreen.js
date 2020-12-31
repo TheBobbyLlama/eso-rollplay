@@ -399,7 +399,7 @@ function activatePlayer(index) {
 
 	$("#playerControls button[name='transformButton']").remove();
 
-	if (index > -1) {
+	if ((index > -1) && (characterList[index])) {
 		characterList[index].print("printout", true);
 
 		if (characterList[index].transformation) {
