@@ -460,6 +460,15 @@ function characterLoaded(loadMe) {
 		if (dbTransform(tmpChar.player) == dbTransform(userInfo.display)) {
 			character = tmpChar;
 			Object.setPrototypeOf(character, CharacterSheet.prototype);
+
+			if (!character.attributes) {
+				character.attributes = {};
+			}
+			
+			if (!character.skills) {
+				character.skills = {};
+			}
+
 			$("input[name='charName']").val(nameDecode(character.name));
 			$("#nameDisplay").text(nameDecode(character.name));
 			$("select[name='charRace']").val(character.race);
