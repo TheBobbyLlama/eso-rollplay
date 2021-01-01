@@ -15,14 +15,14 @@
 		<div id="helpPanel">
 			<button type="button" id="buttonHelp">Help</button>
 		</div>
-		<h1 title="Return to Dashboard">ESO Rollplay</h1>
+		<h1 title="RETURN_TO_DASHBOARD" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</h1>
 		<div class="toolbar">
 			<div id="logout">
-				<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+				<span class="oi" data-glyph="account-logout" title="LOGOUT" aria-hidden="true" data-localization-key></span>
 			</div>
 			<div id="handbook">
 				<a href="./handbook.html" target="_blank">
-					<span class="oi" data-glyph="book" title="Handbook" aria-hidden="true"></span>
+					<span class="oi" data-glyph="book" title="HANDBOOK" aria-hidden="true" data-localization-key></span>
 				</a>
 			</div>
 		</div>
@@ -31,184 +31,188 @@
 	<section class="hideMe">
 		<form>
 			<div id="nameEntry" class="hideMe">
-				<label for="charName">Name:</label>
+				<label for="charName" data-localization-key="LABEL_NAME">Name:</label>
 				<span id="charInput">
 					<input type="text" name="charName" maxlength="25"></input>
-					<button id="generateName" type="button" title="Generate a random name.">?</button>
+					<button id="generateName" type="button" title="GENERATE_RANDOM_NAME" data-localization-key="?">?</button>
 				</span>
 			</div>
 			<h2 id="nameDisplay"></h2>
-			<button id="saveChar" type="submit" disabled="true">Save</button>
+			<button id="saveChar" type="submit" disabled="true" data-localization-key="SAVE">Save</button>
 		</form>
 		<div>
-			<label for="charRace">Race:</label>
+			<label for="charRace" data-localization-key="LABEL_RACE">Race:</label>
 			<select name="charRace"></select>
-			<label for="charSex">Sex:</label>
+			<label for="charSex" data-localization-key="LABEL_SEX">Sex:</label>
 			<select name="charSex">
-				<option>Male</option>
-				<option>Female</option>
+				<option value="SEX_MALE" data-localization-key="SEX_MALE">Male</option>
+				<option value="SEX_FEMALE" data-localization-key="SEX_FEMALE">Female</option>
 			</select>
-			<label for="charSupernatural">Supernatural:</label>
+			<label for="charSupernatural" data-localization-key="LABEL_SUPERNATURAL">Supernatural:</label>
 			<select name="charSupernatural"></select>
-			<label for="charClass">Class:</label>
+			<label for="charClass" data-localization-key="LABEL_CLASS">Class:</label>
 			<select name="charClass"></select>
 		</div>
 	</section>
 	<div id="points" class="hideMe">
-		<h3>Attribute Points: <span id="attributePoints">0/10</span></h3>
-		<h3>Skill Points: <span id="skillPoints">0/30</span></h3>
+		<h3><span data-localization-key="LABEL_ATTRIBUTE_POINTS">Attribute Points:</span> <span id="attributePoints">0/10</span></h3>
+		<h3><span data-localization-key="LABEL_SKILL_POINTS">Skill Points:</span> <span id="skillPoints">0/30</span></h3>
 	</div>
 	<div id="main" class="hideMe">
 		<section>
-			<h3>Attributes</h3>
+			<h3 data-localization-key="ATTRIBUTES">Attributes</h3>
 			<div id="attributes"></div>
 		</section>
 		<section>
-			<h3>Combat Skills</h3>
+			<h3 data-localization-key="COMBAT_SKILLS">Combat Skills</h3>
 			<div id="skillsCombat"></div>
 		</section>
 		<section>
-			<h3>Magic Skills</h3>
+			<h3 data-localization-key="MAGICKA_SKILLS">Magicka Skills</h3>
 			<div id="skillsMagic"></div>
 		</section>
 		<section>
-			<h3>General Skills</h3>
+			<h3 data-localization-key="GENERAL_SKILLS">General Skills</h3>
 			<div id="skillsGeneral"></div>
 		</section>
 		<section>
-			<h3>Crafting Skills</h3>
+			<h3 data-localization-key="CRAFTING_SKILLS">Crafting Skills</h3>
 			<div id="skillsCrafting"></div>
 		</section>
 		<section>
-			<h3>Knowledge Skills</h3>
+			<h3 data-localization-key="KNOWLEDGE_SKILLS">Knowledge Skills</h3>
 			<div id="skillsKnowledge"></div>
 		</section>
 	</div>
 	<section id="profileInfo" class="hideMe">
 		<div>
-			<div id="printout" title="Double click to copy character sheet."></div>
+			<div id="printout" title="DOUBLE_CLICK_TO_COPY_CHARACTER_SHEET" data-localization-key></div>
 		</div>
 		<div id="shortProfile">
-			<h2>Character Profile</h2>
-			<h3>Short Description</h3>
-			<textarea type="textarea" name="charBackground" maxlength="1000" rows="10" placeholder="This is what players will see if they click your character during a Rollplay session.  This is a good place to mention physical characteristics and publicly known information about your character!"></textarea>
-			<button id="charBackgroundPreview" type="button" data-id="charBackground">Preview</button>
-			<h3>General Information</h3>
+			<h2 data-localization-key="CHARACTER_PROFILE">Character Profile</h2>
+			<h3 data-localization-key="SHORT_DESCRIPTION">Short Description</h3>
+			<textarea type="textarea" name="charBackground" maxlength="1000" rows="10" placeholder="SHORT_DESCRIPTION_DESCRIPTION" data-localization-key></textarea>
+			<button id="charBackgroundPreview" type="button" data-id="charBackground" data-localization-key="PREVIEW">Preview</button>
+			<h3 data-localization-key="GENERAL_INFORMATION">General Information</h3>
 			<div id="profileGeneral">
 				<div id="imageInfo">
 					<form>
-						<h4>Character Image</h4>
-						<input type="text" name="imageUrl" maxlength="1024" placeholder="Image URL"></input>
+						<h4 data-localization-key="CHARACTER_IMAGE">Character Image</h4>
+						<input type="text" name="imageUrl" maxlength="1024" placeholder="CHARACTER_IMAGE_URL" data-localization-key></input>
 					</form>
 					<div id="charImage"></div>
 				</div>
 				<div id="otherInfo">
 					<div id="characteristics">
 						<div class="flexMe">
-							<label for="alignment">Alignment</label>
+							<label for="alignment" data-localization-key="LABEL_ALIGNMENT">Alignment:</label>
 							<select name="alignment">
-								<option value="">-- Not Set --</option>
-								<option>Lawful Good</option>
-								<option>Neutral Good</option>
-								<option>Chaotic Good</option>
-								<option>Lawful Neutral</option>
-								<option>Neutral</option>
-								<option>Chaotic Neutral</option>
-								<option>Lawful Evil</option>
-								<option>Neutral Evil</option>
-								<option>Chaotic Evil</option>
+								<option value="" data-localization-key="NOT_SET">-- Not Set --</option>
+								<option value="ALIGNMENT_LG" data-localization-key="ALIGNMENT_LG">Lawful Good</option>
+								<option value="ALIGNMENT_NG" data-localization-key="ALIGNMENT_NG">Neutral Good</option>
+								<option value="ALIGNMENT_CG" data-localization-key="ALIGNMENT_CG">Chaotic Good</option>
+								<option value="ALIGNMENT_LN" data-localization-key="ALIGNMENT_LN">Lawful Neutral</option>
+								<option value="ALIGNMENT_N" data-localization-key="ALIGNMENT_N">Neutral</option>
+								<option value="ALIGNMENT_CN" data-localization-key="ALIGNMENT_CN">Chaotic Neutral</option>
+								<option value="ALIGNMENT_LE" data-localization-key="ALIGNMENT_LE">Lawful Evil</option>
+								<option value="ALIGNMENT_NE" data-localization-key="ALIGNMENT_NE">Neutral Evil</option>
+								<option value="ALIGNMENT_CE" data-localization-key="ALIGNMENT_CE">Chaotic Evil</option>
 							</select>
 						</div>
 						<div class="flexMe">
-							<label for="birthsign">Birthsign</label>
+							<label for="birthsign" data-localization-key="LABEL_BIRTHSIGN">Birthsign</label>
 							<select name="birthsign">
-								<option value="">-- Not Set --</option>
-								<option>The Apprentice</option>
-								<option>The Atronach</option>
-								<option>The Lady</option>
-								<option>The Lord</option>
-								<option>The Lover</option>
-								<option>The Mage</option>
-								<option>The Ritual</option>
-								<option>The Serpent</option>
-								<option>The Shadow</option>
-								<option>The Steed</option>
-								<option>The Thief</option>
-								<option>The Tower</option>
-								<option>The Warrior</option>
+								<option value="" data-localization-key="NOT_SET">-- Not Set --</option>
+								<option data-localization-key="BIRTHSIGN_APPRENTICE">The Apprentice</option>
+								<option data-localization-key="BIRTHSIGN_ATRONACH">The Atronach</option>
+								<option data-localization-key="BIRTHSIGN_LADY">The Lady</option>
+								<option data-localization-key="BIRTHSIGN_LORD">The Lord</option>
+								<option data-localization-key="BIRTHSIGN_LOVER">The Lover</option>
+								<option data-localization-key="BIRTHSIGN_MAGE">The Mage</option>
+								<option data-localization-key="BIRTHSIGN_RITUAL">The Ritual</option>
+								<option data-localization-key="BIRTHSIGN_SERPENT">The Serpent</option>
+								<option data-localization-key="BIRTHSIGN_SHADOW">The Shadow</option>
+								<option data-localization-key="BIRTHSIGN_STEED">The Steed</option>
+								<option data-localization-key="BIRTHSIGN_THIEF">The Thief</option>
+								<option data-localization-key="BIRTHSIGN_TOWER">The Tower</option>
+								<option data-localization-key="BIRTHSIGN_WARRIOR">The Warrior</option>
 							</select>
 						</div>
 						<div class="flexMe">
-							<label for="residence">Primary Residence</label>
-							<input type="text" name="residence" maxlength="256" placeholder="Where you live."></input>
+							<label for="aliases" data-localization-key="LABEL_ALIASES">Aliases:</label>
+							<input type="text" name="aliases", maxlength="256", placeholder="ALIASES_DESCRIPTION" data-localization-key></input>
 						</div>
 						<div class="flexMe">
-							<label for="organizations">Organizations</label>
-							<input type="text" name="organizations" maxlength="1000" placeholder="Any groups you belong to."></input>
+							<label for="residence" data-localization-key="LABEL_PRIMARY_RESIDENCE">Primary Residence:</label>
+							<input type="text" name="residence" maxlength="256" placeholder="PRIMARY_RESIDENCE_DESCRIPTION" data-localization-key></input>
 						</div>
 						<div class="flexMe">
-							<label for="alliances">Alliances</label>
-							<input type="text" name="alliances" maxlength="1000" placeholder="Any groups you are friendly to."></input>
+							<label for="organizations" data-localization-key="LABEL_ORGANIZATIONS">Organizations:</label>
+							<input type="text" name="organizations" maxlength="1000" placeholder="ORGANIZATIONS_DESCRIPTION" data-localization-key></input>
 						</div>
 						<div class="flexMe">
-							<label for="enemies">Enemies</label>
-							<input type="text" name="enemies" maxlength="1000" placeholder="Any groups or people you are NOT friendly to."></input>
+							<label for="alliances" data-localization-key="LABEL_ALLIANCES">Alliances:</label>
+							<input type="text" name="alliances" maxlength="1000" placeholder="ALLIANCES_DESCRIPTION" data-localization-key></input>
 						</div>
 						<div class="flexMe">
-							<label for="relationships">Relationships</label>
-							<input type="text" name="relationships" maxlength="1000" placeholder="Other characters you are close to."></input>
+							<label for="enemies" data-localization-key="LABEL_ENEMIES">Enemies</label>
+							<input type="text" name="enemies" maxlength="1000" placeholder="ENEMIES_DESCRIPTION" data-localization-key></input>
+						</div>
+						<div class="flexMe">
+							<label for="relationships" data-localization-key="LABEL_RELATIONSHIPS">Relationships</label>
+							<input type="text" name="relationships" maxlength="1000" placeholder="RELATIONSHIPS_DESCRIPTION" data-localization-key></input>
 						</div>
 					</div>
 					<div>
-						<button type="button" id="saveProfile">Save</button>
+						<button type="button" id="saveProfile" data-localization-key="SAVE">Save</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 	<section id="longProfile" class="hideMe">
-		<h2>Biography</h2>
-		<textarea type="textarea" name="charBiography" maxlength="10000" rows="20" placeholder="Write a detailed background here, if you like."></textarea>
-		<button id="charBiographyPreview" type="button" data-id="charBiography">Preview</button>
+		<h2 data-localization-key="BIOGRAPHY">Biography</h2>
+		<textarea type="textarea" name="charBiography" maxlength="10000" rows="20" placeholder="BIOGRAPHY_DESCRIPTION" data-localization-key></textarea>
+		<button id="charBiographyPreview" type="button" data-id="charBiography" data-localization-key="PREVIEW">Preview</button>
 	</section>
 	<footer></footer>
 	<div id="modalBG">
 		<div id="helpModal">
-			<h2>Building Your Character</h2>
+			<h2 data-localization-key="CHARACTER_HELP_TITLE">Building Your Character</h2>
 			<div>
-				<h3>Name/Race/Etc.</h3>
-				<p>You must specify a character name to save your character.  Race, sex, and supernatural type have an effect on stats, so be sure to select the appropriate values.</p>
-				<h3>Attributes</h3>
-				<p>You should begin by choosing your attribute scores. This is a straight 1-for-1 point buy.</p>
-				<h3>Skills</h3>
-				<p>Skills are added much like attributes, but they increase in cost as you increase in rank. However, the governing attribute of a skill controls how quickly the increase occurs.</p>
-				<h3>Knowledge Skills</h3>
-				<p>Knowledge skills are a special class of skill that always have Intelligence as their governing attribute.  Some are more difficult to learn and increase in difficulty more quickly.</p>
-				<h3>Profile Info</h3>
-				<p>Below your skill selections, you can enter more information for your character.  All fields support <a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> formatting!</p>
+				<h3 data-localization-key="NAMERACEETC">Name/Race/Etc.</h3>
+				<p data-localization-key="CHARACTER_HELP_NAMERACEETC_TEXT">You must specify a character name to save your character.  Race, sex, and supernatural type have an effect on stats, so be sure to select the appropriate values.</p>
+				<h3 data-localization-key="ATTRIBUTES">Attributes</h3>
+				<p data-localization-key="CHARACTER_HELP_ATTRIBUTES_TEXT">You should begin by choosing your attribute scores. This is a straight 1-for-1 point buy.</p>
+				<h3 data-localization-key="SKILLS">Skills</h3>
+				<p data-localization-key="CHARACTER_HELP_SKILLS_TEXT">Skills are added much like attributes, but they increase in cost as you increase in rank. However, the governing attribute of a skill controls how quickly the increase occurs.</p>
+				<h3 data-localization-key="KNOWLEDGE_SKILLS">Knowledge Skills</h3>
+				<p data-localization-key="CHARACTER_HELP_KNOWLEDGE_SKILLS_TEXT">Knowledge skills are a special class of skill that always have Intelligence as their governing attribute.  Some are more difficult to learn and increase in difficulty more quickly.</p>
+				<h3 data-localization-key="PROFILE_INFO">Profile Info</h3>
+				<p><span data-localization-key="CHARACTER_HELP_PROFILE_INFO_BEFORE_LINK">Below your skill selections, you can enter more information for your character.  All fields support</span> <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" data-localization-key="MARKDOWN">Markdown</a> <span data-localization-key="CHARACTER_HELP_PROFILE_INFO_AFTER_LINK">formatting!</span></p>
 			</div>
-			<button id="helpDone" type="button">Ok</button>
+			<button id="helpDone" type="button" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="nameModal">
 			<h2>Choose a Random Name</h2>
 			<iframe></iframe>
-			<button id="nameCancel" type="button">Cancel</button>
+			<button id="nameCancel" type="button" data-localization-key="CANCEL">Cancel</button>
 		</div>
 		<div id="previewModal">
 			<h3>Preview</h3>
 			<div></div>
-			<button id="previewOk" type="button">Ok</button>
+			<button id="previewOk" type="button" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="errorModal">
 			<h3>Error</h3>
 			<p id="errorText"></p>
-			<button id="errorButton" type="button">Ok</button>
+			<button id="errorButton" type="button" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="confirmModal">
 			<h3>Confirm</h3>
 			<p id="confirmText"></p>
-			<button id="confirmOk" type="button">Ok</button>
-			<button id="confirmCancel" type="button">Cancel</button>
+			<button id="confirmOk" type="button" data-localization-key="OK">Ok</button>
+			<button id="confirmCancel" type="button" data-localization-key="CANCEL">Cancel</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -217,6 +221,7 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/charsheet.js"></script>
 </body>

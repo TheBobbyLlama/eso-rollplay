@@ -12,37 +12,38 @@
 <body>
 	<div id="loading"></div>
 	<nav class="hideMe">
-		<h1><a href="/">ESO Rollplay</a></h1>
+		<h1><a href="/" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</a></h1>
 	</nav>
-	<h2 class="hideMe">Name Generator</h2>
+	<h2 class="hideMe" data-localization-key="NAME_GENERATOR">Name Generator</h2>
 	<section class="hideMe">
 		<form>
 			<div>
-				<label for="race">Race:</label>
+				<label for="race" data-localization-key="LABEL_RACE">Race:</label>
 				<select id="race" name="race"></select>
-				<label for="sex">Sex:</label>
+				<label for="sex" data-localization-key="LABEL_SEX">Sex:</label>
 				<select id="sex" name="sex">
-					<option>Male</option>
-					<option>Female</option>
+					<option value="Male" data-localization-key="SEX_MALE">Male</option>
+					<option value="Female" data-localization-key="SEX_FEMALE">Female</option>
 				</select>
 			</div>
 			<div id="sourceFilters"></div>
 			<div>
-				<button type="submit" id="generateButton">Generate</button>
+				<button type="submit" id="generateButton" data-localization-key="GENERATE">Generate</button>
 				<select name="resultCount" id="resultCount">
 					<option>5</option>
 					<option selected>10</option>
 					<option>20</option>
 				</select>
-				<label for="resultCount">results.</label>
+				<label for="resultCount" data-localization-key="RESULT_COUNT">results.</label>
 			</div>
 		</form>
 	</section>
 	<section class="hideMe">
-		<h2>Results</h2>
+		<h2 data-localization-key="RESULTS">Results</h2>
 		<ol id="results"></ol>
 	</section>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/namegenerator.js"></script>
 </body>
 </html>

@@ -19,6 +19,8 @@ function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
 	minimal = new URLSearchParams(window.location.search).get("minimal");
 
+	localizePage(localStorage.getItem("ESORP[language]"));
+
 	initializeDB();
 
 	if (loadChar) {
@@ -27,7 +29,7 @@ function initializePage() {
 			$("nav").remove();
 			$("#charListing, #characteristics, #biography").remove();
 		} else {
-			$("h1 a").text("Character Profile");
+			$("h1 a").text(localize("CHARACTER_PROFILE"));
 			$("#charListing select").remove();
 		}
 		loadCharacter(loadChar);
@@ -76,7 +78,7 @@ function characterLoaded(loadMe) {
 		characterCache[dbTransform(nameDecode(character.name))] = character;
 		setCharacterInfo();
 	} else {
-		showErrorPopup("Character not found.", event => {
+		showErrorPopup(localize("CHARACTER_NOT_FOUND"), event => {
 			event.preventDefault();
 			window.location.assign("./profile.html");
 		});
@@ -98,12 +100,12 @@ function fillCharacteristics(myProfile) {
 	myDiv.empty();
 
 	for (let i = 0; i < characteristicList.length; i++) {
-		let tmpVal = myProfile[characteristicList[i][1]];
+		let tmpVal = localize(myProfile[characteristicList[i][1]]);
 		
 		if (tmpVal) {
 			found = true;
 
-			myDiv.append("<div><h4>" + characteristicList[i][0] + ":</h4> " + converter.makeHtml(tmpVal) + "</div>");
+			myDiv.append("<div><h4>" + localize("LABEL_" + characteristicList[i][0].toUpperCase()) + "</h4> " + converter.makeHtml(tmpVal) + "</div>");
 		}
 	}
 

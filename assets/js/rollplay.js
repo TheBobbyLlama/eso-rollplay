@@ -1,5 +1,4 @@
 const statusClasses = [ "statusUnhurt", "statusInjured", "statusCritical", "statusIncapacitated", "statusHidden" ];
-const transformRevertLabel = "End Transformation";
 const playerInputSelector = "#charStatus input, #charStatus select, #charStatus button, #rollControls button, #rollControls input, #rollControls select, #summonControls button, #summonControls input, #summonControls select";
 
 var userInfo = null;
@@ -24,7 +23,7 @@ var soundLibrary = {
 }
 
 /// Called on page startup.
-function initializePage(myUser) {
+async function initializePage(myUser) {
 	if (!myUser) {
 		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
 		return;
@@ -32,14 +31,16 @@ function initializePage(myUser) {
 
 	userInfo = myUser;
 
+	await localizePage(userInfo.language);
+
 	var inCharacter = localStorage.getItem("ESORP[character]");
 
 	for (var i = 0; i < EQUIPPED_WEAPON.length; i++) {
-		$("#playerWeapon").append("<option>" + EQUIPPED_WEAPON[i].weapon + "</option>");
+		$("#playerWeapon").append("<option value='" + EQUIPPED_WEAPON[i].weapon + "'>" + localize(EQUIPPED_WEAPON[i].weapon) + "</option>");
 	}
 
 	for (var i = 0; i < WORN_ARMOR.length; i++) {
-		$("#playerArmor").append("<option>" + getQuality(WORN_ARMOR[i]).name + "</option>");
+		$("#playerArmor").append("<option value='" + getQuality(WORN_ARMOR[i]).name + "'>" + localize(getQuality(WORN_ARMOR[i]).name) + "</option>");
 	}
 
 	$(playerInputSelector).attr("disabled", "true");
@@ -49,7 +50,7 @@ function initializePage(myUser) {
 	if (inCharacter) {
 		dbLoadCharacter(inCharacter, characterLoaded);
 	} else {
-		showErrorPopup("No character selected.", divertToDashboard);
+		showErrorPopup(localize("CHARACTER_NOT_FOUND"), divertToDashboard);
 	}
 
 	// Set alert volume levels.
@@ -69,7 +70,7 @@ function resetRollSelect() {
 	for (i = 0; i < charItems.length; i++) {
 		var curQuality = getQuality(charItems[i][0]);
 
-		rollSelector.append("<option value='" + curQuality.key +"'>" + curQuality.name + "</option>")
+		rollSelector.append("<option value='" + curQuality.key +"'>" + localize(curQuality.name) + "</option>")
 	}
 
 	for(i = 0; i < masterQualityList.length; i++) {
@@ -77,14 +78,14 @@ function resetRollSelect() {
 
 		for (var idx = 0; idx < workingList.length; idx++) {
 			if (!charItems.find(element => element[0] == workingList[idx].key)) {
-				rollSelector.append("<option value='" + workingList[idx].key +"'>" + workingList[idx].name + "</option>")
+				rollSelector.append("<option value='" + workingList[idx].key +"'>" + localize(workingList[idx].name) + "</option>")
 			}
 		}
 	}
 }
 
 function doLogout() {
-	showConfirmPopup("Log out of your account?", confirmLogout);
+	showConfirmPopup(localize("LOGOUT_CONFIRM"), confirmLogout);
 }
 
 function confirmLogout() {
@@ -134,10 +135,10 @@ function setSummonControls() {
 		controls.html("<div>" +
 				"<div><em>" + summonName + "</em></div>" +
 				"<div>" +
-					"<button id='summonAttack' type='button'>Attack!</button>" +
+					"<button id='summonAttack' type='button'>" + localize("ACTION_ATTACK!") + "</button>" +
 					"<select id='summonTarget' npc-target>" + markupNPCTargets + "</select>" +
 				"</div>" +
-				"<div><button id='summonDismiss' type='button'>Dismiss</button></div>" +
+				"<div><button id='summonDismiss' type='button'>" + localize("DISMISS_SUMMON") + "</button></div>" +
 			"</div>"
 		);
 	} else {
@@ -152,11 +153,11 @@ function setSummonControls() {
 		controls.html("<div>" +
 				"<select id='summonTemplate'>" + markupSummonOptions + "</select>" +
 				"<p>" +
-					"<label for='summonName'>Name:</label>" +
+					"<label for='summonName'>" + localize("LABEL_NAME") + "</label>" +
 					"<input type='text' id='summonName' maxlength='24' placeholder='(Optional)'></input>" +
 				"</p>" +
 			"</div>" +
-			"<button id='summonExecute' type='button'>Summon!</button>"
+			"<button id='summonExecute' type='button'>" + localize("ACTION_SUMMON!") + "</button>"
 		);
 	}
 }
@@ -169,7 +170,7 @@ function requestSummon() {
 	var template = npcTemplates.find(element => element.name == templateName);
 
 	if (template) {
-		doPlayerRoll("Make a " + getQuality(template.summonSkill).name + " roll to summon a " + templateName + ".", "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
+		doPlayerRoll(localize("SUMMON_ROLL_CAPTION").replace(/SKILL/, localize(getQuality(template.summonSkill).name).replace(/TEMPLATE/, templateName)), "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
 		summonEl.val("");
 	}
 }
@@ -214,7 +215,7 @@ function summonDismiss() {
 function performRoll() {
 	var key = $("#rollSelect").val();
 
-	doPlayerRoll("Make a roll using " + getQuality(key).name + ".", "", { key, playerInitiated: true, callback: resolveRoll });
+	doPlayerRoll(localize("PLAYER_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { key, playerInitiated: true, callback: resolveRoll });
 }
 
 /// Takes player's plain roll and passes it to an event.
@@ -227,7 +228,7 @@ function performAttack() {
 	var target = nameEncode($("#rollTarget").val());
 	var key = $("#rollSelect").val();
 
-	doPlayerRoll("Make an attack using " + getQuality(key).name + ".", "", { target, key, playerInitiated: true, callback: resolveAttack });
+	doPlayerRoll(localize("ATTACK_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { target, key, playerInitiated: true, callback: resolveAttack });
 }
 
 /// Takes player's attack roll and passes it to an event.
@@ -262,10 +263,10 @@ function updatePlayerDisplay() {
 	if (!currentSession) { return; }
 
 	for (var i = 0; i < currentSession.characters.length; i++) {
-		var markup = "<li><div class='" + statusClasses[currentSession.statuses[i].injuryLevel] + "' title='Click to view profile'>" + currentSession.characters[i] + "</div>";
+		var markup = "<li><div class='" + statusClasses[currentSession.statuses[i].injuryLevel] + "' title='" + localize("CLICK_TO_VIEW_PROFILE") + "'>" + currentSession.characters[i] + "</div>";
 
 		if (currentSession.statuses[i].summon) {
-			markup += "<div class='" + statusClasses[currentSession.statuses[i].summon.injuryLevel] + "'" + ((currentSession.statuses[i].summon.name) ? " title='" + currentSession.statuses[i].summon.template + "'" : "") + ">" + (currentSession.statuses[i].summon.name || currentSession.statuses[i].summon.template) + "</div>";
+			markup += "<div class='" + statusClasses[currentSession.statuses[i].summon.injuryLevel] + "'" + ((currentSession.statuses[i].summon.name) ? " title='" + localize(currentSession.statuses[i].summon.template) + "'" : "") + ">" + (currentSession.statuses[i].summon.name || localize(currentSession.statuses[i].summon.template)) + "</div>";
 		}
 
 		charList.append(markup + "</li>");
@@ -370,13 +371,13 @@ function addEventDisplay(event) {
 			break;
 		case "NPCAttack":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				doPlayerRoll("You have been attacked by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
+				doPlayerRoll(localize("INCOMING_ATTACK_CAPTION").replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
 			}
 			break;
 		case "NPCAttackResolution":
 			if (event.success) {
 				if ((dispatchMessages) && (event.player == character.name)) {
-					doPlayerRoll("You have been hit by " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
+					doPlayerRoll(localize("INCOMING_HIT_CAPTION").replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
 				}
 			} else {
 				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
@@ -400,7 +401,7 @@ function addEventDisplay(event) {
 		case "PlayerWeapon":
 				if (character.name == event.name) {
 					$("#playerWeapon").prop("selectedIndex", event.weapon);
-					changeWeapon(false); // Why do I have to manually fire this???
+					changeWeapon(false);
 				}
 	
 				currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = event.weapon;
@@ -409,7 +410,7 @@ function addEventDisplay(event) {
 			if (dispatchMessages) {
 				if (event.player == character.name) {
 					if (event.success) {
-						doPlayerRoll("You hit " + nameDecode(event.target) + "!  Roll for damage!", event.comment, { npc: event.target, key: getQuality(event.key).governing || event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+						doPlayerRoll(localize("ATTACK_HIT_CAPTION").replace(/TARGET/, nameDecode(event.target)), event.comment, { npc: event.target, key: getQuality(event.key).governing || event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
 					} else {
 						playSound("alert");
 					}
@@ -424,7 +425,7 @@ function addEventDisplay(event) {
 		case "PlayerConnect":
 			if ((dispatchMessages) && (event.player == character.name) && (event.timeStamp != connectId)) {
 				dbClearEventSystem(); // Kill the event system, we're leaving!
-				showErrorPopup("Players can only maintain one connection to a session.  This player has connected from somewhere else.", divertToDashboard);
+				showErrorPopup(localize("ERROR_CONNECTED_ELSEWHERE"), divertToDashboard);
 			}
 			break;
 		case "PlayerDamage":
@@ -444,7 +445,7 @@ function addEventDisplay(event) {
 				if (event.player == character.name) {
 					if (event.transform) {
 						character.transformation = event.transform;
-						$("#transformButton").text(transformRevertLabel).attr("data-key", "").removeAttr("disabled");
+						$("#transformButton").text(localize("TRANSFORM_REVERT")).attr("data-key", "").removeAttr("disabled");
 					} else {
 						delete character.transformation;
 
@@ -452,7 +453,7 @@ function addEventDisplay(event) {
 
 						if (targetTransform) {
 							var transformName = targetTransform.template.name;
-							$("#transformButton").text("Transform into " + transformName).attr("data-key", transformName).removeAttr("disabled");
+							$("#transformButton").text(localize("TRANSFORM_INTO").replace(/FORM/, localize(transformName))).attr("data-key", transformName).removeAttr("disabled");
 						}
 					}
 
@@ -463,7 +464,7 @@ function addEventDisplay(event) {
 			break;
 		case "PromptRoll":
 			if ((dispatchMessages && (event.player == character.name))) {
-				doPlayerRoll("Roll " + getQuality(event.key).name + "!", event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
+				doPlayerRoll(localize("ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(event.key).name)), event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
 			}
 			break;
 		case "RemoveNPC":
@@ -487,7 +488,7 @@ function addEventDisplay(event) {
 					updatePlayerDisplay();
 					updateNPCDisplay();
 					$(playerInputSelector).attr("disabled", "true");
-					showErrorPopup("You have been removed from the session.");
+					showErrorPopup(localize("YOU_HAVE_BEEN_REMOVED_FROM_THE_SESSION"));
 				} else {
 					var playerIndex = currentSession.characters.indexOf(event.player);
 
@@ -503,7 +504,7 @@ function addEventDisplay(event) {
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				doPlayerRoll("Roll " + getQuality(event.key).name + " vs. " + nameDecode(event.name) + "!", event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
+				doPlayerRoll(localize("ROLL_AGAINST_OPPONENT").replace(/QUALITY/, localize(getQuality(event.key).name).replace(/NAME/, nameDecode(event.name))), event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
 			}
 			break;
 		case "RollContestedSubordinate":
@@ -515,9 +516,9 @@ function addEventDisplay(event) {
 
 			if (dispatchMessages) {
 				if (event.player1 == character.name) {
-					doPlayerRoll("Roll " + getQuality(event.key1).name + " vs. " + nameDecode(event.player2) + "!", event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
+					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT").replace(/QUALITY/, localize(getQuality(event.key1).name).replace(/NAME/, nameDecode(event.player2))), event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
 				} else if (event.player2 == character.name) {
-					doPlayerRoll("Roll " + getQuality(event.key2).name + " vs. " + nameDecode(event.player1) + "!", event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
+					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT").replace(/QUALITY/, localize(getQuality(event.key2).name).replace(/NAME/, nameDecode(event.player1))), event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
 				}
 			}
 			break;
@@ -635,7 +636,7 @@ function characterLoaded(loadMe) {
 
 		if (targetTransform) {
 			var transformName = targetTransform.template.name;
-			$("#charStatus").append("<button type='button' id='transformButton' data-key='" + transformName + "' disabled>Transform into " + transformName + "</button>");
+			$("#charStatus").append("<button type='button' id='transformButton' data-key='" + transformName + "' disabled>" + localize("TRANSFORM_INTO").replace(/FORM/, localize(transformName)) + "</button>");
 		}
 
 		character.print("printout");
@@ -647,7 +648,7 @@ function characterLoaded(loadMe) {
 		$("#loading").remove();
 		$("#main").removeClass("hideMe");
 	} else {
-		showErrorPopup("Character not found.", divertToDashboard);
+		showErrorPopup(localize("CHARACTER_NOT_FOUND"), divertToDashboard);
 	}
 }
 
@@ -662,7 +663,7 @@ function loadSessionList(result) {
 	switch (result.length) {
 		case 0:
 			$("#loadSession").removeAttr("disabled");
-			showErrorPopup("This character is not part of an active roleplaying session.  Check with your Game Master.");
+			showErrorPopup(localize("NOT_PART_OF_SESSION"));
 			break;
 		case 1:
 			dbLoadSessionByOwner(result[0], sessionLoaded);
@@ -714,7 +715,7 @@ function sessionLoaded(loadMe) {
 		dbLoadEventMessages(currentSession.owner, eventSystemLoaded);
 		dbBindCallbackToEventSystem("child_added", eventAddedCallback);
 	} else {
-		showErrorPopup("Your session failed to load.");
+		showErrorPopup("ERROR_SESSION_FAILED_TO_LOAD");
 	}
 }
 
@@ -793,13 +794,13 @@ function doPlayerRoll(message, comment, rollInfo) {
 	character.makeRoll(queuedRoll);
 
 	if (lazyMode) {
-		queuedRoll.comment = "Lazy mode.";
+		queuedRoll.comment = localize("LAZY_MODE");
 		acceptPlayerRoll();
 	} else {
 		if (queuedRoll.playerInitiated) {
-			$("#rollModal h3").text("Make a Roll");
+			$("#rollModal h3").text(localize("TITLE_MAKE_A_ROLL"));
 		} else {
-			$("#rollModal h3").text("Roll Needed!");
+			$("#rollModal h3").text(localize("TITLE_ROLL_NEEDED"));
 		}
 
 		$("#dieRollComment").val("");

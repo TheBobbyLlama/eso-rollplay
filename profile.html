@@ -12,13 +12,13 @@
 <body>
 	<div id="loading"></div>
 	<nav class="hideMe">
-		<h1><a href="/">ESO Rollplay</a></h1>
+		<h1><a href="/" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</a></h1>
 	</nav>
 	<section id="main" class="hideMe">
 		<div id="profileHeader">
 			<div id="charListing">
 				<select id="characters"></select>
-				<div id="printout" title="Double click to copy character sheet."></div>
+				<div id="printout"></div>
 			</div>
 			<div id="profileCard">
 				<h2></h2>
@@ -34,9 +34,9 @@
 	</section>
 	<div id="modalBG">
 		<div id="errorModal">
-			<h3>Error</h3>
+			<h3 data-localization-key="ERROR">Error</h3>
 			<p id="errorText"></p>
-			<button id="errorButton" type="button">Ok</button>
+			<button id="errorButton" type="button" data-localization-key="OK">Ok</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -44,6 +44,7 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/profile.js"></script>
 </body>

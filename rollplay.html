@@ -12,14 +12,14 @@
 </head>
 <body>
 	<nav>
-		<h1 title="Return to Dashboard">ESO Rollplay</h1>
+		<h1 title="RETURN_TO_DASHBOARD" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</h1>
 		<div class="toolbar">
 			<div id="logout">
-				<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+				<span class="oi" data-glyph="account-logout" title="LOGOUT" aria-hidden="true" data-localization-key></span>
 			</div>
 			<div id="handbook">
 				<a href="./handbook.html" target="_blank">
-					<span class="oi" data-glyph="book" title="Handbook" aria-hidden="true"></span>
+					<span class="oi" data-glyph="book" title="HANDBOOK" aria-hidden="true" data-localization-key></span>
 				</a>
 			</div>
 		</div>
@@ -28,97 +28,97 @@
 	<div id="main" class="hideMe">
 		<section id="charInfo">
 			<div id="sessionControls">
-				<button type="button" id="loadSession" disabled="true">Load Session</button>
+				<button type="button" id="loadSession" disabled="true" data-localization-key="LOAD_SESSION">Load Session</button>
 			</div>
-			<h2>Your Character</h2>
-			<div id="printout" title="Double click to copy character sheet."></div>
+			<h2 data-localization-key="YOUR_CHARACTER">Your Character</h2>
+			<div id="printout" title="DOUBLE_CLICK_TO_COPY_CHARACTER_SHEET" data-localization-key></div>
 			<div id="charStatus">
-				<h3>Character Info</h3>
-				<label for="playerWeapon">Equipped:</label>
+				<h3 data-localization-key="CHARACTER_INFO">Character Info</h3>
+				<label for="playerWeapon" data-localization-key="LABEL_EQUIPPED">Equipped:</label>
 				<select id="playerWeapon" name="playerWeapon"></select>
-				<label for="playerArmor">Armor:</label>
+				<label for="playerArmor" data-localization-key="LABEL_ARMOR">Armor:</label>
 				<select id="playerArmor" name="playerArmor"></select>
 			</div>
-			<h3>Party</h3>
+			<h3 data-localization-key="PARTY">Party</h3>
 			<ol id="charList"></ol>
 		</section>
 		<div id="rollingSection">
 			<section id="readOut">
-				<h2>Session History</h2>
+				<h2 data-localization-key="SESSION_HISTORY">Session History</h2>
 				<div id="eventPane"></div>
 			</section>
 			<section>
 				<div class="flexMe">
 					<span>
-						<h3>Make a Roll!</h3>
+						<h3 data-localization-key="SECTION_MAKE_A_ROLL">Make a Roll!</h3>
 						<div id="rollControls">
 							<div>
 								<p>
-									<label for="rollSelect">Roll using</label>
+									<label for="rollSelect" data-localization-key="ROLL_USING">Roll using</label>
 									<select id="rollSelect" name="rollSelect"></select>
 								</p>
 							</div>
 							<div>
 								<div>
-									<button id="rollExecute" type="button">Roll!</button>	
+									<button id="rollExecute" type="button" data-localization-key="ACTION_ROLL!">Roll!</button>	
 								</div>
 								<div>
-									<button id="attackExecute" type="button">Attack!</button>
+									<button id="attackExecute" type="button" data-localization-key="ACTION_ATTACK!">Attack!</button>
 									<select id="rollTarget" npc-target></select>
 								</div>
 							</div>
 						</div>
 					</span>
 					<span>
-						<h3>Summoning</h3>
+						<h3 data-localization-key="SECTION_SUMMONING">Summoning</h3>
 						<div id="summonControls">
 						</div>
 					</span>
 					<div>
-						<h3>Enemies</h3>
+						<h3 data-localization-key="ENEMIES">Enemies</h3>
 						<ol id="npcList"></ol>
 					</div>
 				</div>
 				<div>
 					<input type="checkbox" id="lazyMode" name="lazyMode"></input>
-					<label for="lazyMode" title="Any incoming rolls you need to make are resolved automatically.">Lazy Mode</label>
+					<label for="lazyMode" title="LAZY_MODE_DESCRIPTION" data-localization-key="LAZY_MODE">Lazy Mode</label>
 				</div>
 			</section>
 		</div>
 	</div>
 	<div id="modalBG">
 		<div id="errorModal">
-			<h3>Error</h3>
+			<h3 data-localization-key="ERROR">Error</h3>
 			<p id="errorText"></p>
-			<button id="errorButton" type="button">Ok</button>
+			<button id="errorButton" type="button" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="confirmModal">
-			<h3>Confirm</h3>
+			<h3 data-localization-key="CONFIRM">Confirm</h3>
 			<p id="confirmText"></p>
 			<button id="confirmOk" type="button">Ok</button>
 			<button id="confirmCancel" type="button">Cancel</button>
 		</div>
 		<div id="sessionModal">
-			<h3>Session Selection</h3>
-			<p>Choose the GM of the session you will be joining:</p>
+			<h3 data-localization-key="SESSION_SELECTION">Session Selection</h3>
+			<p data-localization-key="CHOOSE_SESSION">Choose the GM of the session you will be joining:</p>
 			<div id="sessionList"></div>
-			<button type="button" id="sessionSelectionCancel">Cancel</button>
+			<button type="button" id="sessionSelectionCancel" data-localization-key="CANCEL">Cancel</button>
 		</div>
 		<div id="rollModal">
-			<h3>Roll Needed!</h3>
+			<h3 data-localization-key="TITLE_ROLL_NEEDED">Roll Needed!</h3>
 			<p id="dieRollText"></p>
 			<p id="dieRollGMComment"></p>
 			<form>
-				<input type="text" id="dieRollComment" placeholder='Comment' maxlength="100"></input>
-				<button id="makeDieRoll" type="submit">Roll!</button>
-				<button id="cancelDieRoll" type="button">Cancel</button>
+				<input type="text" id="dieRollComment" placeholder='COMMENT' maxlength="100" data-localization-key></input>
+				<button id="makeDieRoll" type="submit" data-localization-key="ACTION_ROLL!"></button>
+				<button id="cancelDieRoll" type="button" data-localization-key="CANCEL">Cancel</button>
 			</form>
 			<div id="dieRollPanel"></div>
-			<button id="dieRollContinue">Ok</button>
+			<button id="dieRollContinue" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="profileModal">
 			<iframe></iframe>
-			<button id="profileDone" type="button">Done</button>
+			<button id="profileDone" type="button" data-localization-key="DONE">Done</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -126,6 +126,7 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/eventsystem.js"></script>
 	<script src="./assets/js/rollplay.js"></script>

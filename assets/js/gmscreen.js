@@ -28,7 +28,7 @@ var soundLibrary = {
 }
 
 /// Called on page startup.
-function initializePage(myUser) {
+async function initializePage(myUser) {
 	if (!myUser) {
 		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
 		return;
@@ -42,29 +42,31 @@ function initializePage(myUser) {
 	var npcTemplateList = $("#NPCTemplateOptions");
 	userInfo = myUser;
 
+	await localizePage(userInfo.language);
+
 	// Only has basic injury options, special Hidden value will be added later for NPCs.
 	for (i = 0; i < INJURY_LEVEL_DISPLAY.length - 1; i++) {
-		markupInjuryOptions += "<option>" + INJURY_LEVEL_DISPLAY[i] + "</option>";
+		markupInjuryOptions += "<option value='" + INJURY_LEVEL_DISPLAY[i] + "'>" + localize(INJURY_LEVEL_DISPLAY[i]) + "</option>";
 	}
 
 	for (i = 0; i < SPECIAL_ATTACK_TYPES.length; i++) {
 		if (i > 0) { 
-			markupAttackOptions += "<option>" + SPECIAL_ATTACK_TYPES[i] + "</option>"
+			markupAttackOptions += "<option value='" + SPECIAL_ATTACK_TYPES[i] + "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</option>"
 		}
 
-		markupResistOptions += "<option>" + SPECIAL_ATTACK_TYPES[i] + "</option>"
+		markupResistOptions += "<option value='" + SPECIAL_ATTACK_TYPES[i] + "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</option>"
 	}
 
 	for (i = 0; i < masterQualityList.length; i++) {
 		var workingList = masterQualityList[i];
 
 		for (var idx = 0; idx < workingList.length; idx++) {
-			markupQualityOptions += "<option value='" + workingList[idx].key + "'>" + workingList[idx].name + "</option>";
+			markupQualityOptions += "<option value='" + workingList[idx].key + "'>" + localize(workingList[idx].name) + "</option>";
 		}
 	}
 
 	for (i = 0; i < npcTemplates.length; i++) {
-		npcTemplateList.append("<option>" + npcTemplates[i].name + "</option>");
+		npcTemplateList.append("<option value='" + npcTemplates[i].name + "'>" + localize(npcTemplates[i].name) + "</option>");
 	}
 
 	for (i = -5; i <= 10; i++) {
@@ -89,7 +91,7 @@ function initializePage(myUser) {
 }
 
 function doLogout() {
-	showConfirmPopup("Log out of your account?", confirmLogout);
+	showConfirmPopup(localize("LOGOUT_CONFIRM"), confirmLogout);
 }
 
 function confirmLogout() {
@@ -111,25 +113,25 @@ function createNewSession(event) {
 		} else if (dbTransform(owner) != dbTransform(currentSession.owner)) {
 			dbLoadSessionByOwner(owner, sessionLoaded);
 		} else {
-			showConfirmPopup("Opening another session will delete the current sessions.", confirmCreateSession);
+			showConfirmPopup(localize("CONFIRM_NEW_SESSION"), confirmCreateSession);
 		}
 	} else {
-		showErrorPopup("You must enter a valid account name to start a new session.");
+		showErrorPopup(localize("USER_NOT_FOUND").replace(/USER/, owner));
 	}
 }
 
 /// End Session button handler, just fires a confirmation handler.
 function endSession() {
-	showConfirmPopup("Are you sure you want to end the session?", confirmEndSession);
+	showConfirmPopup(localize("CONFIRM_END_SESSION"), confirmEndSession);
 }
 
 function addNPCTemplate() {
 	var name = $("input[name='newNPC']").val();
 
 	if (name) {
-		$("#templateText").text("Adding " + name + ":");
+		$("#templateText").text(localize("ADD_NPC_TEMPLATE_NAME").replace(/NAME/, name));
 	} else {
-		$("#templateText").text("Adding a new NPC:");
+		$("#templateText").text(localize("ADD_NPC_TEMPLATE_TEXT"));
 	}
 
 	$("#NPCTemplateOptions").prop("selectedIndex", 0);
@@ -143,19 +145,19 @@ function showNPCTemplate(index) {
 	var templateInfo = $("#NPCTemplateValues");
 
 	templateInfo.find("*[name='attackBonus']").text(formatPositiveNegative(npcTemplates[index].attackBonus));
-	templateInfo.find("*[name='attackType']").text(SPECIAL_ATTACK_TYPES[npcTemplates[index].attackType]);
+	templateInfo.find("*[name='attackType']").text(localize(SPECIAL_ATTACK_TYPES[npcTemplates[index].attackType]));
 	templateInfo.find("*[name='damageBonus']").text(formatPositiveNegative(npcTemplates[index].damageBonus));
 	templateInfo.find("*[name='defenseBonus']").text(formatPositiveNegative(npcTemplates[index].defenseBonus));
 	templateInfo.find("*[name='toughnessBonus']").text(formatPositiveNegative(npcTemplates[index].toughnessBonus));
-	templateInfo.find("*[name='resists']").text(npcTemplates[index].resist.join("/"));
-	templateInfo.find("*[name='weakTo']").text(npcTemplates[index].weakness.join("/"));
+	templateInfo.find("*[name='resists']").text(npcTemplates[index].resist.map(item => localize(item)).join("/"));
+	templateInfo.find("*[name='weakTo']").text(npcTemplates[index].weakness.map(item => localize(item)).join("/"));
 }
 
 function confirmNPCTemplate(event) {
 	event.preventDefault();
 
 	var templateIndex = $("#NPCTemplateOptions").prop("selectedIndex");
-	var newName = $("input[name='newNPC']").val() || npcTemplates[templateIndex].name;
+	var newName = $("input[name='newNPC']").val() || localize(npcTemplates[templateIndex].name);
 	var lastFound = currentSession.npcs.length;
 
 	newName = nameEncode(newName);
@@ -202,7 +204,7 @@ function addNPC(event) {
 
 	if (name) {
 		if (currentSession.npcs.find(element => element.name == name)) {
-			showErrorPopup("An NPC with that name already exists. Please enter a unique name for the NPC.");
+			showErrorPopup(localize("NPC_NAME_EXISTS"));
 		} else {
 			name = nameEncode(name);
 			currentSession.npcs.push(new NPC(name));
@@ -213,7 +215,7 @@ function addNPC(event) {
 			dbPushEvent(new EventAddNPC(name));
 		}
 	} else {
-		showErrorPopup("Please enter a name for the NPC.");
+		showErrorPopup(localize("NPC_NO_NAME"));
 	}
 }
 
@@ -266,7 +268,7 @@ function addPlayer(event) {
 	if (name) {
 		dbLoadCharacter(name, characterLoaded);
 	} else {
-		showErrorPopup("You must enter a character name to add.");
+		showErrorPopup(localize("PLAYER_NO_NAME"));
 	}
 
 	$("input[name='newPlayer']").val("");
@@ -381,8 +383,8 @@ function activateNPC(index) {
 		$("select[name='npcAttackType']").prop("selectedIndex", currentSession.npcs[index].attackType-1);
 		$("select[name='npcDefenseBonus']").val(currentSession.npcs[index].defenseBonus);
 		$("select[name='npcToughnessBonus']").val(currentSession.npcs[index].toughnessBonus);
-		$("select[name='npcResist']").prop("selectedIndex", currentSession.npcs[index].resist);
-		$("select[name='npcWeakness']").prop("selectedIndex", currentSession.npcs[index].weakness);
+		$("select[name='npcResist']").prop("selectedIndex", localize(currentSession.npcs[index].resist));
+		$("select[name='npcWeakness']").prop("selectedIndex", localize(currentSession.npcs[index].weakness));
 	} else {
 		$("#npcCurForm button, #npcCurForm input, #npcCurForm select").attr("disabled", "true");
 		$("#NPCName").text("");
@@ -403,11 +405,11 @@ function activatePlayer(index) {
 		characterList[index].print("printout", true);
 
 		if (characterList[index].transformation) {
-			$("#playerControls").append("<button type='button' name='transformButton' data-key=''>End Transformation</button>");
+			$("#playerControls").append("<button type='button' name='transformButton' data-key=''>" + localize("TRANFORM_REVERT") + "</button>");
 		} else {
 			var targetTransforms = supernaturalTransformations.filter(element => element.parent === characterList[index].supernatural);
 
-			targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>Transform into " + element.template.name + "</button>"));
+			targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>" + localize("TRANSFORM_INTO").replace(/FORM/, localize(element.template.name)) + "</button>"));
 		}
 
 		if (currentSession.inactive) {
@@ -725,10 +727,10 @@ function updateNPCDisplay() {
 		npcList.append(
 			"<li data-index='" + i + "'>" +
 				"<div>" + 
-					"<a title='Click to view/edit'>" + currentSession.npcs[i].name + "</a>" +
+					"<a title='" + localize("CLICK_TO_VIEWEDIT") + "'>" + currentSession.npcs[i].name + "</a>" +
 					"<select>" +
 						markupInjuryOptions +
-						"<option>Hidden</option>" +
+						"<option value='Hidden'>" + localize("STATUS_HIDDEN") + "</option>" +
 					"</select>" +
 					"<button type='button' name='removeNPC'>X</button>" +
 				"</div>" +
@@ -747,7 +749,7 @@ function updateNPCDisplay() {
 function promptRemoveNPC() {
 	var NPCId = $(this).closest("li").attr("data-index");
 	$("#confirmModal").attr("data-id", NPCId);
-	showConfirmPopup("Remove NPC <b>" + currentSession.npcs[NPCId].name + "</b> from the session?", removeNPC);
+	showConfirmPopup(localize("CONFIRM_REMOVE_NPC").replace(/NAME/, currentSession.npcs[NPCId].name), removeNPC);
 }
 
 /// Executes NPC removal.
@@ -762,7 +764,7 @@ function removeNPC() {
 function promptRemovePlayer() {
 	var playerId = $(this).closest("li").attr("data-index");
 	$("#confirmModal").attr("data-id", playerId);
-	showConfirmPopup("Remove player <b>" + currentSession.characters[playerId] + "</b> from the session?", removePlayer);
+	showConfirmPopup(localize("CONFIRM_REMOVE_PLAYER").replace(/NAME/, currentSession.characters[playerId]), removePlayer);
 }
 
 /// Executes player removal.
@@ -782,7 +784,7 @@ function updatePlayerDisplay() {
 	for (var i = 0; i < currentSession.characters.length; i++) {
 		var markup = "<li data-index='" + i + "'>" +
 			"<div>" + 
-				"<a title='Click to view'>" + currentSession.characters[i] + "</a>" +
+				"<a title='" + localize("CLICK_TO_VIEW") + "'>" + currentSession.characters[i] + "</a>" +
 				"<select>" +
 					markupInjuryOptions +
 				"</select>" +
@@ -793,7 +795,7 @@ function updatePlayerDisplay() {
 
 		if (curSummon) {
 			markup += "<div class='summonDisplay'>" +
-				"<div" + ((curSummon.name) ? " title='" + curSummon.template + "'": "") +"><em>" + ((curSummon.name) ? curSummon.name : curSummon.template) + "</em></div>" +
+				"<div" + ((curSummon.name) ? " title='" + localize(curSummon.template) + "'": "") +"><em>" + ((curSummon.name) ? curSummon.name : localize(curSummon.template)) + "</em></div>" +
 				"<div>" +
 					"<select name>" +
 						markupInjuryOptions +
@@ -821,7 +823,7 @@ function updatePlayerList() {
 		markupPlayerPetOptions += "<option>" + curStatus.name + "</option>";
 
 		if (curStatus.summon) {
-			markupPlayerPetOptions += "<option value='" + nameEncode(curStatus.name + "»" + curStatus.summon.template) + "'> » " + (curStatus.summon.name || curStatus.summon.template) + "</option>";
+			markupPlayerPetOptions += "<option value='" + nameEncode(curStatus.name + "»" + curStatus.summon.template) + "'> » " + (curStatus.summon.name || localize(curStatus.summon.template)) + "</option>";
 		}
 	});
 
@@ -864,9 +866,9 @@ function addEventDisplay(event) {
 					"<select name='attackType'>" +
 						markupAttackOptions +
 					"</select>" +
-					"<button type='button' name='playerAttackHit'>Hit!</button>" +
-					"<button type='button' name='playerAttackMiss'>Miss!</button>" +
-					"<input type='text' name='attackComment' placeholder='Comment' maxlength='100'></input>" +
+					"<button type='button' name='playerAttackHit'>" + localize("ACTION_HIT!") + "</button>" +
+					"<button type='button' name='playerAttackMiss'>" + localize("ACTION_MISS!") + "</button>" +
+					"<input type='text' name='attackComment' placeholder='" + localize("COMMENT") + "' maxlength='100'></input>" +
 				"</div>"
 			);
 			playSound("alert");
@@ -928,11 +930,11 @@ function addEventDisplay(event) {
 					"<div class='gmExtra'>" +
 						"<div>" +
 							"<div>" +
-								"<button type='button' name='subordinateSuccess'>Success!</button>" +
-								"<button type='button' name='subordinateFailure'>Failure!</button>" +
+								"<button type='button' name='subordinateSuccess'>" + localize("ACTION_SUCCESS!") + "</button>" +
+								"<button type='button' name='subordinateFailure'>" + localize("ACTION_FAILURE!") + "</button>" +
 							"</div>" +
 						"</div>" +
-						"<input type='text' name='subordinateComment' placeholder='Comment' maxlength='100'></input>" +
+						"<input type='text' name='subordinateComment' placeholder='" + localize("COMMENT") + "' maxlength='100'></input>" +
 					"</div>"
 				);
 
@@ -962,9 +964,9 @@ function addEventDisplay(event) {
 					"<select name='attackType'>" +
 						markupAttackOptions +
 					"</select>" +
-					"<button type='button' name='npcAttackHit'>Hit!</button>" +
-					"<button type='button' name='npcAttackMiss'>Miss!</button>" +
-					"<input type='text' name='attackComment' placeholder='Comment' maxlength='100'></input>" +
+					"<button type='button' name='npcAttackHit'>" + localize("ACTION_HIT!") + "</button>" +
+					"<button type='button' name='npcAttackMiss'>" + localize("ACTION_MISS!") + "</button>" +
+					"<input type='text' name='attackComment' placeholder='" + localize("COMMENT") + "' maxlength='100'></input>" +
 				"</div>"
 			);
 			holder.children().last().find("select").prop("selectedIndex", damageType);
@@ -1014,9 +1016,9 @@ function addEventDisplay(event) {
 			var holder = eventPane.children().last();
 			holder.append(
 				"<div class='gmExtra'>" +
-					"<button type='button' name='summonSuccess'>Success!</button>" +
-					"<button type='button' name='summonFailure'>Failure!</button>" +
-					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
+					"<button type='button' name='summonSuccess'>" + localize("ACTION_SUCCESS!") + "</button>" +
+					"<button type='button' name='summonFailure'>" + localize("ACTION_FAILURE!") + "</button>" +
+					"<input type='text' name='gmComment' placeholder='" + localize("COMMENT") + "' maxlength='100'></input>" +
 				"</div>"
 			);
 			playSound("alert");
@@ -1025,9 +1027,9 @@ function addEventDisplay(event) {
 			var holder = eventPane.children().last();
 			holder.append(
 				"<div class='gmExtra'>" +
-					"<button type='button' name='transformAllow'>Allow</button>" +
-					"<button type='button' name='transformDeny'>Deny</button>" +
-					"<input type='text' name='gmComment' placeholder='Comment' maxlength='100'></input>" +
+					"<button type='button' name='transformAllow'>" + localize("ACTION_ALLOW") + "</button>" +
+					"<button type='button' name='transformDeny'>" + localize("ACTION_DENY") + "</button>" +
+					"<input type='text' name='gmComment' placeholder='" + localize("COMMENT") + "' maxlength='100'></input>" +
 				"</div>"
 			);
 			playSound("alert");
@@ -1066,7 +1068,7 @@ function addEventDisplay(event) {
 						}
 					}
 				} else {
-					console.log("Error removing NPC '" + event.name + "' from the session - not found.");
+					console.log(localize("ERROR_REMOVE_NPC").replace(/NAME/, event.name));
 				}
 			}
 			break;
@@ -1088,7 +1090,7 @@ function addEventDisplay(event) {
 						}
 					}
 				} else {
-					console.log("Error removing player'" + event.player + "' from the session - not found.");
+					console.log(localize("ERROR_REMOVE_PLAYER").replace(/NAME/, event.player));
 				}
 			}
 			break;
@@ -1107,17 +1109,17 @@ function addEventDisplay(event) {
 							"<select name='bonus' >" +
 								markupBonusOptions +
 							"</select>" +
-							"<button type='button' name='rollBonus'>Roll</button>" +
+							"<button type='button' name='rollBonus'>" + localize("ACTION_ROLL") + "</button>" +
 						"</div>" +
 						"<div>" +
 							"<select name='attackType'>" +
 								markupAttackOptions +
 							"</select>" +
 							" vs. Toughness" +
-							"<button type='button' name='rollToughness'>Roll</button>" +
+							"<button type='button' name='rollToughness'>" + localize("ACTION_ROLL") + "</button>" +
 						"</div>" +
 					"</div>" +
-					"<input type='text' name='rollComment' placeholder='Comment' maxlength='100'></input>" +
+					"<input type='text' name='rollComment' placeholder='" + localize("COMMENT") + "' maxlength='100'></input>" +
 				"</div>"
 			);
 			holder.find("select[name='bonus']").prop("selectedIndex", 5);
@@ -1257,10 +1259,10 @@ function characterLoaded(loadMe) {
 			activatePlayer(currentSession.characters.length - 1);
 			dbPushEvent(new EventAddPlayer(character.name));
 		} else {
-			showErrorPopup("This character is already in the session.");
+			showErrorPopup(localize("PLAYER_IN_SESSION"));
 		}
 	} else {
-		showErrorPopup("Character not found.");
+		showErrorPopup(localize("CHARACTER_NOT_FOUND"));
 	}
 }
 

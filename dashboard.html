@@ -12,18 +12,18 @@
 </head>
 <body>
 	<nav>
-		<h1 class="nopointer">ESO Rollplay</h1>
+		<h1 class="nopointer" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</h1>
 		<div class="toolbar">
 			<div id="logout">
-				<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+				<span class="oi" data-glyph="account-logout" title="LOGOUT" aria-hidden="true" data-localization-key></span>
 			</div>
 			<div id="handbook">
 				<a href="./handbook.html" target="_blank">
-					<span class="oi" data-glyph="book" title="Handbook" aria-hidden="true"></span>
+					<span class="oi" data-glyph="book" title="HANDBOOK" aria-hidden="true" data-localization-key></span>
 				</a>
 			</div>
 			<div id="userOptions">
-				<span class="oi" data-glyph="wrench" title="Account Options" aria-hidden="true"></span>
+				<span class="oi" data-glyph="wrench" title="ACCOUNT_OPTIONS" aria-hidden="true" data-localization-key></span>
 			</div>
 		</div>
 	</nav>
@@ -33,16 +33,16 @@
 			<div id="loading"></div>
 			<div id="characterCenter" class="hideMe">
 				<div id="newUserPrompt" class="hideMe">
-					<h3>Welcome aboard!</h3>
+					<h3 data-localization-key="NEW_PLAYER_WELCOME">Welcome aboard!</h3>
 					<p>
-						Please refer to the
+						<span data-localization-key="NEW_PLAYER_BEFORE_LINK">Please refer to the</span>
 						<a href="./handbook.html" target="_blank">
-							<span class="oi" data-glyph="book" title="Handbook" aria-hidden="true"></span>
-							Handbook
+							<span class="oi" data-glyph="book" title="HANDBOOK" aria-hidden="true" data-localization-key></span>
+							<span data-localization-key="HANDBOOK">Handbook</span>
 						</a>
-						for more information on getting started.  Or dive right in and make your first character!
+						<span data-localization-key="NEW_PLAYER_AFTER_LINK">for more information on getting started.  Or dive right in and make your first character!</span>
 					</p>
-					<button type="button" name="createCharacter">Make a Character</button>
+					<button type="button" name="createCharacter" data-localization-key="MAKE_A_CHARACTER">Make a Character</button>
 				</div>
 				<div id="charListHolder" class="hideMe">
 					<ol id="characterList">
@@ -51,64 +51,64 @@
 				</div>
 				<div id="characterCommands" class="hideMe">
 					<div>
-						<div id="printout">Please select a character.</div>
+						<div id="printout" data-localization-key="PLEASE_SELECT_A_CHARACTER">Please select a character.</div>
 					</div>
 					<div id="characterButtons">
-						<button type="button" id="playCharacter" disabled="true">Play!</button>
-						<button type="button" id="editCharacter" disabled="true">Edit</button>
-						<button type="button" id="deleteCharacter" disabled="true">Delete</button>
+						<button type="button" id="playCharacter" disabled="true" data-localization-key="BUTTON_PLAY">Play!</button>
+						<button type="button" id="editCharacter" disabled="true" data-localization-key="BUTTON_EDIT">Edit</button>
+						<button type="button" id="deleteCharacter" disabled="true" data-localization-key="BUTTON_DELETE">Delete</button>
 					</div>
 				</div>
 			</div>
 			<div id="miscTasks" class="hideMe">
-				<h3>Other Tasks</h3>
+				<h3 data-localization-key="OTHER_TASKS">Other Tasks</h3>
 				<div id="taskHolder"></div>
 			</div>
 		</div>
 	</section>
 	<footer>
-		<div><strong>Join the discussion:</strong><a class="buttonLink" href="https://discord.gg/3Bugsvp" target="_blank"><img src="./assets/images/Discord-Logo+Wordmark-White.png" alt="Discord logo" /></a></div>
-		<div><strong>Get the addon:</strong> <a href="https://www.esoui.com/downloads/info2871-RollplayIntegration.html" target="_blank">ESOUI.com</a> <span class="smolbreak"><i>or</i> in the Roleplay category in <a href="https://minion.mmoui.com/" target="_blank">Minion</a>!</span></div>
+		<div><strong data-localization-key="FOOTER_JOIN_THE_DISCUSSION">Join the discussion:</strong><a class="buttonLink" href="https://discord.gg/3Bugsvp" target="_blank"><img src="./assets/images/Discord-Logo+Wordmark-White.png" alt="Discord logo" /></a></div>
+		<div><strong data-localization-key="FOOTER_GET_THE_ADDON">Get the addon:</strong> <a href="https://www.esoui.com/downloads/info2871-RollplayIntegration.html" target="_blank">ESOUI.com</a> <span class="smolbreak"><i data-localization-key="OR">or</i> <span data-localization-key="FOOTER_ADDON_BEFORE_LINK">in the Roleplay category in</span> <a href="https://minion.mmoui.com/" target="_blank">Minion</a><span data-localization-key="FOOTER_ADDON_AFTER_LINK">!</span></span></div>
 	</footer>
 	<div id="modalBG">
 		<div id="errorModal">
-			<h3>Error</h3>
+			<h3 data-localization-key="ERROR">Error</h3>
 			<p id="errorText"></p>
-			<button id="errorButton" type="button">Ok</button>
+			<button id="errorButton" type="button" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="confirmModal">
-			<h3>Confirm</h3>
+			<h3 data-localization-key="CONFIRM">Confirm</h3>
 			<p id="confirmText"></p>
-			<button id="confirmOk" type="button">Ok</button>
-			<button id="confirmCancel" type="button">Cancel</button>
+			<button id="confirmOk" type="button" data-localization-key="OK">Ok</button>
+			<button id="confirmCancel" type="button" data-localization-key="CANCEL">Cancel</button>
 		</div>
 		<div id="settingsModal">
-			<h3>Account Settings</h3>
+			<h3 data-localization-key="ACCOUNT_SETTINGS">Account Settings</h3>
 			<div class="settingGroup">
 				<div>
-					<label for="optVolume">Alert Volume</label>
+					<label for="optVolume" data-localization-key="ALERT_VOLUME">Alert Volume</label>
 					<input type="range" id="optVolume" min="0" max="1" step="0.1"></input>
 				</div>
 			</div>
 			<div class="settingGroup">
 				<div>
 					<input type="checkbox" id="optGM" />
-					<label for="optGM">Game Master</label>
+					<label for="optGM" data-localization-key="GAME_MASTER">Game Master</label>
 				</div>
 				<p>
-					<em>Enable this option for access<br />to the GM Screen.</em>
+					<em><span data-localization-key="GM_SETTING_LINE_1">Enable this option for access</span><br /><span data-localization-key="GM_SETTING_LINE_2">to the GM Screen.</span></em>
 				</p>
 			</div>
 			<div class="settingGroup">
-				<h4>Change Password</h4>
-				<label for="newPassword">New Password</label>
+				<h4 data-localization-key="CHANGE_PASSWORD">Change Password</h4>
+				<label for="newPassword" data-localization-key="NEW_PASSWORD">New Password</label>
 				<input type="password" id="newPassword" />
-				<label for="confirmPassword">Confirm Password</label>
+				<label for="confirmPassword" data-localization-key="CONFIRM_PASSWORD">Confirm Password</label>
 				<input type="password" id="confirmPassword" />
 			</div>
 			<div>
-				<button id="settingsOk" type="button">Ok</button>
-				<button id="settingsCancel" type="button">Cancel</button>
+				<button id="settingsOk" type="button" data-localization-key="OK">Ok</button>
+				<button id="settingsCancel" type="button" data-localization-key="CANCEL">Cancel</button>
 			</div>
 		</div>
 	</div>
@@ -117,6 +117,7 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/dashboard.js"></script>
 </body>

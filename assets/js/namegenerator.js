@@ -24,6 +24,8 @@ function initializePage(data) {
 		generate(null);
 	}
 
+	localizePage(localStorage.getItem("ESORP[language]"));
+
 	$("#loading").remove();
 	$("h2, nav, section").removeClass("hideMe");
 }
@@ -184,8 +186,8 @@ function sendToDashboard(event) {
 }
 
 /// Event registration.
-//$.getJSON( "https://thebobbyllama.github.io/eso-rollplay/assets/data/namedata.json?raw=true", initializePage);
 $.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
+//initializePage([]); // LOCAL TESTING ONLY!!!
 $("nav h1").on("click", sendToDashboard);
 $("#race").on("change", createFilters);
 $("#generateButton").on("click", generate);

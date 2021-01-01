@@ -10,7 +10,7 @@ var character = new CharacterSheet();
 var profile = {};
 
 /// Called on page startup.
-function initializePage(myUser) {
+async function initializePage(myUser) {
 	if (!myUser) {
 		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
 		return;
@@ -21,6 +21,8 @@ function initializePage(myUser) {
 
 	userInfo = myUser;
 	character.player = userInfo.display;
+
+	await localizePage(userInfo.language);
 
 	fillSection("attributes", attributes);
 	fillSection("skillsCombat", skillsCombat);
@@ -34,17 +36,17 @@ function initializePage(myUser) {
 	var classSelect = $("select[name='charClass']");
 
 	for (i = 0; i < races.length; i++) {
-		raceSelect.append("<option>" + races[i].name + "</option>")
+		raceSelect.append("<option value='" + races[i].name + "'>" + localize(races[i].name) + "</option>")
 	}
 
-	superSelect.append("<option value=''>N/A</option>")
+	superSelect.append("<option value=''>" + localize("NOT_APPLICABLE") + "</option>")
 
 	for (i = 1; i < supernaturals.length; i++) {
-		superSelect.append("<option>" + supernaturals[i].name + "</option>")
+		superSelect.append("<option value='" + supernaturals[i].name +"'>" + localize(supernaturals[i].name) + "</option>")
 	}
 
 	for (i = 0; i < classes.length; i++) {
-		classSelect.append("<option>" + classes[i] + "</option>")
+		classSelect.append("<option value='" + classes[i] + "'>" + localize(classes[i]) + "</option>")
 	}
 
 	raceSelect.trigger("change");
@@ -71,14 +73,14 @@ function fillSection(sectionName, elements) {
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div data-key='" + elements[i].key + "'>" +
-						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='Difficulty: " + skillDifficultyNames[elements[i].difficulty] + "'" : "") +">" + elements[i].name + (((elements[i].difficulty === undefined) && (elements[i].governing)) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
+						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='" + localize("LABEL_DIFFICULTY") + " " + skillDifficultyNames[elements[i].difficulty] + "'" : "") +">" + elements[i].name + (((elements[i].difficulty === undefined) && (elements[i].governing)) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
 						"<input type='range' min='" + elements[i].min + "' max='" + elements[i].max + "' value='0' name='" + elements[i].key + "' />" +
 					"</div>");
 	}
 }
 
 function doLogout() {
-	showConfirmPopup("Log out of your account?", confirmLogout);
+	showConfirmPopup(localize("LOGOUT_CONFIRM"), confirmLogout);
 }
 
 function confirmLogout() {
@@ -304,7 +306,7 @@ function checkHighlight(checkMe) {
 function shortDescriptionHelper() {
 	var desc = $(this);
 
-	showFooter("This is only a summary.  Please be brief! (" + desc.val().length + "/" + desc.prop("maxlength") + " characters)")
+	showFooter(localize("SHORT_DESCRIPTION_HELPER").replace(/CURRENT/, desc.val().length).replace(/MAX/, desc.prop("maxlength")));
 }
 
 /// Hides the helper when the short description is no longer being edited.
@@ -426,12 +428,12 @@ function saveChar(event) {
 	event.preventDefault();
 
 	if (!character.name) {
-		showErrorPopup("Please enter a character name.");
+		showErrorPopup(localize("ERROR_CHARACTER_NAME"));
 		return;
 	}
 
 	if (!calculateTotalPoints()) {
-		showErrorPopup("You are over your point allotment.");
+		showErrorPopup(localize("ERROR_OVER_POINT_ALOTMENT"));
 		return;
 	}
 
@@ -442,7 +444,7 @@ function checkCharacterSave(loadMe) {
 	var tmpChar = loadMe.val();
 
 	if ((tmpChar) && (dbTransform(tmpChar.player) != dbTransform(userInfo.display))) {
-		showErrorPopup("This character has already been created by another player! (" + nameDecode(tmpChar.player) + ")");
+		showErrorPopup(localize("ERROR_CHARACTER_OTHER_PLAYER").replace(/PLAYER/, nameDecode(tmpChar.player)));
 	} else {
 		dbSaveCharacter(character, profile, charSaveSuccess, showErrorPopup);
 	}
@@ -450,7 +452,7 @@ function checkCharacterSave(loadMe) {
 
 /// Notifies the user on successful save.
 function charSaveSuccess() {
-	showFooter("Character saved successfully! You may return to the dashboard.");
+	showFooter(localize("CHARACTER_SAVED_SUCCESSFULLY"));
 }
 
 /// Receives a character from the database.
@@ -479,10 +481,10 @@ function characterLoaded(loadMe) {
 			updateCharacterSheet();
 			finishDraw();
 		} else {
-			showErrorPopup("You cannot edit a character that is not yours!", divertToDashboard);
+			showErrorPopup(localize("ERROR_EDIT_CHARACTER_NOT_YOURS"), divertToDashboard);
 		}
 	} else {
-		showErrorPopup("Character not found.", divertToDashboard);
+		showErrorPopup(localize("CHARACTER_NOT_FOUND"), divertToDashboard);
 	}
 }
 

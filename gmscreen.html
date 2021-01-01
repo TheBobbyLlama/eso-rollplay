@@ -12,14 +12,14 @@
 </head>
 <body>
 	<nav>
-		<h1 title="Return to Dashboard">ESO Rollplay</h1>
+		<h1 title="RETURN_TO_DASHBOARD" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</h1>
 		<div class="toolbar">
 			<div id="logout">
-				<span class="oi" data-glyph="account-logout" title="Logout" aria-hidden="true"></span>
+				<span class="oi" data-glyph="account-logout" title="LOGOUT" aria-hidden="true" data-localization-key></span>
 			</div>
 			<div id="handbook">
 				<a href="./handbook.html" target="_blank">
-					<span class="oi" data-glyph="book" title="Handbook" aria-hidden="true"></span>
+					<span class="oi" data-glyph="book" title="HANDBOOK" aria-hidden="true" data-localization-key></span>
 				</a>
 			</div>
 		</div>
@@ -27,10 +27,10 @@
 	<div id="loading"></div>
 	<div id="main" class="hideMe">
 		<section id="encounterInfo">
-			<h2>Current Session</h2>
+			<h2 data-localization-key="CURRENT_SESSION">Current Session</h2>
 			<form>
-				<button type="submit" id="createNewSession">Open Session</button>
-				<button type="button" id="endSession">End Session</button>
+				<button type="submit" id="createNewSession" data-localization-key="OPEN_SESSION">Open Session</button>
+				<button type="button" id="endSession" data-localization-key="END_SESSION">End Session</button>
 			</form>
 			<div>
 				<h3>NPCs</h3>
@@ -38,40 +38,40 @@
 					<div id="npcList">
 						<ol></ol>
 						<form>
-							<input type="text" name="newNPC" placeholder="New NPC name here" maxlength="25"></input>
-							<button type="button" id="addNPCTemplate" title="Add NPC from template.">?</button>
-							<button type="submit" id="addNPC">Add</button>
+							<input type="text" name="newNPC" placeholder="NEW_NPC_NAME_HERE" maxlength="25" data-localization-key></input>
+							<button type="button" id="addNPCTemplate" title="ADD_NPC_FROM_TEMPLATE" data-localization-key>?</button>
+							<button type="submit" id="addNPC" data-localization-key="ADD">Add</button>
 						</form>
 					</div>
 					<div>
 						<form id="npcCurForm">
-							<h4 id="NPCName">Current NPC</h4>
+							<h4 id="NPCName" data-localization-key="CURRENT_NPC">Current NPC</h4>
 							<div>
-								<label for="npcAttackBonus">Attack Bonus:</label>
+								<label for="npcAttackBonus" data-localization-key="LABEL_ATTACK_BONUS">Attack Bonus:</label>
 								<select name="npcAttackBonus"></select>
 							</div>
 							<div>
-								<label for="npcAttackType">Attack Type:</label>
+								<label for="npcAttackType" data-localization-key="LABEL_ATTACK_TYPE">Attack Type:</label>
 								<select name="npcAttackType"></select>
 							</div>
 							<div>
-								<label for="npcDamageBonus">Damage Bonus:</label>
+								<label for="npcDamageBonus" data-localization-key="LABEL_DAMAGE_BONUS">Damage Bonus:</label>
 								<select name="npcDamageBonus"></select>
 							</div>
 							<div>
-								<label for="npcDefenseBonus">Defense Bonus:</label>
+								<label for="npcDefenseBonus" data-localization-key="LABEL_DEFENSE_BONUS">Defense Bonus:</label>
 								<select name="npcDefenseBonus"></select>
 							</div>
 							<div>
-								<label for="npcToughnessBonus">Toughness Bonus:</label>
+								<label for="npcToughnessBonus" data-localization-key="LABEL_TOUGHNESS_BONUS">Toughness Bonus:</label>
 								<select name="npcToughnessBonus" select></select>
 							</div>
 							<div>
-								<label for="npcResist">Resists:</label>
+								<label for="npcResist" data-localization-key="LABEL_RESISTS">Resists:</label>
 								<select name="npcResist"></select>
 							</div>
 							<div>
-								<label for="npcWeakness">Weak to:</label>
+								<label for="npcWeakness" data-localization-key="LABEL_WEAK_TO">Weak to:</label>
 								<select name="npcWeakness"></select>
 							</div>
 						</form>
@@ -79,60 +79,60 @@
 				</div>
 			</div>
 			<div>
-				<h3>Players</h3>
+				<h3 data-localization-key="PLAYERS">Players</h3>
 				<div id="playerManagement">
 					<div id="playerList">
 						<ol></ol>
 						<form>
-							<input type="text" name="newPlayer" placeholder="Character name here" maxLength="25"></input>
-							<button type="button" id="searchPlayer" title="Search for a character by account name.">?</button>
-							<button type="submit" id="addPlayer">Add</button>
+							<input type="text" name="newPlayer" placeholder="CHARACTER_NAME_HERE" maxLength="25" data-localization-key></input>
+							<button type="button" id="searchPlayer" title="SEARCH_CHARACTER_BY_ACCOUNT_NAME" data-localization-key>?</button>
+							<button type="submit" id="addPlayer" data-localization-key="ADD">Add</button>
 						</form>
 					</div>
 					<div id="playerControls">
-						<div id="printout" title="Double click to copy character sheet."></div>
+						<div id="printout" title="DOUBLE_CLICK_TO_COPY_CHARACTER_SHEET" data-localization-key></div>
 					</div>
 				</div>
 			</div>
 		</section>
 		<div id="rollingSection">
 			<section id="readOut">
-				<h2>Session History</h2>
+				<h2 data-localization-key="SESSION_HISTORY">Session History</h2>
 				<div id="eventPane"></div>
 			</section>
 			<section id="rollPanel">
-				<h3>Make a Roll</h3>
+				<h3 data-localization-key="TITLE_MAKE_A_ROLL">Make a Roll</h3>
 				<div>
 					<div class="flexMe">
 						<select id="rollNPC" npc-list></select>
-						<input type="text" id="rollComment" placeholder='Comment' maxlength="100"></input>
+						<input type="text" id="rollComment" placeholder='COMMENT' maxlength="100" data-localization-key></input>
 					</div>
 					<div>
-						<label for="rollBonus">Roll die</label>
+						<label for="rollBonus" data-localization-key="ROLL_DIE">Roll die</label>
 						<select id="rollBonus" name="rollBonus"></select>
-						<button type="button" id="rollPlain">Roll</button>
+						<button type="button" id="rollPlain" data-localization-key="ACTION_ROLL">Roll</button>
 					</div>
 					<div class="flexMe">
 						<div>
-							<label for="rollTarget" player-target>Target Player</label>
+							<label for="rollTarget" player-target data-localization-key="TARGET_PLAYER">Target Player</label>
 							<select id="rollTarget" name="rollTarget" player-pet-target></select>
 						</div>
 						<div>
 							<div>
-								<button type="button" id="rollAttack">Attack!</button>
+								<button type="button" id="rollAttack" data-localization-key="ACTION_ATTACK!">Attack!</button>
 							</div>
 							<div id="playerRollPanel">
 								<div>
 									<div>
-										<button type="button" id="rollPrompt">Prompt for Roll</button>
+										<button type="button" id="rollPrompt" data-localization-key="PROMPT_FOR_ROLL">Prompt for Roll</button>
 									</div>
 									<div>
 										<select id="contestedBonus"></select>
-										<button type="button" id="rollContested">Contested Roll</button>
+										<button type="button" id="rollContested" data-localization-key="CONTESTED_ROLL">Contested Roll</button>
 									</div>
 								</div>
 								<div class="flexMe">
-									<label for="rollStat">vs.</label>
+									<label for="rollStat" data-localization-key="VS">vs.</label>
 									<select id="rollStat" name="rollStat"></select>
 								</div>
 							</div>
@@ -143,19 +143,19 @@
 							<select id="playerContested1" player-target></select>
 							<select id="playerKey1"></select>
 						</div>
-						<button type="button" id="rollPlayerContested">Roll Against</button>
+						<button type="button" id="rollPlayerContested" data-localization-key="ROLL_AGAINST">Roll Against</button>
 						<div class="flexMe">
 							<select id="playerContested2" player-target></select>
 							<select id="playerKey2"></select>
 					</div>
 				</div>
-				<h3>Make a GM Post</h3>
+				<h3 data-localization-key="MAKE_A_GM_POST">Make a GM Post</h3>
 				<div id="commentArea">
 					<div>
-						<textarea id="GMPost" maxlength="500" placeholder="Make a post here and hit Send."></textarea>
+						<textarea id="GMPost" maxlength="500" placeholder="MAKE_POST_HIT_SEND" data-localization-key></textarea>
 					</div>
 					<div>
-						<button type="button" id="sendComment">Send</button>
+						<button type="button" id="sendComment" data-localization-key="SEND">Send</button>
 					</div>
 				</div>
 			</section>
@@ -163,57 +163,57 @@
 	</div>
 	<div id="modalBG">
 		<div id="errorModal">
-			<h3>Error</h3>
+			<h3 data-localization-key="ERROR">Error</h3>
 			<p id="errorText"></p>
-			<button id="errorButton" type="button">Ok</button>
+			<button id="errorButton" type="button" data-localization-key="OK">Ok</button>
 		</div>
 		<div id="confirmModal">
-			<h3>Confirm</h3>
+			<h3 data-localization-key="CONFIRM">Confirm</h3>
 			<p id="confirmText"></p>
-			<button id="confirmOk" type="button">Ok</button>
-			<button id="confirmCancel" type="button">Cancel</button>
+			<button id="confirmOk" type="button" data-localization-key="OK">Ok</button>
+			<button id="confirmCancel" type="button" data-localization-key="CANCEL">Cancel</button>
 		</div>
 		<div id="NPCTemplateModal">
-			<h3>Add NPC from Template</h3>
-			<p id="templateText">Adding a new NPC:</p>
+			<h3 data-localization-key="ADD_NPC_TEMPLATE">Add NPC from Template</h3>
+			<p id="templateText" data-localization-key="ADD_NPC_TEMPLATE_TEXT">Adding a new NPC:</p>
 			<form>
 				<div>
 					<select id="NPCTemplateOptions"></select>
 				</div>
 				<div id="NPCTemplateValues">
-					<div>Attack Bonus:</div>
+					<div data-localization-key="LABEL_ATTACK_BONUS">Attack Bonus:</div>
 					<div name="attackBonus"></div>
-					<div>Attack Type:</div>
+					<div data-localization-key="LABEL_ATTACK_TYPE">Attack Type:</div>
 					<div name="attackType"></div>
-					<div>Damage Bonus:</div>
+					<div data-localization-key="LABEL_DAMAGE_BONUS">Damage Bonus:</div>
 					<div name="damageBonus"></div>
-					<div>Defense Bonus:</div>
+					<div data-localization-key="LABEL_DEFENSE_BONUS">Defense Bonus:</div>
 					<div name="defenseBonus"></div>
-					<div>Toughness Bonus:</div>
+					<div data-localization-key="LABEL_TOUGHNESS_BONUS">Toughness Bonus:</div>
 					<div name="toughnessBonus"></div>
-					<div>Resists:</div>
+					<div data-localization-key="LABEL_RESISTS">Resists:</div>
 					<div name="resists"></div>
-					<div>Weak to:</div>
+					<div data-localization-key="LABEL_WEAK_TO">Weak to:</div>
 					<div name="weakTo"></div>
 				</div>
 				<div>
-					<button type="submit" id="NPCTemplateAdd">Add</button>
-					<button type="button" id="NPCTemplateCancel">Cancel</button>
+					<button type="submit" id="NPCTemplateAdd" data-localization-key="ADD">Add</button>
+					<button type="button" id="NPCTemplateCancel" data-localization-key="CANCEL">Cancel</button>
 				</div>
 			</form>
 		</div>
 		<div id="playerSearchModal">
-			<h3>Player Search</h3>
+			<h3 data-localization-key="PLAYER_SEARCH">Player Search</h3>
 			<form>
-				<input type="text" id="playerSearchName" maxlength="25" placeholder="Player account name"></input>
-				<button type="submit" id="playerSearchButton">Search</button>
+				<input type="text" id="playerSearchName" maxlength="25" placeholder="PLAYER_ACCOUNT_NAME" data-localization-key></input>
+				<button type="submit" id="playerSearchButton" data-localization-key="SEARCH">Search</button>
 			</form>
 			<div id="playerSearchResults"></div>
-			<button id="playerSearchCancel">Cancel</button>
+			<button id="playerSearchCancel" data-localization-key="CANCEL">Cancel</button>
 		</div>
 		<div id="profileModal">
 			<iframe></iframe>
-			<button id="profileDone" type="button">Done</button>
+			<button id="profileDone" type="button" data-localization-key="DONE">Done</button>
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -221,6 +221,7 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
 	<script src="./assets/js/eventsystem.js"></script>
 	<script src="./assets/js/gmscreen.js"></script>

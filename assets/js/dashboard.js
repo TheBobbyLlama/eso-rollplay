@@ -4,14 +4,17 @@ var characterCache = [];
 
 var taskHolder = $("#taskHolder");
 
-function initializePage(myUser) {
+async function initializePage(myUser) {
 	if (!myUser) {
 		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
 		return;
 	}
 
 	userInfo = myUser;
-	$("#welcomeHeader").text("Welcome, " + userInfo.display.replace(/^@/, "") + "!");
+
+	await localizePage(userInfo.language);
+
+	$("#welcomeHeader").text(localize("WELCOME_MESSAGE").replace(/USER/, userInfo.display.replace(/^@/, "")));
 	populateCharacterList();
 
 	fillTaskHolder();
@@ -24,15 +27,15 @@ function fillTaskHolder() {
 	taskHolder.empty();
 
 	if (userInfo.gameMaster) {
-		taskHolder.append("<button type='button' id='gmScreen'>GM Screen</button>")
+		taskHolder.append("<button type='button' id='gmScreen'>" + localize("GM_SCREEN") + "</button>")
 	}
 
-	taskHolder.append("<button type='button' id='profileViewer'>Browse Characters</button>");
-	taskHolder.append("<button type='button' id='nameGenerator'>Generate Lore Friendly Names</button>");
+	taskHolder.append("<button type='button' id='profileViewer'>" + localize("BROWSE_CHARACTERS") + "</button>");
+	taskHolder.append("<button type='button' id='nameGenerator'>" + localize("GENERATE_LORE_FRIENDLY_NAMES") + "</button>");
 }
 
 function doLogout() {
-	showConfirmPopup("Log out of your account?", confirmLogout);
+	showConfirmPopup(localize("LOGOUT_CONFIRM"), confirmLogout);
 }
 
 function confirmLogout() {
@@ -53,7 +56,7 @@ function populateCharacterList() {
 			charList.append("<li class='charItem' data-index='" + i + "'>" + userInfo.characters[i] + "</li>");
 		}
 
-		charList.append("<li><button type='button' name='createCharacter'>Create a New Character</button></li>");
+		charList.append("<li><button type='button' name='createCharacter'>" + localize("CREATE_A_NEW_CHARACTER") + "</button></li>");
 
 		$("#newUserPrompt").addClass("hideMe");
 		$("#charListHolder, #characterCommands").removeClass("hideMe");
@@ -83,7 +86,7 @@ function setCharacterActive(newIndex) {
 			dbLoadCharacter(userInfo.characters[activeChar], characterLoaded);
 		}
 	} else {
-		$("#printout").text("Please select a character.");
+		$("#printout").text(localize("PLEASE_SELECT_A_CHARACTER"));
 	}
 }
 
@@ -93,7 +96,7 @@ function characterLoaded(loadMe) {
 		characterCache.push(tmpChar);
 		displayCharacter(tmpChar);
 	} else {
-		showErrorPopup("There was an error loading the character.");
+		showErrorPopup(localize("THERE_WAS_AN_ERROR_LOADING_THE_CHARACTER"));
 	}
 }
 
@@ -118,7 +121,7 @@ function editCharacter() {
 }
 
 function deleteCharacter() {
-	showConfirmPopup("Are you sure you want to delete the character " + userInfo.characters[activeChar] + "?", confirmDeleteCharacter);
+	showConfirmPopup(localize("CONFIRM_DELETE_CHARACTER").replace(/CHARACTER/, userInfo.characters[activeChar]), confirmDeleteCharacter);
 }
 
 function confirmDeleteCharacter() {
