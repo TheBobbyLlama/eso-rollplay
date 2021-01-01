@@ -6,13 +6,12 @@ const SKILL_DIFF_MODERATE = 1;
 const SKILL_DIFF_HARD = 2;
 const SKILL_DIFF_ESOTERIC = 3;
 
-const skillDifficultyNames = [ "Easy", "Moderate", "Hard", "Esoteric!" ];
+const skillDifficultyNames = [ "SKILL_EASY", "SKILL_MODERATE", "SKILL_HARD", "SKILL_ESOTERIC" ];
 
 /// Base class for attributes or skills.
 class QualityTemplate {
-	constructor(myName, myDesc, myMin, myMax) {
-		this.name = myName;
-		this.description = myDesc,
+	constructor(prefix ="", myName, myMin, myMax) {
+		this.name = prefix + myName.replace(/\s/g, "_").replace(/\W/g, "").toUpperCase();
 		this.key = myName.replace(/[\s\W]/g, "");
 		this.min = myMin;
 		this.max = myMax;
@@ -20,21 +19,21 @@ class QualityTemplate {
 }
 
 class Attribute extends QualityTemplate {
-	constructor(myName, myDesc) {
-		super(myName, myDesc, -2, 5);
+	constructor(myName) {
+		super("ATTRIBUTE_", myName, -2, 5);
 	}
 }
 
 class Skill extends QualityTemplate {
-	constructor(myName, myAttr, myDesc) {
-		super(myName, myDesc, 0, 10);
+	constructor(myName, myAttr) {
+		super("SKILL_", myName, 0, 10);
 		this.governing = myAttr;
 	}
 }
 
 class ExtraSkill extends QualityTemplate {
-	constructor(myName, myDiff, myDesc) {
-		super(myName, myDesc, 0, 10);
+	constructor(myName, myDiff) {
+		super("SKILL_", myName, 0, 10);
 		this.governing = "Intelligence";
 		this.difficulty = myDiff;
 	}
@@ -42,8 +41,9 @@ class ExtraSkill extends QualityTemplate {
 
 /// Used by races, supernatural types, and transformations.
 class CharacterTemplate {
-	constructor(myName, maleAttr, femaleAttr, skillMods, myResist = [], myWeakness = []) {
-		this.name = myName;
+	constructor(prefix = "", myName, maleAttr, femaleAttr, skillMods, myResist = [], myWeakness = []) {
+		this.name = prefix + myName.replace(/\s/g, "_").replace(/\W/g, "").toUpperCase();
+		this.key = myName.replace(/[\s\W]/g, "");
 
 		this.attributes = [];
 		this.attributes[SEX_MALE] = maleAttr;
@@ -57,7 +57,8 @@ class CharacterTemplate {
 
 class NPCTemplate {
 	constructor(myName, myAttackBonus, myAttackType, myDamageBonus, myDefenseBonus, myToughnessBonus, myResist = [], myWeakness = [], mySkill = "") {
-		this.name = myName;
+		this.name = "NPC_" + myName.replace(/\s/g, "_").replace(/\W/g, "").toUpperCase();
+		this.key = myName.replace(/[\s\W]/g, "");
 		this.attackBonus = myAttackBonus;
 		this.attackType = myAttackType;
 		this.damageBonus = myDamageBonus;
@@ -120,71 +121,71 @@ class NPCTemplate {
 
 /// Playable race definitions.
 const races = [
-	new CharacterTemplate("Altmer",
+	new CharacterTemplate("RACE_", "Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
 		{ Strength: -2, Intelligence: 2, Endurance: -2 },
 		{ Alteration: 1, AltmerLore: 4, Destruction: 1, Mysticism: 1 }
 	),
-	new CharacterTemplate("Argonian",
+	new CharacterTemplate("RACE_", "Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
 		{ Athletics: 1, HistLore: 4, Restoration: 1, Unarmed: 1 },
-		[ "Disease" ]
+		[ "DAMAGE_DISEASE" ]
 	),
-	new CharacterTemplate("Bosmer",
+	new CharacterTemplate("RACE_", "Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ BosmerLore: 4, Bow: 1, HandleAnimal: 1, MediumArmor: 1, Sneak: 1 },
-		[ "Poison" ]
+		[ "DAMAGE_POISON" ]
 	),
-	new CharacterTemplate("Breton",
+	new CharacterTemplate("RACE_", "Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
 		{ Strength: -2, Intelligence: 2, Willpower: 2, Agility: -2, Endurance: -2 },
 		{ BretonLore: 4, Conjuration: 1, LightArmor: 1, Mysticism: 1 }
 	),
-	new CharacterTemplate("Dunmer",
+	new CharacterTemplate("RACE_", "Dunmer",
 		{ Willpower: -2, Speed: 2, Personality: -2 },
 		{ Willpower: -2, Speed: 2, Endurance: -2 },
 		{ Destruction: 1, DualWield: 1, DunmerLore: 4, Mysticism: 1 },
-		[ "Flame" ]
+		[ "DAMAGE_FLAME" ]
 	),
-	new CharacterTemplate("Imperial",
+	new CharacterTemplate("RACE_", "Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
 		{ Agility: -2, Speed: -2, Personality: 2 },
 		{ Block: 1, ImperialLore: 4, Mercantile: 1, OneHanded: 1, Speechcraft: 1 }
 	),
-	new CharacterTemplate("Khajiit",
+	new CharacterTemplate("RACE_", "Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
 		{ Acrobatics: 1, KhajiitLore: 4, MediumArmor: 1, Unarmed: 1 }
 	),
-	new CharacterTemplate("Nord",
+	new CharacterTemplate("RACE_", "Nord",
 		{ Strength: 2, Intelligence: -2, Agility: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 2, Intelligence: -2, Willpower: 2, Agility: -2, Personality: -2 },
 		{ HeavyArmor: 1, MediumArmor: 1, NordLore: 4, TwoHanded: 1 },
-		[ "Frost" ]
+		[ "DAMAGE_FROST" ]
 	),
-	new CharacterTemplate("Orc",
+	new CharacterTemplate("RACE_", "Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
 		{ Blacksmithing: 1, Block: 1, HeavyArmor: 1, OrcishLore: 4 }
 	),
-	new CharacterTemplate("Redguard",
+	new CharacterTemplate("RACE_", "Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
 		{ Athletics: 1, DualWield: 1, OneHanded: 1, RedguardLore: 4 }
 	),
-	new CharacterTemplate("Khajiit (Ohmes)",
+	new CharacterTemplate("RACE_", "Khajiit (Ohmes)",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
 		{ Acrobatics: 1, KhajiitLore: 4, MediumArmor: 1, Speechcraft: 1 }
 	),
-	new CharacterTemplate("Maormer",
+	new CharacterTemplate("RACE_", "Maormer",
 		{ Strength: -2, Willpower: 2, Speed: -2 },
 		{ Strength: -2, Willpower: 2, Endurance: -2 },
 		{ Athletics: 1, Destruction: 1, MaormerLore: 4, Sneak: 1 }
 	),
-	new CharacterTemplate("Reachman",
+	new CharacterTemplate("RACE_", "Reachman",
 		{ Strength: 2, Speed: -2, Personality: -2 },
 		{ Willpower: 2, Speed: -2, Personality: -2 },
 		{ MediumArmor: 1, Mysticism: 1, ReachLore: 4, Survival: 1 }
@@ -193,62 +194,62 @@ const races = [
 
 /// Supernatural type definitions.
 const supernaturals = [
-	new CharacterTemplate("", {}, {}, {}),
-	new CharacterTemplate("Werewolf",
+	new CharacterTemplate("", "", {}, {}, {}),
+	new CharacterTemplate("SUPERNATURAL_", "Werewolf",
 		{ Strength: 1, Agility: 1, Endurance: 1 },
 		{ Strength: 1, Agility: 1, Endurance: 1 },
 		{ Perception: 3, Survival: 2 },
-		[ "Disease" ],
-		[ "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire",
 		{ Strength: 2, Willpower: 2, Speed: 2 },
 		{ Strength: 2, Willpower: 2, Speed: 2 },
 		{ BloodMagic: 2, Perception: 2, Sneak: 1 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire (Daggerfall)",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire (Daggerfall)",
 		{ Strength: 2, Intelligence: 2, Willpower: 2, Speed: 2 },
 		{ Strength: 2, Intelligence: 2, Willpower: 2, Speed: 2 },
 		{ BloodMagic: 2, Perception: 2 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire (Aundae)",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire (Aundae)",
 		{ Strength: 2, Willpower: 4, Speed: 2 },
 		{ Strength: 2, Willpower: 4, Speed: 2 },
 		{ BloodMagic: 2, Destruction: 1, Illusion: 1, Perception: 2 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire (Berne)",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire (Berne)",
 		{ Strength: 2, Willpower: 2, Agility: 2, Speed: 2 },
 		{ Strength: 2, Willpower: 2, Agility: 2, Speed: 2 },
 		{ BloodMagic: 2, LightArmor: 1, Perception: 2, Sneak: 1 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire (Quarra)",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire (Quarra)",
 		{ Strength: 4, Willpower: 2, Speed: 2 },
 		{ Strength: 4, Willpower: 2, Speed: 2 },
 		{ BloodMagic: 2, HeavyArmor: 1, Perception: 2, Unarmed: 1 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire (Cyrodiil)",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire (Cyrodiil)",
 		{ Strength: 2, Willpower: 2, Speed: 2, Personality: 2 },
 		{ Strength: 2, Willpower: 2, Speed: 2, Personality: 2 },
 		{ BloodMagic: 2, Illusion: 1, Perception: 2, Speechcraft: 1 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	),
-	new CharacterTemplate("Vampire (Volkihar)",
+	new CharacterTemplate("SUPERNATURAL_", "Vampire (Volkihar)",
 		{ Strength: 2, Willpower: 2, Speed: 2 },
 		{ Strength: 2, Willpower: 2, Speed: 2 },
 		{ BloodMagic: 2, Perception: 2 },
-		[ "Disease" ],
-		[ "Flame", "Silver" ]
+		[ "DAMAGE_DISEASE" ],
+		[ "DAMAGE_FLAME", "DAMAGE_SILVER" ]
 	)
 ];
 
@@ -256,17 +257,17 @@ const supernaturals = [
 const supernaturalTransformations = [
 	{
 		parent: "Werewolf",
-		template: new CharacterTemplate("Werewolf",
+		template: new CharacterTemplate("TRANSFORM", "Werewolf",
 			{ Strength: 2, Speed: 2, Endurance: 2 },
 			{ Strength: 2, Speed: 2, Endurance: 2 },
 			{ Perception: 1, Unarmed: 3 },
 			[],
-			[ "Poison" ]
+			[ "DAMAGE_POISON" ]
 		)
 	},
 	{
 		parent: "Vampire",
-		template: new CharacterTemplate("Blood Scion",
+		template: new CharacterTemplate("TRANSFORM", "Blood Scion",
 			{ Endurance: 1 },
 			{ Endurance: 1 },
 			{ BloodMagic: 1, Unarmed: 1}
@@ -274,7 +275,7 @@ const supernaturalTransformations = [
 	},
 	{
 		parent: "Vampire (Volkihar)",
-		template: new CharacterTemplate("Vampire Lord",
+		template: new CharacterTemplate("TRANSFORM", "Vampire Lord",
 			{ Speed: 2, Endurance: 2 },
 			{ Speed: 2, Endurance: 2 },
 			{ BloodMagic: 2, Destruction: 2, Illusion: 2, Mysticism: 2, Unarmed: 2}
@@ -282,13 +283,13 @@ const supernaturalTransformations = [
 	},
 	// SPECIAL - Werewwolf Behmoth, having the same parent as Werewolf, will only appear on GM Screen!
 	{
-		parent: "Werewolf",
-		template: new CharacterTemplate("Werewolf Behemoth",
+		parent: "TRANSFORM_WEREWOLF",
+		template: new CharacterTemplate("TRANSFORM", "Werewolf Behemoth",
 			{ Strength: 8, Speed: 2, Endurance: 4 },
 			{ Strength: 8, Speed: 2, Endurance: 4 },
 			{ Perception: 1, Unarmed: 3 },
 			[],
-			[ "Poison" ]
+			[ "DAMAGE_POISON" ]
 		)
 	}
 ];
@@ -298,120 +299,120 @@ const npcTemplates = [
 // name, attack bonus, attack type, damage bonus, defense bonus, toughness bonus, resists, weaknesses, summon skill (leave blank for unsummonable)
 	new NPCTemplate("Zombie",			0, 1, 0, -4, 0, [], [], "Conjuration"),
 	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2, [], [], "Conjuration"),
-	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "Physical" ], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "Physical" ], [ "Silver "], "Conjuration"),
-	new NPCTemplate("Vampire",			4, 1, 3, 3, 0, [], [ "Flame" ]),
-	new NPCTemplate("Bloodfiend",		2, 1, 2, 0, 0, [], [ "Flame" ]),
-	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Flame Atronach",	3, 3, 4, 1, 0, [ "Flame" ], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Frost Atronach",	2, 4, 3, 0, 4, [ "Frost" ], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Storm Atronach",	2, 6, 3, 0, 2, [ "Shock" ], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Winged Twilight",	2, 1, 2, 3, 0, [], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Dremora",			6, 1, 2, 2, 2, [ "Flame" ], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Daedroth",			4, 1, 3, 0, 4, [], [ "Silver" ], "Conjuration"),
-	new NPCTemplate("Hunger",			4, 1, 3, 0, 2, [], [ "Silver" ], "Conjuration"),
+	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER"], "Conjuration"),
+	new NPCTemplate("Vampire",			4, 1, 3, 3, 0, [], [ "DAMAGE_FLAME" ]),
+	new NPCTemplate("Bloodfiend",		2, 1, 2, 0, 0, [], [ "DAMAGE_FLAME" ]),
+	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Flame Atronach",	3, 3, 4, 1, 0, [ "DAMAGE_FLAME" ], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Frost Atronach",	2, 4, 3, 0, 4, [ "DAMAGE_FROST" ], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Storm Atronach",	2, 6, 3, 0, 2, [ "DAMAGE_SHOCK" ], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Winged Twilight",	2, 1, 2, 3, 0, [], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Dremora",			6, 1, 2, 2, 2, [ "DAMAGE_FLAME" ], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Daedroth",			4, 1, 3, 0, 4, [], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Hunger",			4, 1, 3, 0, 2, [], [ "DAMAGE_SILVER" ], "Conjuration"),
 	new NPCTemplate("Familiar",			2, 1, 0, 2, -2, [], [], "Conjuration"),
 	new NPCTemplate("Wolf",				2, 1, 0, 2, -2, [], [], "HandleAnimal"),
 	new NPCTemplate("Bear",				2, 1, 4, 0, 3, [], [], "HandleAnimal"),
 	new NPCTemplate("Small Animal",		0, 1, -2, 4, -2, [], [], "HandleAnimal"),
 	new NPCTemplate("Medium Animal",	2, 1, 0, 0, 0, [], [], "HandleAnimal"),
 	new NPCTemplate("Large Animal",		2, 1, 3, 0, 4, [], [], "HandleAnimal"),
-	new NPCTemplate("Werewolf",			3, 1, 4, 1, 4, [], [ "Silver" ]),
+	new NPCTemplate("Werewolf",			3, 1, 4, 1, 4, [], [ "DAMAGE_SILVER" ]),
 ];
 
 /// Gets a character template by name.
 function getTemplate(name, list) {
-	return list.find(element => element.name === name);
+	return list.find(element => element.key === name);
 }
 
 /// CHARACTER FIELD DEFINITION SECTION
 const classes = [ "", "Dragonknight", "Necromancer", "Nightblade", "Sorcerer", "Templar", "Warden" ];
 
 const attributes = [
-	new Attribute("Strength", "How strong you are."),
-	new Attribute("Intelligence", "How smart you are."),
-	new Attribute("Willpower", "How focused you are."),
-	new Attribute("Agility", "How quickly you react."),
-	new Attribute("Speed", "How fast you move."),
-	new Attribute("Endurance","How tough you are."),
-	new Attribute("Personality", "Affects your ability to gain information and better prices from NPCs."),
-	new Attribute("Luck", "Affects everything you do in a small way.")
+	new Attribute("Strength"),
+	new Attribute("Intelligence"),
+	new Attribute("Willpower"),
+	new Attribute("Agility"),
+	new Attribute("Speed"),
+	new Attribute("Endurance"),
+	new Attribute("Personality"),
+	new Attribute("Luck")
 ];
 
 const skillsCombat = [
-	new Skill("Two Handed", "Strength", "How well you use two handed weapons."),
-	new Skill("One Handed", "Strength","How well you use a single one handed weapon."),
-	new Skill("Block", "Endurance", "How well you protect yourself with a shield."),
-	new Skill("Dual Wield", "Agility", "How well you use two weapons at once."),
-	new Skill("Bow", "Agility", "How well you use bows."),
-	new Skill("Unarmed", "Strength", "How well you can fight or grapple with your bare hands."),
-	new Skill("Light Armor", "Speed", "How well you use light armor - robes and clothing."),
-	new Skill("Medium Armor", "Agility", "How well you use medium armor - leather."),
-	new Skill("Heavy Armor", "Endurance", "How well you use heavy armor - metal.")
+	new Skill("Two Handed", "Strength"),
+	new Skill("One Handed", "Strength"),
+	new Skill("Block", "Endurance"),
+	new Skill("Dual Wield", "Agility"),
+	new Skill("Bow", "Agility"),
+	new Skill("Unarmed", "Strength"),
+	new Skill("Light Armor", "Speed"),
+	new Skill("Medium Armor", "Agility"),
+	new Skill("Heavy Armor", "Endurance")
 ];
 
 const skillsMagic = [
-	new Skill("Alteration", "Willpower", "How well you manipulate the natural world and its properties."),
-	new Skill("Conjuration", "Intelligence", "How well you dominate the wills of daedra or the undead, or summon otherworldly weapons and armor."),
-	new Skill("Destruction", "Willpower", "How well you use magic for destructive ends."),
-	new Skill("Illusion", "Personality", "How well you alter the perceptions and thoughts of sentient beings."),
-	new Skill("Mysticism", "Intelligence", "How well you focus mystical energy into feats of telekinesis or perception."),
-	new Skill("Restoration", "Willpower", "How well you restore or bolster the body.")
+	new Skill("Alteration", "Willpower"),
+	new Skill("Conjuration", "Intelligence"),
+	new Skill("Destruction", "Willpower"),
+	new Skill("Illusion", "Personality"),
+	new Skill("Mysticism", "Intelligence"),
+	new Skill("Restoration", "Willpower")
 ];
 
 const skillsGeneral = [
-	new Skill("Acrobatics", "Agility", "How well you jump, climb, and avoid damage from falls."),
-	new Skill("Athletics", "Speed", "How well you can run and swim."),
-	new Skill("Legerdemain", "Intelligence", "How well you can pick pockets or locks."),
-	new Skill("Mercantile", "Personality", "How well you barter and haggle."),
-	new Skill("Perception", "Willpower", "Noticing details about the world around you."),
-	new Skill("Sneak", "Agility", "How well you can move unseen and unheard."),
-	new Skill("Speechcraft", "Personality", "How well you can influence others by admiring, intimidating, or taunting them.")
+	new Skill("Acrobatics", "Agility"),
+	new Skill("Athletics", "Speed"),
+	new Skill("Legerdemain", "Intelligence"),
+	new Skill("Mercantile", "Personality"),
+	new Skill("Perception", "Willpower"),
+	new Skill("Sneak", "Agility"),
+	new Skill("Speechcraft", "Personality")
 ];
 
 const skillsCrafting = [
-	new Skill("Alchemy", "Intelligence", "How well you can brew potions and poisons, as well as recognize and use alchemical ingredients."),
-	new Skill("Blacksmithing", "Endurance", "How well you can create metal items."),
-	new Skill("Clothing", "Agility", "How well you can make clothing and leather items."),
-	new Skill("Enchanting", "Intelligence", "How well you can add enchantments to items."),
-	new Skill("Jewelry", "Agility", "How well you can create jewelry."),
-	new Skill("Provisioning", "Willpower", "How well you can prepare food and drink."),
-	new Skill("Woodworking", "Agility", "How well you can create wooden items.")
+	new Skill("Alchemy", "Intelligence"),
+	new Skill("Blacksmithing", "Endurance"),
+	new Skill("Clothing", "Agility"),
+	new Skill("Enchanting", "Intelligence"),
+	new Skill("Jewelry", "Agility"),
+	new Skill("Provisioning", "Willpower"),
+	new Skill("Woodworking", "Agility")
 ];
 
 /// These skills represent specialized knowledge.  There is no governing attribute associated!
 const skillsKnowledge = [
-	new ExtraSkill("Altmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Altmer people, as well as their elvish language."),
-	new ExtraSkill("Akaviri Lore", SKILL_DIFF_HARD, "Knowledge of the continent of Akavir."),
-	new ExtraSkill("Ayleid Lore", SKILL_DIFF_HARD, "Studying the history of the extinct Ayleid people, and their language Ayleidoon."),
-	new ExtraSkill("Blood Magic", SKILL_DIFF_HARD, "A form of dark magic to manipulate blood, most famously used by vampires."),
-	new ExtraSkill("Bosmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Bosmer people, as well as the Wild Hunt."),
-	new ExtraSkill("Breton Lore", SKILL_DIFF_MODERATE, "Studying the history of the Breton people and their mixed man/mer ancestry."),
-	new ExtraSkill("Daedric Lore", SKILL_DIFF_MODERATE, "Studying the secrets of the daedra - their society/planes, summoning them, and their language."),
-	new ExtraSkill("Dragon Lore", SKILL_DIFF_HARD, "Studying the secrets of the dragon lords of the Merethic Era, and their language which is now only used by the Greybeards."),
-	new ExtraSkill("Dunmer Lore", SKILL_DIFF_MODERATE, "Studying the history of the Dunmer people, as well as their writings in Dunmeris or Ald Chimeris."),
-	new ExtraSkill("Dwemerology", SKILL_DIFF_HARD, "Studying the secrets of the Dwemer, who disappeared in the First Era."),
-	new ExtraSkill("Falmer Lore", SKILL_DIFF_ESOTERIC, "Studying the history of the Falmer, and what little remains of their culture."),
-	new ExtraSkill("First Aid", SKILL_DIFF_MODERATE, "Treating and dressing wounds in the field."),
-	new ExtraSkill("Handle Animal", SKILL_DIFF_EASY, "Dealing with animals, either tame or wild."),
-	new ExtraSkill("Hist Lore", SKILL_DIFF_MODERATE, "Studying the intricacies of the Hist, as well as Jel, the language of the Argonians."),
-	new ExtraSkill("Imperial Lore", SKILL_DIFF_MODERATE, "Studying the history of the Imperial people, and the Alessian Empire that came before them."),
-	new ExtraSkill("Khajiit Lore", SKILL_DIFF_MODERATE, "Studying the history of the Khajiit people, as well as their Ta'agra language."),
-	new ExtraSkill("Kothringi Lore", SKILL_DIFF_HARD, "Studying the history of the Kothringi people, who were wiped out by a plague earlier in the Second Era."),
-	new ExtraSkill("Maormer Lore", SKILL_DIFF_HARD, "Knowledge of the maormer, or sea elves, as well as their language, Pyandonean."),
-	new ExtraSkill("Merethic Lore", SKILL_DIFF_ESOTERIC, "Studying the origins of all the people of Tamriel, as well as their proto-language, Ehlnofex."),
-	new ExtraSkill("Nature Magic", SKILL_DIFF_MODERATE, "Study of magic for harnessing and controlling nature, like the Wyresses of Daggerafall."),
-	new ExtraSkill("Necromancy", SKILL_DIFF_MODERATE, "Knowledge of summoning and/or controlling the dead."),
-	new ExtraSkill("Nedic Lore", SKILL_DIFF_HARD, "Studying the history of the early men who settled Tamriel, the Nedes."),
-	new ExtraSkill("Nord Lore", SKILL_DIFF_MODERATE, "Studying the history of the Nords and their ancestral homeland of Atmora."),
-	new ExtraSkill("Orcish Lore", SKILL_DIFF_MODERATE, "Studying the history of the pariah mer, or Orcs, as well as the modern and archaic forms of their language."),
-	new ExtraSkill("Reach Lore", SKILL_DIFF_MODERATE, "Knowledge of the people, customs, and religion of the Reach."),
-	new ExtraSkill("Redguard Lore", SKILL_DIFF_MODERATE, "Studying the history of the Redguard people and their ancestral homeland of Yokuda."),
-	new ExtraSkill("Shadow Magic", SKILL_DIFF_ESOTERIC, "An obscure form of magic which is used by Nocturnal, but can also be learned by mortals in limited forms."),
-	new ExtraSkill("Sload Lore", SKILL_DIFF_HARD, "Studying the history of the Sload, a slug-like race that live over the seas southwest of Tamriel."),
-	new ExtraSkill("Survival", SKILL_DIFF_EASY, "Living off the land.")
+	new ExtraSkill("Altmer Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Akaviri Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Ayleid Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Blood Magic", SKILL_DIFF_HARD),
+	new ExtraSkill("Bosmer Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Breton Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Daedric Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Dragon Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Dunmer Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Dwemerology", SKILL_DIFF_HARD),
+	new ExtraSkill("Falmer Lore", SKILL_DIFF_ESOTERIC),
+	new ExtraSkill("First Aid", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Handle Animal", SKILL_DIFF_EASY),
+	new ExtraSkill("Hist Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Imperial Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Khajiit Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Kothringi Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Maormer Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Merethic Lore", SKILL_DIFF_ESOTERIC),
+	new ExtraSkill("Nature Magic", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Necromancy", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Nedic Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Nord Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Orcish Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Reach Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Redguard Lore", SKILL_DIFF_MODERATE),
+	new ExtraSkill("Shadow Magic", SKILL_DIFF_ESOTERIC),
+	new ExtraSkill("Sload Lore", SKILL_DIFF_HARD),
+	new ExtraSkill("Survival", SKILL_DIFF_EASY)
 ];
 
 /// Master list that contains all the other attribute and skill lists.
@@ -696,6 +697,17 @@ class CharacterSheet {
 		return result + modifier;
 	}
 
+	makePrintoutHeader(category) {
+		if (category) {
+			const catOutput = localize(category).toUpperCase();
+			const fillerCount = (31 - catOutput.length - 2) / 2;
+
+			return "<strong>" + "=".repeat(Math.floor(fillerCount)) + " " + catOutput + " " + "=".repeat(Math.ceil(fillerCount)) + "</strong><br />";
+		} else {
+			return "=".repeat(31) + "<br />";
+		}
+	}
+
 	/// Prints character sheet, optionally with a link to profile page.
 	print(id, profileLink=false) {
 		var i;
@@ -704,98 +716,98 @@ class CharacterSheet {
 		printout.empty();
 
 		if (this.name) {
-			printout.append("===============================<br />")
+			printout.append(this.makePrintoutHeader())
 			printout.append("<h3>" + nameDecode(this.name).toUpperCase() + "</h3>");
 		}
 
-		printout.append("===============================<br />")
+		printout.append(this.makePrintoutHeader())
 
 		if (this.player) {
 			printout.append(((this.player[0] == "@") ? "" : "@") + nameDecode(this.player) + "<br />");
 		}
 
 		if (this.race) {
-			printArr.push(this.race);
+			printArr.push(localize(races.find(item => item.key === this.race).name));
 		}
 
 		if (this.supernatural) {
-			printArr.push(this.supernatural);
+			printArr.push(localize(supernaturals.find(item => item.key === this.supernatural).name));
 		}
 
-		printArr.push((this.sex) ? "Female" : "Male");
+		printArr.push(localize((this.sex) ? "SEX_FEMALE" : "SEX_MALE"));
 
 		if (this.class) {
-			printArr.push(this.class);
+			printArr.push(localize("CLASS_" + this.class.toUpperCase()));
 		}
 
 		printout.append(printArr.join(" - ") + "<br />");
 
 		if (this.transformation) {
-			printout.append("<b class='transformation'>" + this.transformation + "!</b><br />");
+			printout.append("<b class='transformation'>" + localize(this.transformation) + "!</b><br />");
 		}
 
 		printArr = [];
 
 		for (i = 0; i < attributes.length; i++) {
 			printArr.push(
-				"<span data-key='" + attributes[i].key + "'>" + attributes[i].name.substring(0, 3) + ": " + this.getAttribute(attributes[i].key) + "</span>"
+				"<span data-key='" + attributes[i].key + "'>" + localize(attributes[i].name + "_ABBR") + ": " + this.getAttribute(attributes[i].key) + "</span>"
 			);
 		}
 
-		printout.append("<strong>========= ATTRIBUTES ==========</strong><br />");
+		printout.append(this.makePrintoutHeader("ATTRIBUTES"));
 		printout.append(printArr.join("<br />") + "<br />");
 
 		printArr = this.loadSkillArray(skillsCombat);
 
 		if (printArr.length) {
-			printout.append("<strong>======== COMBAT SKILLS ========</strong><br />");
+			printout.append(this.makePrintoutHeader("COMBAT_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsMagic);
 
 		if (printArr.length) {
-			printout.append("<strong>======== MAGIC SKILLS =========</strong><br />");
+			printout.append(this.makePrintoutHeader("MAGICKA_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsGeneral);
 
 		if (printArr.length) {
-			printout.append("<strong>======= GENERAL SKILLS ========</strong><br />");
+			printout.append(this.makePrintoutHeader("GENERAL_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsCrafting);
 
 		if (printArr.length) {
-			printout.append("<strong>======= CRAFTING SKILLS =======</strong><br />");
+			printout.append(this.makePrintoutHeader("CRAFTING_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.loadSkillArray(skillsKnowledge);
 
 		if (printArr.length) {
-			printout.append("<strong>====== KNOWLEDGE SKILLS =======</strong><br />");
+			printout.append(this.makePrintoutHeader("KNOWLEDGE_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
 		printArr = this.getResists();
 
 		if (printArr.length) {
-			printout.append("<strong>========= RESISTANCES =========</strong><br />");
-			printout.append(printArr.join(", ") + "<br />");
+			printout.append(this.makePrintoutHeader("RESISTANCES"));
+			printout.append(printArr.map(item => localize(item)).join(", ") + "<br />");
 		}
 
 		printArr = this.getWeaknesses();
 
 		if (printArr.length) {
-			printout.append("<strong>========= WEAKNESSES ==========</strong><br />");
-			printout.append(printArr.join(", ") + "<br />");
+			printout.append(this.makePrintoutHeader("WEAKNESSES"));
+			printout.append(printArr.map(item => localize(item)).join(", ") + "<br />");
 		}
 
 		if (profileLink) {
-			printout.append("<a href='profile.html?character=" + this.name + "&minimal=true' target='_blank'>View Description</a>");
+			printout.append("<a href='profile.html?character=" + this.name + "&minimal=true' target='_blank'>" + localize("VIEW_DESCRIPTION") + "</a>");
 		}
 	}
 
@@ -806,7 +818,7 @@ class CharacterSheet {
 		for (var i = 0; i < list.length; i++) {
 			if (this.getSkill(list[i].key)) {
 				result.push(
-					"<span data-key='" + list[i].key + "'>" + list[i].name + ": " + this.getSkill(list[i].key) + "</span>"
+					"<span data-key='" + list[i].key + "'>" + localize(list[i].name) + ": " + this.getSkill(list[i].key) + "</span>"
 				);
 			}
 		}
@@ -820,8 +832,8 @@ function formatDescription(description) {
 	return description.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br />");
 }
 
-const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
-const INJURY_LEVEL_DISPLAY = [ "Unhurt", "Injured", "Critical", "Incapacitated!", "Hidden" ];
+const SPECIAL_ATTACK_TYPES = [ "DAMAGE_NONE", "DAMAGE_PHYSICAL", "DAMAGE_DISEASE", "DAMAGE_FLAME", "DAMAGE_FROST", "DAMAGE_POISON", "DAMAGE_SHOCK", "DAMAGE_SILVER" ];
+const INJURY_LEVEL_DISPLAY = [ "STATUS_UNHURT", "STATUS_INJURED", "STATUS_CRITICAL", "STATUS_INCAPACITATED", "STATUS_HIDDEN" ];
 
 /// NPC data to be used by game sessions.
 class NPC {

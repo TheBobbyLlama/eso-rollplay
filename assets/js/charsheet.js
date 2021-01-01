@@ -36,17 +36,17 @@ async function initializePage(myUser) {
 	var classSelect = $("select[name='charClass']");
 
 	for (i = 0; i < races.length; i++) {
-		raceSelect.append("<option value='" + races[i].name + "'>" + localize(races[i].name) + "</option>")
+		raceSelect.append("<option value='" + races[i].key + "'>" + localize(races[i].name) + "</option>")
 	}
 
 	superSelect.append("<option value=''>" + localize("NOT_APPLICABLE") + "</option>")
 
 	for (i = 1; i < supernaturals.length; i++) {
-		superSelect.append("<option value='" + supernaturals[i].name +"'>" + localize(supernaturals[i].name) + "</option>")
+		superSelect.append("<option value='" + supernaturals[i].key +"'>" + localize(supernaturals[i].name) + "</option>")
 	}
 
 	for (i = 0; i < classes.length; i++) {
-		classSelect.append("<option value='" + classes[i] + "'>" + localize(classes[i]) + "</option>")
+		classSelect.append("<option value='" + classes[i] + "'>" + localize(classes[i] ? "CLASS_" + classes[i].toUpperCase() : "") + "</option>")
 	}
 
 	raceSelect.trigger("change");
@@ -73,7 +73,7 @@ function fillSection(sectionName, elements) {
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div data-key='" + elements[i].key + "'>" +
-						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='" + localize("LABEL_DIFFICULTY") + " " + skillDifficultyNames[elements[i].difficulty] + "'" : "") +">" + elements[i].name + (((elements[i].difficulty === undefined) && (elements[i].governing)) ? " (" + elements[i].governing.substring(0, 3) + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
+						"<label for='" + elements[i].key + "'" + ((elements[i].difficulty) ? " title='" + localize("LABEL_DIFFICULTY") + " " + localize(skillDifficultyNames[elements[i].difficulty]) + "'" : "") +">" + localize(elements[i].name) + (((elements[i].difficulty === undefined) && (elements[i].governing)) ? " (" + localize(getQuality(elements[i].governing).name + "_ABBR") + ") " : "") + " [<span name='curValue'>" + character.getItem(elements[i].key) + "</span>]</label>" +
 						"<input type='range' min='" + elements[i].min + "' max='" + elements[i].max + "' value='0' name='" + elements[i].key + "' />" +
 					"</div>");
 	}
@@ -296,7 +296,7 @@ function checkHighlight(checkMe) {
 
 	if (helpKey) {
 		var item = getQuality(helpKey);
-		showFooter(item.description + ((item.difficulty) ? " (" + skillDifficultyNames[item.difficulty] + ")" : ""));
+		showFooter(localize(item.name + "_DESCRIPTION") + ((item.difficulty) ? " (" + localize(skillDifficultyNames[item.difficulty]) + ")" : ""));
 	} else {
 		showFooter(null);
 	}
