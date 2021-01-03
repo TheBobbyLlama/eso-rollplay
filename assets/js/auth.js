@@ -45,10 +45,7 @@ function checkAccountInfo(result) {
 			display: initializingUser.displayName.replace(/^@/, "")
 		}
 
-		console.log(initializingUser, result);
-
-		//dbSaveAccountInfo(initializingUser.displayName, result, divertToDashboard, showErrorPopup);
-		dbSaveAccountInfo(initializingUser.displayName, result, () => {}, showErrorPopup);
+		dbSaveAccountInfo(initializingUser.displayName, result, divertToDashboard, showErrorPopup);
 	}
 }
 

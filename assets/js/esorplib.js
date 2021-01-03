@@ -257,7 +257,7 @@ const supernaturals = [
 const supernaturalTransformations = [
 	{
 		parent: "Werewolf",
-		template: new CharacterTemplate("TRANSFORM", "Werewolf",
+		template: new CharacterTemplate("TRANSFORM_", "Werewolf",
 			{ Strength: 2, Speed: 2, Endurance: 2 },
 			{ Strength: 2, Speed: 2, Endurance: 2 },
 			{ Perception: 1, Unarmed: 3 },
@@ -267,7 +267,7 @@ const supernaturalTransformations = [
 	},
 	{
 		parent: "Vampire",
-		template: new CharacterTemplate("TRANSFORM", "Blood Scion",
+		template: new CharacterTemplate("TRANSFORM_", "Blood Scion",
 			{ Endurance: 1 },
 			{ Endurance: 1 },
 			{ BloodMagic: 1, Unarmed: 1}
@@ -275,7 +275,7 @@ const supernaturalTransformations = [
 	},
 	{
 		parent: "Vampire (Volkihar)",
-		template: new CharacterTemplate("TRANSFORM", "Vampire Lord",
+		template: new CharacterTemplate("TRANSFORM_", "Vampire Lord",
 			{ Speed: 2, Endurance: 2 },
 			{ Speed: 2, Endurance: 2 },
 			{ BloodMagic: 2, Destruction: 2, Illusion: 2, Mysticism: 2, Unarmed: 2}
@@ -283,8 +283,8 @@ const supernaturalTransformations = [
 	},
 	// SPECIAL - Werewwolf Behmoth, having the same parent as Werewolf, will only appear on GM Screen!
 	{
-		parent: "TRANSFORM_WEREWOLF",
-		template: new CharacterTemplate("TRANSFORM", "Werewolf Behemoth",
+		parent: "Werewolf",
+		template: new CharacterTemplate("TRANSFORM_", "Werewolf Behemoth",
 			{ Strength: 8, Speed: 2, Endurance: 4 },
 			{ Strength: 8, Speed: 2, Endurance: 4 },
 			{ Perception: 1, Unarmed: 3 },
@@ -853,36 +853,36 @@ class NPC {
 /// Weapon definitions - skill data is for automatic selection of equipped weapon.
 const EQUIPPED_WEAPON = [
 	{
-		weapon: "Two Handed",
+		weapon: "WEAPON_TWO_HANDED",
 		skills: [ "TwoHanded" ]
 	},
 	{
-		weapon: "One Hand and Shield",
+		weapon: "WEAPON_ONE_HANDED_SHIELD",
 		skills: [ "OneHanded", "Block" ],
 		useBlock: true
 	},
 	{
-		weapon: "Dual Wield",
+		weapon: "WEAPON_DUAL_WIELD",
 		skills: [ "DualWield" ]
 	},
 	{
-		weapon: "Bow",
+		weapon: "WEAPON_BOW",
 		skills: [ "Bow" ]
 	},
 	{
-		weapon: "Staff",
+		weapon: "WEAPON_STAFF",
 		skills: [ "Alteration", "Conjuration", "Destruction", "Illusion", "Mysticism", "Restoration", "BloodMagic", "NatureMagic", "Necromancy", "ShadowMagic" ]
 	},
 	{
-		weapon: "Unarmed",
+		weapon: "WEAPON_UNARMED",
 		skills: [ "Unarmed" ]
 	},
 	{
-		weapon: "One Handed Only",
+		weapon: "WEAPON_ONE_HANDED_ONLY",
 		skills: [ "OneHanded" ]
 	},
 	{
-		weapon: "Shield Only",
+		weapon: "WEAPON_SHIELD_ONLY",
 		skills: [ "Unarmed", "Block" ],
 		useBlock: true
 	}

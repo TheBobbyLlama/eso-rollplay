@@ -146,7 +146,7 @@ function setSummonControls() {
 
 		for (var i = 0; i < npcTemplates.length; i++) {
 			if (npcTemplates[i].summonSkill) {
-				markupSummonOptions += "<option>" + npcTemplates[i].name + "</option>";
+				markupSummonOptions += "<option value='" + npcTemplates[i].name + "'>" + localize(npcTemplates[i].name) + "</option>";
 			}
 		}
 
@@ -170,7 +170,7 @@ function requestSummon() {
 	var template = npcTemplates.find(element => element.name == templateName);
 
 	if (template) {
-		doPlayerRoll(localize("SUMMON_ROLL_CAPTION").replace(/SKILL/, localize(getQuality(template.summonSkill).name).replace(/TEMPLATE/, templateName)), "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
+		doPlayerRoll(localize("SUMMON_ROLL_CAPTION").replace(/SKILL/, localize(getQuality(template.summonSkill).name)).replace(/TEMPLATE/, localize(templateName)), "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
 		summonEl.val("");
 	}
 }
@@ -504,7 +504,7 @@ function addEventDisplay(event) {
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				doPlayerRoll(localize("ROLL_AGAINST_OPPONENT").replace(/QUALITY/, localize(getQuality(event.key).name).replace(/NAME/, nameDecode(event.name))), event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
+				doPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key).name)).replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
 			}
 			break;
 		case "RollContestedSubordinate":
@@ -516,9 +516,9 @@ function addEventDisplay(event) {
 
 			if (dispatchMessages) {
 				if (event.player1 == character.name) {
-					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT").replace(/QUALITY/, localize(getQuality(event.key1).name).replace(/NAME/, nameDecode(event.player2))), event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
+					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key1).name)).replace(/NAME/, nameDecode(event.player2)), event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
 				} else if (event.player2 == character.name) {
-					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT").replace(/QUALITY/, localize(getQuality(event.key2).name).replace(/NAME/, nameDecode(event.player1))), event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
+					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key2).name)).replace(/NAME/, nameDecode(event.player1)), event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
 				}
 			}
 			break;

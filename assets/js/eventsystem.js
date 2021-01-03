@@ -102,21 +102,19 @@ function setSummonEventData(event) {
 }
 
 /// Helper function for dual use player/pet events, to display the name properly.
-function displayEventName(event, end=false) {
+function displayEventName(event) {
 	if (event.player.indexOf("»") > -1) {
 		var parts = event.player.split("»");
-
-		var petName = nameDecode(parts[0]) + "'s " + event.summonTemplate;
+		var myPlayer = nameDecode(parts[0]);
+		var result;
 
 		if (event.summonName) {
-			petName += ", " + event.summonName;
-			
-			if (!end) {
-				petName += ",";
-			}
+			result = localize("DISPLAY_PET_NAME").replace(/NAME/, event.summonName);
+		} else {
+			result = localize("DISPLAY_PET");
 		}
 
-		return petName;
+		return result.replace(/PLAYER/, myPlayer).replace(/TEMPLATE/, localize(event.summonTemplate));
 	} else {
 		return event.player;
 	}
@@ -130,7 +128,7 @@ class SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='error'>An event was raised with no output (" + this.eventType + ")</div>";
+		return "<div class='error'>" + localize("EVENT_ERROR_NO_OUTPUT").replace(/TYPE/, this.eventType) + "</div>";
 	}
 }
 
@@ -141,7 +139,7 @@ class EventError extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='error'>An event was raised with an unrecognized type (" + this.passedType + ")</div>";
+		return "<div class='error'>" + localize("EVENT_ERROR_UNRECOGNIZED").replace(/TYPE/, this.eventType) + "</div>";
 	}
 }
 
@@ -203,7 +201,7 @@ class EventStart extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div>" + this.owner + " opened this session. (" + new Date(this.timeStamp).toLocaleString("en-US") + ")</div>";
+		return "<div>" + localize("EVENT_START").replace(/PLAYER/, this.owner).replace(/TIMESTAMP/, new Date(this.timeStamp).toLocaleString("en-US")) + "</div>"
 	}
 }
 
@@ -214,7 +212,7 @@ class EventEnd extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div><p>The session has been ended by " + this.owner + ". (" + new Date(this.timeStamp).toLocaleString("en-US") + ")</p><p>Thanks for playing!</p></div>";
+		return "<div><p>" + localize("EVENT_END").replace(/PLAYER/, this.owner).replace(/TIMESTAMP/, new Date(this.timeStamp).toLocaleString("en-US")) + "</p><p>" + localize("EVENT_END_THANKS") + "</p></div>";
 	}
 }
 
@@ -225,7 +223,7 @@ class EventClose extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.owner + " has closed this session.<br />YOU SHOULD NEVER SEE THIS.</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_CLOSE").replace(/PLAYER/, this.owner) + "</div>";
 	}
 }
 
@@ -236,7 +234,7 @@ class EventGMPost extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmComment'><h3>GM Post:</h3><em>" + this.post.replace(/\n/g, "<br />") + "</em></div>"
+		return "<div class='gmComment'><h3>" + localize("LABEL_GM_POST") + "</h3><em>" + this.post.replace(/\n/g, "<br />") + "</em></div>"
 	}
 }
 
@@ -247,7 +245,7 @@ class EventAddNPC extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>NPC " + this.name + " has been added to the session.</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_ADD_NPC").replace(/NAME/, this.name) + "</div>";
 	}
 }
 
@@ -258,7 +256,7 @@ class EventRemoveNPC extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>NPC " + this.name + " has been removed the session.</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_REMOVE_NPC").replace(/NAME/, this.name) + "</div>";
 	}
 }
 
@@ -269,7 +267,7 @@ class EventAddPlayer extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>Player " + this.player + " has been added to the session.</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_ADD_PLAYER").replace(/PLAYER/, this.player) + "</div>";
 	}
 }
 
@@ -280,7 +278,7 @@ class EventRemovePlayer extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>Player " + this.player + " has been removed from the session.</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_REMOVE_PLAYER").replace(/PLAYER/, this.player) + "</div>";
 	}
 }
 
@@ -291,7 +289,7 @@ class EventPlayerConnect extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.player + " has connected to the session (" + new Date(this.timeStamp).toLocaleString("en-US") + ").</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_PLAYER_CONNECT").replace(/PLAYER/, this.player).replace(/TIMESTAMP/, new Date(this.timeStamp).toLocaleString("en-US")) + "</div>";
 	}
 }
 
@@ -302,7 +300,7 @@ class EventPlayerDisconnect extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.player + " has disconnected from the session (" + new Date(this.timeStamp).toLocaleString("en-US") + ").</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_PLAYER_DISCONNECT").replace(/PLAYER/, this.player).replace(/TIMESTAMP/, new Date(this.timeStamp).toLocaleString("en-US")) + "</div>";
 	}
 }
 
@@ -314,7 +312,7 @@ class EventPlayerBusy extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmExtra subordinate'>" + this.player + " is busy.</div>";
+		return "<div class='gmExtra subordinate'>" + localize("EVENT_PLAYER_BUSY").replace(/PLAYER/, this.player) + "</div>";
 	}
 }
 
@@ -328,7 +326,7 @@ class EventGMResponseAllow extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='playersubordinate'><p>Your request to " + this.request + " will be allowed.</p>" +
+		return "<div class='playersubordinate'><p>" + localize("EVENT_GM_ALLOW").replace(/ACTION/, this.request) + "</p>" +
 		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 		"</div>";
 	}
@@ -344,7 +342,7 @@ class EventGMResponseDeny extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='playersubordinate'><p>Your request to " + this.request + " has been denied.</p>" +
+		return "<div class='playersubordinate'><p>" + localize("EVENT_GM_DENY").replace(/ACTION/, this.request) + "</p>" +
 		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 		"</div>";
 	}
@@ -361,7 +359,7 @@ class EventPromptRoll extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div id='" + this.id + "' class='gmInfo'><p>" + this.player + " is prompted to make a " + getQuality(this.key).name + " roll.</p>" +
+		return "<div id='" + this.id + "' class='gmInfo'><p>" + localize("EVENT_PROMPT_ROLL").replace(/PLAYER/, this.player).replace(/ROLLTYPE/, localize(getQuality(this.key).name)) + "</p>" +
 		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 		"</div>";
 	}
@@ -384,20 +382,20 @@ class EventRoll extends SharedRollEvent {
 		var keyName = getQuality(this.key).name;
 
 		if (this.lucky) {
-			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+			rollType = localize("ROLL_TEXT_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = localize("ROLL_TEXT_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
-			rollType = " rolls " + keyName;
+			rollType = localize("ROLL_TEXT");
 		}
 
 		return "<div id='" + this.id + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					"<p>" + rollType.replace(/PARTICIPANT/, this.player).replace(/ROLLTYPE/, localize(keyName)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -417,11 +415,11 @@ class EventRollSubordinate extends SharedEvent {
 	toHTML() {
 		return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + this.name + " rolls " + ((this.rollType) ? this.rollType + " " : "") + "(" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.name).replace(/ROLLTYPE/, this.rollType && localize(getQuality(this.rollType).name)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -437,7 +435,7 @@ class EventRollSubordinateResolution extends SharedEvent {
 
 	toHTML() {
 		return "<div class='playersubordinate'>" +
-					"<span>The roll " + ((this.success) ? "succeeds" : "fails") + "!</span>" +
+					"<span>" + localize((this.success) ? "EVENT_ROLL_RESOLUTION_SUCCESS" : "EVENT_ROLL_RESOLUTION_FAILURE") + "</span>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 					"</div>";
 	}
@@ -457,11 +455,11 @@ class EventNPCRoll extends SharedEvent {
 	toHTML() {
 		return "<div class='gmInfo' countMe>" +
 			"<div>" +
-				"<p>" + this.name + " rolls (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+				"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.name).replace(/ROLLTYPE/, "") + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 				((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 			"</div>" +
 			"<div class='rollResult'>" +
-				"Result: " + this.result +
+				localize("LABEL_ROLL_RESULT") + " " + this.result +
 			"</div>" +
 		"</div>";
 	}
@@ -483,11 +481,11 @@ class EventContestedRoll extends SharedEvent {
 	toHTML() {
 		return "<div class='gmInfo' id='" + this.id + "' data-against='" + this.key + "' countMe>" +
 				"<div>" +
-					"<p>" + this.name + " rolls (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + this.player + "!</p>" +
+					"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.name).replace(/ROLLTYPE/, "") + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + localize("ROLL_VS").replace(/PARTICIPANT/, this.player) + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -507,20 +505,20 @@ class EventContestedResponse extends SharedRollEvent {
 		var keyName = getQuality(this.key).name;
 
 		if (this.lucky) {
-			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+			rollType = localize("ROLL_TEXT_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = localize("ROLL_TEXT_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
-			rollType = " rolls " + keyName;
+			rollType = localize("ROLL_TEXT");
 		}
 
 		return "<div class='playersubordinate' countMe>" +
 				"<div>" +
-					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs " + this.npc + ":" + "</p>" +
+					"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.player).replace(/ROLLTYPE/, localize(keyName)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs " + this.npc + ":" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -539,7 +537,10 @@ class EventPlayerContestedRoll extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div id='" + this.id + "' countMe><span>" + this.player1 + " rolls " + this.key1 + " against " + this.player2 + "'s " + this.key2 + "!</span></div>";
+		var rollType1 = localize(getQuality(this.key1).name);
+		var rollType2 = localize(getQuality(this.key2).name);
+
+		return "<div id='" + this.id + "' countMe><span>" + localize("EVENT_ROLL_PLAYER_CONTESTED").replace(/PLAYER1/, this.player1).replace(/ROLLTYPE1/, localize(rollType1)).replace(/PLAYER2/, this.player2).replace(/ROLLTYPE2/, localize(rollType2)) + "</span></div>";
 	}
 }
 
@@ -554,20 +555,20 @@ class EventPlayerContestedRollSubordinate extends SharedRollEvent {
 		var keyName = getQuality(this.key).name;
 
 		if (this.lucky) {
-			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+			rollType = localize("ROLL_TEXT_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = localize("ROLL_TEXT_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
-			rollType = " rolls " + keyName;
+			rollType = localize("ROLL_TEXT");
 		}
 		
 		return "<div class='playersubordinate' countMe>" +
 				"<div>" +
-					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.player).replace(/ROLLTYPE/, localize(keyName)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -591,11 +592,11 @@ class EventNPCAttack extends SharedEvent {
 	toHTML() {
 		return "<div class='gmInfo' id='" + this.id + "' attacker='" + this.name + "' target='" + this.player + "' countMe>" +
 				"<div>" +
-					"<p>" + this.name + " attacks (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + displayEventName(this, true) + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK").replace(/ATTACKER/, this.name) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + displayEventName(this).replace(/,$/, "") + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -625,15 +626,15 @@ class EventNPCAttackResolution extends SharedEvent {
 		if (this.success) {
 			return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + this.name + " hits " + displayEventName(this, true) + "! (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
+					"<p>" + localize("EVENT_ATTACK_RESOLUTION_HIT").replace(/ATTACKER/, this.name).replace(/DEFENDER/, displayEventName(this)).replace(/,$/, "") + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 		} else {
-			return "<div class='subordinate'><i>The attack missed!" + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
+			return "<div class='subordinate'><i>" + localize("EVENT_ATTACK_RESOLUTION_MISS") + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
 		}
 	}
 }
@@ -654,10 +655,10 @@ class EventNPCDefense extends SharedEvent {
 	toHTML() {
 		return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + this.defender + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") vs. " + displayEventName(this, true) + "'s attack!" + "</p>" +
+					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, this.defender) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, displayEventName(this).replace(/,$/, "")) + "</p>" +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -676,22 +677,24 @@ class EventNPCToughnessRoll extends SharedEvent {
 	}
 
 	toHTML() {
-		var action = " attempts to withstand ";
+		var action;
 
-			if (this.weak) {
-				action = " is <span class='damageWeakness'>WEAK</span> to ";
-			} else if (this.resist) {
-				action = " <span class='damageResist'>RESISTS</span> "
-			}
-			
-			return "<div class='gmExtra subordinate'>" +
-				"<div>" +
-					"<p>" + this.name + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
-					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
-				"</div>" +
-				"<div class='rollResult'>" +
-					"Result: " + this.result +
-				"</div>" +
+		if (this.weak) {
+			action = localize("EVENT_COMBAT_TOUGHNESS_WEAK").replace(/WEAK/, "<span class='damageWeakness'>" + localize("WEAK") + "</span>");
+		} else if (this.resist) {
+			action = localize("EVENT_COMBAT_TOUGHNESS_RESIST").replace(/RESISTS/, "<span class='damageResist'>" + localize("RESISTS") + "</span>");
+		} else {
+			action = localize("EVENT_COMBAT_TOUGHNESS");
+		}
+		
+		return "<div class='gmExtra subordinate'>" +
+			"<div>" +
+				"<p>" + action.replace(/DEFENDER/, this.name).replace(/DAMAGETYPE/, localize(SPECIAL_ATTACK_TYPES[this.attackType]).toLowerCase()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
+				((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+			"</div>" +
+			"<div class='rollResult'>" +
+				localize("LABEL_ROLL_RESULT") + " " + this.result +
+			"</div>" +
 			"</div>";
 	}
 }
@@ -710,20 +713,20 @@ class EventPlayerAttack extends SharedRollEvent {
 		var rollType;
 
 		if (this.lucky) {
-			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
+			rollType = localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " with an <span class='unluckyRoll'>unlucky</span> roll";
+			rollType = localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
 			rollType = "";
 		}
 
 		return "<div id='" + this.id + "' attacker='" + this.player + "' target='" + this.target + "' data-key='" + this.key + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + " attacks (" + getQuality(this.key).name + ", " + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + rollType + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK").replace(/ATTACKER/, this.player) + " (" + localize(getQuality(this.key).name) + ", " + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -748,7 +751,7 @@ class EventPlayerAttackResolution extends SharedEvent {
 	toHTML() {
 		// No output on a success.
 		if (!this.success) {
-			return "<div class='subordinate'><i>The attack missed!" + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
+			return "<div class='subordinate'><i>" + localize("EVENT_ATTACK_RESOLUTION_MISS") + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
 		} else {
 			return "";
 		}
@@ -777,26 +780,26 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 		var shieldString;
 
 		if (this.lucky) {
-			rollType = " makes a <span class='luckyRoll'>lucky</span> roll";
+			rollType = localize("ROLL_DAMAGE_TEXT_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='unluckyRoll'>unlucky</span> roll";
+			rollType = localize("ROLL_DAMAGE_TEXT_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
-			rollType = " rolls";
+			rollType = localize("ROLL_DAMAGE_TEXT");
 		}
 
 		if (this.shieldPenalty) {
-			shieldString = " - " + Math.abs(this.shieldPenalty) + " shield";
+			shieldString = " - " + Math.abs(this.shieldPenalty) + " " + localize("SHIELD_BONUS_PENALTY");
 		} else {
 			shieldString = "";
 		}
 
 		return "<div class='playersubordinate'>" +
 				"<div>" +
-					"<p>" + displayEventName(this) + rollType + " for damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
+					"<p>" +  rollType.replace(/ATTACKER/, displayEventName(this)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -824,26 +827,26 @@ class EventPlayerDefense extends SharedRollEvent {
 		var rollType;
 
 		if (this.lucky) {
-			rollType = " with a <span class='luckyRoll'>lucky</span> roll";
+			rollType = localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " with an <span class='unluckyRoll'>unlucky</span> roll";
-		} else {
+			rollType = localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
+		} else  {
 			rollType = "";
 		}
 
 		if (this.blockMod) {
-			blockString = " + " + this.blockMod + " shield";
+			blockString = " + " + this.blockMod + " " + localize("SHIELD_BONUS_PENALTY");
 		} else {
 			blockString = "";
 		}
 
 		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
 				"<div>" +
-					"<p>" + displayEventName(this) + " defends (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") vs. " + this.attacker + "'s attack" + rollType + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, displayEventName(this)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, this.attacker).replace(/!$/, "") + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -868,7 +871,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 	}
 
 	toHTML() {
-		var action = " attempts to withstand ";
+		var action;
 		var rollType;
 
 		if (this.lucky) {
@@ -880,18 +883,20 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		}
 
 		if (this.weak) {
-			action = " is <span class='damageWeakness'>WEAK</span> to ";
+			action = localize("EVENT_COMBAT_TOUGHNESS_WEAK").replace(/WEAK/, "<span class='damageWeakness'>" + localize("WEAK") + "</span>");
 		} else if (this.resist) {
-			action = " <span class='damageResist'>RESISTS</span> "
+			action = localize("EVENT_COMBAT_TOUGHNESS_RESIST").replace(/RESISTS/, "<span class='damageResist'>" + localize("RESISTS") + "</span>");
+		} else {
+			action = localize("EVENT_COMBAT_TOUGHNESS");
 		}
 		
 		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
 				"<div>" +
-					"<p>" + displayEventName(this) + action + SPECIAL_ATTACK_TYPES[this.attackType] + " damage (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ((this.armorMod >= 0) ? (" + " + this.armorMod + " armor)") : ")") + rollType + "</p>" +
+					"<p>" + action.replace(/DEFENDER/, displayEventName(this)).replace(/DAMAGETYPE/, localize(SPECIAL_ATTACK_TYPES[this.attackType]).toLowerCase()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ((this.armorMod >= 0) ? (" + " + this.armorMod + " " + localize("ARMOR_BONUS") + ")") : ")") + rollType + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -909,7 +914,7 @@ class EventInjuryPlayer extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div><span>" + displayEventName(this) + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+		return "<div><span>" + localize("EVENT_STATUS_PLAYER").replace(/PLAYER/, displayEventName(this)).replace(/STATUS/, localize(INJURY_LEVEL_DISPLAY[this.status])).replace(/!.$/, "!") + "</span></div>";
 	}
 }
 
@@ -922,17 +927,21 @@ class EventNPCStatus extends SharedEvent {
 	}
 
 	toHTML() {
+		var result;
+
 		if (this.oldStatus == INJURY_LEVEL_DISPLAY.length - 1) {
 			if (this.status > 0) {
-				return "<div><span>" + this.name + " appears!  It is " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+				result= localize("EVENT_STATUS_NPC_APPEAR_INJURED").replace(/STATUS/, localize(INJURY_LEVEL_DISPLAY[this.status])).replace(/!.$/, "!");
 			} else {
-				return "<div><span>" + this.name + " appears!</span></div>";
+				result = localize("EVENT_STATUS_NPC_APPEAR");
 			}
 		} else if (this.status == INJURY_LEVEL_DISPLAY.length - 1) {
-			return "<div><span>" + this.name + " disappears!</span></div>";
+			result = localize("EVENT_STATUS_NPC_DISAPPEAR");
 		} else {
-			return "<div><span>" + this.name + " is now " + INJURY_LEVEL_DISPLAY[this.status] + ((this.status < INJURY_LEVEL_DISPLAY.length - 2) ? "." : "") + "</span></div>";
+			result= localize("EVENT_STATUS_NPC").replace(/STATUS/, localize(INJURY_LEVEL_DISPLAY[this.status])).replace(/!.$/, "!");
 		}
+
+		return "<div><span>" + result.replace(/NAME/, this.name) + "</span></div>";
 	}
 }
 
@@ -945,7 +954,7 @@ class EventPlayerWeapon extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.name + " has equipped " + EQUIPPED_WEAPON[this.weapon].weapon + ".</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_PLAYER_EQUIP").replace(/PLAYER/, this.name).replace(/ITEM/, localize(EQUIPPED_WEAPON[this.weapon].weapon)) + ".</div>";
 	}
 }
 
@@ -957,7 +966,7 @@ class EventPlayerArmor extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='gmInfo'>" + this.name + " has equipped " + getQuality(WORN_ARMOR[this.armor]).name + ".</div>";
+		return "<div class='gmInfo'>" + localize("EVENT_PLAYER_EQUIP").replace(/PLAYER/, this.name).replace(/ITEM/, localize(getQuality(WORN_ARMOR[this.armor]).name)) + ".</div>";
 	}
 }
 
@@ -979,24 +988,24 @@ class EventPlayerRequestSummon extends SharedRollEvent {
 		var keyName = getQuality(this.key).name;
 
 		if (this.lucky) {
-			rollType = " makes a <span class='luckyRoll'>lucky</span> " + keyName + " roll";
+			rollType = localize("ROLL_TEXT_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " makes an <span class='unluckyRoll'>unlucky</span> " + keyName+ " roll";
+			rollType = localize("ROLL_TEXT_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
-			rollType = " rolls " + keyName;
+			rollType = localize("ROLL_TEXT");
 		}
 
 		if (this.petName) {
-			nameString = " (named " + this.petName + ")";
+			nameString = " " + localize("EVENT_SUMMON_ROLL_NAME").replace(/NAME/, this.petName);
 		}
 
 		return "<div id='" + this.id + "' data-player='" + this.player + "' data-template='" + this.template + "' data-pet-name='" + this.petName + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + rollType + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") to summon a " + this.template + nameString + ":" + "</p>" +
+					"<p>" + rollType.replace(/PARTICIPANT/, this.player).replace(/ROLLTYPE/, localize(keyName)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + localize("EVENT_SUMMON_ROLL").replace(/TEMPLATE/, localize(this.template)) + nameString + ":" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -1014,7 +1023,7 @@ class EventPlayerSummonResolution extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div class='playersubordinate'><p>The summoning " + ((this.success) ? "succeeds" : "fails") + "!</p>" +
+		return "<div class='playersubordinate'><p>" + localize((this.success) ? "EVENT_SUMMON_SUCCESS" : "EVENT_SUMMON_FAILURE") + "</p>" +
 		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 		"</div>";
 	}
@@ -1029,7 +1038,15 @@ class EventPlayerSummonDismiss extends SharedEvent {
 	}
 
 	toHTML() {
-		return "<div><p>" + this.player + "'s " + this.template + ((this.petName) ? (", " + this.petName + ",") : "") + " is dismissed!</p></div>";
+		var summon;
+
+		if (this.petName) {
+			summon = localize("DISPLAY_PET_NAME").replace(/NAME/, this.petName);
+		} else {
+			summon = localize("DISPLAY_PET");
+		}
+
+		return "<div><p>" + localize("EVENT_SUMMON_DISMISS").replace(/PET/, summon.replace(/PLAYER/, this.player).replace(/TEMPLATE/, localize(this.template))) + "</p></div>";
 	}
 }
 
@@ -1046,13 +1063,21 @@ class EventPlayerSummonAttack extends SharedRollEvent {
 	}
 
 	toHTML() {
+		var summon;
+
+		if (this.petName) {
+			summon = localize("DISPLAY_PET_NAME").replace(/NAME/, this.petName);
+		} else {
+			summon = localize("DISPLAY_PET");
+		}
+
 		return "<div id='" + this.id + "' attacker='" + nameEncode(this.player) + "»" + this.template + "' target='" + this.target + "' data-key='" + this.key + "' countMe>" +
 				"<div>" +
-					"<p>" + this.player + "'s " + this.template + ((this.petName) ? (", " + this.petName + ",") : "") + " attacks (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK").replace(/ATTACKER/, summon.replace(/PLAYER/, this.player).replace(/TEMPLATE/, localize(this.template))) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.target + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
-					"Result: " + this.result +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
 	}
@@ -1070,12 +1095,12 @@ class EventPlayerRequestTransform extends SharedEvent {
 		var request;
 
 		if (this.transform) {
-			request = " wants to transform into a " + this.transform;
+			request = localize("EVENT_TRANSFORM_REQUEST_START").replace(/FORM/, localize(this.transform));
 		} else {
-			request = " wants to end their transformation";
+			request = localize("EVENT_TRANSFORM_REQUEST_END");
 		}
 
-		return "<div class='gmInfo' id='" + this.id + "' data-player='" + this.name + "' data-key='" + this.transform + "'>" + this.name + request + ".</div>";
+		return "<div class='gmInfo' id='" + this.id + "' data-player='" + this.name + "' data-key='" + this.transform + "'>" + request.replace(/PLAYER/, this.name) + ".</div>";
 	}
 }
 
@@ -1095,12 +1120,12 @@ class EventPlayerTransform extends SharedEvent {
 		var result;
 
 		if (this.transform) {
-			result = " transforms into a <strong>" + this.transform + "</strong>";
+			result = localize("EVENT_TRANSFORMATION").replace(/FORM/, "<strong>" + localize(this.transform) + "</strong>");
 		} else {
-			result = " ends their transformation";
+			result = localize("EVENT_TRANSFORMATION_END");
 		}
 
-		return "<div class='playersubordinate'><p>" + this.player + result + "!</p>" +
+		return "<div class='playersubordinate'><p>" + result.replace(/PLAYER/, this.player) + "</p>" +
 		((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 		"</div>";
 	}

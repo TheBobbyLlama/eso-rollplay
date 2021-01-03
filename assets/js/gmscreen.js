@@ -405,7 +405,7 @@ function activatePlayer(index) {
 		characterList[index].print("printout", true);
 
 		if (characterList[index].transformation) {
-			$("#playerControls").append("<button type='button' name='transformButton' data-key=''>" + localize("TRANFORM_REVERT") + "</button>");
+			$("#playerControls").append("<button type='button' name='transformButton' data-key=''>" + localize("TRANSFORM_REVERT") + "</button>");
 		} else {
 			var targetTransforms = supernaturalTransformations.filter(element => element.parent === characterList[index].supernatural);
 
@@ -647,6 +647,7 @@ function sendSummonResult(target, result) {
 	var comment = $(target).closest("div.gmExtra").find("input[name='gmComment']");
 
 	dbPushEvent(new EventPlayerSummonResolution(eventDiv.attr("data-player"), result, eventDiv.attr("data-template"), eventDiv.attr("data-pet-name"), comment.val(), eventDiv.attr("id")));
+
 	comment.val("");
 }
 
@@ -668,9 +669,9 @@ function denyTransformation() {
 	var request;
 
 	if (key) {
-		request = "turn into a " + key;
+		request = localize("TRANSFORM_REQUEST_START").replace(/FORM/, localize(key));
 	} else {
-		request = "end your transformation";
+		request = localize("TRANSFORM_REQUEST_END");
 	}
 
 	dbPushEvent(new EventGMResponseDeny(nameEncode(eventDiv.attr("data-player")), request, eventDiv.attr("id"), comment.val()));
