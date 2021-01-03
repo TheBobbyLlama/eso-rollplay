@@ -713,9 +713,9 @@ class EventPlayerAttack extends SharedRollEvent {
 		var rollType;
 
 		if (this.lucky) {
-			rollType = localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
+			rollType = " " + localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
+			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
 			rollType = "";
 		}
@@ -827,9 +827,9 @@ class EventPlayerDefense extends SharedRollEvent {
 		var rollType;
 
 		if (this.lucky) {
-			rollType = localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
+			rollType = " " + localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
+			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
 			rollType = "";
 		}
