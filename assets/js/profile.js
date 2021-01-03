@@ -105,7 +105,7 @@ function fillCharacteristics(myProfile) {
 		if (tmpVal) {
 			found = true;
 
-			myDiv.append("<div><h4>" + localize("LABEL_" + characteristicList[i][0].toUpperCase()) + "</h4> " + converter.makeHtml(tmpVal) + "</div>");
+			myDiv.append("<div><h4>" + localize("LABEL_" + characteristicList[i][0].toUpperCase().replace(/\s+/g, "_")) + "</h4> " + converter.makeHtml(tmpVal) + "</div>");
 		}
 	}
 
