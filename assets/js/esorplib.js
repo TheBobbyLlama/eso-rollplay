@@ -727,11 +727,11 @@ class CharacterSheet {
 		}
 
 		if (this.race) {
-			printArr.push(localize(races.find(item => item.key === this.race).name));
+			printArr.push(localize(races.find(item => item.key === this.race.replace(/[\s\W]/g, "")).name));
 		}
 
 		if (this.supernatural) {
-			printArr.push(localize(supernaturals.find(item => item.key === this.supernatural).name));
+			printArr.push(localize(supernaturals.find(item => item.key === this.supernatural.replace(/[\s\W]/g, "")).name));
 		}
 
 		printArr.push(localize((this.sex) ? "SEX_FEMALE" : "SEX_MALE"));
