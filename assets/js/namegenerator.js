@@ -10,7 +10,7 @@ function initializePage(data) {
 	nameData = data;
 
 	for (let i = 0; i < nameData.length; i++) {
-		$("#race").append("<option>" + nameData[i].race + "</option>")
+		$("#race").append("<option value='" + nameData[i].race + "'>" + localize(nameData[i].race) + "</option>")
 	}
 
 	$("#race").trigger("change");

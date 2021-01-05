@@ -1,0 +1,37 @@
+button#addNPC, button#addPlayer {
+	min-width: 70px;
+}
+
+#charSheet #main section:last-child {
+	flex-basis: 700px;
+}
+
+#dieRollPanel div.lucky::after {
+	content: "Sortudo!";
+}
+
+#dieRollPanel div.resist::after {
+	content: "Resiste!";
+}
+
+#dieRollPanel div.unlucky::after {
+	content: "Sem Sorte!";
+}
+
+#dieRollPanel div.weak::after {
+	content: "Fraco!";
+}
+
+#npcList input, #playerList input {
+	max-width: 160px;
+}
+
+@media screen and (max-width: 575px) {
+	#npcList, #playerList {
+		max-width: 100%;
+	}
+
+	#npcList input, #playerList input {
+		max-width: initial;
+	}
+}

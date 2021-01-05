@@ -1,6 +1,6 @@
 [
 	{
-		"race": "Altmer",
+		"race": "RACE_ALTMER",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -101,7 +101,7 @@
 		]
 	},
 	{
-		"race": "Argonian",
+		"race": "RACE_ARGONIAN",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -227,7 +227,7 @@
 		]
 	},
 	{
-		"race": "Ashlander",
+		"race": "RACE_ASHLANDER",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -288,7 +288,7 @@
 		]
 	},
 	{
-		"race": "Bosmer",
+		"race": "RACE_BOSMER",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -389,7 +389,7 @@
 		]
 	},
 	{
-		"race": "Breton",
+		"race": "RACE_BRETON",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -644,7 +644,7 @@
 		]
 	},
 	{
-		"race": "Dunmer",
+		"race": "RACE_DUNMER",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -779,7 +779,7 @@
 		]
 	},
 	{
-		"race": "Imperial",
+		"race": "RACE_IMPERIAL",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -987,7 +987,7 @@
 		]
 	},
 	{
-		"race": "Khajiit",
+		"race": "RACE_KHAJIIT",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -1088,7 +1088,7 @@
 		]
 	},
 	{
-		"race": "Nord",
+		"race": "RACE_NORD",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -1353,7 +1353,7 @@
 		]
 	},
 	{
-		"race": "Orc",
+		"race": "RACE_ORC",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -1580,7 +1580,7 @@
 		]
 	},
 	{
-		"race": "Redguard",
+		"race": "RACE_REDGUARD",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -1696,7 +1696,7 @@
 		]
 	},
 	{
-		"race": "Maormer",
+		"race": "RACE_MAORMER",
 		"subcategories": [
 			{
 				"name": "Male",
@@ -1734,7 +1734,7 @@
 
 	},
 	{
-		"race": "Reachman",
+		"race": "RACE_REACHMEN",
 		"subcategories": [
 			{
 				"name": "Male",

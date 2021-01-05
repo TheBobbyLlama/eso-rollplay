@@ -14,7 +14,7 @@ async function initializePage(myUser) {
 
 	await localizePage();
 
-	$("#welcomeHeader").text(localize("WELCOME_MESSAGE").replace(/USER/, userInfo.display.replace(/^@/, "")));
+	createWelcomeMessage();
 	populateCharacterList();
 
 	fillTaskHolder();
@@ -23,15 +23,19 @@ async function initializePage(myUser) {
 	$("#characterCenter, #miscTasks").removeClass("hideMe");
 }
 
+function createWelcomeMessage() {
+	$("#welcomeHeader").text(localize("WELCOME_MESSAGE").replace(/USER/, userInfo.display.replace(/^@/, "")));
+}
+
 function fillTaskHolder() {
 	taskHolder.empty();
 
 	if (userInfo.gameMaster) {
-		taskHolder.append("<button type='button' id='gmScreen'>" + localize("GM_SCREEN") + "</button>")
+		taskHolder.append("<button type='button' id='gmScreen' data-localization-key='GM_SCREEN'>" + localize("GM_SCREEN") + "</button>")
 	}
 
-	taskHolder.append("<button type='button' id='profileViewer'>" + localize("BROWSE_CHARACTERS") + "</button>");
-	taskHolder.append("<button type='button' id='nameGenerator'>" + localize("GENERATE_LORE_FRIENDLY_NAMES") + "</button>");
+	taskHolder.append("<button type='button' id='profileViewer' data-localization-key='BROWSE_CHARACTERS'>" + localize("BROWSE_CHARACTERS") + "</button>");
+	taskHolder.append("<button type='button' id='nameGenerator' data-localization-key='GENERATE_LORE_FRIENDLY_NAMES'>" + localize("GENERATE_LORE_FRIENDLY_NAMES") + "</button>");
 }
 
 function doLogout() {
@@ -56,7 +60,7 @@ function populateCharacterList() {
 			charList.append("<li class='charItem' data-index='" + i + "'>" + userInfo.characters[i] + "</li>");
 		}
 
-		charList.append("<li><button type='button' name='createCharacter'>" + localize("CREATE_A_NEW_CHARACTER") + "</button></li>");
+		charList.append("<li><button type='button' name='createCharacter' data-localization-key='CREATE_A_NEW_CHARACTER'>" + localize("CREATE_A_NEW_CHARACTER") + "</button></li>");
 
 		$("#newUserPrompt").addClass("hideMe");
 		$("#charListHolder, #characterCommands").removeClass("hideMe");
@@ -155,8 +159,17 @@ function checkPasswordEntries() {
 	}
 }
 
-function confirmSettingsChange() {
+async function confirmSettingsChange() {
 	var shouldSave = false;
+
+	if ($("#optLanguage").val() != userInfo.language) {
+		userInfo.language = $("#optLanguage").val();
+		localStorage.setItem("ESORP[language]", userInfo.language || "");
+		await localizePage();
+		createWelcomeMessage();
+		setCharacterActive(activeChar);
+		shouldSave = true;
+	}
 
 	if ($("#optVolume").val() != userInfo.alertVolume) {
 		userInfo.alertVolume = $("#optVolume").val();
@@ -215,6 +228,7 @@ function showErrorPopup(message, callback=null) {
 }
 
 function showSettingsPopup() {
+	$("#optLanguage").val(userInfo.language || "EN-US");
 	$("#optVolume").val(userInfo.alertVolume || 1.0);
 	$("#optGM").prop("checked", userInfo.gameMaster);
 	$("#newPassword, #confirmPassword").val("");

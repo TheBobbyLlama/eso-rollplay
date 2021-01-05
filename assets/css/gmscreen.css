@@ -19,6 +19,7 @@ h3 {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	max-width: 250px;
 }
 
 #npcList button, #playerList button {
@@ -259,6 +260,10 @@ h3 {
 
 	#encounterInfo > form div {
 		margin-bottom: 4px;
+	}
+
+	#npcList form, #playerList form {
+		width: 100%;
 	}
 
 	/* Override font size from style.css */
