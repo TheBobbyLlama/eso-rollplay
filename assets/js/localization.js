@@ -17,6 +17,7 @@ const localizationList = [
 			[ "CANCEL", "Cancel" ],
 			[ "DONE", "Done" ],
 			[ "SEARCH", "Search" ],
+			[ "HELP", "Help" ],
 			[ "COMMENT", "Comment" ],
 			[ "MARKDOWN", "Markdown" ],
 			[ "USER_NOT_FOUND", "User USER not found!" ],
@@ -538,7 +539,10 @@ function localize(key) {
 
 async function loadLocalizationFile(language) {
 	//let response = await fetch("./assets/localization/" + language + ".json");
-	let response = await fetch("https://eso-rollplay.net/assets/localization/" + language + ".json");
+	let response = await fetch("https://eso-rollplay.net/assets/localization/" + language + ".json", {
+			method: 'GET',
+			mode: "cors"
+	});
 
 	if (response.ok) {
 		let data = await response.json();
@@ -552,15 +556,12 @@ async function loadLocalizationFile(language) {
 async function localizePage() {
 	const language = localStorage.getItem("ESORP[language]") || "EN-US";
 
-	console.log(language, localizationLanguage);
-
 	if (localizationLanguage !== language) {
 		if (language != "EN-US") {
 			let localizationData = await loadLocalizationFile(language);
 
 			if (localizationData) {
 				localizationList.push(localizationData);
-				console.log(localizationList);
 			}
 		}
 

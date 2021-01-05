@@ -1,4 +1,3 @@
-const emptyTemplate = "<div class='nodesc'>No description given.</div>"
 const characteristicList = [
 	[ "Alignment", "alignment" ],
 	[ "Birthsign", "birthsign" ],
@@ -18,8 +17,6 @@ var converter = converter = new showdown.Converter();
 function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
 	minimal = new URLSearchParams(window.location.search).get("minimal");
-
-	await localizePage();
 
 	initializeDB();
 
@@ -127,7 +124,7 @@ function setCharacterProfile(profile) {
 	if (profile) {
 		$("#charImage")[0].style.background =  profile.image ? "url('" + profile.image + ")" : "";
 		$("#charImage").toggle(!!profile.image);
-		$("#profileShort").empty().append(profile.description ? converter.makeHtml(profile.description.trim()) : emptyTemplate);
+		$("#profileShort").empty().append(profile.description ? converter.makeHtml(profile.description.trim()) : "<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
 
 		if (!minimal) {
 			fillCharacteristics(profile);
@@ -135,7 +132,7 @@ function setCharacterProfile(profile) {
 		}
 	} else {
 		$("#charImage, #characteristics").toggle(false);
-		$("#profileShort, #biography").empty().append(emptyTemplate);
+		$("#profileShort, #biography").empty().append("<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
 		$("#biography").toggle(false);
 	}
 }

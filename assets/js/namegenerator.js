@@ -24,8 +24,6 @@ function initializePage(data) {
 		generate(null);
 	}
 
-	await localizePage();
-
 	$("#loading").remove();
 	$("h2, nav, section").removeClass("hideMe");
 }
