@@ -560,6 +560,7 @@ async function localizePage() {
 
 			if (localizationData) {
 				localizationList.push(localizationData);
+				console.log(localizationList);
 			}
 		}
 

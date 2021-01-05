@@ -516,6 +516,6 @@
 		[ "TRANSFORM_REQUEST_START", "se transforma em FORM" ],
 		[ "TRANSFORM_REQUEST_END", "finalizou sua transformação" ],
 		[ "EVENT_TRANSFORMATION", "PLAYER transforma-se em um FORM!" ],
-		[ "EVENT_TRANSFORMATION_END", "PLAYER finaliza sua transformação!" ],
+		[ "EVENT_TRANSFORMATION_END", "PLAYER finaliza sua transformação!" ]
 	]
 }
