@@ -42,7 +42,7 @@ async function initializePage(myUser) {
 	superSelect.append("<option value=''>" + localize("NOT_APPLICABLE") + "</option>")
 
 	for (i = 1; i < supernaturals.length; i++) {
-		superSelect.append("<option value='" + supernaturals[i].key +"'>" + localize(supernaturals[i].name) + "</option>")
+		superSelect.append("<option value='" + supernaturals[i].plainName +"'>" + localize(supernaturals[i].name) + "</option>")
 	}
 
 	for (i = 0; i < classes.length; i++) {

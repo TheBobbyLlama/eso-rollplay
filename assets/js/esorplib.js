@@ -43,6 +43,7 @@ class ExtraSkill extends QualityTemplate {
 class CharacterTemplate {
 	constructor(prefix = "", myName, maleAttr, femaleAttr, skillMods, myResist = [], myWeakness = []) {
 		this.name = prefix + myName.replace(/\s/g, "_").replace(/\W/g, "").toUpperCase();
+		this.plainName = myName;
 		this.key = myName.replace(/[\s\W]/g, "");
 
 		this.attributes = [];
@@ -324,7 +325,10 @@ const npcTemplates = [
 
 /// Gets a character template by name.
 function getTemplate(name, list) {
-	return list.find(element => element.key === name);
+	if (name) {
+		name = name.replace(/[\s\W]/g, "");
+		return list.find(element => element.key === name);
+	}
 }
 
 /// CHARACTER FIELD DEFINITION SECTION
