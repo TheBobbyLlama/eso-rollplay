@@ -29,6 +29,10 @@ li {
 	margin-left: 20px;
 }
 
+ol:not(.toc) li, ul:not(.toc) li {
+	margin-bottom: 6px;
+}
+
 body {
 	background-color: var(--inset-background);
 	color: var(--content-color);
