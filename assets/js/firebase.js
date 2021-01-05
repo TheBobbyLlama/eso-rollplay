@@ -183,7 +183,7 @@ function dbDeleteCharacter(killMe, successCallback = undefined, failureCallback 
 
 	database.ref("characters/" + killMe).remove()
 		.then(function() {
-			database.ref("descriptions/" + killMe).remove()
+			database.ref("profiles/" + killMe).remove()
 			.then(function() {
 				if (successCallback) {
 					successCallback();
