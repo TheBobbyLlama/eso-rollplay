@@ -19,7 +19,7 @@ function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
 	minimal = new URLSearchParams(window.location.search).get("minimal");
 
-	localizePage(localStorage.getItem("ESORP[language]"));
+	await localizePage();
 
 	initializeDB();
 

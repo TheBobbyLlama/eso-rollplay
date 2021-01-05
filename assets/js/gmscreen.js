@@ -42,7 +42,7 @@ async function initializePage(myUser) {
 	var npcTemplateList = $("#NPCTemplateOptions");
 	userInfo = myUser;
 
-	await localizePage(userInfo.language);
+	await localizePage();
 
 	// Only has basic injury options, special Hidden value will be added later for NPCs.
 	for (i = 0; i < INJURY_LEVEL_DISPLAY.length - 1; i++) {

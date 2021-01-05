@@ -22,7 +22,7 @@ async function initializePage(myUser) {
 	userInfo = myUser;
 	character.player = userInfo.display;
 
-	await localizePage(userInfo.language);
+	await localizePage();
 
 	fillSection("attributes", attributes);
 	fillSection("skillsCombat", skillsCombat);

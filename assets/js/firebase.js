@@ -93,6 +93,9 @@ function dbLoadAccountInfo(name, handler) {
 			if (!result.characters) {
 				result.characters = [];
 			}
+
+			// Save language info immediately
+			localStorage.setItem("ESORP[language]", result.language || "");
 		}
 
 		handler(result);

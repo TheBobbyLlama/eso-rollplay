@@ -1,4 +1,4 @@
-var localizationLanguage = "EN-US"; // Global variable that other files can access.
+var localizationLanguage; // Global variable that other files can access.
 const checkAttributes = [ "alt", "title", "placeholder" ];
 const localizationList = [
 	{
@@ -536,25 +536,53 @@ function localize(key) {
 	}
 }
 
-async function localizePage(language) {
-	localizationLanguage = language || "EN-US";
-	localStorage.setItem("ESORP[language]", localizationLanguage);
+async function loadLocalizationFile(language) {
+	//let response = await fetch("./assets/localization/" + language + ".json");
+	let response = await fetch("https://eso-rollplay.net/assets/localization/" + language + ".json");
 
-	const localizationTargets = $("*[data-localization-key]");
+	if (response.ok) {
+		let data = await response.json();
 
-	localizationTargets.each(function() {
-		var element = $(this);
-		var key = element.attr("data-localization-key");
+		return data;
+	} else {
+		return null;
+	}
+}
 
-		checkAttributes.forEach(item => {
-			var checkMe = element.attr(item);
-			if (checkMe) {
-				element.attr(item, localize(checkMe));
+async function localizePage() {
+	const language = localStorage.getItem("ESORP[language]") || "EN-US";
+
+	console.log(language, localizationLanguage);
+
+	if (localizationLanguage !== language) {
+		if (language != "EN-US") {
+			let localizationData = await loadLocalizationFile(language);
+
+			if (localizationData) {
+				localizationList.push(localizationData);
+			}
+		}
+
+		localizationLanguage = language;
+
+		const localizationTargets = $("*[data-localization-key]");
+
+		localizationTargets.each(function() {
+			var element = $(this);
+			var key = element.attr("data-localization-key");
+
+			checkAttributes.forEach(item => {
+				var checkMe = element.attr(item);
+				if (checkMe) {
+					element.attr(item, localize(checkMe));
+				}
+			})
+
+			if (key) {
+				element.text(localize(key));
 			}
 		})
-
-		if (key) {
-			element.text(localize(key));
-		}
-	})
+	}
 }
+
+localizePage();

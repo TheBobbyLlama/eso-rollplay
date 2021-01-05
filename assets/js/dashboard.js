@@ -12,7 +12,7 @@ async function initializePage(myUser) {
 
 	userInfo = myUser;
 
-	await localizePage(userInfo.language);
+	await localizePage();
 
 	$("#welcomeHeader").text(localize("WELCOME_MESSAGE").replace(/USER/, userInfo.display.replace(/^@/, "")));
 	populateCharacterList();

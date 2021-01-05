@@ -24,7 +24,7 @@ function initializePage(data) {
 		generate(null);
 	}
 
-	localizePage(localStorage.getItem("ESORP[language]"));
+	await localizePage();
 
 	$("#loading").remove();
 	$("h2, nav, section").removeClass("hideMe");
@@ -96,7 +96,6 @@ function getComponentLists(filter) {
 	while (true) {
 		let tmpResults = [];
 
-		console.log(raceIndex);
 		for (let x = 0; x < nameData[raceIndex].subcategories.length; x++) {
 			let curSet = nameData[raceIndex].subcategories[x];
 
@@ -186,7 +185,7 @@ function sendToDashboard(event) {
 }
 
 /// Event registration.
-$.getJSON( "./assets/data/namedata.json?raw=true", initializePage);
+$.getJSON( "./assets/data/namedata.json", initializePage);
 //initializePage([]); // LOCAL TESTING ONLY!!!
 $("nav h1").on("click", sendToDashboard);
 $("#race").on("change", createFilters);
