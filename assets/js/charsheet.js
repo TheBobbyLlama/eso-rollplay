@@ -332,15 +332,23 @@ function checkImageUrl(url) {
 }
 
 function setImageUrl() {
-	var tmpUrl = $(this).val();
-	profile.image = displayImage(tmpUrl) ? tmpUrl : profile.image;
+	var urlField = $(this);
+	var tmpUrl = urlField.val();
+	var tryDisplay = displayImage(tmpUrl);
+
+	if (tryDisplay) {
+		profile.image = tmpUrl;
+	} else {
+		delete profile.image;
+	}
+
+	urlField.toggleClass("redFlag", !tryDisplay);
 }
 
 function displayImage(url) {
 	var test = checkImageUrl(url || "");
 
 	$("#charImage")[0].style.background = (test) ? "url('" + url + "')" : "";
-	$("input[name='imageUrl']").toggleClass("redFlag", !test);
 
 	return !!test;
 }
