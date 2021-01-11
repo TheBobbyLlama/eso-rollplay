@@ -328,7 +328,7 @@ function checkImageUrl(url) {
 	// - http: or https: prefix
 	// - BMP, GIF, JPG, or PNG (case insensitive)
 	// - Query params (might be there if coming from Github)
-	return url.match(/^(https?:\/\/)?[A-Za-z0-9-_]+\.[A-Za-z0-9-_.]+[A-Za-z0-9]+\/[A-Za-z0-9-_/]+(\.[Bb][Mm][Pp]|\.[Gg][Ii][Ff]|\.[Jj][Pp][Gg]|\.[Pp][Nn][Gg])(\?[\w=&]+)*$/g);
+	return url.match(/^(https?:\/\/)?[A-Za-z0-9-_]+\.[A-Za-z0-9-_.]+[A-Za-z0-9](\/[A-Za-z0-9-_]+)*\/[A-Za-z0-9-_.]+(\.[Bb][Mm][Pp]|\.[Gg][Ii][Ff]|\.[Jj][Pp][Gg]|\.[Pp][Nn][Gg])(\?[\w=&]+)*$/g);
 }
 
 function setImageUrl() {

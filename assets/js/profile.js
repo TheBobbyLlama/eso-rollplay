@@ -122,7 +122,7 @@ function profileLoaded(loadMe) {
 
 function setCharacterProfile(profile) {
 	if (profile) {
-		$("#charImage")[0].style.background =  profile.image ? "url('" + profile.image + ")" : "";
+		$("#charImage")[0].style.background =  profile.image ? "url('" + profile.image + "')" : "";
 		$("#charImage").toggle(!!profile.image);
 		$("#profileShort").empty().append(profile.description ? converter.makeHtml(profile.description.trim()) : "<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
 
