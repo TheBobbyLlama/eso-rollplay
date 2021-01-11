@@ -97,7 +97,7 @@ function dbLoadAccountInfo(name, handler) {
 			// Save language info immediately
 			localStorage.setItem("ESORP[language]", result.language || "");
 
-			if (($) && (result.language)) {
+			if (($) && (result.language) && (result.language !== "EN-US")) {
 				$("head").append("<link rel='stylesheet' href='./assets/css/" + result.language + ".css' />");
 			}
 		}
