@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Rollplay - Guia do Mestre do Jogo</title>
+	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
+	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+	<link rel="stylesheet" href="../../assets/css/handbook.css" />
+</head>
+<body>
+	<nav>
+		<a href="index.html">← Voltar</a>
+	</nav>
+	<h2>ESO Rollplay - Guia do Mestre do Jogo (GM)</h2>
+	<section>
+		<h3>Começando</h3>
+		<p>
+			Tornar-se um GM é fácil - simplesmente abra suas Opções de seu Painel de Controle (ícone de chave inglesa) e defina a si mesmo como Mestre do Jogo.  Assim que fizer isso, uma opção de <em>Tela do GM</em> irá aparecer em seu Painel de Controle.
+		</p>
+		<h3>A Tela do Mestre do Jogo</h3>
+		<p>
+			A Tela do Mestre do Jogo lhe permite fazer sessões do Rollplay por conta própria.  Como GM, você será o árbitro das ações.  Lembre-se que você sempre terá <em>a palavra final</em>.  Você é livre para falsificar ou mesmo ignorar os resultados do dado se a situação permitir.
+		</p>
+		<ol>
+			<li><a href="#session-controls">Controles da Sessão</a></li>
+			<li><a href="#npc-controls">Controles dos NPCs</a></li>
+			<li><a href="#player-controls">Controles do Jogador</a></li>
+			<li><a href="#session-history">Histórico de Sessão</a></li>
+			<li><a href="#rolling-controls">Controles de Rolagem</a></li>
+			<li><a href="#handling-player-rolls">Lidando com Rolagens de Jogadores</a></li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="session-controls">Controles da Sessão</a></h3>
+		<ul>
+			<li>
+				<strong>Abrir Sessão</strong> Botão &mdash;
+				Use este botão para iniciar uma nova sessão.  Sua conta pode ter apenas uma sessão aberta ao mesmo tempo, iniciar uma nova sessão irá sobrescrever qualquer sessão anterior que estava acontecendo!
+			</li>
+			<li>
+				<strong>Finalizar Sessão</strong> Botão &mdash;
+				Use este botão quando sua sessão estiver completa.  Isso deixará a sessão como inativa e jogadores não terão mais permissão para se juntar.  Quando a sessão estiver nesse estado, você ainda poderá vê-la a partir da Tela do Mestre do Jogo se você quiser revisar os eventos - contanto que você não tenha matado-a ao abrir outra sessão.
+			</li>
+		</ul>
+	</section>
+	<section>
+		<h3><a name="npc-controls">Controles dos NPCs</a></h3>
+		<p>
+			Abaixo da seção de NPCs, você poderá inserir o nome de um NPC e usar o botão <em>Adicionar</em> para adicioná-los à sessão.  O NPC adicionado irá aparecer em uma lista ao lado esquerdo da seção.  NPCs começam com um status de <em>Oculto</em>, o que significa que jogadores em sua sessão não poderão vê-lo.  Você pode definir seus status para qualquer padrão de <a href="./rolling.html#injury-system">nível de ferimento</a> para eles aparecerem para os jogadores.  Por fim, você pode clicar no <em>X</em> em um registro de NPC na lista para remover esse NPC da sessão.
+		</p>
+		<p>
+			Clicar em um NPC da lista irá mostrar seus status no painel de cor mais clara ao lado direito (quando você adiciona um NPC, será selecionado automaticamente para isso).  Nesse painel, você poderá definir os status do NPC.  Esses status são muito mais simples do que os usados pelos personagens, porque o Rollplay apenas precisa saber suas capacidades de combate.
+		</p>
+	</section>
+	<section>
+		<h3><a name="player-controls">Controles do Jogador</a></h3>
+		<p>
+			Abaixo da seção de Jogadores você poderá inserir o nome de um jogador e usar o botão <em>Adicionar</em> para adicioná-los à sessão.  Alternativamente, se você não tem certeza de como pronunciar o nome de um personagem, você pode usar o botão <em>?</em> para procurar pelo nome do jogador.  Assim como os NPCs, você poderá definir o <a href="./rolling.html#injury-system">status de ferimento</a> ou usar o <em>X</em> para removê-los da sessão.
+		</p>
+		<p>
+			Além disso, criaturas invocadas serão mostradas abaixo dos jogadores quais elas pertencem.  Assim como os jogadores, você poderá definir o <a href="./rolling.html#injury-system">status de ferimento</a> ou usar o <em>X</em> para forçá-los a serem desconjurados.
+		</p>
+		<p>
+			Clicar em um jogador da lista irá mostrar seus status impressos ao lado direito no painel mais claro (quando você adiciona um jogador, será selecionado automaticamente para isso).  Nesse painel, há também um link para visualizar a descrição do personagem.  Abaixo do painel, opções de transformações irão aparecer se o personagem tem um <a href="./supernatural.html">tipo sobrenatural</a> que é capaz disso - você pode forçar o jogador a iniciar ou finalizar a transformação.
+		</p>
+		<aside>
+			<p>
+				Essas opções de transformações incluem uma opção secreta para lobisomens que apenas o GM tem permissão de selecionar para um jogador - Lobisomens Behemoth!
+			</p>
+			<div>
+				<strong>Atributos:</strong>
+				<span class="positive">+9 FOR</span>,
+				<span class="positive">+1 AGI</span>,
+				<span class="positive">+2 VEL</span>,
+				<span class="positive">+5 RES</span>
+			</div>
+			<div>
+				<strong>Bônus de Habilidades:</strong> <a href="./skills.html#perception">Percepção</a> +4; <a href="./skills.html#survival">Sobrevivência</a> +2; <a href="./skills.html#unarmed">Desarmado</a> +3.
+			</div>
+			<div>
+				<strong>Resistências:</strong> <span class="damage-disease">Doença</span>
+			</div>
+			<div>
+				<strong>Fraquezas:</strong> <span class="damage-poison">Veneno</span>, <span class="damage-silver">Prata</span>
+			</div>
+		</aside>
+	</section>
+	<section>
+		<h3><a name="session-history">Histórico de Sessão</a></h3>
+		<p>
+			Esse painel mostra os eventos que transpiraram até então nas sessões do Rollplay.  Comparado à tela de sessão do jogador do Rollplay, você poderá ver mais informações aqui.  Eventos que apenas o GM pode ver serão mostrados com um background mais escuro.
+		</p>
+		<p>
+			Além disso, muitos eventos irão requerer que você faça a determinação de seu sucesso.  Isso será feito com botões que aparecem diretamente no evento.
+		</p>
+	</section>
+	<section>
+		<h3><a name="rolling-controls">Controles de Rolagem</a></h3>
+		<p>
+			Esses são seus controles principais para executar uma sessão.  No topo, você encontrara uma lista para selecionar um NPC.  Essa seleção irá escolher qual NPC para usar em qualquer coisa que não tem a própria especialização selecionada.  Também, há um campo de comentário que será usado para todas as rolagens nesse painel.
+		</p>
+		<ol>
+			<li>
+				<strong>Rolar!</strong> Botão &mdash;
+				Este botão é usado para realizar rolagens simples, opcionalmente com um modificador selecionado da lista adjacente.  Use isso para realizar rolagens que não interagem com outras coisas, como um NPC rolando contra Alquimia para misturar poções.
+			</li>
+			<li>
+				<strong>Alvejar Jogador</strong> &mdash;
+					Esta seção começa com uma lista que você pode usar para alvejar um jogador ou um mascote invocado.  Esse alvo será usado para diferentes tipos de rolagens.
+				<ul>
+					<li>
+						<em>Atacar!</em> Botão - Usando o NPC selecionado no topo do painel, inicie <a href="./rolling.html#combat">um ataque</a> contra o jogador/mascote alvejado.  Todas as rolagens do NPC serão feitas por você automaticamente.
+					</li>
+					<li>
+						<em>Pronto para Rolar</em> Botão - Isso manda uma rolagem para o jogador selecionado (não poderá ser selecionado para mascotes), fazendo-os rolar usando a habilidade ou atributo selecionado na lista <em>vs.</em> à direita.
+					</li>
+					<li>
+						<em>Rolagem Contestada</em> Botão - Isso manda uma rolagem para o jogador selecionado (não poderá ser selecionado para mascotes), fazendo-os rolar a habilidade ou atributo selecionado na lista <em>vs.</em> à direita.  Esta rolagem é oposta à outras rolagens do NPC selecionado ao topo do painel, feita automaticamente por você, usando o modificador que você selecionar à esquerda do botão.  Uma vez que os jogadores realizam suas rolagens, você poderá determinar se foi sucesso ou falha.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>Rolagens de Jogador contra Jogador</strong> &mdash;
+				Essa seção possui várias listas para preparar dois jogadores para rolar habilidade/atributo um contra o outro.  Você pode usar isso para dois jogadores que estiverem lutando ao fazê-los rolar Força contra Força, por exemplo.  Note também que você deve selecionar dois jogadores diferentes para isso, você não pode fazer um personagem lutar contra si mesmo!
+			</li>
+			<li>
+				<strong>Fazer uma Postagem de Mestre do Jogo</strong> &mdash;
+				Essa seção é usada para transportar informação para jogadores que não pode ser feita facilmente através de rolagens.  Por exemplo, se você fizer todos os jogadores da sessão rolarem <a href="./skills.html#perception">Percepção</a> contra seus NPCs ocultos, você pode usar uma Postagem de GM para dizer aos seus jogadores os resultados (<i>por exemplo</i> "Devlan, Skjolda e Orlug podem escutar passos leves e grunhidos baixos nas árvores em volta do campo.").
+			</li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="handling-player-rolls">Lidando com Rolagens de Jogadores</a></h3>
+		<p>
+			Quando você manda uma rolagem para um jogador, tenha em mente que poderá levar um tempo para ele realizar sua rolagem.  Se você tentar mandar uma rolagem e disser que o jogador está ocupado, isso significa que ele está atualmente usando o <a href="./guide-player.html#rolling-popup">Pop-Up de Rolagem</a> para fazer outra rolagem.  Você precisará esperar aquela rolagem vir e tentar novamente.
+		</p>
+		<p>
+			Tenha certeza de prestar atenção aos eventos que estão por vir no Histórico de Sessão.  Muitos deles requerem sua entrada antes de serem "completados".  Idealmente, você não deve deixar qualquer evento sem resolver no feed do Histórico de Sessão.
+		</p>
+		<p>
+			Cuidado especial deve ser tomado quando processar <a href="./rolling.html#combat">rolagens de ataque</a>.  Quando você determina se a rolagem tem sucesso, ou falha, também precisará usar a descrição in-game do ataque para definir o tipo de dano.  Tenha certeza de definir o tipo apropriado aqui para então interagir com <a href="./rolling.html#damage-resistance-weakness">resistência/fraqueza a dano</a> corretamente.
+		</p>
+	</section>
+</body>
+</html>

@@ -585,6 +585,8 @@ async function localizePage() {
 				element.text(localize(key));
 			}
 		})
+
+		$("#handbook a").attr("href", (language === "EN-US") ? "./handbook.html" : "./handbook_" + language + ".html");
 	}
 }
 

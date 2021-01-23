@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Rollplay - Manual</title>
+	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
+	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+	<link rel="stylesheet" href="../../assets/css/handbook.css" />
+</head>
+<body>
+	<nav>
+		<a href="index.html">← Voltar</a>
+	</nav>
+	<h2>ESO Rollplay - Rolando</h2>
+	<section>
+		<h3>Visão Geral</h3>
+		<p>
+			ESO Rollplay usa o sistema d20 (por exemplo um dado de 20 lados) para todas as suas rolagens. Este sistema não funciona como Dungeons & Dragons, então você pode tomar o tempo que quiser para se familiarizar em como funciona.
+		</p>
+		<p>
+			O sistema de rolagem é construído no princípio do "GM tem a palavra final", da mesma maneira que os jogos de mesa são.
+		</p>
+		<h4>Modificadores de Atributos</h4>
+		<p>
+			Haverá várias vezes nesse documento onde os modificadores de atributos serão adicionados às rolagens. Diferente do D&D, os modificadores são calculados ao pegarem o <em>valor total</em> menos 10.  Por exemplo, um atributo de pontuação 15 resultaria em um modificador de +5.
+		</p>
+		<h4>Categorias de Tópicos</h4>
+		<ol>
+			<li>
+				<a href="#injury-system">Sistema de Ferimentos</a>
+			</li>
+			<li>
+				<a href="#combat">Combate</a>
+			</li>
+			<li>
+				<a href="#damage-resistance-weakness">Resistência/Fraqueza a Danos</a>
+			</li>
+			<li>
+				<a href="#lucky-unlucky-rolls">Rolagens de Sorte/Azar</a>
+			</li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="injury-system">Sistema de Ferimentos</a></h3>
+		<p>
+			A fim de reduzir a escrituração, o Rollplay não usa um sistema tradicional de pontos de vida.  Pelo contrário, ele usa o sistema com nível de ferimento "três ataques e você está fora".  No entanto, também não é um sistema em que todos os personagens são igualmente duráveis - a chance de um personagem se ferir é determinada por seus atributos e habilidades.  Os níveis de status são:
+		</p>
+		<ul>
+			<li>
+				<strong class="injury-uninjured">Ileso</strong>:
+				Seu personagem não tomou dano, ou os ferimentos são bem pequenos.
+			</li>
+			<li>
+				<strong class="injury-injured">Machucado</strong>:
+				Seu personagem já recebeu um bom dano, mas não corre risco de morte.
+			</li>
+			<li>
+				<strong class="injury-critical">Crítico</strong>:
+				Seu personagem está em perigo! Deixe o bip irritante até ele ser curado.
+			</li>
+			<li>
+				<strong class="injury-incapacitated">Incapacitado!</strong>
+				Seu personagem desmaiou e está incapaz de lutar.
+			</li>
+		</ul>
+		<p>
+			Por padrão, não há uma maneira de seu personagem realmente "morrer" nesse sistema se ele tomou muito dano, a não ser que você mesmo decida que ele morrerá.  No entanto, seu personagem será marcado como <span class="injury-incapacitated">Incapacitado</span> e estará incapaz de performar em combate até que ele seja curado com sucesso.  Personagens incapacitados ainda serão capazes de se engajar em porções de eventos de RP caso você queira, então mesmo que você esteja fora de combate, ainda poderá usar o chat de emote.
+		</p>
+	</section>
+	<section>
+		<h3><a name="combat">Combate</a></h3>
+		<p>
+			Rolagens em combate seguem o mesmo formato:
+		</p>
+		<ol>
+			<li>
+				Um personagem inicia o ataque.  Ele realiza uma rolagem de <strong>Ataque</strong> com a <em>habilidade apropriada</em> adicionada diretamente à rolagem.
+			</li>
+			<li>
+				O personagem defensor tenta evitar o ataque.  Ele realiza uma rolagem de <strong>Defesa</strong> com seu <em>modificador de Agilidade</em> adicionado diretamente à rolagem.  Se o defensor tem um escudo equipado, ele também adiciona <em>metade</em> de sua habilidade de <a href="./skills.html#block">Bloqueio</a> para a rolagem.
+			</li>
+			<li>
+				O GM avalia as rolagens e decide se o ataque acerta ou não.  Se o ataque é um <em>erro</em>, então a sequência de ataque acaba.
+			</li>
+			<li>
+				Se o atacante <em>acerta</em>, ele realiza uma rolagem de <strong>Dano</strong> para determinar o quão efetivo foi seu ataque.  Ele adiciona seu modificador para o <em>atributo governante</em> da habilidade usada para o ataque diretamente à rolagem.
+			</li>
+			<li>
+				O defensor determina se ele toma um dano significativo pelo ataque ao realizar uma rolagem de <strong>Dureza</strong>, adicionando seu <em>modificador de Constituição</em> diretamente à rolagem.  Ele também adiciona <em>metade do ranque de sua habilidade</em> para qualquer tipo de armadura que estiver usando.
+			</li>
+			<li>
+				O GM então avalia as rolagens.  Se ele decide que a rolagem de dano do atacante acertou, então ele poderá aumentar o nível de ferimento do defensor.  Se a rolagem de dano não deu certo, isso poderá ser interpretado como o defensor recebendo um dano superficial (é só um arranhão!), rolando com o ataque, etc.
+			</li>
+		</ol>
+	</section>
+	<section>
+		<h3><a name="damage-resistance-weakness">Resistência/Fraquezas a Danos</a></h3>
+		<p>
+			A rolagem de <strong>Dureza</strong> para resistir a danos pode ser difícil ou fácil pelo tipo de resistência ou fraqueza a dano.
+		</p>
+		<p>
+			Se o personagem <span class="positive">resistir</span> ao tipo de dano que receberá, ele rola um dado extra e usa o <em>melhor</em> resultado.
+		</p>
+		<p>
+			Se o personagem é <span class="negative">fraco</span> ao tipo de dano que receberá, ele rola um dado extra e usa o <em>pior</em> resultado.
+		</p>
+		<p>
+			Note que em cenários onde um personagem poderia tanto resistir quando ser fraco ao tipo de dano (assim como um <a href="./races.html#dunmer">Dunmer</a> que é <a href="./supernatural.html#vampire">Vampiro</a> no que diz respeito ao dano de <span class="damage-flame">Fogo</span>), a fraqueza e resistência se cancelam e o personagem realiza uma rolagem normal.
+		</p>
+	</section>
+	<section>
+		<h3><a name="lucky-unlucky-rolls">Rolagens de Sorte/Azar</a></h3>
+		<p>
+			Nos principais jogos Elder Scrolls, é dito que a sorte "afeta tudo de uma pequena maneira".  Então o que isso significa no ESO Rollplay?  Significa que seu modificador de Sorte tem uma chance de garantir uma rolagem de <em>sorte</em> ou <em>azar</em>.  Um personagem de Sorte 10 não tem modificador e não receberá rolagens especiais.
+		</p>
+		<p>
+			Se seu modificador de Sorte é <em>positivo</em>, ele garante 5% de chance por ponto para uma rolagem de <span class="positive">sorte</span>.  Em uma rolagem de sorte, um dado extra é rolado, e você usará o <em>melhor</em> resultado.
+		</p>
+		<p>
+			Se seu modificador de Sorte é <em>negativo</em>, ele garante 5% de chance por ponto para uma rolagem de <span class="negative">azar</span>.  Em uma rolagem de azar, um dado extra é rolado, e você usará <em>pior</em> resultado.
+		</p>
+		<p>
+			Rolagens de Sorte/azar podem adicionar ou cancelar os dados extras adicionados pelos danos de resistência e fraqueza.  Uma rolagem <span class="negative">azarada</span> de <strong>Dureza</strong> contra um tipo de dano que você <span class="positive">resiste</span> irá cancelar para uma rolagem normal.  Uma rolagem <span class="positive">sortuda</span> de <strong>Dureza</strong> contra um tipo de dano que você <span class="positive">resiste</span> significa que <em>três</em> dados serão rolados e você usará o melhor resultado!
+		</p>
+	</section>
+</body>
+</html>
