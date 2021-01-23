@@ -500,7 +500,7 @@
 		[ "ARMOR_BONUS", "armadura" ],
 		[ "ROLL_DAMAGE_TEXT", "ATTACKER rola para dano", "// ATTACKER aqui pode ser o nome de um jogador, ou um dos itens de DISPLAY_PET acima." ],
 		[ "ROLL_DAMAGE_TEXT_LUCKY", "ATTACKER realiza uma rolagem de LUCKY para dano", "// ATTACKER aqui pode ser o nome de um jogador, ou um dos itens de DISPLAY_PET acima." ],
-		[ "ROLL_DAMAGE_ TEXT_UNLUCKY", "ATTACKER realiza uma rolagem de UNLUCKY para dano", "// ATTACKER aqui pode ser o nome de um jogador, ou um dos itens de DISPLAY_PET acima." ],
+		[ "ROLL_DAMAGE_TEXT_UNLUCKY", "ATTACKER realiza uma rolagem de UNLUCKY para dano", "// ATTACKER aqui pode ser o nome de um jogador, ou um dos itens de DISPLAY_PET acima." ],
 		[ "EVENT_STATUS_PLAYER", "PLAYER agora está STATUS.", "// PLAYER aqui pode ser o nome de um jogador, ou um dos itens de DISPLAY_PET acima." ],
 		[ "EVENT_STATUS_NPC_APPEAR", "NAME aparece!" ],
 		[ "EVENT_STATUS_NPC_APPEAR_INJURED", "NAME aparece!  E está STATUS." ],

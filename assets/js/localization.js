@@ -504,7 +504,7 @@ const localizationList = [
 			[ "ARMOR_BONUS", "armor" ],
 			[ "ROLL_DAMAGE_TEXT", "ATTACKER rolls for damage", "// ATTACKER here could be a player's name, or one of the DISPLAY_PET items above." ],
 			[ "ROLL_DAMAGE_TEXT_LUCKY", "ATTACKER makes a LUCKY roll for damage", "// ATTACKER here could be a player's name, or one of the DISPLAY_PET items above." ],
-			[ "ROLL_DAMAGE_ TEXT_UNLUCKY", "ATTACKER makes an UNLUCKY roll for damage", "// ATTACKER here could be a player's name, or one of the DISPLAY_PET items above." ],
+			[ "ROLL_DAMAGE_TEXT_UNLUCKY", "ATTACKER makes an UNLUCKY roll for damage", "// ATTACKER here could be a player's name, or one of the DISPLAY_PET items above." ],
 			[ "EVENT_STATUS_PLAYER", "PLAYER is now STATUS.", "// PLAYER here could be a player's name, or one of the DISPLAY_PET items above." ],
 			[ "EVENT_STATUS_NPC_APPEAR", "NAME appears!" ],
 			[ "EVENT_STATUS_NPC_APPEAR_INJURED", "NAME appears!  It is STATUS." ],
