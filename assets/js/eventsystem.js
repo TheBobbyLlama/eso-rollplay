@@ -829,7 +829,7 @@ class EventPlayerDefense extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " " + localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
+			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
 			rollType = "";
 		}
