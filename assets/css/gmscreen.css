@@ -186,6 +186,12 @@ h3 {
 	width: 100%;
 }
 
+.gmExtra h4 {
+	display: flex;
+	justify-content: space-between;
+}
+
+
 .summonDisplay {
 	align-items: stretch !important;
 	display: flex;

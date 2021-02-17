@@ -624,7 +624,7 @@ function subordinateFailure() {
 /// Subordinate roll handler.
 function sendSubordinateResult(target, pass) {
 	var eventDiv = $(target).closest("div[id]");
-	var comment = $(target).closest("div.gmExtra").find("input[name='subordinateComment']");
+	var comment = $(target).closest("div.gmExtra").find("input[name='subordinateComment'], input[name='rollComment']");
 
 	dbPushEvent(new EventRollSubordinateResolution(pass, comment.val(), eventDiv.attr("id")));
 
@@ -1100,10 +1100,17 @@ function addEventDisplay(event) {
 
 			holder.append(
 				"<div class='gmExtra'>" +
-					"<h4>Roll Against " +
-						"<select name='npc' npc-list>" +
-							markupNPCOptions +
-						"</select>" +
+					"<h4>" + 
+						"<div>" +
+							"Roll Against " +
+							"<select name='npc' npc-list>" +
+								markupNPCOptions +
+							"</select>" +
+						"</div>" +
+						"<div>" + 
+							"<button type='button' name='subordinateSuccess'>" + localize("ACTION_SUCCESS!") + "</button>" +
+							"<button type='button' name='subordinateFailure'>" + localize("ACTION_FAILURE!") + "</button>" +
+						"</div>" +
 					"</h4>" +
 					"<div>" +
 						"<div>" +
@@ -1246,7 +1253,10 @@ function characterReset(loadMe) {
 		}
 
 		characterList.push(character);
-		shouldLaunchRollplayWindow(character.name);
+
+		if ((!currentSession) || (!currentSession.inactive)) {
+			shouldLaunchRollplayWindow(character.name);
+		}
 
 		if (characterList.length == 1) {
 			activatePlayer(0);
