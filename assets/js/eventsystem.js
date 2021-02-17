@@ -261,9 +261,10 @@ class EventRemoveNPC extends SharedEvent {
 }
 
 class EventAddPlayer extends SharedEvent {
-	constructor(myPlayer) {
+	constructor(myPlayer, myIndex) {
 		super("AddPlayer");
 		this.player = myPlayer;
+		this.index = myIndex
 	}
 
 	toHTML() {

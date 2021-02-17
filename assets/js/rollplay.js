@@ -307,8 +307,8 @@ function addEventDisplay(event) {
 			break;
 		case "AddPlayer":
 			if (dispatchMessages) {
-				currentSession.characters.push(event.player);
-				currentSession.statuses.push(new CharacterStatus(event.player));
+				currentSession.characters.splice(event.index, 0, event.player);
+				currentSession.statuses.splice(event.index, 0, new CharacterStatus(event.player));
 				updatePlayerDisplay();
 			}
 			break;

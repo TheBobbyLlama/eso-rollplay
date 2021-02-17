@@ -1264,6 +1264,16 @@ function characterReset(loadMe) {
 	}
 }
 
+function sortPlayer(firstPlayer, secondPlayer) {
+	if (firstPlayer.getAttribute("Speed") < secondPlayer.getAttribute("Speed")) {
+		return 1;
+	} else if (firstPlayer.getAttribute("Agility") < secondPlayer.getAttribute("Agility")) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
+
 /// Handles loaded characters that need to be added to the session.
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
@@ -1271,14 +1281,17 @@ function characterLoaded(loadMe) {
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
 
 		if (currentSession.characters.indexOf(character.name) == -1) {
+			var myIndex = -1
 			characterList.push(character);
-			currentSession.statuses.push(new CharacterStatus(character));
-			currentSession.characters.push(character.name);
+			characterList.sort(sortPlayer);
+			myIndex = characterList.findIndex(myChar => myChar.name === character.name);
+			currentSession.statuses.splice(myIndex, 0, new CharacterStatus(character));
+			currentSession.characters.splice(myIndex, 0, character.name);
 			postSessionUpdate();
 			updatePlayerDisplay();
 			activatePlayer(currentSession.characters.length - 1);
 			shouldLaunchRollplayWindow(character.name);
-			dbPushEvent(new EventAddPlayer(character.name));
+			dbPushEvent(new EventAddPlayer(character.name, myIndex));
 		} else {
 			showErrorPopup(localize("PLAYER_IN_SESSION"));
 		}
