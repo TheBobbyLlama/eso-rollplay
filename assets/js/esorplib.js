@@ -298,10 +298,10 @@ const supernaturalTransformations = [
 // const SPECIAL_ATTACK_TYPES = [ "None", "Physical", "Disease", "Flame", "Frost", "Poison", "Shock", "Silver" ];
 const npcTemplates = [
 // name, attack bonus, attack type, damage bonus, defense bonus, toughness bonus, resists, weaknesses, summon skill (leave blank for unsummonable)
-	new NPCTemplate("Zombie",			0, 1, 0, -4, 0, [], [], "Conjuration"),
-	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2, [], [], "Conjuration"),
-	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER" ], "Conjuration"),
-	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER"], "Conjuration"),
+	new NPCTemplate("Zombie",			0, 1, 0, -4, 0, [], [], "Necromancy"),
+	new NPCTemplate("Skeleton",			0, 1, 2, 0, 2, [], [], "Necromancy"),
+	new NPCTemplate("Ghost",			3, 4, 0, 0, 0, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER" ], "Necromancy"),
+	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER"], "Necromancy"),
 	new NPCTemplate("Vampire",			4, 1, 3, 3, 0, [], [ "DAMAGE_FLAME" ]),
 	new NPCTemplate("Bloodfiend",		2, 1, 2, 0, 0, [], [ "DAMAGE_FLAME" ]),
 	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "DAMAGE_SILVER" ], "Conjuration"),
