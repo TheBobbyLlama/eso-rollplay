@@ -726,7 +726,7 @@ class CharacterSheet {
 
 		printout.append(this.makePrintoutHeader())
 
-		if (this.player) {
+		if ((this.player) && (!this.npc)) {
 			printout.append(((this.player[0] == "@") ? "" : "@") + nameDecode(this.player) + "<br />");
 		}
 

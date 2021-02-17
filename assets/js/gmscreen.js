@@ -1214,6 +1214,14 @@ function resetScreenInfo(enableMessages=true) {
 	dispatchMessages = enableMessages;
 }
 
+/// Controls launching of Rollplay windows for GM's convenience.
+function shouldLaunchRollplayWindow(myName) {
+	var index = characterList.findIndex(findMe => findMe.name === myName);
+	if ((characterList[index]) && ((characterList[index].player == userInfo.display) || (characterList[index].npc))) {
+		window.open("rollplay.html?character=" + myName, "_blank");
+	}
+}
+
 /// Copies the current character sheet to clipboard.
 function copyOutput(event) {
 	event.stopPropagation();
@@ -1238,6 +1246,7 @@ function characterReset(loadMe) {
 		}
 
 		characterList.push(character);
+		shouldLaunchRollplayWindow(character.name);
 
 		if (characterList.length == 1) {
 			activatePlayer(0);
@@ -1258,6 +1267,7 @@ function characterLoaded(loadMe) {
 			postSessionUpdate();
 			updatePlayerDisplay();
 			activatePlayer(currentSession.characters.length - 1);
+			shouldLaunchRollplayWindow(character.name);
 			dbPushEvent(new EventAddPlayer(character.name));
 		} else {
 			showErrorPopup(localize("PLAYER_IN_SESSION"));

@@ -126,7 +126,7 @@ section > div[id] {
 	flex-basis: 70%;
 }
 
-#characteristics, #imageInfo {
+#characteristics, #imageInfo, #npcPanel {
 	border: solid 1px var(--content-border);
 	border-radius: 8px;
 	padding: 8px;
@@ -274,7 +274,11 @@ section > div[id] {
 		margin-top: 50px;
 	}
 
-	section, section input, #profileInfo, #main {
+	input[type='checkbox'] {
+		vertical-align: middle;
+	}
+
+	section, section input:not(type='checkbox'), #profileInfo, #main {
 		width: 100%;
 	}
 	
@@ -297,6 +301,10 @@ section > div[id] {
 
 	#profileGeneral label::after {
 		content: ": ";
+	}
+
+	#profileGeneral input[type='checkbox'] + label::after {
+		content: "";
 	}
 
 	#otherInfo {

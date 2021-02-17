@@ -33,7 +33,7 @@ async function initializePage(myUser) {
 
 	await localizePage(userInfo.language);
 
-	var inCharacter = localStorage.getItem("ESORP[character]");
+	var inCharacter = new URLSearchParams(window.location.search).get("character") || localStorage.getItem("ESORP[character]");
 
 	for (var i = 0; i < EQUIPPED_WEAPON.length; i++) {
 		$("#playerWeapon").append("<option value='" + EQUIPPED_WEAPON[i].weapon + "'>" + localize(EQUIPPED_WEAPON[i].weapon) + "</option>");
@@ -49,6 +49,7 @@ async function initializePage(myUser) {
 
 	if (inCharacter) {
 		dbLoadCharacter(inCharacter, characterLoaded);
+		document.title = "ESO Rollplay - " + inCharacter;
 	} else {
 		showErrorPopup(localize("CHARACTER_NOT_FOUND"), divertToDashboard);
 	}
@@ -628,7 +629,7 @@ function launchCharacterProfile(event) {
 function characterLoaded(loadMe) {
 	var tmpChar = loadMe.val();
 
-	if ((tmpChar) && (dbTransform(tmpChar.player) == dbTransform(userInfo.display))) {
+	if ((tmpChar) && ((dbTransform(tmpChar.player) == dbTransform(userInfo.display)) || (tmpChar.npc))) {
 		character = tmpChar;
 		Object.setPrototypeOf(character, CharacterSheet.prototype);
 
@@ -643,7 +644,11 @@ function characterLoaded(loadMe) {
 		resetRollSelect();
 
 		eventPane.empty();
-		dbLoadSessionByParticipant(character.name, loadSessionList);
+		if (character.npc) {
+			dbLoadSessionByOwner(userInfo.display, sessionLoaded);
+		} else {
+			dbLoadSessionByParticipant(character.name, loadSessionList);
+		}
 
 		$("#loading").remove();
 		$("#main").removeClass("hideMe");
@@ -654,8 +659,11 @@ function characterLoaded(loadMe) {
 
 /// Button handler to manually load session.
 function loadCharacterSession() {
-	$("#loadSession").attr("disabled");
-	dbLoadSessionByParticipant(character.name, loadSessionList);
+	if (character.npc) {
+		dbLoadSessionByOwner(userInfo.display, sessionLoaded);
+	} else {
+		dbLoadSessionByParticipant(character.name, loadSessionList);
+	}
 }
 
 /// Determines how to load character into a session.
@@ -679,6 +687,12 @@ function sessionLoaded(loadMe) {
 
 	if (result) {
 		var i;
+
+		if (!result.characters.find(item => item === character.name)) {
+			showErrorPopup(localize("ERROR_SESSION_FAILED_TO_LOAD"));
+			return;
+		}
+
 		eventPane.empty();
 		$("#charList, #npcList").empty();
 		currentSession = result;

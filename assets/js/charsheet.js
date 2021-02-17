@@ -24,6 +24,10 @@ async function initializePage(myUser) {
 
 	await localizePage();
 
+	if (userInfo.gameMaster) {
+		$("#npcPanel").removeClass("hideMe");
+	}
+
 	fillSection("attributes", attributes);
 	fillSection("skillsCombat", skillsCombat);
 	fillSection("skillsMagic", skillsMagic);
@@ -360,6 +364,12 @@ function setProfileField() {
 	profile[tmpName] = tmpEl.val();
 }
 
+function setNPC() {
+	var tmpEl = $(this);
+	character.npc = tmpEl.prop("checked");
+	updateCharacterSheet();
+}
+
 function leaveBiography() {
 	profile.biography = $(this).val();
 }
@@ -486,6 +496,7 @@ function characterLoaded(loadMe) {
 			$("select[name='charSupernatural']").val(character.supernatural);
 			$("select[name='charClass']").val(character.class);
 			$("textarea[name='charBackground']").val("");
+			$("input[id='isNPC']").prop("checked", character.npc);
 			updateCharacterSheet();
 			finishDraw();
 		} else {
@@ -541,6 +552,7 @@ $("#printout").on("dblclick", copyOutput);
 $("textarea[name='charBackground']").on("focus, keydown", shortDescriptionHelper).on("blur", leaveShortDescription);
 $("input[name='imageUrl']").on("focus", function() { $(this).removeClass("redFlag"); }).on("blur", setImageUrl);
 $("#characteristics input, #characteristics select").on("blur, change", setProfileField);
+$("input[id='isNPC']").on("change", setNPC);
 $("textarea[name='charBiography']").on("blur", leaveBiography);
 $("#charBackgroundPreview, #charBiographyPreview").on("click", previewHandler);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
