@@ -304,7 +304,7 @@ const npcTemplates = [
 	new NPCTemplate("Wraith",			5, 4, 2, 0, 4, [ "DAMAGE_PHYSICAL" ], [ "DAMAGE_SILVER"], "Necromancy"),
 	new NPCTemplate("Vampire",			4, 1, 3, 3, 0, [], [ "DAMAGE_FLAME" ]),
 	new NPCTemplate("Bloodfiend",		2, 1, 2, 0, 0, [], [ "DAMAGE_FLAME" ]),
-	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "DAMAGE_SILVER" ], "Conjuration"),
+	new NPCTemplate("Shambles",			2, 1, 4, 0, 4, [], [ "DAMAGE_SILVER" ], "Necromancy"),
 	new NPCTemplate("Scamp",			0, 1, 0, 2, 2, [], [ "DAMAGE_SILVER" ], "Conjuration"),
 	new NPCTemplate("Clannfear",		2, 1, 3, 0, 4, [], [ "DAMAGE_SILVER" ], "Conjuration"),
 	new NPCTemplate("Flame Atronach",	3, 3, 4, 1, 0, [ "DAMAGE_FLAME" ], [ "DAMAGE_SILVER" ], "Conjuration"),

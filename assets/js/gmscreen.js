@@ -1269,6 +1269,8 @@ function sortPlayer(firstPlayer, secondPlayer) {
 		return 1;
 	} else if (firstPlayer.getAttribute("Agility") < secondPlayer.getAttribute("Agility")) {
 		return 1;
+	} else if (firstPlayer.getAttribute("Luck") < secondPlayer.getAttribute("Luck")) {
+		return 1;
 	} else {
 		return -1;
 	}
