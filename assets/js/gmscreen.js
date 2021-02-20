@@ -1078,12 +1078,15 @@ function addEventDisplay(event) {
 				var playerIndex = currentSession.characters.indexOf(event.player);
 
 				if (playerIndex > -1) {
+					characterList.splice(playerIndex, 1);
 					currentSession.characters.splice(playerIndex, 1);
 					currentSession.statuses.splice(playerIndex, 1);
 					postSessionUpdate();
 					updatePlayerDisplay();
 
 					if (playerIndex == activePlayer) {
+						console.log(characterList[0].name);
+
 						if (currentSession.characters.length) {
 							activatePlayer(0);
 						} else {
@@ -1265,15 +1268,36 @@ function characterReset(loadMe) {
 }
 
 function sortPlayer(firstPlayer, secondPlayer) {
-	if (firstPlayer.getAttribute("Speed") < secondPlayer.getAttribute("Speed")) {
+	var attr1, attr2;
+
+	attr1 = firstPlayer.getAttribute("Speed");
+	attr2 = secondPlayer.getAttribute("Speed");
+
+	if (attr1 < attr2) {
 		return 1;
-	} else if (firstPlayer.getAttribute("Agility") < secondPlayer.getAttribute("Agility")) {
-		return 1;
-	} else if (firstPlayer.getAttribute("Luck") < secondPlayer.getAttribute("Luck")) {
-		return 1;
-	} else {
+	} else if (attr1 > attr2) {
 		return -1;
 	}
+
+	attr1 = firstPlayer.getAttribute("Agility");
+	attr2 = secondPlayer.getAttribute("Agility");
+
+	if (attr1 < attr2) {
+		return 1;
+	} else if (attr1 > attr2) {
+		return -1;
+	}
+
+	attr1 = firstPlayer.getAttribute("Luck");
+	attr2 = secondPlayer.getAttribute("Luck");
+
+	if (attr1 < attr2) {
+		return 1;
+	} else if (attr1 > attr2) {
+		return -1;
+	}
+
+	return 0; // Tie!
 }
 
 /// Handles loaded characters that need to be added to the session.
@@ -1291,7 +1315,7 @@ function characterLoaded(loadMe) {
 			currentSession.characters.splice(myIndex, 0, character.name);
 			postSessionUpdate();
 			updatePlayerDisplay();
-			activatePlayer(currentSession.characters.length - 1);
+			activatePlayer(myIndex);
 			shouldLaunchRollplayWindow(character.name);
 			dbPushEvent(new EventAddPlayer(character.name, myIndex));
 		} else {

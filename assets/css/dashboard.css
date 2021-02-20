@@ -130,6 +130,10 @@ input.invalid {
 	background-color: var(--important-background);
 }
 
+#characterList li.charItem + li.charItem + li.charItem + li.charItem + li.charItem + li.charItem + li.charItem + li.charItem + li.charItem + li.charItem {
+	padding-left: 42px;
+}
+
 #main {
 	display: flex;
 	justify-content: center;
