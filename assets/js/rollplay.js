@@ -134,7 +134,7 @@ function setSummonControls() {
 		var summonName = currentSession.statuses[playerIndex].summon.name || currentSession.statuses[playerIndex].summon.template;
 
 		controls.html("<div>" +
-				"<div><em>" + summonName + "</em></div>" +
+				"<div><em>" + localize(summonName) + "</em></div>" +
 				"<div>" +
 					"<button id='summonAttack' type='button'>" + localize("ACTION_ATTACK!") + "</button>" +
 					"<select id='summonTarget' npc-target>" + markupNPCTargets + "</select>" +
