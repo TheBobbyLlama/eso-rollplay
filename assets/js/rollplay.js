@@ -64,7 +64,7 @@ async function initializePage(myUser) {
 /// Populates attribute/skill dropdown based on the character's selections.
 function resetRollSelect() {
 	var i;
-	var rollSelector = $("#rollSelect");
+	var rollSelector = $("#rollSelect, #pvpRollSelect");
 	var charItems = Object.entries(character.skills || {});
 	
 	rollSelector.empty();
@@ -102,7 +102,7 @@ function confirmLogout() {
 function changeWeapon(event) {
 	var newWeapon = $("#playerWeapon").prop("selectedIndex");
 	currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = newWeapon;
-	$("#rollSelect").val(EQUIPPED_WEAPON[newWeapon].quality);
+	$("#rollSelect, #pvpRollSelect").val(EQUIPPED_WEAPON[newWeapon].skills[0]);
 
 	if ((event) && (dispatchMessages)) {
 		dbPushEvent(new EventPlayerWeapon(character.name, newWeapon));
@@ -143,6 +143,8 @@ function setSummonControls() {
 				"<div><button id='summonDismiss' type='button'>" + localize("DISMISS_SUMMON") + "</button></div>" +
 			"</div>"
 		);
+
+		$("#pvpPetControls").removeClass("hideMe");
 	} else {
 		var markupSummonOptions = "";
 
@@ -161,6 +163,8 @@ function setSummonControls() {
 			"</div>" +
 			"<button id='summonExecute' type='button'>" + localize("ACTION_SUMMON!") + "</button>"
 		);
+
+		$("#pvpPetControls").addClass("hideMe");
 	}
 }
 
@@ -238,6 +242,39 @@ function resolveAttack() {
 	dbPushEvent(new EventPlayerAttack(character.name, currentRoll));
 }
 
+/// Handles player making an attack against another player or their pet.
+function performPvPAttack() {
+	var target = nameEncode($("#pvpTarget").val());
+	var key = $("#pvpRollSelect").val();
+
+	startPlayerRoll(localize("ATTACK_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { target, key, playerInitiated: true, callback: resolvePvPAttack });
+}
+
+/// Takes player's attack roll and passes it to an event.
+function resolvePvPAttack() {
+	dbPushEvent(new EventPlayerAttackPlayer(character.name, currentRoll));
+}
+
+function performPvPPetAttack() {
+	var playerIndex = currentSession.characters.indexOf(character.name);
+
+	if (currentSession.statuses[playerIndex].summon) {
+		var template = npcTemplates.find(element => element.name == currentSession.statuses[playerIndex].summon.template);
+
+		if (template) {
+			var result = template.makeRoll("Attack");
+			result.target = nameEncode($("#pvpTarget").val());
+
+			dbPushEvent(new EventPlayerAttackPlayer(character.name + "»" + template.name, result));
+		}
+	} else {
+		updatePlayerDisplay();
+		setSummonControls();
+	}
+}
+
+/// Takes player's attack roll and passes it to an event.
+
 /// Toggles automatic handling of rolls.
 function toggleLazyMode() {
 	lazyMode = $(this).prop("checked");
@@ -259,8 +296,10 @@ function copyOutput(event) {
 /// Redsiplays the players in the session and their pets.
 function updatePlayerDisplay() {
 	var charList = $("#charList");
+	var pvpTargets = $("#pvpTarget");
 
 	charList.empty();
+	pvpTargets.empty();
 
 	if (!currentSession) { return; }
 
@@ -272,6 +311,14 @@ function updatePlayerDisplay() {
 		}
 
 		charList.append(markup + "</li>");
+
+		if (currentSession.characters[i] != character.name) {
+			pvpTargets.append("<option>" + currentSession.characters[i] + "</option>");
+
+			if (currentSession.statuses[i].summon) {
+				pvpTargets.append("<option value='" + currentSession.characters[i] + "»" + nameEncode(currentSession.statuses[i].summon.template) + "'>» " + currentSession.statuses[i].summon.name + "</option>");
+			}
+		}
 	}
 }
 
@@ -412,13 +459,20 @@ function addEventDisplay(event) {
 			currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
 			break;
 		case "PlayerWeapon":
-				if (character.name == event.name) {
-					$("#playerWeapon").prop("selectedIndex", event.weapon);
-					changeWeapon(false);
-				}
-	
-				currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = event.weapon;
-				break;
+			if (character.name == event.name) {
+				$("#playerWeapon").prop("selectedIndex", event.weapon);
+				changeWeapon(false);
+			}
+
+			currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = event.weapon;
+			break;
+		case "PlayerAttackPlayer":
+			eventPane.append(event.toHTML());
+
+			if (event.target == character.name) {
+				startPlayerRoll(localize("INCOMING_ATTACK_CAPTION").replace(/NAME/, event.displayPlayerSummonName().replace(/,$/, "")), event.comment, { npc: event.player, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
+			}
+			break;
 		case "PlayerAttackResolution":
 			if (dispatchMessages) {
 				if (event.player == character.name) {
@@ -435,6 +489,15 @@ function addEventDisplay(event) {
 				$("#" + event.parent).append(event.toHTML());
 			}
 			break;
+		case "PlayerAttackPlayerResolution":
+			if ((dispatchMessages) && (event.success)) {
+				if (event.player == character.name) {
+					startPlayerRoll(localize("ATTACK_HIT_CAPTION").replace(/TARGET/, nameDecode(event.displayPlayerSummonName("target", "targetSummon").replace(/,$/, ""))), event.comment, { npc: event.target, key: getQuality(event.key).governing || event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+				} else if (event.target == character.name) {
+					startPlayerRoll(localize("INCOMING_HIT_CAPTION").replace(/NAME/, nameDecode(event.displayPlayerSummonName().replace(/,$/, ""))), event.comment, { npc: event.player, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
+				}
+			}
+			break;
 		case "PlayerConnect":
 			if ((dispatchMessages) && (event.player == character.name) && (event.timeStamp != connectId)) {
 				dbClearEventSystem(); // Kill the event system, we're leaving!
@@ -446,6 +509,18 @@ function addEventDisplay(event) {
 		case "RollSubordinateResolution":
 			$("#" + event.parent).append(event.toHTML());
 			break;
+		case "PlayerDefense":
+			if (event.parent) {
+				var parent = $("#" + event.parent);
+
+				if (parent.length) {
+					parent.append(event.toHTML());
+				} else {
+					eventPane.append(event.toHTML());
+				}
+			} else {
+				eventPane.append(event.toHTML());
+			}
 		case "PlayerRequestTransform":
 			if (event.name == character.name) {
 				$("#transformButton").attr("disabled", "true");
@@ -974,6 +1049,8 @@ $("#attackExecute").on("click", performAttack);
 $("#summonControls").on("click", "button#summonExecute", requestSummon);
 $("#summonControls").on("click", "button#summonAttack", summonAttack);
 $("#summonControls").on("click", "button#summonDismiss", summonDismiss);
+$("#pvpAttackExecute").on("click", performPvPAttack);
+$("#pvpAttackPet").on("click", performPvPPetAttack);
 $("#lazyMode").on("click", toggleLazyMode);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);

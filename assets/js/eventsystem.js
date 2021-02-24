@@ -39,6 +39,10 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerWeapon.prototype);
 		case "PlayerAttack":
 			return Object.setPrototypeOf(event, EventPlayerAttack.prototype);
+		case "PlayerAttackPlayer":
+			return Object.setPrototypeOf(event, EventPlayerAttackPlayer.prototype);
+		case "PlayerAttackPlayerResolution":
+			return Object.setPrototypeOf(event, EventPlayerAttackPlayerResolution.prototype);
 		case "PlayerAttackResolution":
 			return Object.setPrototypeOf(event, EventPlayerAttackResolution.prototype);
 		case "PlayerConnect":
@@ -101,18 +105,18 @@ class SharedEvent {
 
 	/// Helper function to put summon information on an event if needed.
 	setSummonData(playerNode = "player", summonNode = "summon") {
-		if ((this[playerNode].indexOf("»") > -1) && (currentSession) && (currentSession.statuses)) {
-			var parts = this.player.split("»");
+		if ((this[playerNode]) && (this[playerNode].indexOf("»") > -1) && (currentSession) && (currentSession.statuses)) {
+			var parts = this[playerNode].split("»");
 			var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
 
 			if ((curStatus) && (curStatus.summon)) {
-				if (!this[summonNode]) {
-					this[summonNode] = {};
-				}
-
-				this[summonNode].template = curStatus.summon.template;
-				this[summonNode].name = curStatus.summon.name;
+				this[summonNode] = {
+					template: curStatus.summon.template,
+					name: curStatus.summon.name
+				};
 			}
+		} else {
+			return "";
 		}
 	}
 
@@ -123,7 +127,9 @@ class SharedEvent {
 			var myPlayer = nameDecode(parts[0]);
 			var result;
 
-			if (this[summonNode].name) {
+			if (!this[summonNode]) {
+				return myPlayer;
+			} else if (this[summonNode].name) {
 				result = localize("DISPLAY_PET_NAME").replace(/NAME/, this[summonNode].name);
 			} else {
 				result = localize("DISPLAY_PET");
@@ -205,7 +211,8 @@ const GM_EVENTS = [
 
 /// Events involving multiple players - Will sometimes have to display extra player information.
 const MULTI_PLAYER_EVENTS = [
-	"PlayerContest"
+	"PlayerContest",
+	"PvP"
 ];
 
 // ADMINISTRATIVE EVENTS
@@ -727,7 +734,7 @@ class EventNPCToughnessRoll extends SharedEvent {
 			action = localize("EVENT_COMBAT_TOUGHNESS");
 		}
 		
-		return "<div class='gmExtra subordinate'>" +
+		return "<div class='gmExtra subordinate' toughness>" +
 			"<div>" +
 				"<p>" + action.replace(/DEFENDER/, this.name).replace(/DAMAGETYPE/, localize(SPECIAL_ATTACK_TYPES[this.attackType]).toLowerCase()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")" + "</p>" +
 				((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
@@ -860,11 +867,13 @@ class EventPlayerDefense extends SharedRollEvent {
 
 		this.player = myPlayer;
 		this.setSummonData();
+		this.setSummonData("attacker", "attackerSummon");
 	}
 
 	toHTML() {
 		var blockString;
 		var rollType;
+		var attackerName = this.displayPlayerSummonName("attacker", "attackerSummon");
 
 		if (this.lucky) {
 			rollType = " " + localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
@@ -872,6 +881,7 @@ class EventPlayerDefense extends SharedRollEvent {
 			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
 			rollType = "";
+			attackerName = attackerName.replace(/,$/, "");
 		}
 
 		if (this.blockMod) {
@@ -882,7 +892,7 @@ class EventPlayerDefense extends SharedRollEvent {
 
 		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
 				"<div>" +
-					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, this.displayPlayerSummonName()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, this.attacker).replace(/!$/, "") + rollType + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, this.displayPlayerSummonName()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, attackerName).replace(/!$/, "") + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -930,7 +940,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 			action = localize("EVENT_COMBAT_TOUGHNESS");
 		}
 		
-		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
+		return "<div class='playersubordinate' data-parent='" + this.parent + "' toughness>" +
 				"<div>" +
 					"<p>" + action.replace(/DEFENDER/, this.displayPlayerSummonName()).replace(/DAMAGETYPE/, localize(SPECIAL_ATTACK_TYPES[this.attackType]).toLowerCase()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ((this.armorMod >= 0) ? (" + " + this.armorMod + " " + localize("ARMOR_BONUS") + ")") : ")") + rollType + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
@@ -939,6 +949,77 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 					localize("LABEL_ROLL_RESULT") + " " + this.result +
 				"</div>" +
 			"</div>";
+	}
+}
+
+// Separated from PlayerAttack because it needs a unique ID for its roll chain.
+// Multipurpose - supports players or pets!
+class EventPlayerAttackPlayer extends SharedRollEvent {
+	constructor(myPlayer, rollData) {
+		super("PlayerAttackPlayer", rollData);
+		this.id = "PvP_" + Date.now();
+		this.player = myPlayer;
+
+		if (rollData) {
+			this.target = rollData.target;
+		}
+
+		this.setSummonData();
+		this.setSummonData("target", "targetSummon");
+	}
+
+	toHTML() {
+		var rollType;
+		var targetName = this.displayPlayerSummonName("target", "targetSummon");
+
+		if (this.lucky) {
+			rollType = " " + localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
+		} else if (this.unlucky) {
+			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
+		} else  {
+			rollType = "";
+			targetName = targetName.replace(/,$/, "");
+		}
+
+		return "<div id='" + this.id + "' attacker='" + this.player + "' target='" + this.target + "' data-key='" + this.key + "' countMe>" +
+				"<div>" +
+					"<p>" + localize("EVENT_ATTACK").replace(/ATTACKER/, this.displayPlayerSummonName()) + ((this.key != "Attack") ? " (" + localize(getQuality(this.key).name) + ", " + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " : " ") + targetName + rollType + "!</p>" +
+					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
+				"</div>" +
+				"<div class='rollResult'>" +
+					localize("LABEL_ROLL_RESULT") + " " + this.result +
+				"</div>" +
+			"</div>";
+	}
+}
+
+// Multipurpose - supports players or pets!
+class EventPlayerAttackPlayerResolution extends SharedEvent {
+	constructor(myPlayer, myTarget, isHit, myType, myKey, myComment, parentId) {
+		super("PlayerAttackPlayerResolution");
+		this.player = myPlayer;
+		this.target = myTarget;
+		this.success = isHit;
+
+		if (isHit) {
+			this.attackType = myType;
+			this.key = myKey;
+		}
+
+		this.comment = nameEncode(myComment);
+		this.parent = parentId;
+
+		this.setSummonData();
+		this.setSummonData("target", "targetSummon");
+	}
+
+	toHTML() {
+		// No output on a success.
+		if (!this.success) {
+			return "<div class='subordinate'><i>" + localize("EVENT_ATTACK_RESOLUTION_MISS") + ((this.comment) ? " <span class='rollComment'>" + this.comment + "</span>" : "") + "</i></div>"
+		} else {
+			return "";
+		}
 	}
 }
 

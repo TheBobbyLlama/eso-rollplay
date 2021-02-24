@@ -187,6 +187,12 @@ body.healed {
 	margin: 20px 0px;
 }
 
+#pvpControls > div:first-child {
+	align-items: flex-end;
+	display: flex;
+	flex-direction: column;
+}
+
 #readOut {
 	flex-basis: 100%;
 }
@@ -197,17 +203,25 @@ body.healed {
 	flex-direction: column;
 }
 
+#rollingSection section:last-child > *:first-child {
+	margin-top: -12px;
+}
+
+#rollingSection section:last-child h3 {
+	margin-top: 12px;
+}
+
 #rollingSection section:last-child > div:last-child {
 	align-items: center;
 	display: flex;
-	margin: 8px 0;
+	margin: 20px 0 8px 0;
 }
 
 #rollingSection section:last-child > div:last-child * {
 	margin-left: 8px;
 }
 
-#rollControls, #summonControls {
+#rollControls, #summonControls, #pvpControls {
 	align-items: center;
 	border: solid 1px var(--content-border);
 	border-radius: 4px;
@@ -221,11 +235,11 @@ body.healed {
 	padding: 8px;
 }
 
-#rollControls > div:last-child {
+#rollControls > div:last-child, #pvpControls > div:last-child {
 	padding: 8px;
 }
 
-#rollControls input {
+#rollControls input, #pvpControls input {
 	margin-top: 4px;
 	width: 100%;
 }

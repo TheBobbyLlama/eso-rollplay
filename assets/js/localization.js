@@ -63,6 +63,7 @@ const localizationList = [
 			[ "LABEL_RELATIONSHIPS", "Relationships:" ],
 			[ "VIEW_DESCRIPTION", "View Description" ],
 			[ "ACTION_ATTACK!", "Attack!" ],
+			[ "ACTION_ATTACK_WITH_PET!", "Attack with Pet!" ],
 			[ "ACTION_ROLL", "Roll" ],
 			[ "ACTION_ROLL!", "Roll!" ],
 			[ "ACTION_HIT!", "Hit!" ],

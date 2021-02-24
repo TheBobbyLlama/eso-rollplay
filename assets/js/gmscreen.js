@@ -569,23 +569,34 @@ function subordinateRollToughness() {
 /// Handler for an NPC attack being declared a hit.
 function subordinateNPCAttackHit() {
 	var eventDiv = $(this).closest("div[id]");
-	var npc = nameEncode(eventDiv.attr("attacker"));
-	var player = nameEncode(eventDiv.attr("target"));
+	var attacker = nameEncode(eventDiv.attr("attacker"));
+	var target = nameEncode(eventDiv.attr("target"));
 	var attackType = $(this).parent().find("select[name='attackType']").prop("selectedIndex") + 1;
-	var attackBonus = parseInt(currentSession.npcs.find(element => element.name == npc).damageBonus);
 	var comment = $(this).parent().find("input[name='attackComment']");
-	dbPushEvent(new EventNPCAttackResolution(npc, player, true, attackType, attackBonus, attackBonus + internalDieRoll(), comment.val(), eventDiv.attr("id")));
+
+	if (eventDiv.attr("id").startsWith("PvP")) {
+		var key = eventDiv.attr("data-key");
+		dbPushEvent(new EventPlayerAttackPlayerResolution(nameEncode(attacker), nameEncode(target), true, attackType, key, comment.val(), eventDiv.attr("id")));
+	} else {
+		var attackBonus = parseInt(currentSession.npcs.find(element => element.name == attacker).damageBonus);
+		dbPushEvent(new EventNPCAttackResolution(attacker, target, true, attackType, attackBonus, attackBonus + internalDieRoll(), comment.val(), eventDiv.attr("id")));
+	}
+
 	comment.val("");
 }
 
 /// Handler for an NPC attack being declared a miss.
 function subordinateNPCAttackMiss() {
 	var eventDiv = $(this).closest("div[id]");
-	var npc = eventDiv.attr("attacker");
-	var player = eventDiv.attr("target");
+	var attacker = eventDiv.attr("attacker");
+	var target = eventDiv.attr("target");
 	var comment = $(this).parent().find("input[name='attackComment']");
 
-	dbPushEvent(new EventNPCAttackResolution(npc, player, false, null, null, null, comment.val(), eventDiv.attr("id")));
+	if (eventDiv.attr("id").startsWith("PvP")) {
+		dbPushEvent(new EventPlayerAttackResolution(nameEncode(attacker), nameEncode(target), false, null, null, comment.val(), eventDiv.attr("id")));
+	} else {
+		dbPushEvent(new EventNPCAttackResolution(attacker, target, false, null, null, null, comment.val(), eventDiv.attr("id")));
+	}
 
 	comment.val("");
 }
@@ -612,7 +623,7 @@ function subordinatePlayerAttackMiss() {
 	var target = eventDiv.attr("target");
 	var comment = $(this).parent().find("input[name='attackComment']");
 
-	dbPushEvent(new EventPlayerAttackResolution(player, target, false, null, null, comment.val(), eventDiv.attr("id")));
+	dbPushEvent(new EventPlayerAttackResolution(nameEncode(player), nameEncode(target), false, null, null, comment.val(), eventDiv.attr("id")));
 
 	comment.val("");
 }
@@ -836,6 +847,8 @@ function updatePlayerList() {
 
 	$("select[player-pet-target]").html(markupPlayerPetOptions);
 	$("select[player-target]").html(markupPlayerOptions);
+
+	setPlayerControls();
 }
 
 /// Handler for incoming events.
@@ -852,6 +865,7 @@ function addEventDisplay(event) {
 		case "GMDeny":
 		case "NPCAttackResolution":
 		case "NPCToughness":
+		case "PlayerAttackPlayerResolution":
 		case "PlayerSummonResolution":
 		case "RollSubordinateResolution":
 			var holder = $("#" + event.parent);
@@ -891,8 +905,14 @@ function addEventDisplay(event) {
 			break;
 		case "PlayerDamage":
 			var holder = $("#" + event.parent);
+			var toughness = holder.find("div[toughness]");
 			holder.find("button, input, select").attr("disabled", "true");
-			holder.append(event.toHTML());
+
+			if (toughness.length) {
+				toughness.before(event.toHTML());
+			} else {
+				holder.append(event.toHTML());
+			}
 
 			if (event.player.indexOf("»") == -1) {
 				playSound("alert");
@@ -992,7 +1012,7 @@ function addEventDisplay(event) {
 		case "RollQueued":
 			var holder = $("#" + event.parent);
 			holder.append(event.toHTML());
-			if (!holder.find(".playersubordinate").length) {
+			if ((!event.parent.startsWith("PvP")) && (!holder.find(".playersubordinate").length)) {
 				holder.children().last().append("<button type='button' name='cancelQueuedRoll'>" + localize("CANCEL") + "</button>");
 			}
 			break;
@@ -1005,7 +1025,7 @@ function addEventDisplay(event) {
 				currentSession.statuses[currentSession.characters.indexOf(event.name)].wornArmor = event.armor;
 			break;
 		case "PlayerDamage":
-			if (dispatchMessages) {
+			if ((dispatchMessages) && (!event.parent.startsWith("PvP"))) {
 				var curNPC = currentSession.npcs.find(element => element.name == event.target);
 				var toughness = parseInt(curNPC.toughnessBonus);
 				var result = internalDieRoll() + toughness;
@@ -1158,7 +1178,7 @@ function addEventDisplay(event) {
 			break;
 	}
 
-	if ((dispatchMessages) && (event.player) && (event.player.indexOf("»") > -1)) {
+	if (dispatchMessages) {
 		dispatchSummonRoll(event);
 	}
 
@@ -1166,42 +1186,77 @@ function addEventDisplay(event) {
 	queue.scrollTop(queue[0].scrollHeight);
 }
 
-/// Handles events that target pets, to instantly resolve any needed rolls.
+/// Handles events that involve pets, to instantly resolve any needed rolls.
 function dispatchSummonRoll(event) {
-	var parts = event.player.split("»");
-	var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+	var parts;
+	var template;
+	var curStatus;
 
-	if ((curStatus) && (curStatus.summon)) {
-		var template = npcTemplates.find(element => element.name == curStatus.summon.template);
+	switch(event.eventType) {
+		case "NPCAttack":
+			if (event.player.indexOf("»") > -1) {
+				parts = event.player.split("»");
+				curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+				template = (curStatus.summon) ? npcTemplates.find(element => element.name == curStatus.summon.template) : null;
 
-		if (template) {
-			switch(event.eventType) {
-				case "NPCAttack":
+				if (template) {
 					dbPushEvent(new EventPlayerDefense(event.player, template.makeRoll("Defense", event)));
-					break;
-				case "NPCAttackResolution":
-					if (event.success) {
-						dbPushEvent(new EventPlayerToughnessRoll(event.player, template.makeRoll("Toughness", event)));
-					}
-					break;
-				case "PlayerAttackResolution":
-					if (event.success) {
-						var result = template.makeRoll("Damage", event);
-						result.npc = event.target;
-						dbPushEvent(new EventPlayerDamageRoll(event.player, result));
-					}
-					break;
-				case "InjuryPlayer":
-				case "NPCDefense":
-				case "PlayerDamage":
-				case "PlayerDefense":
-				case "PlayerSummonAttack":
-				case "PlayerToughness":
-					break;
-				default:
-					console.log("Received an invalid event type (" + event.eventType + ") for " + event.player + ".");
+				}
 			}
-		}
+			break;
+		case "NPCAttackResolution":
+			if ((event.success) && (event.player.indexOf("»") > -1)) {
+				parts = event.player.split("»");
+				curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+				template = (curStatus.summon) ? npcTemplates.find(element => element.name == curStatus.summon.template) : null;
+
+				if (template) {
+					dbPushEvent(new EventPlayerToughnessRoll(event.player, template.makeRoll("Toughness", event)));
+				}
+			}
+			break;
+		case "PlayerAttackResolution":
+			if ((event.success) && (event.player.indexOf("»") > -1)) {
+				parts = event.player.split("»");
+				curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+				template = (curStatus.summon) ? npcTemplates.find(element => element.name == curStatus.summon.template) : null;
+
+				if (template) {
+					var result = template.makeRoll("Damage", event);
+					result.npc = event.target;
+					dbPushEvent(new EventPlayerDamageRoll(event.player, result));
+				}
+			}
+			break;
+		case "PlayerAttackPlayer":
+			if (event.target.indexOf("»") > -1) {
+				template = npcTemplates.find(element => element.name == event.targetSummon.template);
+
+				if (template) {
+					dbPushEvent(new EventPlayerDefense(event.target, template.makeRoll("Defense", { name: event.player, id: event.id })));
+				}
+			}
+			break;
+		case "PlayerAttackPlayerResolution":
+			if (event.player.indexOf("»") > -1) {
+				template = npcTemplates.find(element => element.name == event.summon.template);
+
+				if (template) {
+					var result = template.makeRoll("Damage", event);
+					result.npc = event.target;
+					dbPushEvent(new EventPlayerDamageRoll(event.player, result));
+				}
+			}
+			if (event.target.indexOf("»") > -1) {
+				template = npcTemplates.find(element => element.name == event.targetSummon.template);
+
+				if (template) {
+					dbPushEvent(new EventPlayerToughnessRoll(event.target, template.makeRoll("Toughness", event)));
+				}
+			}
+			break;
+		default:
+			break;
 	}
 }
 

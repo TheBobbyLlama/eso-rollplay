@@ -889,7 +889,7 @@ const EQUIPPED_WEAPON = [
 	},
 	{
 		weapon: "WEAPON_STAFF",
-		skills: [ "Alteration", "Conjuration", "Destruction", "Illusion", "Mysticism", "Restoration", "BloodMagic", "NatureMagic", "Necromancy", "ShadowMagic" ]
+		skills: [ "Destruction", "Alteration", "Conjuration", "Illusion", "Mysticism", "Restoration", "BloodMagic", "NatureMagic", "Necromancy", "ShadowMagic" ]
 	},
 	{
 		weapon: "WEAPON_UNARMED",
