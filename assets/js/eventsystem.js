@@ -5,6 +5,10 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventAddNPC.prototype);
 		case "AddPlayer":
 			return Object.setPrototypeOf(event, EventAddPlayer.prototype);
+		case "CancelQueuedRoll":
+			return Object.setPrototypeOf(event, EventCancelQueuedRoll.prototype);
+		case "CancelQueuedRollSuccess":
+			return Object.setPrototypeOf(event, EventCancelQueuedRollSuccess.prototype);
 		case "Close":
 			return Object.setPrototypeOf(event, EventClose.prototype);
 		case "End":
@@ -35,8 +39,6 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerWeapon.prototype);
 		case "PlayerAttack":
 			return Object.setPrototypeOf(event, EventPlayerAttack.prototype);
-		case "PlayerBusy":
-			return Object.setPrototypeOf(event, EventPlayerBusy.prototype);
 		case "PlayerAttackResolution":
 			return Object.setPrototypeOf(event, EventPlayerAttackResolution.prototype);
 		case "PlayerConnect":
@@ -79,6 +81,8 @@ function forceEventType(event) {
 			return Object.setPrototypeOf(event, EventPlayerContestedRoll.prototype)
 		case "RollPlayerContestedSubordinate":
 			return Object.setPrototypeOf(event, EventPlayerContestedRollSubordinate.prototype);
+		case "RollQueued":
+			return Object.setPrototypeOf(event, EventRollQueued.prototype);
 		case "RollSubordinate":
 			return Object.setPrototypeOf(event, EventRollSubordinate.prototype);
 		case "Start":
@@ -185,12 +189,19 @@ class SharedRollEvent extends SharedEvent {
 /// Events that are only for the GM - Rollplay screen will ignore them.
 const GM_EVENTS = [
 	"AddNPC",
+	"CancelQueuedRoll",
+	"CancelQueuedRollSuccess",
 	"NPCDefense",
 	"NPCRoll",
 	"NPCToughness",
-	"PlayerBusy",
 	"PlayerDisconnect",
+	"RollQueued",
 	"RollSubordinate"
+];
+
+/// Events involving multiple players - Will sometimes have to display extra player information.
+const MULTI_PLAYER_EVENTS = [
+	"PlayerContest"
 ];
 
 // ADMINISTRATIVE EVENTS
@@ -305,15 +316,39 @@ class EventPlayerDisconnect extends SharedEvent {
 	}
 }
 
-class EventPlayerBusy extends SharedEvent {
+class EventRollQueued extends SharedEvent {
 	constructor(myPlayer, parentId) {
-		super("PlayerBusy");
+		super("RollQueued");
 		this.player = myPlayer;
 		this.parent = parentId;
 	}
 
 	toHTML() {
-		return "<div class='gmExtra subordinate'>" + localize("EVENT_PLAYER_BUSY").replace(/PLAYER/, this.player) + "</div>";
+		return "<div class='gmExtra subordinate' data-player='" + this.player + "'>" + localize(MULTI_PLAYER_EVENTS.find(item => this.parent.startsWith(item)) ? "EVENT_ROLL_QUEUED_PLAYER" : "EVENT_ROLL_QUEUED").replace(/PLAYER/, this.player) + "</div>";
+	}
+}
+
+class EventCancelQueuedRoll extends SharedEvent {
+	constructor(myPlayer, rollId) {
+		super("CancelQueuedRoll");
+		this.player = myPlayer;
+		this.roll = rollId;
+	}
+
+	toHTML() {
+		return "";
+	}
+}
+
+class EventCancelQueuedRollSuccess extends SharedEvent {
+	constructor(myPlayer, rollId) {
+		super("CancelQueuedRollSuccess");
+		this.player = myPlayer;
+		this.parent = rollId;
+	}
+
+	toHTML() {
+		return "<div class='gmExtra subordinate'>" + localize(MULTI_PLAYER_EVENTS.find(item => this.parent.startsWith(item)) ? "EVENT_CANCEL_QUEUED_ROLL_SUCCESS_PLAYER" : "EVENT_CANCEL_QUEUED_ROLL_SUCCESS").replace(/PLAYER/, this.player) + "</div>";
 	}
 }
 
@@ -716,7 +751,7 @@ class EventPlayerAttack extends SharedRollEvent {
 		if (this.lucky) {
 			rollType = " " + localize("PLAYER_ROLL_LUCKY").replace(/LUCKY/, "<span class='luckyRoll'>" + localize("LUCKY") + "</span>");
 		} else if (this.unlucky) {
-			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/LUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
+			rollType = " " + localize("PLAYER_ROLL_UNLUCKY").replace(/UNLUCKY/, "<span class='unluckyRoll'>" + localize("UNLUCKY") + "</span>");
 		} else  {
 			rollType = "";
 		}

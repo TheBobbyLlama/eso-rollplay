@@ -6,7 +6,8 @@ var character = new CharacterSheet();
 var currentSession;
 var connectId = null;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
-var queuedRoll; // Holds data for the roll we're making.
+var currentRoll; // Holds data for the roll we're making.
+var queuedRolls = []; // Holds any rolls that are waiting to be made.
 var lazyMode = false; // Automatically complete all rolls.
 
 var markupNPCTargets = "";
@@ -171,14 +172,14 @@ function requestSummon() {
 	var template = npcTemplates.find(element => element.name == templateName);
 
 	if (template) {
-		doPlayerRoll(localize("SUMMON_ROLL_CAPTION").replace(/SKILL/, localize(getQuality(template.summonSkill).name)).replace(/TEMPLATE/, localize(templateName)), "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
+		startPlayerRoll(localize("SUMMON_ROLL_CAPTION").replace(/SKILL/, localize(getQuality(template.summonSkill).name)).replace(/TEMPLATE/, localize(templateName)), "", { key: template.summonSkill, playerInitiated: true, summonTemplate: templateName, summonName, callback: resolveSummonRequest });
 		summonEl.val("");
 	}
 }
 
 /// Takes player's summoning roll and passes it to an event.
 function resolveSummonRequest() {
-	dbPushEvent(new EventPlayerRequestSummon(character.name, queuedRoll));
+	dbPushEvent(new EventPlayerRequestSummon(character.name, currentRoll));
 }
 
 /// Handles attacks made by player's summoned pet.
@@ -216,12 +217,12 @@ function summonDismiss() {
 function performRoll() {
 	var key = $("#rollSelect").val();
 
-	doPlayerRoll(localize("PLAYER_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { key, playerInitiated: true, callback: resolveRoll });
+	startPlayerRoll(localize("PLAYER_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { key, playerInitiated: true, callback: resolveRoll });
 }
 
 /// Takes player's plain roll and passes it to an event.
 function resolveRoll() {
-	dbPushEvent(new EventRoll(character.name, queuedRoll));
+	dbPushEvent(new EventRoll(character.name, currentRoll));
 }
 
 /// Handles player making an attack against an NPC.
@@ -229,12 +230,12 @@ function performAttack() {
 	var target = nameEncode($("#rollTarget").val());
 	var key = $("#rollSelect").val();
 
-	doPlayerRoll(localize("ATTACK_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { target, key, playerInitiated: true, callback: resolveAttack });
+	startPlayerRoll(localize("ATTACK_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { target, key, playerInitiated: true, callback: resolveAttack });
 }
 
 /// Takes player's attack roll and passes it to an event.
 function resolveAttack() {
-	dbPushEvent(new EventPlayerAttack(character.name, queuedRoll));
+	dbPushEvent(new EventPlayerAttack(character.name, currentRoll));
 }
 
 /// Toggles automatic handling of rolls.
@@ -312,6 +313,17 @@ function addEventDisplay(event) {
 				updatePlayerDisplay();
 			}
 			break;
+		case "CancelQueuedRoll":
+			if (dispatchMessages) {
+				var findRoll = queuedRolls.findIndex(item => item.rollInfo.parent === event.roll);
+				if (findRoll > -1) {
+					queuedRolls.splice(findRoll, 1);
+					dbPushEvent(new EventCancelQueuedRollSuccess(character.name, event.roll));
+				} else {
+					console.log("Not found!");
+				}
+			}
+			break;
 		case "Close":
 			eventPane.empty();
 			$(playerInputSelector).attr("disabled", "true");
@@ -372,13 +384,13 @@ function addEventDisplay(event) {
 			break;
 		case "NPCAttack":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				doPlayerRoll(localize("INCOMING_ATTACK_CAPTION").replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
+				startPlayerRoll(localize("INCOMING_ATTACK_CAPTION").replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: "Defense", parent: event.id, callback: resolveNPCAttack} );
 			}
 			break;
 		case "NPCAttackResolution":
 			if (event.success) {
 				if ((dispatchMessages) && (event.player == character.name)) {
-					doPlayerRoll(localize("INCOMING_HIT_CAPTION").replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
+					startPlayerRoll(localize("INCOMING_HIT_CAPTION").replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: "Toughness", attackType: event.attackType, parent: event.parent, callback: resolveNPCDamage});
 				}
 			} else {
 				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
@@ -411,7 +423,7 @@ function addEventDisplay(event) {
 			if (dispatchMessages) {
 				if (event.player == character.name) {
 					if (event.success) {
-						doPlayerRoll(localize("ATTACK_HIT_CAPTION").replace(/TARGET/, nameDecode(event.target)), event.comment, { npc: event.target, key: getQuality(event.key).governing || event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
+						startPlayerRoll(localize("ATTACK_HIT_CAPTION").replace(/TARGET/, nameDecode(event.target)), event.comment, { npc: event.target, key: getQuality(event.key).governing || event.key, attackType: event.attackType, parent: event.parent, callback: resolvePlayerDamage });
 					} else {
 						playSound("alert");
 					}
@@ -465,7 +477,7 @@ function addEventDisplay(event) {
 			break;
 		case "PromptRoll":
 			if ((dispatchMessages && (event.player == character.name))) {
-				doPlayerRoll(localize("ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(event.key).name)), event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
+				startPlayerRoll(localize("ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(event.key).name)), event.comment, { key: event.key, parent: event.id, callback: resolveRoll });
 			}
 			break;
 		case "RemoveNPC":
@@ -505,7 +517,7 @@ function addEventDisplay(event) {
 			break;
 		case "RollContested":
 			if ((dispatchMessages) && (event.player == character.name)) {
-				doPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key).name)).replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
+				startPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key).name)).replace(/NAME/, nameDecode(event.name)), event.comment, { npc: event.name, key: event.key, parent: event.id, callback: resolveContestedRoll });
 			}
 			break;
 		case "RollContestedSubordinate":
@@ -517,9 +529,9 @@ function addEventDisplay(event) {
 
 			if (dispatchMessages) {
 				if (event.player1 == character.name) {
-					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key1).name)).replace(/NAME/, nameDecode(event.player2)), event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
+					startPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key1).name)).replace(/NAME/, nameDecode(event.player2)), event.comment, { target: event.player2, key: event.key1, parent: event.id, callback: resolvePlayerContestedRoll });
 				} else if (event.player2 == character.name) {
-					doPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key2).name)).replace(/NAME/, nameDecode(event.player1)), event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
+					startPlayerRoll(localize("ROLL_AGAINST_OPPONENT_CAPTION").replace(/QUALITY/, localize(getQuality(event.key2).name)).replace(/NAME/, nameDecode(event.player1)), event.comment, { target: event.player1, key: event.key2, parent: event.id, callback: resolvePlayerContestedRoll });
 				}
 			}
 			break;
@@ -559,12 +571,12 @@ function addEventDisplay(event) {
 
 /// Takes player's roll against an NPC and passes it to an event.
 function resolveContestedRoll() {
-	dbPushEvent(new EventContestedResponse(character.name, queuedRoll));
+	dbPushEvent(new EventContestedResponse(character.name, currentRoll));
 }
 
 /// Takes player's roll against another player and passes it to an event.
 function resolvePlayerContestedRoll() {
-	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, queuedRoll));
+	dbPushEvent(new EventPlayerContestedRollSubordinate(character.name, currentRoll));
 }
 
 /// Takes player's defense roll against an attack and passes it to an event.
@@ -572,21 +584,21 @@ function resolveNPCAttack() {
 	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
 
 	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
-		queuedRoll.useBlock = true;
-		queuedRoll.blockMod = character.getBlockModifier();
+		currentRoll.useBlock = true;
+		currentRoll.blockMod = character.getBlockModifier();
 	}
 
-	dbPushEvent(new EventPlayerDefense(character.name, queuedRoll));
+	dbPushEvent(new EventPlayerDefense(character.name, currentRoll));
 }
 
 /// Takes players toughness roll against damage and passes it to an event.
 function resolveNPCDamage() {
 	var armorIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor;
 
-	queuedRoll.armor = armorIndex;
-	queuedRoll.armorMod = character.getArmorModifier(armorIndex);
+	currentRoll.armor = armorIndex;
+	currentRoll.armorMod = character.getArmorModifier(armorIndex);
 
-	dbPushEvent(new EventPlayerToughnessRoll(character.name, queuedRoll));
+	dbPushEvent(new EventPlayerToughnessRoll(character.name, currentRoll));
 }
 
 /// Takes player's damage roll against an NPC and passes it to an event.
@@ -594,11 +606,11 @@ function resolvePlayerDamage() {
 	var weaponIndex = currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon;
 
 	if (EQUIPPED_WEAPON[weaponIndex].useBlock) {
-		queuedRoll.shieldPenalty = true;
-		queuedRoll.shieldMod = -2;
+		currentRoll.shieldPenalty = true;
+		currentRoll.shieldMod = -2;
 	}
 
-	dbPushEvent(new EventPlayerDamageRoll(character.name, queuedRoll));
+	dbPushEvent(new EventPlayerDamageRoll(character.name, currentRoll));
 }
 
 /// Sends player connection event to the session.
@@ -793,25 +805,33 @@ function playSound(soundName) {
 	}
 }
 
-/// Shows rolling modal, or automatically completes the roll if in lazy mode.
-function doPlayerRoll(message, comment, rollInfo) {
+/// Determines if/how a roll should be made.
+function startPlayerRoll(message, comment, rollInfo) {
 	if (!dispatchMessages) {
 		return;
-	} else if ((queuedRoll) || ($("#modalBG").hasClass("show"))) {
-		dbPushEvent(new EventPlayerBusy(character.name, rollInfo.parent));
+	}
+	else if (!currentRoll) {
+		currentRoll = rollInfo;
+		doPlayerRoll(message, comment);
+	} else if ((currentRoll) || ($("#modalBG").hasClass("show"))) {
+		queuedRolls.push({ message, comment, rollInfo });
+		dbPushEvent(new EventRollQueued(character.name, rollInfo.parent));
 		return;
 	}
 
 	/* npc, key, attackType, parent, callback */
-	queuedRoll = rollInfo;
+	currentRoll = rollInfo;
+}
 
-	character.makeRoll(queuedRoll);
+/// Shows rolling modal, or automatically completes the roll if in lazy mode.
+function doPlayerRoll(message, comment) {
+	character.makeRoll(currentRoll);
 
 	if (lazyMode) {
-		queuedRoll.comment = localize("LAZY_MODE");
+		currentRoll.comment = localize("LAZY_MODE");
 		acceptPlayerRoll();
 	} else {
-		if (queuedRoll.playerInitiated) {
+		if (currentRoll.playerInitiated) {
 			$("#rollModal h3").text(localize("TITLE_MAKE_A_ROLL"));
 		} else {
 			$("#rollModal h3").text(localize("TITLE_ROLL_NEEDED"));
@@ -823,11 +843,11 @@ function doPlayerRoll(message, comment, rollInfo) {
 		$("#dieRollText").text(message);
 		$("#dieRollGMComment").text(comment).toggleClass("show", !!(comment));
 		$("#rollModal button, #rollModal input").removeAttr("disabled");
-		$("#cancelDieRoll").toggle(queuedRoll.playerInitiated === true);
+		$("#cancelDieRoll").toggle(currentRoll.playerInitiated === true);
 		$("#dieRollContinue").hide();
 	}
 
-	if (!queuedRoll.playerInitiated) {
+	if (!currentRoll.playerInitiated) {
 		if (navigator.vibrate) {
 			navigator.vibrate(200);
 		}
@@ -843,41 +863,41 @@ function executePlayerRoll(event) {
 	var chosenRoll = 0;
 
 	$(this).parent().find("button, input").attr("disabled", "true");
-	queuedRoll.comment = $("#dieRollComment").val();
+	currentRoll.comment = $("#dieRollComment").val();
 
-	rollPanel.append("<div><div>" + queuedRoll.rolls[0] + "</div></div>");
+	rollPanel.append("<div><div>" + currentRoll.rolls[0] + "</div></div>");
 
-	if (queuedRoll.rolls.length > 1) {
+	if (currentRoll.rolls.length > 1) {
 		var curRoll = 1;
 
-		if (queuedRoll.resist) {
-			rollPanel.append("<div class='good resist'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
+		if (currentRoll.resist) {
+			rollPanel.append("<div class='good resist'><div>" + currentRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
-		if (queuedRoll.lucky) {
-			rollPanel.append("<div class='good lucky'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
+		if (currentRoll.lucky) {
+			rollPanel.append("<div class='good lucky'><div>" + currentRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
-		if (queuedRoll.weak) {
-			rollPanel.append("<div class='bad weak'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
+		if (currentRoll.weak) {
+			rollPanel.append("<div class='bad weak'><div>" + currentRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
-		if (queuedRoll.unlucky) {
-			rollPanel.append("<div class='bad unlucky'><div>" + queuedRoll.rolls[curRoll] + "</div></div>");
+		if (currentRoll.unlucky) {
+			rollPanel.append("<div class='bad unlucky'><div>" + currentRoll.rolls[curRoll] + "</div></div>");
 			curRoll++;
 		}
 
 		setTimeout(function() { rollPanel.addClass("double"); }, 1000);
 
-		if (queuedRoll.rolls.length > 2) {
+		if (currentRoll.rolls.length > 2) {
 			setTimeout(function() { rollPanel.addClass("triple"); }, 3000);
 		}
 
-		chosenRoll = queuedRoll.rolls.indexOf(queuedRoll.result);
-		setTimeout(finalizePlayerRoll, 2000 * queuedRoll.rolls.length - 500);
+		chosenRoll = currentRoll.rolls.indexOf(currentRoll.result);
+		setTimeout(finalizePlayerRoll, 2000 * currentRoll.rolls.length - 500);
 	} else {
 		setTimeout(finalizePlayerRoll, 1000);
 	}
@@ -895,16 +915,26 @@ function finalizePlayerRoll() {
 
 /// Completes the roll, firing its associated callback.
 function acceptPlayerRoll() {
-	queuedRoll.callback();
-	queuedRoll = null;
+	currentRoll.callback();
+	currentRoll = null;
 	hidePopup();
 	$("#dieRollPanel").removeClass("double triple").empty();
+
+	if (queuedRolls.length) {
+		({ message, comment, rollInfo } = queuedRolls.shift());
+		startPlayerRoll(message, comment, rollInfo);
+	}
 }
 
 /// Cancels the roll in progress.  This is only available on rolls the player initiated.
 function cancelPlayerRoll() {
-	queuedRoll = null;
+	currentRoll = null;
 	hidePopup();
+
+	if (queuedRolls.length) {
+		({ message, comment, rollInfo } = queuedRolls.shift());
+		startPlayerRoll(message, comment, rollInfo);
+	}
 }
 
 /// Displays profile modal.

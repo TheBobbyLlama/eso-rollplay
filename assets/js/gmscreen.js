@@ -526,6 +526,12 @@ function sendGMComment() {
 	}
 }
 
+function cancelQueuedRoll() {
+	var eventDiv = $(this).closest("div[id]");
+	eventDiv.find("div[data-player] button").prop("disabled", true);
+	dbPushEvent(new EventCancelQueuedRoll(eventDiv.find("div[data-player]").attr("data-player"), eventDiv.attr("id")));
+}
+
 /// Perform a roll in response to a player roll.
 function subordinateRollBonus() {
 	var eventDiv = $(this).closest("div[id]");
@@ -874,13 +880,13 @@ function addEventDisplay(event) {
 			);
 			playSound("alert");
 			break;
+		case "CancelQueuedRollSuccess":
 		case "NPCToughness":
-		case "PlayerBusy":
-			$("#" + event.parent).append(event.toHTML());
-			break;
 		case "RollPlayerContestedSubordinate":
 		case "PlayerToughness":
-			$("#" + event.parent).append(event.toHTML());
+			var holder = $("#" + event.parent);
+			holder.find("div[data-player='" + event.player + "'] button").attr("disabled", "true");
+			holder.append(event.toHTML());
 			playSound("alert");
 			break;
 		case "PlayerDamage":
@@ -925,6 +931,7 @@ function addEventDisplay(event) {
 		case "RollContestedSubordinate":
 		case "RollSubordinate":
 				var holder = $("#" + event.parent);
+				holder.find("button, input, select").attr("disabled", "true");
 				holder.append(event.toHTML());
 
 				holder.append(
@@ -972,6 +979,22 @@ function addEventDisplay(event) {
 			);
 			holder.children().last().find("select").prop("selectedIndex", damageType);
 			playSound("alert");
+			break;
+		// Disable the cancel button, if applicable.
+		case "Roll":
+			if (event.parent) {
+				var tmpPrompt = $("#" + event.parent);
+				tmpPrompt.find("button, input, select").attr("disabled", "true");
+			}
+			eventPane.append(event.toHTML());
+			playSound("alert");
+			break;
+		case "RollQueued":
+			var holder = $("#" + event.parent);
+			holder.append(event.toHTML());
+			if (!holder.find(".playersubordinate").length) {
+				holder.children().last().append("<button type='button' name='cancelQueuedRoll'>" + localize("CANCEL") + "</button>");
+			}
 			break;
 		default:
 			eventPane.append(event.toHTML());
@@ -1085,8 +1108,6 @@ function addEventDisplay(event) {
 					updatePlayerDisplay();
 
 					if (playerIndex == activePlayer) {
-						console.log(characterList[0].name);
-
 						if (currentSession.characters.length) {
 							activatePlayer(0);
 						} else {
@@ -1134,7 +1155,6 @@ function addEventDisplay(event) {
 				"</div>"
 			);
 			holder.find("select[name='bonus']").prop("selectedIndex", 5);
-			playSound("alert");
 			break;
 	}
 
@@ -1480,6 +1500,7 @@ $("#eventPane").on("click", "button[name='summonSuccess']", summonSuccess);
 $("#eventPane").on("click", "button[name='summonFailure']", summonFailure);
 $("#eventPane").on("click", "button[name='transformAllow']", allowTransformation);
 $("#eventPane").on("click", "button[name='transformDeny']", denyTransformation);
+$("#eventPane").on("click", "button[name='cancelQueuedRoll']", cancelQueuedRoll);
 $("#printout").on("dblclick", copyOutput);
 $("#printout").on("click", "a", launchProfileLink);
 $("#NPCTemplateOptions").on("change", () => { showNPCTemplate($("#NPCTemplateOptions").prop("selectedIndex")); })
