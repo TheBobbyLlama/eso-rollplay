@@ -92,43 +92,47 @@ function forceEventType(event) {
 	}
 }
 
-/// Helper function to put summon information on an event if needed.
-function setSummonEventData(event) {
-	if ((event.player.indexOf("»") > -1) && (currentSession) && (currentSession.statuses)) {
-		var parts = event.player.split("»");
-		var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
-
-		if ((curStatus) && (curStatus.summon)) {
-			event.summonTemplate = curStatus.summon.template;
-			event.summonName = curStatus.summon.name;
-		}
-	}
-}
-
-/// Helper function for dual use player/pet events, to display the name properly.
-function displayEventName(event) {
-	if (event.player.indexOf("»") > -1) {
-		var parts = event.player.split("»");
-		var myPlayer = nameDecode(parts[0]);
-		var result;
-
-		if (event.summonName) {
-			result = localize("DISPLAY_PET_NAME").replace(/NAME/, event.summonName);
-		} else {
-			result = localize("DISPLAY_PET");
-		}
-
-		return result.replace(/PLAYER/, myPlayer).replace(/TEMPLATE/, localize(event.summonTemplate));
-	} else {
-		return event.player;
-	}
-}
-
 /// Base class for all other events.
 class SharedEvent {
 	constructor(myType) {
 		this.eventType = myType;
 		this.timeStamp = Date.now();
+	}
+
+	/// Helper function to put summon information on an event if needed.
+	setSummonData(playerNode = "player", summonNode = "summon") {
+		if ((this[playerNode].indexOf("»") > -1) && (currentSession) && (currentSession.statuses)) {
+			var parts = this.player.split("»");
+			var curStatus = currentSession.statuses.find(element => element.name == nameDecode(parts[0]));
+
+			if ((curStatus) && (curStatus.summon)) {
+				if (!this[summonNode]) {
+					this[summonNode] = {};
+				}
+
+				this[summonNode].template = curStatus.summon.template;
+				this[summonNode].name = curStatus.summon.name;
+			}
+		}
+	}
+
+	/// Helper function for dual use player/pet events, to display the name properly.
+	displayPlayerSummonName(playerNode = "player", summonNode = "summon") {
+		if (this[playerNode].indexOf("»") > -1) {
+			var parts = this[playerNode].split("»");
+			var myPlayer = nameDecode(parts[0]);
+			var result;
+
+			if (this[summonNode].name) {
+				result = localize("DISPLAY_PET_NAME").replace(/NAME/, this[summonNode].name);
+			} else {
+				result = localize("DISPLAY_PET");
+			}
+
+			return result.replace(/PLAYER/, myPlayer).replace(/TEMPLATE/, localize(this[summonNode].template));
+		} else {
+			return this[playerNode];
+		}
 	}
 
 	toHTML() {
@@ -622,13 +626,13 @@ class EventNPCAttack extends SharedEvent {
 		this.result = myResult;
 		this.comment = nameEncode(myComment);
 
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
 		return "<div class='gmInfo' id='" + this.id + "' attacker='" + this.name + "' target='" + this.player + "' countMe>" +
 				"<div>" +
-					"<p>" + localize("EVENT_ATTACK").replace(/ATTACKER/, this.name) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + displayEventName(this).replace(/,$/, "") + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK").replace(/ATTACKER/, this.name) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + this.displayPlayerSummonName().replace(/,$/, "") + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -655,14 +659,14 @@ class EventNPCAttackResolution extends SharedEvent {
 		this.comment = nameEncode(myComment);
 		this.parent = parentId;
 
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
 		if (this.success) {
 			return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + localize("EVENT_ATTACK_RESOLUTION_HIT").replace(/ATTACKER/, this.name).replace(/DEFENDER/, displayEventName(this)).replace(/,$/, "") + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
+					"<p>" + localize("EVENT_ATTACK_RESOLUTION_HIT").replace(/ATTACKER/, this.name).replace(/DEFENDER/, this.displayPlayerSummonName()).replace(/,$/, "") + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ")</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -685,13 +689,13 @@ class EventNPCDefense extends SharedEvent {
 		this.result = myResult;
 		this.parent = parentId;
 
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
 		return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, this.defender) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, displayEventName(this).replace(/,$/, "")) + "</p>" +
+					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, this.defender) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, this.displayPlayerSummonName().replace(/,$/, "")) + "</p>" +
 				"</div>" +
 				"<div class='rollResult'>" +
 					localize("LABEL_ROLL_RESULT") + " " + this.result +
@@ -808,7 +812,7 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 			}
 		}
 
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
@@ -831,7 +835,7 @@ class EventPlayerDamageRoll extends SharedRollEvent {
 
 		return "<div class='playersubordinate'>" +
 				"<div>" +
-					"<p>" +  rollType.replace(/ATTACKER/, displayEventName(this)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
+					"<p>" +  rollType.replace(/ATTACKER/, this.displayPlayerSummonName()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + shieldString + ")" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -855,7 +859,7 @@ class EventPlayerDefense extends SharedRollEvent {
 		}
 
 		this.player = myPlayer;
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
@@ -878,7 +882,7 @@ class EventPlayerDefense extends SharedRollEvent {
 
 		return "<div class='playersubordinate' data-parent='" + this.parent + "' countMe>" +
 				"<div>" +
-					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, displayEventName(this)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, this.attacker).replace(/!$/, "") + rollType + "!</p>" +
+					"<p>" + localize("EVENT_ATTACK_DEFEND").replace(/DEFENDER/, this.displayPlayerSummonName()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + blockString + ") " + localize("EVENT_ATTACK_DEFEND_VS").replace(/ATTACKER/, this.attacker).replace(/!$/, "") + rollType + "!</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -903,7 +907,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 			}
 		}
 
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
@@ -928,7 +932,7 @@ class EventPlayerToughnessRoll extends SharedRollEvent {
 		
 		return "<div class='playersubordinate' data-parent='" + this.parent + "'>" +
 				"<div>" +
-					"<p>" + action.replace(/DEFENDER/, displayEventName(this)).replace(/DAMAGETYPE/, localize(SPECIAL_ATTACK_TYPES[this.attackType]).toLowerCase()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ((this.armorMod >= 0) ? (" + " + this.armorMod + " " + localize("ARMOR_BONUS") + ")") : ")") + rollType + "</p>" +
+					"<p>" + action.replace(/DEFENDER/, this.displayPlayerSummonName()).replace(/DAMAGETYPE/, localize(SPECIAL_ATTACK_TYPES[this.attackType]).toLowerCase()) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + ((this.armorMod >= 0) ? (" + " + this.armorMod + " " + localize("ARMOR_BONUS") + ")") : ")") + rollType + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
@@ -946,11 +950,11 @@ class EventInjuryPlayer extends SharedEvent {
 		this.player = myPlayer;
 		this.status = myStatus;
 
-		setSummonEventData(this);
+		this.setSummonData();
 	}
 
 	toHTML() {
-		return "<div><span>" + localize("EVENT_STATUS_PLAYER").replace(/PLAYER/, displayEventName(this)).replace(/STATUS/, localize(INJURY_LEVEL_DISPLAY[this.status])).replace(/!.$/, "!") + "</span></div>";
+		return "<div><span>" + localize("EVENT_STATUS_PLAYER").replace(/PLAYER/, this.displayPlayerSummonName()).replace(/STATUS/, localize(INJURY_LEVEL_DISPLAY[this.status])).replace(/!.$/, "!") + "</span></div>";
 	}
 }
 
