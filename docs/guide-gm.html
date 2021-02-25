@@ -135,7 +135,7 @@
 	<section>
 		<h3><a name="handling-player-rolls">Handling Player Rolls</a></h3>
 		<p>
-			When you send a roll to a player, keep in mind that it may take some time for them to make their roll.  If you try to send a roll and it says that the player is busy, that means they are currently using the <a href="./guide-player.html#rolling-popup">Rolling Popup</a> to perform another roll.  You will need to wait for that roll to come in and try again.
+			When you send a roll to a player, keep in mind that it may take some time for them to make their roll.  If you send a roll to a player who is currently using the <a href="./guide-player.html#rolling-popup">Rolling Popup</a> to perform another roll, you will be notified that the roll is queued for when the player is ready.  Most queued rolls can be canceled, if they have been sent in error.
 		</p>
 		<p>
 			Make sure you pay attention to the events that are coming into the Session History.  Many of them require input from you before they can "complete".  Ideally, you shouldn't leave any events unresolved in the Session History feed.
