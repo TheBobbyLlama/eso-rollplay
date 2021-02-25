@@ -245,9 +245,11 @@ function resolveAttack() {
 /// Handles player making an attack against another player or their pet.
 function performPvPAttack() {
 	var target = nameEncode($("#pvpTarget").val());
-	var key = $("#pvpRollSelect").val();
 
-	startPlayerRoll(localize("ATTACK_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { target, key, playerInitiated: true, callback: resolvePvPAttack });
+	if (target) {
+		var key = $("#pvpRollSelect").val();
+		startPlayerRoll(localize("ATTACK_ROLL_CAPTION").replace(/QUALITY/, localize(getQuality(key).name)), "", { target, key, playerInitiated: true, callback: resolvePvPAttack });
+	}
 }
 
 /// Takes player's attack roll and passes it to an event.
@@ -256,24 +258,26 @@ function resolvePvPAttack() {
 }
 
 function performPvPPetAttack() {
-	var playerIndex = currentSession.characters.indexOf(character.name);
+	var target = nameEncode($("#pvpTarget").val());
 
-	if (currentSession.statuses[playerIndex].summon) {
-		var template = npcTemplates.find(element => element.name == currentSession.statuses[playerIndex].summon.template);
+	if (target) {
+		var playerIndex = currentSession.characters.indexOf(character.name);
 
-		if (template) {
-			var result = template.makeRoll("Attack");
-			result.target = nameEncode($("#pvpTarget").val());
+		if (currentSession.statuses[playerIndex].summon) {
+			var template = npcTemplates.find(element => element.name == currentSession.statuses[playerIndex].summon.template);
 
-			dbPushEvent(new EventPlayerAttackPlayer(character.name + "»" + template.name, result));
+			if (template) {
+				var result = template.makeRoll("Attack");
+				result.target = target;
+
+				dbPushEvent(new EventPlayerAttackPlayer(character.name + "»" + template.name, result));
+			}
+		} else {
+			updatePlayerDisplay();
+			setSummonControls();
 		}
-	} else {
-		updatePlayerDisplay();
-		setSummonControls();
 	}
 }
-
-/// Takes player's attack roll and passes it to an event.
 
 /// Toggles automatic handling of rolls.
 function toggleLazyMode() {
