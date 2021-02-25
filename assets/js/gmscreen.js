@@ -452,7 +452,9 @@ function makeRollPlain() {
 
 /// Sets control status dependent on whether the current NPC is targeting a player or a pet.
 function setPlayerControls() {
-	if ($("#rollTarget").val().indexOf("»") > -1) {
+	var curPlayer = $("#rollTarget").val();
+
+	if ((!curPlayer) || (curPlayer.indexOf("»") > -1)) {
 		$("#playerRollPanel button, #playerRollPanel select").attr("disabled", "true");
 	} else {
 		$("#playerRollPanel button, #playerRollPanel select").removeAttr("disabled");
