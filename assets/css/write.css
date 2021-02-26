@@ -1,0 +1,97 @@
+body {
+    bottom: 0px;
+    display: flex;
+    flex-direction: column;
+    left: 0px;
+    position: fixed;
+    right: 0px;
+    top: 0px;
+}
+
+button {
+    margin: 4px;
+}
+
+footer {
+	background-color: var(--content-background);
+	border-top: solid 2px var(--content-border);
+	bottom: -60px;
+	height: 40px;
+	left: 0;
+	padding: 10px;
+	position: fixed;
+	right: 0;
+	transition-duration: 0.5s;
+}
+
+footer.shown {
+	bottom: 0px;
+}
+
+h2 input {
+    border-radius: 4px;
+    font-size: 24px;
+    text-align: center;
+    width: 100%;
+}
+
+textarea {
+    border-radius: 8px;
+    flex-basis: 100%;
+	padding: 8px;
+	resize: none;
+}
+
+#main {
+    display: flex;
+    flex-basis: 100%;
+    flex-direction: column;
+}
+
+#main div {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 8px;
+}
+
+#previewModal {
+	max-width: 500px !important;
+	width: 500px;
+}
+
+#previewModal div {
+	background-color: var(--page-background);
+	border-radius: 8px;
+	margin: 10px;
+	max-height: 500px;
+	overflow-y: auto;
+	padding: 10px 20px;
+	text-align: left;
+}
+
+#previewModal h1:first-of-type {
+	font-size: 32px;
+    text-align: center;
+}
+
+#previewModal h1, #previewModal h2, #previewModal h3, #previewModal h4, #previewModal h5 {
+	margin-bottom: 12px;
+}
+
+#previewModal div p {
+	margin: 0px;
+}
+
+#previewModal div hr, #previewModal div p:not(:last-child) {
+	margin: 0px 0px 12px 0px;
+}
+
+@media screen and (max-width: 575px) {
+    footer {
+		height: 60px;
+	}
+
+	#previewModal {
+		max-width: 100% !important;
+	}
+}

@@ -3,39 +3,19 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>ESO Rollplay - Character Profiles</title>
+		<title>ESO Rollplay - Character Story</title>
 		<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 		<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css" />
 		<link rel="stylesheet" href="./assets/css/style.css" />
-		<link rel="stylesheet" href="./assets/css/profile.css" />
+		<link rel="stylesheet" href="./assets/css/story.css" />
 	</head>
 <body>
-	<div id="loading"></div>
-	<nav class="hideMe">
+	<nav>
 		<h1><a href="/" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</a></h1>
 	</nav>
+    <div id="loading"></div>
 	<section id="main" class="hideMe">
-		<div id="profileHeader">
-			<div id="charListing">
-				<select id="characters"></select>
-				<div id="printout"></div>
-			</div>
-			<div id="profileCard">
-				<h2></h2>
-				<div id="profileBody">
-					<div id="charImage"></div>
-					<div id="characteristics"></div>
-				</div>
-				<div id="profileShort">
-				</div>
-			</div>
-		</div>
-		<div id="biography"></div>
-		<div id="storyList" class="hideMe">
-			<h3 data-localization-key="CHARACTER_STORIES">Character Stories</h3>
-			<ol id="charStories"></ol>
-		</div>
-	</section>
+    </section>
 	<div id="modalBG">
 		<div id="errorModal">
 			<h3 data-localization-key="ERROR">Error</h3>
@@ -48,8 +28,7 @@
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="./assets/js/firebase.js"></script>
-	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
-	<script src="./assets/js/profile.js"></script>
+	<script src="./assets/js/story.js"></script>
 </body>
 </html>

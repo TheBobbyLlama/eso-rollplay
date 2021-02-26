@@ -189,11 +189,6 @@ function dbDeleteCharacter(killMe, successCallback = undefined, failureCallback 
 					successCallback();
 				}
 			})
-			.catch(function(error) {
-				if (failureCallback) {
-					failureCallback(error);
-				}
-			});
 		})
 		.catch(function(error) {
 			if (failureCallback) {
@@ -218,6 +213,66 @@ function dbLoadCharacterProfile(getMe, handler) {
 	if (handler) {
 		database.ref("profiles/" + dbTransform(getMe)).once("value").then(handler);
 	}
+}
+
+/// Loads just the data for a story from the database.
+/// (Can send just the character name to get all stories for that character)
+function dbLoadStoryData(getMe, handler) {
+	database.ref("stories/" + getMe).once("value").then(handler);
+}
+
+/// Loads a story from the database.
+function dbLoadStory(getMe, handler) {
+	database.ref("stories/" + getMe).once("value").then((data) => {
+		var storyData = data.val();
+
+		if (storyData) {
+			database.ref("storytext/" + getMe).once("value").then((data) => {
+				storyData.text = data.val();
+
+				handler(storyData);
+			});
+		}
+	});
+}
+
+/// Saves a story to the database.
+function dbSaveStory(identifier, story, successCallback = undefined, failureCallback = undefined) {
+	var saveStory = { ...story};
+	delete saveStory.text;
+
+	database.ref("stories/" + identifier).set(saveStory)
+		.then(function() {
+			database.ref("storytext/" + identifier).set(story.text)
+				.then(function() {
+					if (successCallback) {
+						successCallback();
+					}
+				});
+		})
+		.catch(function(error) {
+			if (failureCallback) {
+				failureCallback(error);
+			}
+		});
+}
+
+/// Removes a character from the database.
+function dbDeleteStory(killMe, successCallback = undefined, failureCallback = undefined) {
+	database.ref("stories/" + killMe).remove()
+		.then(function() {
+			database.ref("storytext/" + killMe).remove()
+				.then(function() {
+					if (successCallback) {
+						successCallback();
+					}
+				});
+		})
+		.catch(function(error) {
+			if (failureCallback) {
+				failureCallback(error);
+			}
+		});
 }
 
 /// Loads all characters from the database.

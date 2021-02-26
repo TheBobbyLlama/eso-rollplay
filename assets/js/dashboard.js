@@ -50,6 +50,38 @@ function confirmLogout() {
 	  });
 }
 
+function createStory() {
+	localStorage.setItem("ESORP[character]", userInfo.characters[activeChar]);
+	location.replace("./write.html");
+}
+
+function editStory() {
+	var story = $(this).attr("data-story");
+	location.replace("./write.html?story=" + dbTransform(userInfo.characters[activeChar]) + "|" + dbTransform(story));
+}
+
+function deleteStory() {
+	var story = $(this).attr("data-story");
+
+	hidePopup();
+	showConfirmPopup("Delete story " + story + "?", function() {
+		var charName = dbTransform(userInfo.characters[activeChar]);
+
+		dbDeleteStory(charName + "/" + dbTransform(story), function() {
+			hidePopup();
+			var findIndex = characterCache.findIndex(element => dbTransform(element.name) == charName);
+
+			if (findIndex > -1) {
+				delete characterCache[findIndex].storyData[dbTransform(story)];
+				showStoryModal();
+			}
+		}, function(message) {
+			hidePopup();
+			showErrorPopup(message);
+		});
+	})
+}
+
 function populateCharacterList() {
 	var charList = $("#characterList");
 	charList.empty();
@@ -99,6 +131,10 @@ function characterLoaded(loadMe) {
 		var tmpChar = Object.setPrototypeOf(loadMe.val(), CharacterSheet.prototype);
 		characterCache.push(tmpChar);
 		displayCharacter(tmpChar);
+
+		dbLoadStoryData(dbTransform(nameDecode(tmpChar.name)), (data) => {
+			tmpChar.storyData = data.val();
+		});
 	} else {
 		showErrorPopup(localize("THERE_WAS_AN_ERROR_LOADING_THE_CHARACTER"));
 	}
@@ -236,6 +272,31 @@ function showSettingsPopup() {
 	$("#modalBG, #settingsModal").addClass("show");
 }
 
+function showStoryModal() {
+	var testIndex = characterCache.findIndex(element => element.name == userInfo.characters[activeChar]);
+
+	if (testIndex > -1) {
+		var storyList = $("#storyModal ul");
+		storyList.empty();
+
+		if (characterCache[testIndex].storyData) {
+			var charStories = Object.entries(characterCache[testIndex].storyData);
+
+			for (var i = 0; i < charStories.length; i++) {
+				storyList.append("<li>" +
+					"<strong>" + charStories[i][1].title + "</strong>" +
+					"<div>" +
+						"<button name='editStory' type='button' data-story='" + charStories[i][1].title + "'>Edit</button>" +
+						"<button name='deleteStory' type='button' data-story='" + charStories[i][1].title + "'>Delete</button>" +
+					"</div>" +
+				"</li>");
+			}
+		}
+
+		$("#modalBG, #storyModal").addClass("show");
+	}
+}
+
 /// Hides all modals.
 function hidePopup() {
 	$("#modalBG").removeClass("show");
@@ -259,9 +320,13 @@ $("#characterList").on("click", "li.charItem", activateCharacter);
 $("#playCharacter").on("click", goToRollplay);
 $("#editCharacter").on("click", editCharacter);
 $("#deleteCharacter").on("click", deleteCharacter);
+$("#manageStories").on("click", showStoryModal);
 $("#miscTasks").on("click", "#nameGenerator", goToNameGenerator)
 	.on("click", "#profileViewer", goToProfileViewer)
 	.on("click", "#gmScreen", goToGMSCreen);
 $("#newPassword, #confirmPassword").on("change", checkPasswordEntries);
 $("#settingsOk").on("click", confirmSettingsChange);
-$("#confirmCancel, #errorButton, #settingsCancel").on("click", hidePopup);
+$("#storyModal ul").on("click", "button[name='editStory']", editStory);
+$("#storyModal ul").on("click", "button[name='deleteStory']", deleteStory);
+$("#createStory").on("click", createStory);
+$("#confirmCancel, #errorButton, #settingsCancel, #storyCancel").on("click", hidePopup);

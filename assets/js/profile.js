@@ -24,7 +24,7 @@ function initializePage() {
 		if (minimal) {
 			$("body").addClass("minimal");
 			$("nav").remove();
-			$("#charListing, #characteristics, #biography").remove();
+			$("#charListing, #characteristics, #biography, #storyList").remove();
 		} else {
 			$("h1 a").text(localize("CHARACTER_PROFILE"));
 			$("#charListing select").remove();
@@ -63,8 +63,29 @@ function loadCharacter(name) {
 	if (character) {
 		setCharacterInfo();
 		setCharacterProfile(character.profile);
+		checkStoryList();
 	} else {
+		checkStoryList(true);
 		dbLoadCharacter(name, characterLoaded, profileLoaded);
+	}
+}
+
+function checkStoryList(forceOff = false) {
+	var storyList = $("#charStories");
+	storyList.empty();
+
+	if ((!forceOff) && (character.storyData)) {
+		var charStories = Object.entries(character.storyData);
+
+		for (var i = 0; i < charStories.length; i++) {
+			storyList.append("<li>" +
+				"<a href='story.html?s=" + dbTransform(character.name) + "|" + dbTransform(charStories[i][1].title) + "' target='_blank'>" + charStories[i][1].title + "</a>" +
+			"</li>");
+		}
+
+		$("#storyList").removeClass("hideMe");
+	} else {
+		$("#storyList").addClass("hideMe");
 	}
 }
 
@@ -74,6 +95,18 @@ function characterLoaded(loadMe) {
 		character = loadMe.val();
 		characterCache[dbTransform(nameDecode(character.name))] = character;
 		setCharacterInfo();
+
+		if (!minimal) {
+			tmpChar = character;
+
+			dbLoadStoryData(dbTransform(nameDecode(tmpChar.name)), (data) => {
+				tmpChar.storyData = data.val();
+
+				if (character.name === tmpChar.name) {
+					checkStoryList();
+				}
+			});
+		}
 	} else {
 		showErrorPopup(localize("CHARACTER_NOT_FOUND"), event => {
 			event.preventDefault();

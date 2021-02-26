@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>ESO Rollplay - Character Stories</title>
+		<link rel="icon" href="./assets/images/logo.png" type="image/png" />
+		<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+		<link rel="stylesheet" href="./assets/css/style.css" />
+		<link rel="stylesheet" href="./assets/css/write.css" />
+	</head>
+<body>
+    <nav>
+		<h1 title="RETURN_TO_DASHBOARD" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</h1>
+		<div class="toolbar">
+			<div id="logout">
+				<span class="oi" data-glyph="account-logout" title="LOGOUT" aria-hidden="true" data-localization-key></span>
+			</div>
+			<div id="handbook">
+				<a href="./handbook.html" target="_blank">
+					<span class="oi" data-glyph="book" title="HANDBOOK" aria-hidden="true" data-localization-key></span>
+				</a>
+			</div>
+		</div>
+	</nav>
+    <div id="loading"></div>
+    <section id="main" class="hideMe">
+        <h2>
+            <input id="storyTitle" type="text" maxlength="50" placeholder="Enter Your Title Here"></input>
+        </h2>
+        <textarea id="storyText" type="textarea" maxlength="100000"></textarea>
+        <div>
+            <button id="btnPreview" type="button">Preview</button>
+            <button id="btnSave" type="button">Save</button>
+            <button id="btnHelp" type="button">Help</button>
+        </div>
+    </section>
+    <footer>Saved successfully!</footer>
+    <div id="modalBG">
+		<div id="previewModal">
+			<div></div>
+			<button type="button" data-localization-key="OK" closeModal>Ok</button>
+		</div>
+        <div id="helpModal">
+            <p>
+                Story text uses <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" data-localization-key="MARKDOWN">Markdown</a> formatting.
+            </p>
+            <p>
+                <strong>Quick Reference:</strong>
+            </p>
+            <h1># Title</h1>
+            <h2>## Subtitle</h2>
+            <h3>### Subheading</h3>
+            <p>
+                <i>*Italic*</i>
+            </p>
+            <p>
+                <b>**Bold**</b>
+            </p>
+            <p>
+                <b><i>***Bold Italic***</i></b>
+            </p>
+            <button type="button" data-localization-key="OK" closeModal>Ok</button>
+        </div>
+		<div id="errorModal">
+			<h3>Error</h3>
+			<p id="errorText"></p>
+			<button id="errorButton" type="button" data-localization-key="OK" closeModal>Ok</button>
+		</div>
+        <div id="confirmModal">
+			<h3 data-localization-key="CONFIRM">Confirm</h3>
+			<p id="confirmText"></p>
+			<button id="confirmOk" type="button" data-localization-key="OK" closeModal>Ok</button>
+			<button type="button" data-localization-key="CANCEL" closeModal>Cancel</button>
+		</div>
+	</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+	<script src="./assets/js/firebase.js"></script>
+	<script src="./assets/js/localization.js"></script>
+	<script src="./assets/js/write.js"></script>
+</body>
+</html>

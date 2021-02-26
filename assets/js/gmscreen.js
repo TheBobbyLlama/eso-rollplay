@@ -2,7 +2,7 @@ var characterList = [];
 var currentSession;
 var dispatchMessages = false;
 
-var userInfo = null
+var userInfo = null;
 
 var activeNPC = 0;
 var activePlayer = 0;

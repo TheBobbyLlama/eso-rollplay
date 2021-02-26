@@ -69,6 +69,24 @@ select {
 	text-align: center;
 }
 
+#storyList {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+#charStories {
+	border: solid 1px var(--content-border);
+	border-radius: 8px;
+	width: 400px;
+	padding: 4px 8px;
+}
+
+#charStories li {
+	margin-bottom: 4px;
+	margin-top: 4px;
+}
+
 .minimal #profileShort a:link, .minimal #profileShort a:hover, .minimal #profileShort a:visited {
 	color: white;
 	cursor: text;
@@ -109,6 +127,18 @@ select {
 
 	#profileShort {
 		margin: 10px 0px 0px 0px;
+	}
+
+	#storyList h3 {
+		margin-top: 10px;
+	}
+
+	#charStories {
+		max-width: 100%;
+	}
+
+	#charStories li {
+		margin-left: 40px;
 	}
 
 	select {
