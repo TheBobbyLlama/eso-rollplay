@@ -5,7 +5,7 @@ var footerTimer;
 
 var story = {
     title: "",
-    body: ""
+    text: ""
 }
 
 /// Called on page startup.
