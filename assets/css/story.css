@@ -1,7 +1,19 @@
+#main {
+    padding: 10px 5%;
+    margin: 10px auto;
+    max-width: 800px;
+}
+
 #main h1:first-of-type {
     border-bottom: solid 1px #a0a0a0;
     font-size: 36px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     padding-bottom: 10px;
     text-align: center;
+}
+
+@media screen and (max-width: 820px) {
+    #main {
+        margin: 10px;
+    }
 }
