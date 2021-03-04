@@ -64,11 +64,6 @@ select {
 	padding: 10px 20px;
 }
 
-#biography h1, #biography h2, #biography h3, #biography h4, #biography h5 {
-	margin: 10px 0;
-	text-align: center;
-}
-
 #storyList {
 	align-items: center;
 	display: flex;

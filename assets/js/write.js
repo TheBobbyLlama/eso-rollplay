@@ -45,7 +45,7 @@ function pageReady() {
 }
 
 function titleChanged() {
-    story.title = $("#storyTitle").val();
+    story.title = nameEncode($("#storyTitle").val());
 }
 
 function textChanged() {

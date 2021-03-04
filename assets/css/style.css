@@ -369,6 +369,15 @@ ul {
 	color: var(--common-red);
 }
 
+.markdownFormatted hr, .markdownFormatted p:not(:last-child) {
+    margin-bottom: 12px;
+}
+
+.markdownFormatted h1, .markdownFormatted h2, .markdownFormatted h3, .markdownFormatted h4, .markdownFormatted h5 {
+    margin-bottom: 12px;
+    text-align: left;
+}
+
 .toolbar {
 	align-items: flex-start;
 	bottom: 0;

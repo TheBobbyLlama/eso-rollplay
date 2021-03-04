@@ -74,18 +74,6 @@ textarea {
     text-align: center;
 }
 
-#previewModal h1, #previewModal h2, #previewModal h3, #previewModal h4, #previewModal h5 {
-	margin-bottom: 12px;
-}
-
-#previewModal div p {
-	margin: 0px;
-}
-
-#previewModal div hr, #previewModal div p:not(:last-child) {
-	margin: 0px 0px 12px 0px;
-}
-
 @media screen and (max-width: 575px) {
     footer {
 		height: 60px;
