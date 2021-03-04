@@ -143,7 +143,7 @@ const localizationList = [
 			[ "ENEMIES_DESCRIPTION", "Any groups or people you are NOT friendly to." ],
 			[ "RELATIONSHIPS_DESCRIPTION", "Other characters you are close to." ],
 			[ "LABEL_CHARACTER_IS_NPC", "This character is an NPC." ],
-			[ "CHARACTER_NPC_DESCRIPTION", "This setting is only available for Gamemasters.  A character that is marked as an NPC can be played by any GM that adds that character to their session." ],
+			[ "CHARACTER_NPC_DESCRIPTION", "This setting is only available for Game Masters.  A character that is marked as an NPC can be played by any GM that adds that character to their session." ],
 			[ "BIOGRAPHY", "Biography" ],
 			[ "BIOGRAPHY_DESCRIPTION", "### Write Character Backstory Here\n\nGo in depth as you like.  Section headings should be done with 3 hashtags, as above." ],
 			[ "PREVIEW", "Preview" ],
