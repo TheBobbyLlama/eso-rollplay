@@ -4,6 +4,9 @@ var characterCache = [];
 
 var taskHolder = $("#taskHolder");
 
+showdown.extension('Rollplay', showdownRollplay);
+var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
+
 async function initializePage(myUser) {
 	if (!myUser) {
 		showErrorPopup("User " + firebase.auth().currentUser.displayName + " not found!", divertToLogin);
@@ -53,6 +56,27 @@ function confirmLogout() {
 function createStory() {
 	localStorage.setItem("ESORP[character]", userInfo.characters[activeChar]);
 	location.replace("./write.html");
+}
+
+function previewStory() {
+	var charName = dbTransform(userInfo.characters[activeChar]);
+	var story = $(this).attr("data-story");
+
+	var findIndex = characterCache.findIndex(element => dbTransform(element.name) == charName);
+	hidePopup();
+
+	if (findIndex > -1) {
+		var storyText = characterCache[findIndex].storyData[dbTransform(story)].text;
+
+		if (storyText) {
+			showStoryPreview(story, storyText);
+		} else {
+			dbLoadStoryText(dbTransform(userInfo.characters[activeChar]) + "/" + dbTransform(story), text => {
+				characterCache[findIndex].storyData[dbTransform(story)].text = text;
+				showStoryPreview(story, text);
+			});
+		}
+	}
 }
 
 function editStory() {
@@ -141,7 +165,7 @@ function characterLoaded(loadMe) {
 }
 
 function displayCharacter(character) {
-	character.print("printout");
+	character.print("printout", true);
 	$("#characterButtons button").removeAttr("disabled");
 }
 
@@ -286,8 +310,9 @@ function showStoryModal() {
 				storyList.append("<li>" +
 					"<strong>" + charStories[i][1].title + "</strong>" +
 					"<div>" +
-						"<button name='editStory' type='button' data-story='" + charStories[i][1].title + "'>Edit</button>" +
-						"<button name='deleteStory' type='button' data-story='" + charStories[i][1].title + "'>Delete</button>" +
+						"<button name='previewStory' type='button' data-story='" + charStories[i][1].title + "' data-localization-key='PREVIEW'>Preview</button>" +
+						"<button name='editStory' type='button' data-story='" + charStories[i][1].title + "' data-localization-key='BUTTON_EDIT'>Edit</button>" +
+						"<button name='deleteStory' type='button' data-story='" + charStories[i][1].title + "' data-localization-key='BUTTON_DELETE'>Delete</button>" +
 					"</div>" +
 				"</li>");
 			}
@@ -295,6 +320,12 @@ function showStoryModal() {
 
 		$("#modalBG, #storyModal").addClass("show");
 	}
+}
+
+function showStoryPreview(title, text) {
+	$("#storyPreviewModal h1").empty().append(title);
+	$("#storyPreviewModal div").empty().append(converter.makeHtml(text));
+	$("#modalBG, #storyPreviewModal").addClass("show");
 }
 
 /// Hides all modals.
@@ -326,7 +357,8 @@ $("#miscTasks").on("click", "#nameGenerator", goToNameGenerator)
 	.on("click", "#gmScreen", goToGMSCreen);
 $("#newPassword, #confirmPassword").on("change", checkPasswordEntries);
 $("#settingsOk").on("click", confirmSettingsChange);
+$("#storyModal ul").on("click", "button[name='previewStory']", previewStory);
 $("#storyModal ul").on("click", "button[name='editStory']", editStory);
 $("#storyModal ul").on("click", "button[name='deleteStory']", deleteStory);
 $("#createStory").on("click", createStory);
-$("#confirmCancel, #errorButton, #settingsCancel, #storyCancel").on("click", hidePopup);
+$("#confirmCancel, #errorButton, #settingsCancel, #storyCancel, #previewOk").on("click", hidePopup);

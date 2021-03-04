@@ -221,6 +221,37 @@ input.invalid {
 	justify-content: flex-end;
 }
 
+#storyPreviewModal {
+	align-items: center;
+	bottom: 20px;
+	flex-direction: column;
+	left: 20px;
+	max-width: none !important;
+	position: fixed;
+	right: 20px;
+	top: 20px;
+}
+
+#storyPreviewModal.show {
+	display: flex !important;
+}
+
+#storyPreviewModal > h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+#storyPreviewModal > div {
+	align-self: stretch;
+	background-color: var(--page-background);
+	border-radius: 8px;
+	flex-basis: 100%;
+	margin: 0px 20px 10px 20px;
+	overflow: auto;
+	padding: 10px 20px;
+	text-align: left !important;
+}
+
 #taskHolder {
 	border: solid 1px var(--content-border);
 	border-radius: 8px;
@@ -287,6 +318,18 @@ input.invalid {
 	#charListHolder, #characterList li {
 		margin-right: 20px;
 		width: 100% !important;
+	}
+
+	#storyPreviewModal {
+		bottom: 10px;
+		left: 10px;
+		right: 10px;
+		top: 10px;
+	}
+
+	#storyPreviewModal div {
+		margin: 0px 0px 10px 0px;
+		padding: 10px;
 	}
 
 	#taskHolder {

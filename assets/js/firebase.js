@@ -236,6 +236,15 @@ function dbLoadStory(getMe, handler) {
 	});
 }
 
+/// Loads just the story text from the database.
+function dbLoadStoryText(getMe, handler) {
+	database.ref("storytext/" + getMe).once("value").then((data) => {
+		var text = data.val();
+
+		handler(text);
+	});
+}
+
 /// Saves a story to the database.
 function dbSaveStory(identifier, story, successCallback = undefined, failureCallback = undefined) {
 	var saveStory = { ...story};

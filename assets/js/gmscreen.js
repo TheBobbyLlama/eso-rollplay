@@ -1457,7 +1457,7 @@ function postSessionUpdate() {
 function launchProfileLink(event) {
 	event.preventDefault();
 
-	showProfilePopup($(this).attr("href"));
+	showProfilePopup($(this).attr("href") + "&minimal=true");
 }
 
 /// Helper function to play a sound for us.

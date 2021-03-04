@@ -93,6 +93,11 @@
 			<button id="createStory" type="button" data-localization-key="CREATE_STORY">Create Story</button>
 			<button id="storyCancel" type="button" data-localization-key="CANCEL">Cancel</button>
 		</div>
+		<div id="storyPreviewModal">
+			<h1></h1>
+			<div class="markdownFormatted"></div>
+			<button id="previewOk" type="button" data-localization-key="OK">Ok</button>
+		</div>
 		<div id="settingsModal">
 			<h3 data-localization-key="ACCOUNT_SETTINGS">Account Settings</h3>
 			<div class="settingGroup">
@@ -133,12 +138,14 @@
 		</div>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
 	<script src="./assets/js/firebase.js"></script>
 	<script src="./assets/js/localization.js"></script>
 	<script src="./assets/js/esorplib.js"></script>
+	<script src="./assets/js/showdown-rollplay.js"></script>
 	<script src="./assets/js/dashboard.js"></script>
 </body>
 </html>
