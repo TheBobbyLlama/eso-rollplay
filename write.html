@@ -6,7 +6,8 @@
 		<title>ESO Rollplay - Character Stories</title>
 		<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 		<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
 		<link rel="stylesheet" href="./assets/css/style.css" />
 		<link rel="stylesheet" href="./assets/css/write.css" />
 	</head>
@@ -29,8 +30,10 @@
         <h2>
             <input id="storyTitle" type="text" maxlength="50" placeholder="Enter Your Title Here"></input>
         </h2>
-        <textarea id="storyText" type="textarea" maxlength="100000"></textarea>
-        <div>
+		<div class="content">
+        	<textarea id="storyText" type="textarea" maxlength="100000"></textarea>
+		</div>
+        <div class="buttonHolder">
             <button id="btnPreview" type="button">Preview</button>
             <button id="btnSave" type="button">Save</button>
             <button id="btnHelp" type="button">Help</button>
@@ -80,6 +83,7 @@
 	</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>

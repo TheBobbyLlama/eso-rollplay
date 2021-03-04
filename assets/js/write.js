@@ -4,6 +4,8 @@ showdown.extension('Rollplay', showdownRollplay);
 var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
 var footerTimer;
 
+var storyText = createMDE("storyText");
+
 var story = {
     title: "",
     text: ""
@@ -71,8 +73,9 @@ function storyLoaded(loadMe) {
 
     if (story) {
         $("#main h2").empty().attr("id", "storyTitle").text(story.title);
-        $("#main textarea").val(story.text);
+        storyText.value(story.text);
         pageReady();
+        storyText.codemirror.refresh();
     } else {
         showErrorPopup("The story could not be loaded.", divertToDashboard);
     }
@@ -88,6 +91,31 @@ function confirmLogout() {
 	  }).catch(function(error) {
 		// An error happened.
 	  });
+}
+
+/// Utility function to make a Simple Markdown Editor with our desired configuration.
+function createMDE(id) {
+    var taEl = document.getElementById(id);
+    var result = new SimpleMDE({
+        forceSync: true,
+        hideIcons: [ "strikethrough", "preview", "side-by-side", "fullscreen", "guide" ],
+        element: taEl
+    });
+
+    var cm = result.codemirror;
+    cm.on("update", function() {
+        taEl.value = cm.getValue();
+
+        if ("createEvent" in document) {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            taEl.dispatchEvent(evt);
+        }
+        else
+            taEl.fireEvent("onchange");
+    });
+
+    return result;
 }
 
 /// Displays the error modal.

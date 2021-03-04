@@ -7,6 +7,7 @@
 	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
 	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
 	<link rel="stylesheet" href="./assets/css/style.css" />
 	<link rel="stylesheet" href="./assets/css/charsheet.css" />
 </head>
@@ -91,7 +92,7 @@
 		<div id="shortProfile">
 			<h2 data-localization-key="CHARACTER_PROFILE">Character Profile</h2>
 			<h3 data-localization-key="SHORT_DESCRIPTION">Short Description</h3>
-			<textarea type="textarea" name="charBackground" maxlength="1000" rows="10" placeholder="SHORT_DESCRIPTION_DESCRIPTION" data-localization-key></textarea>
+			<textarea type="textarea" id="charBackground" name="charBackground" maxlength="1000" rows="10" placeholder="SHORT_DESCRIPTION_DESCRIPTION" data-localization-key></textarea>
 			<button id="charBackgroundPreview" type="button" data-id="charBackground" data-localization-key="PREVIEW">Preview</button>
 			<h3 data-localization-key="GENERAL_INFORMATION">General Information</h3>
 			<div id="profileGeneral">
@@ -181,7 +182,9 @@
 	</section>
 	<section id="longProfile" class="hideMe">
 		<h2 data-localization-key="BIOGRAPHY">Biography</h2>
-		<textarea type="textarea" name="charBiography" maxlength="10000" rows="20" placeholder="BIOGRAPHY_DESCRIPTION" data-localization-key></textarea>
+		<div>
+			<textarea type="textarea" id="charBiography" name="charBiography" maxlength="10000" rows="20" placeholder="BIOGRAPHY_DESCRIPTION" data-localization-key></textarea>
+		</div>
 		<button id="charBiographyPreview" type="button" data-id="charBiography" data-localization-key="PREVIEW">Preview</button>
 	</section>
 	<footer></footer>
@@ -227,6 +230,7 @@
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>

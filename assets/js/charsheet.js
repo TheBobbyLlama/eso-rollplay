@@ -10,6 +10,9 @@ var skillSpent = 0;
 var character = new CharacterSheet();
 var profile = {};
 
+var shortDescription = createMDE("charBackground");
+var biography = createMDE("charBiography");
+
 /// Called on page startup.
 async function initializePage(myUser) {
 	if (!myUser) {
@@ -70,6 +73,8 @@ async function initializePage(myUser) {
 function finishDraw() {
 	$("#loading").remove();
 	$("body > *").removeClass("hideMe");
+	shortDescription.codemirror.refresh();
+	biography.codemirror.refresh();
 }
 
 /// Creates skill sliders for a given category.
@@ -385,6 +390,31 @@ function showFooter(message) {
 	}
 }
 
+/// Utility function to make a Simple Markdown Editor with our desired configuration.
+function createMDE(id) {
+    var taEl = document.getElementById(id);
+    var result = new SimpleMDE({
+        forceSync: true,
+        hideIcons: [ "strikethrough", "preview", "side-by-side", "fullscreen", "guide" ],
+        element: taEl
+    });
+
+    var cm = result.codemirror;
+    cm.on("update", function() {
+        taEl.value = cm.getValue();
+
+        if ("createEvent" in document) {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            taEl.dispatchEvent(evt);
+        }
+        else
+            taEl.fireEvent("onchange");
+    });
+
+    return result;
+}
+
 /// Displays the help modal.
 function showHelpPopup() {
 	$("#modalBG, #helpModal").addClass("show");
@@ -514,7 +544,7 @@ function profileLoaded(loadMe) {
 
 	if (myProfile) {
 		profile = myProfile;
-		$("textarea[name='charBackground']").val(profile.description);
+		shortDescription.value(profile.description);
 		$("input[name='imageUrl']").val(displayImage(profile.image)? profile.image : "");
 		$("#characteristics select[name='alignment']").val(profile.alignment);
 		$("#characteristics select[name='birthsign']").val(profile.birthsign);
@@ -522,7 +552,8 @@ function profileLoaded(loadMe) {
 		$("#characteristics input[name='organizations']").val(profile.organizations);
 		$("#characteristics input[name='alliances']").val(profile.alliances);
 		$("#characteristics input[name='relationships']").val(profile.relationships);
-		$("textarea[name='charBiography']").val(profile.biography);
+		biography.value(profile.biography);
+		showFooter(null);
 	}
 }
 
@@ -550,7 +581,7 @@ $("section").on("input change", "input[type='range']", changeSlider);
 $("#main section > h3").on("click", expandContractSection);
 $("#previewOk, #errorButton, #nameCancel, #helpDone").on("click", hidePopup);
 $("#printout").on("dblclick", copyOutput);
-$("textarea[name='charBackground']").on("focus, keydown", shortDescriptionHelper).on("blur", leaveShortDescription);
+$("textarea[name='charBackground']").on("focus, keydown, change", shortDescriptionHelper).on("blur", leaveShortDescription);
 $("input[name='imageUrl']").on("focus", function() { $(this).removeClass("redFlag"); }).on("blur", setImageUrl);
 $("#characteristics input, #characteristics select").on("blur, change", setProfileField);
 $("input[id='isNPC']").on("change", setNPC);

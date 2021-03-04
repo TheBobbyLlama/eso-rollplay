@@ -143,6 +143,10 @@ section > div[id] {
 	flex-direction: column;
 }
 
+#longProfile > div {
+	width: 100%;
+}
+
 #longProfile textarea {
 	border-radius: 8px;
 	height: 240px;

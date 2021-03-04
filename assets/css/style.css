@@ -369,6 +369,38 @@ ul {
 	color: var(--common-red);
 }
 
+.CodeMirror {
+	height: 200px;
+}
+
+.CodeMirror, .editor-toolbar {
+	border-color: var(--content-border);
+}
+
+.editor-toolbar {
+	background-color: var(--page-background);
+	opacity: 1 !important;
+}
+
+.editor-toolbar .fa {
+	border: none !important;
+	opacity: 0.8;
+	transition: 0.5s;
+}
+
+.editor-toolbar .fa::before {
+	color: white;
+}
+
+.editor-toolbar .fa.active {
+	background-color: var(--content-background) !important;
+}
+
+.editor-toolbar .fa:hover {
+	background-color: var(--content-background) !important;
+	opacity: 1;
+}
+
 .markdownFormatted hr, .markdownFormatted p:not(:last-child) {
     margin-bottom: 12px;
 }
