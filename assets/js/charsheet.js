@@ -1,6 +1,7 @@
 var userInfo = null;
 var footer = $("footer");
-var converter = converter = new showdown.Converter();
+showdown.extension('Rollplay', showdownRollplay);
+var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
 
 const ATTRIBUTE_POINT_LIMIT = 10;
 const SKILL_POINT_BASE = 10;

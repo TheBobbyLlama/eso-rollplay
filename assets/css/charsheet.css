@@ -243,12 +243,6 @@ section > div[id] {
 }
 
 @media screen and (max-width: 575px) {
-	#nameModal {
-		width: 100%;
-	}
-}
-
-@media screen and (max-width: 575px) {
 	body {
 		margin-bottom: 60px;
 	}
@@ -364,6 +358,10 @@ section > div[id] {
 		width: 100%;
 	}
 
+	#nameModal {
+		width: 100%;
+	}
+
 	#printout {
 		margin: 0 10px 20px 10px;
 		max-width: 360px;
@@ -374,9 +372,14 @@ section > div[id] {
 	}
 }
 
-@media screen and (max-width: 360px) {
-	#helpModal > div {
-		max-height: 400px;
+@media screen and (max-width: 400px) {
+	#helpModal {
+		background-color: red;
+		bottom: 0px;
+		left: 0px;
 		overflow: auto;
+		position: fixed;
+		right: 0px;
+		top: 0px;
 	}
 }

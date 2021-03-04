@@ -1,6 +1,7 @@
 var userInfo = null;
 var curCharacter = "";
-var converter = converter = new showdown.Converter();
+showdown.extension('Rollplay', showdownRollplay);
+var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
 var footerTimer;
 
 var story = {

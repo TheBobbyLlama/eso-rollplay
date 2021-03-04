@@ -157,6 +157,7 @@ const localizationList = [
 			[ "PROFILE_INFO", "Profile Info" ],
 			[ "CHARACTER_HELP_PROFILE_INFO_BEFORE_LINK", "Below your skill selections, you can enter more information for your character.  All fields support" ],
 			[ "CHARACTER_HELP_PROFILE_INFO_AFTER_LINK", "formatting!" ],
+			[ "CHARACTER_HELP_MARKDOWN_EXTENSIONS", "Use curly braces to link to a character's profile - {Example}" ],
 			[ "===== Rollplay Session =====" ],
 			[ "LOAD_SESSION", "Load Session" ],
 			[ "SESSION_SELECTION", "Session Selection"],
