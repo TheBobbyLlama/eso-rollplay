@@ -121,6 +121,7 @@ function setCharacterInfo() {
 	Object.setPrototypeOf(character, CharacterSheet.prototype);
 	$("h2").text(nameDecode(character.name));
 	character.print("printout");
+	$("#printout").toggleClass("hideMe", !character.skills);
 	$("#loading").remove();
 	$("nav, #main").removeClass("hideMe");	
 }
