@@ -1,4 +1,5 @@
 const characteristicList = [
+	[ "Aliases", "aliases" ],
 	[ "Alignment", "alignment" ],
 	[ "Birthsign", "birthsign" ],
 	[ "Primary Residence", "residence" ],
