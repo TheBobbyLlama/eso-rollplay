@@ -546,11 +546,13 @@ function profileLoaded(loadMe) {
 		profile = myProfile;
 		shortDescription.value(profile.description);
 		$("input[name='imageUrl']").val(displayImage(profile.image)? profile.image : "");
+		$("#characteristics input[name='aliases']").val(profile.aliases);
 		$("#characteristics select[name='alignment']").val(profile.alignment);
 		$("#characteristics select[name='birthsign']").val(profile.birthsign);
 		$("#characteristics input[name='residence']").val(profile.residence);
 		$("#characteristics input[name='organizations']").val(profile.organizations);
 		$("#characteristics input[name='alliances']").val(profile.alliances);
+		$("#characteristics input[name='enemies']").val(profile.enemies);
 		$("#characteristics input[name='relationships']").val(profile.relationships);
 		biography.value(profile.biography);
 		showFooter(null);
