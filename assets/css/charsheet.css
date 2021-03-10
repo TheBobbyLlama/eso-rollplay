@@ -17,6 +17,7 @@ footer {
 	position: fixed;
 	right: 0;
 	transition-duration: 0.5s;
+	z-index: 1000;
 }
 
 footer.shown {
