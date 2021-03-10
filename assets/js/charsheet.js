@@ -205,6 +205,7 @@ function updateCharacterSheet() {
 
 	calculateTotalPoints();
 	character.print("printout");
+	$("#printout").toggleClass("hideMe", ((!character.skills) || (!Object.entries(character.skills).length)));
 }
 
 /// Sums all skill/attribute points and sets display if they're over the limit.
