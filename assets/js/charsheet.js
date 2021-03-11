@@ -379,6 +379,7 @@ function setNPC() {
 
 function leaveBiography() {
 	profile.biography = $(this).val();
+	console.log(profile.biography);
 }
 
 /// Shows a message in the helper at the bottom of the screen.
@@ -403,14 +404,11 @@ function createMDE(id) {
     var cm = result.codemirror;
     cm.on("update", function() {
         taEl.value = cm.getValue();
+		taEl.dispatchEvent(new Event('change'));
+    });
 
-        if ("createEvent" in document) {
-            var evt = document.createEvent("HTMLEvents");
-            evt.initEvent("change", false, true);
-            taEl.dispatchEvent(evt);
-        }
-        else
-            taEl.fireEvent("onchange");
+    cm.on("blur", function() {
+		taEl.dispatchEvent(new Event("blur"));
     });
 
     return result;
