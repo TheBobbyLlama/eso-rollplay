@@ -7,10 +7,6 @@ footer {
 	text-align: left;
 }
 
-footer div + div {
-	margin-top: 10px;
-}
-
 footer a.buttonLink {
 	border-radius: 24px;
 	margin-left: 4px;
@@ -287,10 +283,6 @@ input.invalid {
 }
 
 @media screen and (max-width: 575px) {
-	footer {
-		align-items: flex-start;
-	}
-
 	footer a.buttonLink {
 		background-color: var(--gm-background);
 	}

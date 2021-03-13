@@ -379,7 +379,6 @@ function setNPC() {
 
 function leaveBiography() {
 	profile.biography = $(this).val();
-	console.log(profile.biography);
 }
 
 /// Shows a message in the helper at the bottom of the screen.
