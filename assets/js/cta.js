@@ -4,8 +4,8 @@ var SLIDESHOW = [
 		caption: "Create Your Characters!"
 	},
 	{
-		image: "./assets/images/slideshow/Manage.jpg",
-		caption: "Keep Them Organized!"
+		image: "./assets/images/slideshow/Profile.jpg",
+		caption: "Take Your Profiles to ESO!"
 	},
 	{
 		image: "./assets/images/slideshow/Rollplay.jpg",
