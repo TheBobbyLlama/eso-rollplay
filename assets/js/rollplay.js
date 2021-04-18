@@ -904,6 +904,7 @@ function startPlayerRoll(message, comment, rollInfo) {
 
 /// Shows rolling modal, or automatically completes the roll if in lazy mode.
 function doPlayerRoll(message, comment) {
+	var playerInitiated = currentRoll.playerInitiated;
 	character.makeRoll(currentRoll);
 
 	if (lazyMode) {
@@ -926,7 +927,7 @@ function doPlayerRoll(message, comment) {
 		$("#dieRollContinue").hide();
 	}
 
-	if (!currentRoll.playerInitiated) {
+	if (!playerInitiated) {
 		if (navigator.vibrate) {
 			navigator.vibrate(200);
 		}
