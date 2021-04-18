@@ -509,6 +509,20 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerDamage":
+			if (event.parent.startsWith("PvP")) {
+				var holder = $("#" + event.parent);
+				var toughness = holder.find("div[toughness]");
+
+				if (toughness.length) {
+					toughness.before(event.toHTML());
+				} else {
+					holder.append(event.toHTML());
+				}
+			}
+			else {
+				$("#" + event.parent).append(event.toHTML());
+			}
+		break;
 		case "RollPlayerContestedSubordinate":
 		case "RollSubordinateResolution":
 			$("#" + event.parent).append(event.toHTML());
@@ -531,7 +545,11 @@ function addEventDisplay(event) {
 			}
 			break;
 		case "PlayerToughness":
-			eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
+			if (event.parent.startsWith("PvP")) {
+				eventPane.find("#" + event.parent).append(event.toHTML());
+			} else {
+				eventPane.find("div[data-parent='" + event.parent + "']").append(event.toHTML());
+			}
 			break;
 		case "PlayerTransform":
 				if (event.player == character.name) {
