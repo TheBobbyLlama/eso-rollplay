@@ -177,6 +177,7 @@ input.invalid {
 }
 
 #printout {
+	max-width: 360px;
 	min-width: 240px;
 }
 

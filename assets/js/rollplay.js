@@ -460,7 +460,7 @@ function addEventDisplay(event) {
 				$("#playerArmor").prop("selectedIndex", event.armor);
 			}
 
-			currentSession.statuses[currentSession.characters.indexOf(character.name)].wornArmor = event.armor;
+			currentSession.statuses[currentSession.characters.indexOf(event.name)].wornArmor = event.armor;
 			break;
 		case "PlayerWeapon":
 			if (character.name == event.name) {
@@ -468,7 +468,7 @@ function addEventDisplay(event) {
 				changeWeapon(false);
 			}
 
-			currentSession.statuses[currentSession.characters.indexOf(character.name)].equippedWeapon = event.weapon;
+			currentSession.statuses[currentSession.characters.indexOf(event.name)].equippedWeapon = event.weapon;
 			break;
 		case "PlayerAttackPlayer":
 			eventPane.append(event.toHTML());
@@ -812,7 +812,7 @@ function sessionLoaded(loadMe) {
 
 			if (currentSession.characters[i] == character.name) {
 				$("#playerWeapon").prop("selectedIndex", currentSession.statuses[i].equippedWeapon);
-				changeWeapon(false); // Why do I have to manually fire this???
+				changeWeapon(false);
 				$("#playerArmor").prop("selectedIndex", currentSession.statuses[i].wornArmor);
 				$(playerInputSelector).removeAttr("disabled");
 				setSummonControls();
