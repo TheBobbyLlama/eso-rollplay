@@ -895,11 +895,7 @@ function startPlayerRoll(message, comment, rollInfo) {
 	} else if ((currentRoll) || ($("#modalBG").hasClass("show"))) {
 		queuedRolls.push({ message, comment, rollInfo });
 		dbPushEvent(new EventRollQueued(character.name, rollInfo.parent));
-		return;
 	}
-
-	/* npc, key, attackType, parent, callback */
-	currentRoll = rollInfo;
 }
 
 /// Shows rolling modal, or automatically completes the roll if in lazy mode.
