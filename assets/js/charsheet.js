@@ -327,7 +327,7 @@ function leaveShortDescription() {
 
 	if (tmpDesc.val().length <= tmpDesc.prop("maxlength")) {
 		tmpDesc.removeClass("redFlag");
-		profile.description = tmpDesc.val();
+		profile.description = htmlCleanup(tmpDesc.val());
 	} else {
 		tmpDesc.addClass("redFlag");
 	}
@@ -378,7 +378,7 @@ function setNPC() {
 }
 
 function leaveBiography() {
-	profile.biography = $(this).val();
+	profile.biography = htmlCleanup($(this).val());
 }
 
 /// Shows a message in the helper at the bottom of the screen.
@@ -456,7 +456,10 @@ function showConfirmPopup(message, callback) {
 
 function previewHandler() {
 	var field = $(this).attr("data-id");
-	showMarkdownPreview($("textarea[name='" + field + "'").val());
+	//showMarkdownPreview($("textarea[name='" + field + "'").val());
+	if (field) {
+		showMarkdownPreview(profile[field]);
+	}
 }
 
 /// Displays Markdown preview.
@@ -468,6 +471,21 @@ function showMarkdownPreview(text) {
 /// Hides all modals.
 function hidePopup() {
 	$("#modalBG, #modalBG > div").removeClass("show");
+}
+
+/// Adds HTML encoding to a given string.
+function htmlCleanup(text) {
+	return text.replace(/[<>]/g, function(match) {
+		switch (match)
+		{
+			case "<":
+				return "&lt;";
+			case ">":
+				return "&gt;";
+			default:
+				return "!";
+		}
+	})
 }
 
 /// Saves the character to the database.

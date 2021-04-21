@@ -51,7 +51,7 @@ function titleChanged() {
 }
 
 function textChanged() {
-    story.text = $("#storyText").val();
+    story.text = htmlCleanup($("#storyText").val());
 }
 
 function saveStory() {
@@ -91,6 +91,21 @@ function confirmLogout() {
 	  }).catch(function(error) {
 		// An error happened.
 	  });
+}
+
+/// Adds HTML encoding to a given string.
+function htmlCleanup(text) {
+	return text.replace(/[<>]/g, function(match) {
+		switch (match)
+		{
+			case "<":
+				return "&lt;";
+			case ">":
+				return "&gt;";
+			default:
+				return "!";
+		}
+	})
 }
 
 /// Utility function to make a Simple Markdown Editor with our desired configuration.
