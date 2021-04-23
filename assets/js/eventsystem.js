@@ -460,9 +460,12 @@ class EventRollSubordinate extends SharedEvent {
 	}
 
 	toHTML() {
+		var rollDisplay = getQuality(this.rollType);
+		rollDisplay = (rollDisplay) ? rollDisplay.name : this.rollType;
+
 		return "<div class='gmExtra subordinate'>" +
 				"<div>" +
-					"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.name).replace(/ROLLTYPE/, this.rollType && localize(getQuality(this.rollType).name)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
+					"<p>" + localize("ROLL_TEXT").replace(/PARTICIPANT/, this.name).replace(/ROLLTYPE/, rollDisplay && localize(rollDisplay)) + " (" + ((this.modifier >= 0) ? "+" : "") + this.modifier + "):" + "</p>" +
 					((this.comment) ? "<span class='rollComment'>" + this.comment + "</span>" : "") +
 				"</div>" +
 				"<div class='rollResult'>" +
