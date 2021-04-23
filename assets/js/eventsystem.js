@@ -369,7 +369,7 @@ class EventGMResponseAllow extends SharedEvent {
 		this.player = myPlayer;
 		this.request = myRequest;
 		this.parent = parentId;
-		this.comment = myComment;
+		this.comment = nameEncode(myComment);
 	}
 
 	toHTML() {
@@ -385,7 +385,7 @@ class EventGMResponseDeny extends SharedEvent {
 		this.player = myPlayer;
 		this.request = myRequest;
 		this.parent = parentId;
-		this.comment = myComment;
+		this.comment = nameEncode(myComment);
 	}
 
 	toHTML() {
@@ -402,7 +402,7 @@ class EventPromptRoll extends SharedEvent {
 		this.id = "PromptRoll_" + Date.now();
 		this.player = myPlayer;
 		this.key = rollKey;
-		this.comment = myComment;
+		this.comment = nameEncode(myComment);
 	}
 
 	toHTML() {
@@ -583,7 +583,7 @@ class EventPlayerContestedRoll extends SharedEvent {
 		this.key1 = myKey1;
 		this.player2 = myPlayer2;
 		this.key2 = myKey2;
-		this.comment = myComment;
+		this.comment = nameEncode(myComment);
 	}
 
 	toHTML() {
@@ -1233,7 +1233,7 @@ class EventPlayerTransform extends SharedEvent {
 		super("PlayerTransform");
 		this.player = myPlayer;
 		this.transform = transformTarget;
-		this.comment = myComment;
+		this.comment = nameEncode(myComment);
 
 		if (parentId) {
 			this.parent = parentId;
