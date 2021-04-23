@@ -160,17 +160,32 @@ function setCharacterProfile(profile) {
 	if (profile) {
 		$("#charImage")[0].style.background =  profile.image ? "url('" + profile.image + "')" : "";
 		$("#charImage").toggle(!!profile.image);
-		$("#profileShort").empty().append(profile.description ? converter.makeHtml(profile.description.trim()) : "<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
+		$("#profileShort").empty().append(profile.description ? converter.makeHtml(htmlCleanup(profile.description)) : "<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
 
 		if (!minimal) {
 			fillCharacteristics(profile);
-			$("#biography").empty().append(converter.makeHtml(profile.biography)).toggle(!!profile.biography);
+			$("#biography").empty().append(converter.makeHtml(htmlCleanup(profile.biography))).toggle(!!profile.biography);
 		}
 	} else {
 		$("#charImage, #characteristics").toggle(false);
 		$("#profileShort, #biography").empty().append("<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
 		$("#biography").toggle(false);
 	}
+}
+
+/// Adds HTML encoding to a given string.
+function htmlCleanup(text) {
+	return text.replace(/[<>]/g, function(match) {
+		switch (match)
+		{
+			case "<":
+				return "&lt;";
+			case ">":
+				return "&gt;";
+			default:
+				return "!";
+		}
+	}).trim();
 }
 
 /// Displays error modal.

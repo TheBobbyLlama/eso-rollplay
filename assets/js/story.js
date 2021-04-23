@@ -21,10 +21,25 @@ function initializePage() {
 function storyLoaded(data) {
     story = data;
 
-    document.title = story.title + " - ESO Rollplay";
-    $("#main").append("<h1>" + story.title + "</h1>" + converter.makeHtml(story.text));
+    document.title = nameDecode(story.title) + " - ESO Rollplay";
+    $("#main").append("<h1>" + htmlCleanup(story.title) + "</h1>" + converter.makeHtml(htmlCleanup(story.text)));
     $("#loading").remove();
 	$("#main").removeClass("hideMe");
+}
+
+/// Adds HTML encoding to a given string.
+function htmlCleanup(text) {
+	return text.replace(/[<>]/g, function(match) {
+		switch (match)
+		{
+			case "<":
+				return "&lt;";
+			case ">":
+				return "&gt;";
+			default:
+				return "!";
+		}
+	}).trim();
 }
 
 /// Displays error modal.
