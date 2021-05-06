@@ -12,7 +12,7 @@ label.firebaseui-label::after {
 label.firebaseui-label[for='name']::before {
 	bottom: 0px;
 	color: rgba(0, 0, 0, 0.54);
-	content: 'ESO Username';
+	content: 'ESO Account Name';
 	left: 0px;
 	position: absolute;
 	right: 0px;
