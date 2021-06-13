@@ -11,7 +11,6 @@ var eventPane = $("#eventPane");
 
 var markupInjuryOptions = "";
 var markupAttackOptions = "";
-var markupResistOptions = "";
 var markupQualityOptions = "";
 var markupBonusOptions = "";
 var markupNPCOptions = "";
@@ -36,10 +35,11 @@ async function initializePage(myUser) {
 
 	var i;
 	var attackSelectors = $("select[name='npcAttackType']");
-	var resistSelectors = $("select[name='npcResist'], select[name='npcWeakness']");
 	var qualitySelectors = $("#rollStat, #playerKey1, #playerKey2");
 	var bonusSelectors = $("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus'], #rollBonus, #contestedBonus");
 	var npcTemplateList = $("#NPCTemplateOptions");
+	var npcResistOption = $("#NPCResistForm");
+	var npcWeaknessOption = $("#NPCWeaknessForm");
 	userInfo = myUser;
 
 	await localizePage();
@@ -49,12 +49,11 @@ async function initializePage(myUser) {
 		markupInjuryOptions += "<option value='" + INJURY_LEVEL_DISPLAY[i] + "'>" + localize(INJURY_LEVEL_DISPLAY[i]) + "</option>";
 	}
 
-	for (i = 0; i < SPECIAL_ATTACK_TYPES.length; i++) {
-		if (i > 0) { 
-			markupAttackOptions += "<option value='" + SPECIAL_ATTACK_TYPES[i] + "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</option>"
-		}
+	for (i = 1; i < SPECIAL_ATTACK_TYPES.length; i++) {
+		markupAttackOptions += "<option value='" + SPECIAL_ATTACK_TYPES[i] + "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</option>";
 
-		markupResistOptions += "<option value='" + SPECIAL_ATTACK_TYPES[i] + "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</option>"
+		npcResistOption.append("<div><input id='RESIST_" + SPECIAL_ATTACK_TYPES[i] + "' type='checkbox' /><label for='RESIST_" + SPECIAL_ATTACK_TYPES[i]+ "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</label></div>");
+		npcWeaknessOption.append("<div><input id='WEAKNESS_" + SPECIAL_ATTACK_TYPES[i] + "' type='checkbox' /><label for='WEAKNESS" + SPECIAL_ATTACK_TYPES[i]+ "'>" + localize(SPECIAL_ATTACK_TYPES[i]) + "</label></div>");
 	}
 
 	for (i = 0; i < masterQualityList.length; i++) {
@@ -74,7 +73,6 @@ async function initializePage(myUser) {
 	}
 
 	attackSelectors.append(markupAttackOptions);
-	resistSelectors.append(markupResistOptions);
 	qualitySelectors.append(markupQualityOptions);
 	bonusSelectors.append(markupBonusOptions);
 	bonusSelectors.prop("selectedIndex", 5);
@@ -185,8 +183,8 @@ function confirmNPCTemplate(event) {
 	addMe.damageBonus = npcTemplates[templateIndex].damageBonus;
 	addMe.defenseBonus = npcTemplates[templateIndex].defenseBonus;
 	addMe.toughnessBonus = npcTemplates[templateIndex].toughnessBonus;
-	addMe.resist = npcTemplates[templateIndex].resist.length ? SPECIAL_ATTACK_TYPES.indexOf(npcTemplates[templateIndex].resist[0]) : 0;
-	addMe.weakness = npcTemplates[templateIndex].resist.length ? SPECIAL_ATTACK_TYPES.indexOf(npcTemplates[templateIndex].weakness[0]) : 0;
+	addMe.resist = npcTemplates[templateIndex].resist ? npcTemplates[templateIndex].resist : [];
+	addMe.weakness = npcTemplates[templateIndex].weakness ? npcTemplates[templateIndex].weakness : [];
 
 	currentSession.npcs.push(addMe);
 	updateNPCDisplay();
@@ -319,16 +317,25 @@ function setNPCToughnessBonus() {
 	postSessionUpdate();
 }
 
-/// Handler for setting NPC damage resistance type.
-function setNPCResist() {
-	currentSession.npcs[activeNPC].resist = $(this).prop("selectedIndex");
+/// Handler for setting NPC resist and weakness.
+function setNPCResistWeakness() {
+	currentSession.npcs[activeNPC].resist = collectResistWeakness($("#NPCResistForm input[type='checkbox']"));
+	currentSession.npcs[activeNPC].weakness = collectResistWeakness($("#NPCWeaknessForm input[type='checkbox']"));
+	setResistWeaknessDisplay();
 	postSessionUpdate();
 }
 
-/// Handler for setting NPC damage weakness type.
-function setNPCWeakness() {
-	currentSession.npcs[activeNPC].weakness = $(this).prop("selectedIndex");
-	postSessionUpdate();
+/// Converts checkboxes from Resist/Weakness form into an array.
+function collectResistWeakness(fields) {
+	var result = [];
+
+	for (var i = 0; i < fields.length; i++) {
+		if (fields[i].checked) {
+			result.push(SPECIAL_ATTACK_TYPES[i + 1]);
+		}
+	}
+
+	return result;
 }
 
 /// Handler for changing NPC injury status.
@@ -370,6 +377,11 @@ function setPlayerInjuryStatus() {
 	}
 }
 
+function setResistWeaknessDisplay() {
+	$("#npcResist").empty().append(((currentSession.npcs[activeNPC].resist || []).map(item => localize(item)).join(", ")) || "<i>" + localize("DAMAGE_NONE") + "</i>");
+	$("#npcWeakness").empty().append(((currentSession.npcs[activeNPC].weakness || []).map(item => localize(item)).join(", ")) || "<i>" + localize("DAMAGE_NONE") + "</i>");
+}
+
 /// Selects an NPC for editing.
 function activateNPC(index) {
 	dispatchMessages = false;
@@ -383,13 +395,12 @@ function activateNPC(index) {
 		$("select[name='npcAttackType']").prop("selectedIndex", currentSession.npcs[index].attackType-1);
 		$("select[name='npcDefenseBonus']").val(currentSession.npcs[index].defenseBonus);
 		$("select[name='npcToughnessBonus']").val(currentSession.npcs[index].toughnessBonus);
-		$("select[name='npcResist']").prop("selectedIndex", localize(currentSession.npcs[index].resist));
-		$("select[name='npcWeakness']").prop("selectedIndex", localize(currentSession.npcs[index].weakness));
+		setResistWeaknessDisplay();
 	} else {
 		$("#npcCurForm button, #npcCurForm input, #npcCurForm select").attr("disabled", "true");
-		$("#NPCName").text("");
+		$("#NPCName, #npcResist, #npcWeakness").text("");
 		$("select[name='npcAttackBonus'], select[name='npcDamageBonus'], select[name='npcDefenseBonus'], select[name='npcToughnessBonus']").val(0);
-		$("select[name='npcAttackType'], select[name='npcResist'], select[name='npcWeakness']").prop("selectedIndex", 0);
+		$("select[name='npcAttackType']").prop("selectedIndex", 0);
 	}
 
 	dispatchMessages = true;
@@ -1484,6 +1495,37 @@ function showErrorPopup(message) {
 	$("#errorText").text(message);
 }
 
+/// Displays reist/weakness modal for the current NPC.
+function showResistWeaknessPopup() {
+	if (activeNPC < 0) {
+		return;
+	}
+
+	var resistList = $("#NPCResistForm input[type='checkbox']");
+	var weaknessList = $("#NPCWeaknessForm input[type='checkbox']");
+
+	for (var i = 1; i < SPECIAL_ATTACK_TYPES.length; i++) {
+		if (currentSession.npcs[activeNPC].resist) {
+			resistList[i - 1].checked = (currentSession.npcs[activeNPC].resist.indexOf(SPECIAL_ATTACK_TYPES[i]) > -1);
+		}
+
+		if (currentSession.npcs[activeNPC].weakness) {
+			weaknessList[i - 1].checked = (currentSession.npcs[activeNPC].weakness.indexOf(SPECIAL_ATTACK_TYPES[i]) > -1);
+		}
+	}
+
+	$("#modalBG").addClass("show");
+	$("#NPCResistWeakModal").addClass("show");
+}
+
+
+/// Hides resist/weakness modal for the current NPC and clears its checkboxes.
+function hideResistWeaknessPopup() {
+	hidePopup();
+
+	$("#NPCResistWeakModal input[type='checkbox']").prop("checked", false);
+}
+
 /// Displays player search modal.
 function showPlayerSearchPopup() {
 	$("#playerSearchName").val("");
@@ -1529,8 +1571,7 @@ $("select[name='npcAttackType'").on("change", setNPCAttackType);
 $("select[name='npcDamageBonus'").on("change", setNPCDamageBonus);
 $("select[name='npcDefenseBonus'").on("change", setNPCDefenseBonus);
 $("select[name='npcToughnessBonus'").on("change", setNPCToughnessBonus);
-$("select[name='npcResist'").on("change", setNPCResist);
-$("select[name='npcWeakness'").on("change", setNPCWeakness);
+$("#npcResistHolder, #npcWeaknessHolder").on("click", showResistWeaknessPopup);
 $("#searchPlayer").on("click", searchPlayer);
 $("#addPlayer").on("click", addPlayer);
 $("#playerList ol").on("change", "select", setPlayerInjuryStatus);
@@ -1562,6 +1603,7 @@ $("#printout").on("dblclick", copyOutput);
 $("#printout").on("click", "a", launchProfileLink);
 $("#NPCTemplateOptions").on("change", () => { showNPCTemplate($("#NPCTemplateOptions").prop("selectedIndex")); })
 $("#NPCTemplateAdd").on("click", confirmNPCTemplate);
+$("#NPCResistWeakConfirm").on("click", (event) => { event.preventDefault(); setNPCResistWeakness(); hideResistWeaknessPopup();});
 $("#playerSearchButton").on("click", performPlayerSearch);
 $("#playerSearchResults").on("click", "button", performCharacterLoad);
 $("#confirmCancel, #errorButton, #NPCTemplateCancel, #playerSearchCancel, #profileDone").on("click", hidePopup);

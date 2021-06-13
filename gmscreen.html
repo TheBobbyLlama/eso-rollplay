@@ -66,13 +66,13 @@
 								<label for="npcToughnessBonus" data-localization-key="LABEL_TOUGHNESS_BONUS">Toughness Bonus:</label>
 								<select name="npcToughnessBonus" select></select>
 							</div>
-							<div>
+							<div id="npcResistHolder">
 								<label for="npcResist" data-localization-key="LABEL_RESISTS">Resists:</label>
-								<select name="npcResist"></select>
+								<span id="npcResist" name="npcResist"></span>
 							</div>
-							<div>
+							<div id="npcWeaknessHolder">
 								<label for="npcWeakness" data-localization-key="LABEL_WEAK_TO">Weak to:</label>
-								<select name="npcWeakness"></select>
+								<span id="npcWeakness" name="npcWeakness"></span>
 							</div>
 						</form>
 					</div>
@@ -199,6 +199,22 @@
 				<div>
 					<button type="submit" id="NPCTemplateAdd" data-localization-key="ADD">Add</button>
 					<button type="button" id="NPCTemplateCancel" data-localization-key="CANCEL">Cancel</button>
+				</div>
+			</form>
+		</div>
+		<div id="NPCResistWeakModal">
+			<h3 data-localization-key="NPC_RESIST_WEAKNESS">Resist/Weak</h3>
+			<form>
+				<div>
+					<h4 data-localization-key="RESISTANCES">Resistances</h4>
+					<div id="NPCResistForm"></div>
+				</div>
+				<div>
+					<h4 data-localization-key="WEAKNESSES">Weaknesses</h4>
+					<div id="NPCWeaknessForm"></div>
+				</div>
+				<div>
+					<button type="submit" id="NPCResistWeakConfirm" data-localization-key="OK">Ok</button>
 				</div>
 			</form>
 		</div>

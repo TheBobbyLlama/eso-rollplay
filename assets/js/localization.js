@@ -203,6 +203,7 @@ const localizationList = [
 			[ "NPC_NAME_EXISTS", "An NPC with that name already exists. Please enter a unique name for the NPC." ],
 			[ "NPC_NO_NAME", "Please enter a name for the NPC." ],
 			[ "CURRENT_NPC", "Current NPC" ],
+			[ "NPC_RESIST_WEAKNESS", "Resists/Weaknesses" ],
 			[ "LABEL_ATTACK_BONUS", "Attack Bonus:" ],
 			[ "LABEL_ATTACK_TYPE", "Attack Type:" ],
 			[ "LABEL_DAMAGE_BONUS", "Damage Bonus:" ],
