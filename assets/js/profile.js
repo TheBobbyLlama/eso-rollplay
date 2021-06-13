@@ -15,6 +15,8 @@ var minimal;
 showdown.extension('Rollplay', showdownRollplay);
 var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
 
+var biographyBlock = $("#biography");
+
 /// Called on page startup.
 function initializePage() {
 	var loadChar = new URLSearchParams(window.location.search).get("character");
@@ -164,12 +166,18 @@ function setCharacterProfile(profile) {
 
 		if (!minimal) {
 			fillCharacteristics(profile);
-			$("#biography").empty().append(converter.makeHtml(htmlCleanup(profile.biography))).toggle(!!profile.biography);
+			biographyBlock.empty();
+			
+			if (profile.biography) {
+				biographyBlock.append(converter.makeHtml(htmlCleanup(profile.biography)));
+			}
+				
+			biographyBlock.toggle(!!profile.biography);
 		}
 	} else {
 		$("#charImage, #characteristics").toggle(false);
 		$("#profileShort, #biography").empty().append("<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
-		$("#biography").toggle(false);
+		biographyBlock.toggle(false);
 	}
 }
 
