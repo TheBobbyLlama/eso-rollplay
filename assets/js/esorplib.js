@@ -498,7 +498,7 @@ class CharacterSheet {
 		}
 
 		if (this.transformation) {
-			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation.template);
 
 			if ((tryMe) && (getMe in tryMe.template.attributes[this.sex])) {
 				result += tryMe.template.attributes[this.sex][getMe];
@@ -545,7 +545,7 @@ class CharacterSheet {
 		}
 
 		if (this.transformation) {
-			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation.template);
 
 			if ((tryMe) && (tryMe.template.skills) && (getMe in tryMe.template.skills)) {
 				result += tryMe.template.skills[getMe];
@@ -575,7 +575,7 @@ class CharacterSheet {
 		}
 
 		if (this.transformation) {
-			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation.template);
 
 			if (tryMe) {
 				Array.prototype.push.apply(result, tryMe.template.resist);
@@ -611,7 +611,7 @@ class CharacterSheet {
 		}
 
 		if (this.transformation) {
-			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation);
+			tryMe = supernaturalTransformations.find(element => element.template.name === this.transformation.template);
 
 			if (tryMe) {
 				Array.prototype.push.apply(result, tryMe.template.weakness);
@@ -761,7 +761,7 @@ class CharacterSheet {
 		printout.append(printArr.join(" - ") + "<br />");
 
 		if (this.transformation) {
-			printout.append("<b class='transformation'>" + localize(this.transformation) + "!</b><br />");
+			printout.append("<b class='transformation'>" + (this.transformation.name || localize(this.transformation)) + "!</b><br />");
 		}
 
 		printArr = [];

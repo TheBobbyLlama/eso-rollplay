@@ -1208,32 +1208,41 @@ class EventPlayerSummonAttack extends SharedRollEvent {
 }
 
 class EventPlayerRequestTransform extends SharedEvent {
-	constructor(myName, transformTarget) {
+	constructor(myName, transformTarget, transformName) {
 		super("PlayerRequestTransform");
 		this.id = "RequestTransform_" + Date.now();
 		this.name = myName;
 		this.transform = transformTarget;
+
+		if (transformName) {
+			this.nameOverride = transformName;
+		}
 	}
 
 	toHTML() {
 		var request;
+		var override = this.nameOverride || "";
 
 		if (this.transform) {
-			request = localize("EVENT_TRANSFORM_REQUEST_START").replace(/FORM/, localize(this.transform));
+			request = localize("EVENT_TRANSFORM_REQUEST_START").replace(/FORM/, localize(override || this.transform));
 		} else {
 			request = localize("EVENT_TRANSFORM_REQUEST_END");
 		}
 
-		return "<div class='gmInfo' id='" + this.id + "' data-player='" + this.name + "' data-key='" + this.transform + "'>" + request.replace(/PLAYER/, this.name) + ".</div>";
+		return "<div class='gmInfo' id='" + this.id + "' data-player='" + this.name + "' data-key='" + this.transform + "' data-name='" + override + "'>" + request.replace(/PLAYER/, this.name) + ".</div>";
 	}
 }
 
 class EventPlayerTransform extends SharedEvent {
-	constructor(myPlayer, transformTarget, parentId, myComment) {
+	constructor(myPlayer, transformTarget, transformName, parentId, myComment) {
 		super("PlayerTransform");
 		this.player = myPlayer;
 		this.transform = transformTarget;
 		this.comment = nameEncode(myComment);
+
+		if (transformName) {
+			this.nameOverride = transformName;
+		}
 
 		if (parentId) {
 			this.parent = parentId;
@@ -1242,9 +1251,10 @@ class EventPlayerTransform extends SharedEvent {
 
 	toHTML() {
 		var result;
+		var override = this.nameOverride || "";
 
 		if (this.transform) {
-			result = localize("EVENT_TRANSFORMATION").replace(/FORM/, "<strong>" + localize(this.transform) + "</strong>");
+			result = localize("EVENT_TRANSFORMATION").replace(/FORM/, "<strong>" + localize(override || this.transform) + "</strong>");
 		} else {
 			result = localize("EVENT_TRANSFORMATION_END");
 		}

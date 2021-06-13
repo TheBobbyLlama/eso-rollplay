@@ -56,6 +56,17 @@ body.healed {
 	width: auto;
 }
 
+#transformControls {
+	grid-column: span 2;
+	display: flex;
+	padding-top: 4px;
+}
+
+#transformControls > button {
+	flex-basis: 1%;
+	white-space: nowrap;
+}
+
 #errorModal, #rollModal {
 	display: none;
 }
@@ -319,6 +330,10 @@ body.healed {
 
 	#charStatus {
 		justify-content: center;
+	}
+
+	#transformControls > button {
+		flex-basis: 50%;
 	}
 
 	#dieRollPanel {

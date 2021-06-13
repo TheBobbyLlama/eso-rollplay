@@ -420,7 +420,7 @@ function activatePlayer(index) {
 		} else {
 			var targetTransforms = supernaturalTransformations.filter(element => element.parent === characterList[index].supernatural);
 
-			targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>" + localize("TRANSFORM_INTO").replace(/FORM/, localize(element.template.name)) + "</button>"));
+			targetTransforms.forEach(element => $("#playerControls").append("<button type='button' name='transformButton' data-key='" + element.template.name + "'>" + localize("TRANSFORM_INTO_FORM").replace(/FORM/, localize(element.template.name)) + "</button>"));
 		}
 
 		if (currentSession.inactive) {
@@ -445,7 +445,7 @@ function setPlayerActive() {
 function forcePlayerTransform() {
 	var button = $(this);
 
-	dbPushEvent(new EventPlayerTransform(currentSession.characters[activePlayer], button.attr("data-key"), null, ""));
+	dbPushEvent(new EventPlayerTransform(currentSession.characters[activePlayer], button.attr("data-key"), "", null, ""));
 }
 
 /// Handler for making a simple roll.
@@ -686,7 +686,7 @@ function allowTransformation() {
 	var eventDiv = $(this).closest("div[id]");
 	var comment = $(this).closest("div.gmExtra").find("input[name='gmComment']");
 
-	dbPushEvent(new EventPlayerTransform(nameEncode(eventDiv.attr("data-player")), eventDiv.attr("data-key"), eventDiv.attr("id"), comment.val()));
+	dbPushEvent(new EventPlayerTransform(nameEncode(eventDiv.attr("data-player")), eventDiv.attr("data-key"), eventDiv.attr("data-name"), eventDiv.attr("id"), comment.val()));
 
 	comment.val("");
 }
@@ -699,7 +699,7 @@ function denyTransformation() {
 	var request;
 
 	if (key) {
-		request = localize("TRANSFORM_REQUEST_START").replace(/FORM/, localize(key));
+		request = localize("TRANSFORM_REQUEST_START").replace(/FORM/, localize(eventDiv.attr("data-name") || key));
 	} else {
 		request = localize("TRANSFORM_REQUEST_END");
 	}
@@ -936,8 +936,8 @@ function addEventDisplay(event) {
 
 			if (dispatchMessages) {
 				if (event.transform) {
-					characterList[playerIndex].transformation = event.transform;
-					currentSession.statuses[playerIndex].transformation = event.transform;
+					characterList[playerIndex].transformation = { template: event.transform, name: event.nameOverride };
+					currentSession.statuses[playerIndex].transformation = { template: event.transform, name: event.nameOverride };
 				} else {
 					delete characterList[playerIndex].transformation;
 					delete currentSession.statuses[playerIndex].transformation;

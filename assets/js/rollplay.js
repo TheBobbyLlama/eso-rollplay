@@ -122,8 +122,9 @@ function changeArmor() {
 /// Handles player's request to transform.
 function requestTransformation() {
 	var transformation = $(this).attr("data-key");
+	var transformName = $("#transformName").val();
 
-	dbPushEvent(new EventPlayerRequestTransform(character.name, transformation));
+	dbPushEvent(new EventPlayerRequestTransform(character.name, transformation, transformName));
 }
 
 /// Creates UI elements dependent on whether the player has a summoned pet or not.
@@ -395,7 +396,7 @@ function addEventDisplay(event) {
 				eventPane.append(event.toHTML());
 
 				if (event.parent.startsWith("RequestTransform_")) {
-					$("#transformButton").removeAttr("disabled");
+					$("#transformButton, #transformName").removeAttr("disabled");
 				}
 			}
 			break;
@@ -541,7 +542,7 @@ function addEventDisplay(event) {
 			}
 		case "PlayerRequestTransform":
 			if (event.name == character.name) {
-				$("#transformButton").attr("disabled", "true");
+				$("#transformButton, #transformName").attr("disabled", "true");
 			}
 			break;
 		case "PlayerToughness":
@@ -554,8 +555,9 @@ function addEventDisplay(event) {
 		case "PlayerTransform":
 				if (event.player == character.name) {
 					if (event.transform) {
-						character.transformation = event.transform;
+						character.transformation = { template: event.transform, name: event.nameOverride };
 						$("#transformButton").text(localize("TRANSFORM_REVERT")).attr("data-key", "").removeAttr("disabled");
+						$("#transformName").addClass("hideMe");
 					} else {
 						delete character.transformation;
 
@@ -564,6 +566,7 @@ function addEventDisplay(event) {
 						if (targetTransform) {
 							var transformName = targetTransform.template.name;
 							$("#transformButton").text(localize("TRANSFORM_INTO").replace(/FORM/, localize(transformName))).attr("data-key", transformName).removeAttr("disabled");
+							$("#transformName").removeClass("hideMe").removeAttr("disabled");
 						}
 					}
 
@@ -746,7 +749,7 @@ function characterLoaded(loadMe) {
 
 		if (targetTransform) {
 			var transformName = targetTransform.template.name;
-			$("#charStatus").append("<button type='button' id='transformButton' data-key='" + transformName + "' disabled>" + localize("TRANSFORM_INTO").replace(/FORM/, localize(transformName)) + "</button>");
+			$("#charStatus").append("<div id='transformControls'><button type='button' id='transformButton' data-key='" + transformName + "' disabled>" + localize("TRANSFORM_INTO") + "</button><input type='text' id='transformName' placeholder='" + localize(transformName) + "'></input></div>");
 		}
 
 		character.print("printout");
