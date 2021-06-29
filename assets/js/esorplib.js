@@ -761,7 +761,7 @@ class CharacterSheet {
 		printout.append(printArr.join(" - ") + "<br />");
 
 		if (this.transformation) {
-			printout.append("<b class='transformation'>" + (this.transformation.name || localize(this.transformation)) + "!</b><br />");
+			printout.append("<b class='transformation'>" + (this.transformation.name || localize(this.transformation.template)) + "!</b><br />");
 		}
 
 		printArr = [];

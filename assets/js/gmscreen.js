@@ -936,8 +936,13 @@ function addEventDisplay(event) {
 
 			if (dispatchMessages) {
 				if (event.transform) {
-					characterList[playerIndex].transformation = { template: event.transform, name: event.nameOverride };
-					currentSession.statuses[playerIndex].transformation = { template: event.transform, name: event.nameOverride };
+					characterList[playerIndex].transformation = { template: event.transform };
+					currentSession.statuses[playerIndex].transformation = { template: event.transform };
+
+					if (event.nameOverride) {
+						characterList[playerIndex].transformation.name = event.nameOverride;
+						currentSession.statuses[playerIndex].transformation.name = event.nameOverride;
+					}
 				} else {
 					delete characterList[playerIndex].transformation;
 					delete currentSession.statuses[playerIndex].transformation;
