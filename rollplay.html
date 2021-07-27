@@ -98,8 +98,12 @@
 					</div>
 				</div>
 				<div>
-					<input type="checkbox" id="lazyMode" name="lazyMode"></input>
-					<label for="lazyMode" title="LAZY_MODE_DESCRIPTION" data-localization-key="LAZY_MODE">Lazy Mode</label>
+					<label for="lazyLevel" data-localization-key="LAZY_MODE">Auto Rolls:</label>
+					<select id="lazyLevel" name="lazyLevel" title="LAZY_MODE_DESCRIPTION" data-localization-key="">
+						<option data-localization-key="NOT_APPLICABLE">N/A</option>
+						<option data-localization-key="AUTO_ROLL_INCOMING_ONLY">Incoming Only</option>
+						<option data-localization-key="AUTO_ROLL_ALL_ROLLS">All Rolls</option>
+					</select>
 				</div>
 			</section>
 		</div>

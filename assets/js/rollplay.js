@@ -8,7 +8,7 @@ var connectId = null;
 var dispatchMessages = false;  // Flag used differentiating between archived and freshly received messages.
 var currentRoll; // Holds data for the roll we're making.
 var queuedRolls = []; // Holds any rolls that are waiting to be made.
-var lazyMode = false; // Automatically complete all rolls.
+var lazyLevel = 0; // Automatically complete all rolls.
 
 var markupNPCTargets = "";
 
@@ -281,8 +281,8 @@ function performPvPPetAttack() {
 }
 
 /// Toggles automatic handling of rolls.
-function toggleLazyMode() {
-	lazyMode = $(this).prop("checked");
+function toggleLazyLevel() {
+	lazyLevel = $(this).prop("selectedIndex");
 }
 
 /// Copies character sheet to clipboard.
@@ -922,10 +922,11 @@ function startPlayerRoll(message, comment, rollInfo) {
 /// Shows rolling modal, or automatically completes the roll if in lazy mode.
 function doPlayerRoll(message, comment) {
 	var playerInitiated = currentRoll.playerInitiated;
+	var shouldAutoRoll = (((currentRoll.playerInitiated) && (lazyLevel > 1)) || ((!currentRoll.playerInitiated) && (lazyLevel > 0)));
 	character.makeRoll(currentRoll);
 
-	if (lazyMode) {
-		currentRoll.comment = localize("LAZY_MODE");
+	if (shouldAutoRoll) {
+		currentRoll.comment = localize("LAZY_MODE_ROLLED");
 		acceptPlayerRoll();
 	} else {
 		if (currentRoll.playerInitiated) {
@@ -1073,7 +1074,7 @@ $("#summonControls").on("click", "button#summonAttack", summonAttack);
 $("#summonControls").on("click", "button#summonDismiss", summonDismiss);
 $("#pvpAttackExecute").on("click", performPvPAttack);
 $("#pvpAttackPet").on("click", performPvPPetAttack);
-$("#lazyMode").on("click", toggleLazyMode);
+$("#lazyLevel").on("click", toggleLazyLevel);
 $("#printout").on("dblclick", copyOutput);
 $("#sessionList").on("click", "button", performSessionLoad);
 $("#makeDieRoll").on("click", executePlayerRoll);
