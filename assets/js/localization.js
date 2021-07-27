@@ -277,7 +277,7 @@ const localizationList = [
 			[ "SUPERNATURAL_VAMPIRE_BERNE", "Vampire (Berne)" ],
 			[ "SUPERNATURAL_VAMPIRE_QUARRA", "Vampire (Quarra)" ],
 			[ "SUPERNATURAL_VAMPIRE_CYRODIIL", "Vampire (Cyrodiil)" ],
-			[ "SUPERNATURAL_VAMPIRE_VOLKIHAR", "Vampire (Volkihar)" ],
+			[ "SUPERNATURAL_VAMPIRE_VOLKIHAR", "Vampire (Child of Coldharbour)" ],
 			[ "TRANSFORM_WEREWOLF", "Werewolf" ],
 			[ "TRANSFORM_BLOOD_SCION", "Blood Scion" ],
 			[ "TRANSFORM_VAMPIRE_LORD", "Vampire Lord" ],
