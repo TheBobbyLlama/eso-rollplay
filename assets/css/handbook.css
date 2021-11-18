@@ -239,6 +239,16 @@ section ol, section ul {
 	font-style: italic;
 }
 
+.center-content {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}
+
+.center-content img {
+	width: 500px;
+}
+
 .damage-disease {
 	color: #e0f0c0;
 }
@@ -329,6 +339,10 @@ section ol, section ul {
 
 	#handbook nav li + li {
 		margin-top: 0px;
+	}
+
+	.center-content img {
+		width: 100%;
 	}
 }
 
