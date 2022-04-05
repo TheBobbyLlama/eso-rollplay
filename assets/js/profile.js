@@ -11,6 +11,8 @@ const characteristicList = [
 
 var character;
 var characterCache = {};
+var characterList = [];
+var accountList = [];
 var minimal;
 showdown.extension('Rollplay', showdownRollplay);
 var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
@@ -35,9 +37,36 @@ function initializePage() {
 		}
 		loadCharacter(loadChar);
 	} else {
-		$("section div:first-child select").on("change", selectCharacter);
+		$("#charListing #accounts").on("change", selectAccount);
+		$("#charListing #characters").on("change", selectCharacter);
+		$("#printout").addClass("active").on("click", "span[data-account]", chooseAccount);
 		dbLoadCharacterList(characterListLoaded);
 		$("nav h1").on("click", sendToDashboard);
+	}
+}
+
+function selectAccount() {
+	setCurrentAccount($(this).val());
+}
+
+function chooseAccount() {
+	var accountSelect = $("#charListing #accounts");
+	accountSelect.prop("selectedIndex", accountList.indexOf($(this).attr("data-account")) + 1);
+	accountSelect.change();
+}
+
+function setCurrentAccount(curAccount) {
+	var charSelect = $("#charListing #characters").empty();
+	var tmpCharList = (curAccount[0] === "@") ? characterList : characterList.filter(curChar => curChar.player.replace(/^@*/, "") === curAccount);
+
+	tmpCharList.forEach(curChar => {
+		charSelect.append("<option>" + curChar.name + "</option>");
+	});
+
+	if ((curAccount[0] === "@") || (character.player === curAccount)) {
+		charSelect.prop("selectedIndex", tmpCharList.findIndex(curChar => curChar.name === character.name));
+	} else {
+		charSelect.change();
 	}
 }
 
@@ -49,15 +78,28 @@ function selectCharacter() {
 
 /// The character list is ready to be used in the selection dropdown.
 function characterListLoaded(loadMe) {
-	if (loadMe.val()) {
-		var results = Object.entries(loadMe.val());
-		var list = $("section div:first-child select");
-		
-		for (var i = 0; i < results.length; i++) {
-			list.append("<option>" + results[i][1].name + "</option>");
-		}
+	var tmpResult = loadMe.val();
 
-		list.change();
+	if (tmpResult) {
+		var charSelect = $("#charListing #characters");
+		var accountSelect = $("#charListing #accounts");
+
+		characterList = Object.entries(tmpResult).map(item => item[1]);
+		
+		characterList.forEach(curChar => {
+			charSelect.append("<option>" + curChar.name + "</option>");
+		});
+
+		accountList = characterList.map(curChar => curChar.player.replace(/^@*/, "")).filter((name, index, self) => (self.indexOf(name) === index));
+		accountList.sort(function (a, b) {
+			return a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+
+		accountList.forEach(curAccount => {
+			accountSelect.append("<option>" + curAccount + "</option>");
+		});
+
+		charSelect.change();
 	}
 }
 

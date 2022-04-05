@@ -3,12 +3,26 @@ p + p {
 }
 
 select {
-	margin: 20px;
+	display: block;
+	margin: 10px;
+}
+
+select + select {
+	margin-top: 0px;
 }
 
 #printout {
 	margin-bottom: 20px;
+	margin-top: 10px;
 	min-width: 300px;
+}
+
+#printout.active span[data-account] {
+	cursor: pointer;
+}
+
+#printout.active span[data-account]:hover {
+	font-weight: bold;
 }
 
 #profileHeader, #profileBody {

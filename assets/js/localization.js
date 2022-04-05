@@ -242,6 +242,7 @@ const localizationList = [
 			[ "PLAYER_SEARCH", "Player Search" ],
 			[ "PLAYER_ACCOUNT_NAME", "Player account name" ],
 			[ "===== Profile Screen =====" ],
+			[ "PROFILE_ALL_PLAYERS", "---- All Players ----"],
 			[ "CHARACTER_PROFILE", "Character Profile" ],
 			[ "NO_DESCRIPTION_GIVEN", "No description given." ],
 			[ "CHARACTER_STORIES", "Character Stories" ],

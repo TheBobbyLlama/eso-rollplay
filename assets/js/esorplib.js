@@ -741,7 +741,8 @@ class CharacterSheet {
 		printout.append(this.makePrintoutHeader())
 
 		if ((this.player) && (!this.npc)) {
-			printout.append(((this.player[0] == "@") ? "" : "@") + nameDecode(this.player) + "<br />");
+			var tmpPlayer = nameDecode(this.player).replace(/^@*/, "");
+			printout.append(`<span data-account="${tmpPlayer}">@${tmpPlayer}</span><br />`);
 		}
 
 		if (this.race) {
