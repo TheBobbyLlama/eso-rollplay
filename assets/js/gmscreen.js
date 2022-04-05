@@ -1050,10 +1050,10 @@ function addEventDisplay(event) {
 				var resist = false;
 				var weak = false;
 
-				if (event.attackType == curNPC.weakness) {
+				if (curNPC.weakness.indexOf(SPECIAL_ATTACK_TYPES[event.attackType]) > -1) {
 					result = Math.min(result, internalDieRoll() + toughness);
 					weak = true;
-				} else if (event.attackType == curNPC.resist) {
+				} else if (curNPC.resist.indexOf(SPECIAL_ATTACK_TYPES[event.attackType]) > -1) {
 					result = Math.min(result, internalDieRoll() + toughness);
 					resist = true;
 				}
