@@ -1,5 +1,5 @@
 var userInfo = null;
-var activeChar = -1;
+var activeChar;
 var characterCache = [];
 
 var taskHolder = $("#taskHolder");
@@ -54,15 +54,14 @@ function confirmLogout() {
 }
 
 function createStory() {
-	localStorage.setItem("ESORP[character]", userInfo.characters[activeChar]);
+	localStorage.setItem("ESORP[character]", getActiveCharacterDisplayName());
 	location.replace("./write.html");
 }
 
 function previewStory() {
-	var charName = dbTransform(userInfo.characters[activeChar]);
 	var story = $(this).attr("data-story");
 
-	var findIndex = characterCache.findIndex(element => dbTransform(element.name) == charName);
+	var findIndex = characterCache.findIndex(element => dbTransform(element.name) == activeChar);
 	hidePopup();
 
 	if (findIndex > -1) {
@@ -71,7 +70,7 @@ function previewStory() {
 		if (storyText) {
 			showStoryPreview(story, storyText);
 		} else {
-			dbLoadStoryText(dbTransform(userInfo.characters[activeChar]) + "/" + dbTransform(story), text => {
+			dbLoadStoryText(activeChar + "/" + dbTransform(story), text => {
 				characterCache[findIndex].storyData[dbTransform(story)].text = text;
 				showStoryPreview(story, text);
 			});
@@ -81,7 +80,7 @@ function previewStory() {
 
 function editStory() {
 	var story = $(this).attr("data-story");
-	location.replace("./write.html?story=" + dbTransform(userInfo.characters[activeChar]) + "|" + dbTransform(story));
+	location.replace("./write.html?story=" + activeChar + "|" + dbTransform(story));
 }
 
 function deleteStory() {
@@ -89,11 +88,9 @@ function deleteStory() {
 
 	hidePopup();
 	showConfirmPopup("Delete story " + story + "?", function() {
-		var charName = dbTransform(userInfo.characters[activeChar]);
-
-		dbDeleteStory(charName + "/" + dbTransform(story), function() {
+		dbDeleteStory(activeChar + "/" + dbTransform(story), function() {
 			hidePopup();
-			var findIndex = characterCache.findIndex(element => dbTransform(element.name) == charName);
+			var findIndex = characterCache.findIndex(element => dbTransform(element.name) == activeChar);
 
 			if (findIndex > -1) {
 				delete characterCache[findIndex].storyData[dbTransform(story)];
@@ -109,11 +106,11 @@ function deleteStory() {
 function populateCharacterList() {
 	var charList = $("#characterList");
 	charList.empty();
-	setCharacterActive(-1);
+	setCharacterActive(null);
 
 	if ((userInfo) && (userInfo.characters) && (userInfo.characters.length)) {
 		for (var i = 0; i < userInfo.characters.length; i++) {
-			charList.append("<li class='charItem' data-index='" + i + "'>" + userInfo.characters[i] + "</li>");
+			charList.append("<li class='charItem' data-key='" + dbTransform(userInfo.characters[i]) + "'>" + userInfo.characters[i] + "</li>");
 		}
 
 		charList.append("<li><button type='button' name='createCharacter' data-localization-key='CREATE_A_NEW_CHARACTER'>" + localize("CREATE_A_NEW_CHARACTER") + "</button></li>");
@@ -127,23 +124,23 @@ function populateCharacterList() {
 }
 
 function activateCharacter() {
-	setCharacterActive($(this).attr("data-index"));
+	setCharacterActive($(this).attr("data-key"));
 }
 
-function setCharacterActive(newIndex) {
-	activeChar = newIndex;
+function setCharacterActive(charKey) {
+	activeChar = charKey;
 
 	$("#characterButtons button").attr("disabled", "true");
 	
-	if (activeChar > -1) {
-		var testIndex = characterCache.findIndex(element => element.name == userInfo.characters[activeChar]);
+	if (charKey) {
+		var testIndex = characterCache.findIndex(element => dbTransform(element.name) == charKey);
 
 		$("#printout").empty();
 
 		if (testIndex > -1) {
 			displayCharacter(characterCache[testIndex]);
 		} else {
-			dbLoadCharacter(userInfo.characters[activeChar], characterLoaded);
+			dbLoadCharacter(activeChar, characterLoaded);
 		}
 	} else {
 		$("#printout").text(localize("PLEASE_SELECT_A_CHARACTER"));
@@ -174,23 +171,28 @@ function createNewCharacter() {
 	location.replace("./charsheet.html");
 }
 
+function getActiveCharacterDisplayName() {
+	return userInfo.characters.find(name => dbTransform(name) === activeChar);
+}
+
 function goToRollplay() {
-	localStorage.setItem("ESORP[character]", userInfo.characters[activeChar]);
+	localStorage.setItem("ESORP[character]", getActiveCharacterDisplayName());
 	location.replace("./rollplay.html");
 }
 
 function editCharacter() {
-	localStorage.setItem("ESORP[character]", userInfo.characters[activeChar]);
+	localStorage.setItem("ESORP[character]", getActiveCharacterDisplayName());
 	location.replace("./charsheet.html");
 }
 
 function deleteCharacter() {
-	showConfirmPopup(localize("CONFIRM_DELETE_CHARACTER").replace(/CHARACTER/, userInfo.characters[activeChar]), confirmDeleteCharacter);
+	showConfirmPopup(localize("CONFIRM_DELETE_CHARACTER").replace(/CHARACTER/, getActiveCharacterDisplayName()), confirmDeleteCharacter);
 }
 
 function confirmDeleteCharacter() {
-	dbDeleteCharacter(userInfo.characters[activeChar], userInfo.display, populateCharacterList);
-	userInfo.characters.splice(activeChar, 1);
+	var findIndex = userInfo.characters.findIndex(element => dbTransform(element) == activeChar);
+	dbDeleteCharacter(activeChar, populateCharacterList);
+	userInfo.characters.splice(findIndex, 1);
 	dbSaveAccountInfo(userInfo.display, userInfo);
 	hidePopup();
 }
@@ -297,7 +299,7 @@ function showSettingsPopup() {
 }
 
 function showStoryModal() {
-	var testIndex = characterCache.findIndex(element => element.name == userInfo.characters[activeChar]);
+	var testIndex = characterCache.findIndex(element => dbTransform(element.name) == activeChar);
 
 	if (testIndex > -1) {
 		var storyList = $("#storyModal ul");

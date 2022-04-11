@@ -94,6 +94,7 @@ input.invalid {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	max-height: calc(100vh - 228px);
 	padding: 10px;
 }
 
@@ -102,7 +103,11 @@ input.invalid {
 	display: flex;
 	list-style: none;
 	margin: 10px;
-	width: 240px;
+	min-height: 40px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: calc(100% - 16px);
 }
 
 
