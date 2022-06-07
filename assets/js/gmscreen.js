@@ -1433,6 +1433,14 @@ function sessionLoaded(loadMe) {
 
 		for (i = 0; i < currentSession.npcs.length; i++) {
 			Object.setPrototypeOf(currentSession.npcs[i], NPC.prototype);
+
+			if (!currentSession.npcs[i].resist) {
+				currentSession.npcs[i].resist = [];
+			}
+
+			if (!currentSession.npcs[i].weakness) {
+				currentSession.npcs[i].weakness = [];
+			}
 		}
 
 		for (i = 0; i < currentSession.statuses.length; i++) {
