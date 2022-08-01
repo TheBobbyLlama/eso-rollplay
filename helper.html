@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Rollplay - RP Helper</title>
+	<link rel="icon" href="./assets/images/logo.png" type="image/png" />
+	<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/u001" type="text/css"/>
+	<link rel="stylesheet" href="./assets/css/style.css" />
+	<link rel="stylesheet" href="./assets/css/helper.css" />
+</head>
+<body>
+	<nav>
+		<h1  class="nopointer" data-localization-key="ROLLPLAY_TITLE">ESO Rollplay</h1>
+	</nav>
+	<h2 data-localization-key="RP_HELPER">RP Helper</h2>
+	<section id="textSection">
+		<div id="input">
+			<h2 data-localization-key="HELPER_INPUT_LABEL">Text Input</h2>
+			<textarea id="inputText" placeholder="Enter your long text here..." value="" data-localization-key="HELPER_INPUT_TEXT"></textarea>
+		</div>
+		<div id="output">
+			<div>
+				<h2 data-localization-key="HELPER_OUTPUT_LABEL">Text Output</h2>
+			</div>
+			<div>
+				<textarea id="outputText" readonly="true" maxlength="350" placeholder="...and it will be split into chunks you can paste into ESO chat!" data-localization-key="HELPER_OUTPUT_TEXT"></textarea>
+			</div>
+			<div>
+				<div>
+					<button id="btnPanelBack" type="button" class="buttonSmall" disabled="true">&lt;</button>
+					<span id="outputTracker">0/0</span>
+					<button id="btnPanelForward" type="button" class="buttonSmall" disabled="true">&gt;</button>
+				</div>
+				<button id="btnCopyOutput" type="button" disabled="true" data-localization-key="COPY">Copy</button>
+			</div>
+		</div>
+	</section>
+	<section>
+		<h2 data-localization-key="NOTES">Notes</h2>
+		<textarea id="notes" placeholder="Jot down any notes and they'll be here when you come back!" data-localization-key="HELPER_NOTES_PLACEHOLDER"></textarea>
+	</section>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="./assets/js/localization.js"></script>
+	<script src="./assets/js/helper.js"></script>
+</body>
+</html>

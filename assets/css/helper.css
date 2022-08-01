@@ -1,0 +1,54 @@
+textarea {
+	border-radius: 4px;
+	height: 100%;
+	padding: 4px 8px;
+	resize: none;
+	width: 100%;
+}
+
+#textSection {
+	display: flex;
+	height: 400px;
+	justify-content: center;
+}
+
+#input, #output {
+	display: flex;
+	flex-direction: column;
+	margin: 0 20px 10px 20px;
+	width: 100%;
+}
+
+#input textarea, #output textarea {
+	height: 100%;
+	width: 100%;
+}
+
+#output > *:nth-child(2) {
+	flex-basis: 100%;
+}
+
+#output > *:last-child {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	padding-top: 20px;
+}
+
+#output > *:last-child > * {
+	margin: 0 20px;
+}
+
+#output > *:last-child > *:first-child {
+	white-space: nowrap;
+}
+
+#notes {
+	height: 300px;
+}
+
+@media screen and (max-width: 575px) {
+	#textSection {
+		display: none;
+	}
+}

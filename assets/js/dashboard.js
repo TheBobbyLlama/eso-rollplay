@@ -37,6 +37,7 @@ function fillTaskHolder() {
 		taskHolder.append("<button type='button' id='gmScreen' data-localization-key='GM_SCREEN'>" + localize("GM_SCREEN") + "</button>")
 	}
 
+	taskHolder.append("<button type='button' id='rpHelper' data-localization-key='RP_HELPER'>" + localize("RP_HELPER") + "</button>");
 	taskHolder.append("<button type='button' id='profileViewer' data-localization-key='BROWSE_CHARACTERS'>" + localize("BROWSE_CHARACTERS") + "</button>");
 	taskHolder.append("<button type='button' id='nameGenerator' data-localization-key='GENERATE_LORE_FRIENDLY_NAMES'>" + localize("GENERATE_LORE_FRIENDLY_NAMES") + "</button>");
 }
@@ -197,6 +198,10 @@ function confirmDeleteCharacter() {
 	hidePopup();
 }
 
+function goToRPHelper() {
+	window.open("./helper.html", "_blank");
+}
+
 function goToNameGenerator() {
 	location.replace("./namegenerator.html");
 }
@@ -354,7 +359,8 @@ $("#playCharacter").on("click", goToRollplay);
 $("#editCharacter").on("click", editCharacter);
 $("#deleteCharacter").on("click", deleteCharacter);
 $("#manageStories").on("click", showStoryModal);
-$("#miscTasks").on("click", "#nameGenerator", goToNameGenerator)
+$("#miscTasks").on("click", "#rpHelper", goToRPHelper)
+	.on("click", "#nameGenerator", goToNameGenerator)
 	.on("click", "#profileViewer", goToProfileViewer)
 	.on("click", "#gmScreen", goToGMSCreen);
 $("#newPassword, #confirmPassword").on("change", checkPasswordEntries);

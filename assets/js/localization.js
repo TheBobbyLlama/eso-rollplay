@@ -18,6 +18,7 @@ const localizationList = [
 			[ "DONE", "Done" ],
 			[ "SEARCH", "Search" ],
 			[ "HELP", "Help" ],
+			[ "COPY", "Copy" ],
 			[ "COMMENT", "Comment" ],
 			[ "MARKDOWN", "Markdown" ],
 			[ "USER_NOT_FOUND", "User USER not found!" ],
@@ -251,6 +252,14 @@ const localizationList = [
 			[ "GENERATE", "Generate" ],
 			[ "RESULT_COUNT", "results."],
 			[ "RESULTS", "Results" ],
+			[ "==== Helper Screen ====" ],
+			[ "RP_HELPER", "RP Helper" ],
+			[ "HELPER_INPUT_LABEL", "Text Input" ],
+			[ "HELPER_INPUT_TEXT", "Enter your long text here..." ],
+			[ "HELPER_OUTPUT_LABEL", "Text Output" ],
+			[ "HELPER_OUTPUT_TEXT", "...and it will be split into chunks you can paste into ESO chat!" ],
+			[ "NOTES", "Notes" ],
+			[ "HELPER_NOTES_PLACEHOLDER", "Jot down any notes and they'll be here when you come back!" ],
 			[ "===== Roleplaying System Definitions =====" ],
 			[ "SKILL_EASY", "Easy" ],
 			[ "SKILL_MODERATE", "Moderate" ],
@@ -602,17 +611,19 @@ async function localizePage() {
 		const localizationTargets = $("*[data-localization-key]");
 
 		localizationTargets.each(function() {
-			var element = $(this);
-			var key = element.attr("data-localization-key");
+			let element = $(this);
+			let key = element.attr("data-localization-key");
+			let touched = false;
 
 			checkAttributes.forEach(item => {
 				var checkMe = element.attr(item);
 				if (checkMe) {
 					element.attr(item, localize(checkMe));
+					touched = true;
 				}
 			})
 
-			if (key) {
+			if ((!touched) && (key)) {
 				element.text(localize(key));
 			}
 		})
