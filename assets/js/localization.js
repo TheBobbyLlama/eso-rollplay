@@ -112,6 +112,7 @@ const localizationList = [
 			[ "===== Character Sheet ====="],
 			[ "GENERATE_RANDOM_NAME", "Generate a random name." ],
 			[ "LABEL_RACE", "Race:" ],
+			[ "LABEL_BACKGROUND", "Upbringing:" ],
 			[ "LABEL_SEX", "Sex:" ],
 			[ "LABEL_SUPERNATURAL", "Supernatural:" ],
 			[ "LABEL_CLASS", "Class:" ],

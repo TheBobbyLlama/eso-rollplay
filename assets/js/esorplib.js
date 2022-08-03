@@ -125,71 +125,115 @@ const races = [
 	new CharacterTemplate("RACE_", "Altmer",
 		{ Strength: -2, Intelligence: 2, Speed: -2 },
 		{ Strength: -2, Intelligence: 2, Endurance: -2 },
-		{ Alteration: 1, AltmerLore: 4, Destruction: 1, Mysticism: 1 }
+		{ Alteration: 1, Destruction: 1, Mysticism: 1 }
 	),
 	new CharacterTemplate("RACE_", "Argonian",
 		{ Willpower: -2, Agility: 2, Speed: 2, Endurance: -2, Personality: -2 },
 		{ Intelligence: 2, Endurance: -2, Personality: -2 },
-		{ Athletics: 1, HistLore: 4, Restoration: 1, Unarmed: 1 },
+		{ Athletics: 1, Restoration: 1, Unarmed: 1 },
 		[ "DAMAGE_DISEASE" ]
 	),
 	new CharacterTemplate("RACE_", "Bosmer",
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2, Speed: 2, Endurance: -2 },
-		{ BosmerLore: 4, Bow: 1, HandleAnimal: 1, MediumArmor: 1, Sneak: 1 },
+		{ Bow: 1, HandleAnimal: 1, MediumArmor: 1, Sneak: 1 },
 		[ "DAMAGE_POISON" ]
 	),
 	new CharacterTemplate("RACE_", "Breton",
 		{ Intelligence: 2, Willpower: 2, Agility: -2, Speed: -2, Endurance: -2 },
 		{ Strength: -2, Intelligence: 2, Willpower: 2, Agility: -2, Endurance: -2 },
-		{ BretonLore: 4, Conjuration: 1, LightArmor: 1, Mysticism: 1 }
+		{ Conjuration: 1, LightArmor: 1, Mysticism: 1 }
 	),
 	new CharacterTemplate("RACE_", "Dunmer",
 		{ Willpower: -2, Speed: 2, Personality: -2 },
 		{ Willpower: -2, Speed: 2, Endurance: -2 },
-		{ Destruction: 1, DualWield: 1, DunmerLore: 4, Mysticism: 1 },
+		{ Destruction: 1, DualWield: 1, Mysticism: 1 },
 		[ "DAMAGE_FLAME" ]
 	),
 	new CharacterTemplate("RACE_", "Imperial",
 		{ Willpower: -2, Agility: -2, Personality: 2},
 		{ Agility: -2, Speed: -2, Personality: 2 },
-		{ Block: 1, ImperialLore: 4, Mercantile: 1, OneHanded: 1, Speechcraft: 1 }
+		{ Block: 1, Mercantile: 1, OneHanded: 1, Speechcraft: 1 }
 	),
 	new CharacterTemplate("RACE_", "Khajiit",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
-		{ Acrobatics: 1, KhajiitLore: 4, MediumArmor: 1, Unarmed: 1 }
+		{ Acrobatics: 1, MediumArmor: 1, Unarmed: 1 }
 	),
 	new CharacterTemplate("RACE_", "Nord",
 		{ Strength: 2, Intelligence: -2, Agility: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 2, Intelligence: -2, Willpower: 2, Agility: -2, Personality: -2 },
-		{ HeavyArmor: 1, MediumArmor: 1, NordLore: 4, TwoHanded: 1 },
+		{ HeavyArmor: 1, MediumArmor: 1, TwoHanded: 1 },
 		[ "DAMAGE_FROST" ]
 	),
 	new CharacterTemplate("RACE_", "Orc",
 		{ Strength: 1, Intelligence: -2, Willpower: 2, Agility: -1, Speed: -2, Endurance: 2, Personality: -2 },
 		{ Strength: 1, Willpower: 1, Agility: -1, Speed: -2, Endurance: 2, Personality: -3 },
-		{ Blacksmithing: 1, Block: 1, HeavyArmor: 1, OrcishLore: 4 }
+		{ Blacksmithing: 1, Block: 1, HeavyArmor: 1 }
 	),
 	new CharacterTemplate("RACE_", "Redguard",
 		{ Strength: 2, Intelligence: -2, Willpower: -2, Endurance: 2, Personality: -2 },
 		{ Intelligence: -2, Willpower: -2, Endurance: 2},
-		{ Athletics: 1, DualWield: 1, OneHanded: 1, RedguardLore: 4 }
+		{ Athletics: 1, DualWield: 1, OneHanded: 1 }
 	),
 	new CharacterTemplate("RACE_", "Khajiit (Ohmes)",
 		{ Willpower: -2, Agility: 2, Endurance: -2 },
 		{ Strength: -2, Willpower: -2, Agility: 2 },
-		{ Acrobatics: 1, KhajiitLore: 4, MediumArmor: 1, Speechcraft: 1 }
+		{ Acrobatics: 1, MediumArmor: 1, Speechcraft: 1 }
 	),
 	new CharacterTemplate("RACE_", "Maormer",
 		{ Strength: -2, Willpower: 2, Speed: -2 },
 		{ Strength: -2, Willpower: 2, Endurance: -2 },
-		{ Athletics: 1, Destruction: 1, MaormerLore: 4, Sneak: 1 }
+		{ Athletics: 1, Destruction: 1, Sneak: 1 }
 	),
 	new CharacterTemplate("RACE_", "Reachman",
 		{ Strength: 2, Speed: -2, Personality: -2 },
 		{ Willpower: 2, Speed: -2, Personality: -2 },
-		{ MediumArmor: 1, Mysticism: 1, ReachLore: 4, Survival: 1 }
+		{ MediumArmor: 1, Mysticism: 1, Survival: 1 }
+	),
+];
+
+// HACK - Ohmes are same culture as Khajiit, so they use Khajiit background.
+getTemplate("KhajiitOhmes", races).backgroundOverride = "Khajiit";
+
+/// Upbringing definitions.
+const backgrounds = [
+	new CharacterTemplate("", "", {}, {}, {}),
+	new CharacterTemplate("RACE_", "Altmer", {}, {},
+		{ AltmerLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Argonian", {}, {},
+		{ HistLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Bosmer", {}, {},
+		{ BosmerLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Breton", {}, {},
+		{ BretonLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Dunmer", {}, {},
+		{ DunmerLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Imperial", {}, {},
+		{ ImperialLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Khajiit", {}, {},
+		{ KhajiitLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Nord", {}, {},
+		{ NordLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Orc", {}, {},
+		{ OrcishLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Redguard", {}, {},
+		{ RedguardLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Maormer", {}, {},
+		{ MaormerLore: 4 }
+	),
+	new CharacterTemplate("RACE_", "Reachman", {}, {},
+		{ ReachLore: 4 }
 	),
 ];
 
@@ -534,8 +578,17 @@ class CharacterSheet {
 		var result = 0;
 		var tryMe = getTemplate(this.race, races);
 
-		if ((tryMe) && (tryMe.skills) && (getMe in tryMe.skills)) {
-			result += tryMe.skills[getMe];
+		if (tryMe) {
+			if ((tryMe.skills) && (getMe in tryMe.skills)) {
+				result += tryMe.skills[getMe];
+			}
+
+			// Piggyback background calculation here so we can check the race's background override if necessary.
+			tryMe = getTemplate(this.background || tryMe.backgroundOverride || this.race, backgrounds);
+
+			if ((tryMe) && (tryMe.skills) && (getMe in tryMe.skills)) {
+				result += tryMe.skills[getMe];
+			}
 		}
 
 		tryMe = getTemplate(this.supernatural, supernaturals);

@@ -40,11 +40,16 @@ async function initializePage(myUser) {
 	fillSection("skillsKnowledge", skillsKnowledge);
 
 	var raceSelect = $("select[name='charRace']");
+	var backgroundSelect = $("select[name='charBackground']");
 	var superSelect = $("select[name='charSupernatural']");
 	var classSelect = $("select[name='charClass']");
 
 	for (i = 0; i < races.length; i++) {
-		raceSelect.append("<option value='" + races[i].key + "'>" + localize(races[i].name) + "</option>")
+		raceSelect.append("<option value='" + races[i].key + "'>" + localize(races[i].name) + "</option>");
+	}
+
+	for (i = 0; i < backgrounds.length; i++) {
+		backgroundSelect.append("<option value='" + backgrounds[i].key + "'>" + localize(backgrounds[i].name) + "</option>");
 	}
 
 	superSelect.append("<option value=''>" + localize("NOT_APPLICABLE") + "</option>")
@@ -120,6 +125,19 @@ function changeName() {
 /// Handles race entry.
 function changeRace() {
 	character.race = $(this).val();
+	updateCharacterSheet();
+}
+
+/// Handles upbringing entry.
+function changeBackground() {
+	let tmpVal = $(this).val();
+
+	if (tmpVal) {
+		character.background = tmpVal;
+	} else {
+		delete character.background;
+	}
+
 	updateCharacterSheet();
 }
 
@@ -591,6 +609,7 @@ $("#buttonHelp").on("click", showHelpPopup);
 $("input[name='charName']").on("change", changeName);
 $("#generateName").on("click", showNamePopup);
 $("select[name='charRace']").on("change", changeRace);
+$("select[name='charBackground']").on("change", changeBackground);
 $("select[name='charSex']").on("change", changeSex);
 $("select[name='charSupernatural']").on("change", changeSupernatural);
 $("select[name='charClass']").on("change", changeClass);
