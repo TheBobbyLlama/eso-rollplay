@@ -557,6 +557,7 @@ function characterLoaded(loadMe) {
 			$("input[name='charName']").val(nameDecode(character.name));
 			$("#nameDisplay").text(nameDecode(character.name));
 			$("select[name='charRace']").val(character.race);
+			$("select[name='charBackground']").val(character.background);
 			$("select[name='charSex']").prop("selectedIndex", character.sex);
 			$("select[name='charSupernatural']").val(character.supernatural);
 			$("select[name='charClass']").val(character.class);
