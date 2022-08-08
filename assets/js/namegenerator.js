@@ -4,7 +4,7 @@ var useTag = "p";
 
 /// Called on page startup, once the data JSON has been loaded.
 function initializePage(data) {
-	//console.log(data);
+	// console.log(data);
 	var setRace = new URLSearchParams(window.location.search).get("race");
 	var setSex = new URLSearchParams(window.location.search).get("sex");
 	nameData = data;
@@ -16,7 +16,8 @@ function initializePage(data) {
 	$("#race").trigger("change");
 
 	if ((setRace) && (setSex)) {
-		$("#race").val(setRace);
+		$("#race").val("RACE_" + setRace.toUpperCase());
+		setSex = setSex.toLowerCase().split("_").reduce((_, name) => name[0].toUpperCase() + name.substring(1));
 		$("#sex").val(setSex);
 		$("form > div:first-child").addClass("hideMe");
 		$("h2, nav").remove();
@@ -98,7 +99,6 @@ function getComponentLists(filter) {
 			let curSet = nameData[raceIndex].subcategories[x];
 
 			if ((curSet.componentList.index == componentIndex) && ((!curSet.name) || (curSet.name == $("#sex").val()))) {
-
 				for (let i = 0; i < curSet.componentList.components.length; i++) {
 					if ((!curSet.componentList.components[i].source) || (filter.indexOf(curSet.componentList.components[i].source) > -1)) {
 						tmpResults.push(curSet.componentList.components[i]);
