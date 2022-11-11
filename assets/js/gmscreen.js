@@ -413,7 +413,7 @@ function activatePlayer(index) {
 	$("#playerControls button[name='transformButton']").remove();
 
 	if ((index > -1) && (characterList[index])) {
-		characterList[index].print("printout", true);
+		characterList[index].print("printout", true, "numeric");
 
 		if (characterList[index].transformation) {
 			$("#playerControls").append("<button type='button' name='transformButton' data-key=''>" + localize("TRANSFORM_REVERT") + "</button>");
