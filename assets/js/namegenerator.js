@@ -17,7 +17,7 @@ function initializePage(data) {
 
 	if ((setRace) && (setSex)) {
 		$("#race").val("RACE_" + setRace.toUpperCase());
-		setSex = setSex.toLowerCase().split("_").reduce((_, name) => name[0].toUpperCase() + name.substring(1));
+		setSex = setSex.split("_").reduce((_, name) => name[0].toUpperCase() + name.substring(1).toLowerCase());
 		$("#sex").val(setSex);
 		$("form > div:first-child").addClass("hideMe");
 		$("h2, nav").remove();

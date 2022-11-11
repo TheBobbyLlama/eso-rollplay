@@ -255,6 +255,16 @@ async function confirmSettingsChange() {
 		shouldSave = true;
 	}
 
+	if ($("#optNumeric").prop("checked") !== (userInfo.numericDisplay === "numeric")) {
+		userInfo.numericDisplay = $("#optNumeric").prop("checked") ? "numeric" : "descriptive";
+
+		saveNumericDisplayType(userInfo.numericDisplay);
+
+		setCharacterActive(activeChar);
+
+		shouldSave = true;
+	}
+
 	var pw1 = $("#newPassword").val();
 	var pw2 = $("#confirmPassword").val();
 
@@ -298,6 +308,7 @@ function showSettingsPopup() {
 	$("#optLanguage").val(userInfo.language || "EN-US");
 	$("#optVolume").val(userInfo.alertVolume || 1.0);
 	$("#optGM").prop("checked", userInfo.gameMaster);
+	$("#optNumeric").prop("checked", userInfo.numericDisplay === "numeric");
 	$("#newPassword, #confirmPassword").val("");
 	checkPasswordEntries(); // Reset formatting.
 	$("#modalBG, #settingsModal").addClass("show");

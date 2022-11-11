@@ -8,6 +8,36 @@ const SKILL_DIFF_ESOTERIC = 3;
 
 const skillDifficultyNames = [ "SKILL_EASY", "SKILL_MODERATE", "SKILL_HARD", "SKILL_ESOTERIC" ];
 
+const numericDisplayKey = "ESORP[numericDisplay]";
+
+function saveNumericDisplayType(displayType) {
+	localStorage.setItem(numericDisplayKey, displayType || "");
+}
+
+function loadNumericDisplayType() {
+	return localStorage.getItem(numericDisplayKey);
+}
+
+function printAttributeText(value, displayType) {
+	if (displayType !== "numeric") {
+		const adjustedScore = Math.min(Math.floor(value / 2 - 3), 6);
+
+		return localize("ATTRIBUTE_LEVEL_" + adjustedScore);
+	} else {
+		return value;
+	}
+}
+
+function printSkillText(value, displayType) {
+	if (displayType !== "numeric") {
+		const adjustedScore = Math.floor((value + 2) / 3);
+
+		return localize("SKILL_LEVEL_" + adjustedScore);
+	} else {
+		return value;
+	}
+}
+
 /// Base class for attributes or skills.
 class QualityTemplate {
 	constructor(prefix ="", myName, myMin, myMax) {
@@ -780,10 +810,13 @@ class CharacterSheet {
 	}
 
 	/// Prints character sheet, optionally with a link to profile page.
-	print(id, profileLink=false) {
+	print(id, profileLink=false, displayOverride) {
 		var i;
 		var printArr = [];
 		var printout = $("#" + id);
+
+		const displayType = displayOverride || loadNumericDisplayType();
+
 		printout.empty();
 
 		if (this.name) {
@@ -822,42 +855,42 @@ class CharacterSheet {
 
 		for (i = 0; i < attributes.length; i++) {
 			printArr.push(
-				"<span data-key='" + attributes[i].key + "'>" + localize(attributes[i].name + "_ABBR") + ": " + this.getAttribute(attributes[i].key) + "</span>"
+				"<span data-key='" + attributes[i].key + "'>" + localize(attributes[i].name + "_ABBR") + ": " + printAttributeText(this.getAttribute(attributes[i].key), displayType) + "</span>"
 			);
 		}
 
 		printout.append(this.makePrintoutHeader("ATTRIBUTES"));
 		printout.append(printArr.join("<br />") + "<br />");
 
-		printArr = this.loadSkillArray(skillsCombat);
+		printArr = this.loadSkillArray(skillsCombat, displayType);
 
 		if (printArr.length) {
 			printout.append(this.makePrintoutHeader("COMBAT_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
-		printArr = this.loadSkillArray(skillsMagic);
+		printArr = this.loadSkillArray(skillsMagic, displayType);
 
 		if (printArr.length) {
 			printout.append(this.makePrintoutHeader("MAGICKA_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
-		printArr = this.loadSkillArray(skillsGeneral);
+		printArr = this.loadSkillArray(skillsGeneral, displayType);
 
 		if (printArr.length) {
 			printout.append(this.makePrintoutHeader("GENERAL_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
-		printArr = this.loadSkillArray(skillsCrafting);
+		printArr = this.loadSkillArray(skillsCrafting, displayType);
 
 		if (printArr.length) {
 			printout.append(this.makePrintoutHeader("CRAFTING_SKILLS"));
 			printout.append(printArr.join("<br />") + "<br />");
 		}
 
-		printArr = this.loadSkillArray(skillsKnowledge);
+		printArr = this.loadSkillArray(skillsKnowledge, displayType);
 
 		if (printArr.length) {
 			printout.append(this.makePrintoutHeader("KNOWLEDGE_SKILLS"));
@@ -884,13 +917,13 @@ class CharacterSheet {
 	}
 
 	/// Helper function for printing character sheet.
-	loadSkillArray(list) {
+	loadSkillArray(list, displayType) {
 		var result = [];
 
 		for (var i = 0; i < list.length; i++) {
 			if (this.getSkill(list[i].key)) {
 				result.push(
-					"<span data-key='" + list[i].key + "'>" + localize(list[i].name) + ": " + this.getSkill(list[i].key) + "</span>"
+					"<span data-key='" + list[i].key + "'>" + localize(list[i].name) + ": " + printSkillText(this.getSkill(list[i].key), displayType) + "</span>"
 				);
 			}
 		}
