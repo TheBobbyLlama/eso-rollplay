@@ -17,6 +17,14 @@ async function initializePage(myUser) {
 
 	await localizePage();
 
+	if (!userInfo.numericDisplay) {
+		showNumericDisplayPopup();
+	} else {
+		finalizeInitialization();
+	}
+}
+
+function finalizeInitialization() {
 	createWelcomeMessage();
 	populateCharacterList();
 
@@ -286,6 +294,15 @@ async function confirmSettingsChange() {
 	hidePopup();
 }
 
+/// Fired when the user selects a numeric display type on the corresponding modal.
+function selectNumericDisplayType() {
+	userInfo.numericDisplay = $(this).attr("data-key");
+	saveNumericDisplayType(userInfo.numericDisplay);
+	dbSaveAccountInfo(userInfo.display, userInfo, null, showErrorPopup);
+	hidePopup();
+	finalizeInitialization();
+}
+
 /// Displays confirm modal.
 function showConfirmPopup(message, callback) {
 	$("#modalBG, #confirmModal").addClass("show");
@@ -312,6 +329,10 @@ function showSettingsPopup() {
 	$("#newPassword, #confirmPassword").val("");
 	checkPasswordEntries(); // Reset formatting.
 	$("#modalBG, #settingsModal").addClass("show");
+}
+
+function showNumericDisplayPopup() {
+	$("#modalBG, #numericDisplayModal").addClass("show");
 }
 
 function showStoryModal() {
@@ -376,6 +397,7 @@ $("#miscTasks").on("click", "#rpHelper", goToRPHelper)
 	.on("click", "#gmScreen", goToGMSCreen);
 $("#newPassword, #confirmPassword").on("change", checkPasswordEntries);
 $("#settingsOk").on("click", confirmSettingsChange);
+$("#numericDisplayNumeric, #numericDisplayDescriptive").on("click", selectNumericDisplayType);
 $("#storyModal ul").on("click", "button[name='previewStory']", previewStory);
 $("#storyModal ul").on("click", "button[name='editStory']", editStory);
 $("#storyModal ul").on("click", "button[name='deleteStory']", deleteStory);
