@@ -8,20 +8,21 @@ const characteristicList = [
 	[ "Enemies", "enemies" ],
 	[ "Relationships", "relationships" ],
 ];
+const biographyBlock = $("#biography");
+const oocBlock = $("#oocInfo");
 
-var character;
-var characterCache = {};
-var characterList = [];
-var accountList = [];
-var minimal;
+const characterCache = {};
+let characterList = [];
+let accountList = [];
+
+let character;
+let minimal;
 showdown.extension('Rollplay', showdownRollplay);
-var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
-
-var biographyBlock = $("#biography");
+let converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
 
 /// Called on page startup.
 function initializePage() {
-	var loadChar = new URLSearchParams(window.location.search).get("character");
+	const loadChar = new URLSearchParams(window.location.search).get("character");
 	minimal = new URLSearchParams(window.location.search).get("minimal");
 
 	initializeDB();
@@ -50,14 +51,14 @@ function selectAccount() {
 }
 
 function chooseAccount() {
-	var accountSelect = $("#charListing #accounts");
+	const accountSelect = $("#charListing #accounts");
 	accountSelect.prop("selectedIndex", accountList.indexOf($(this).attr("data-account")) + 1);
 	accountSelect.change();
 }
 
 function setCurrentAccount(curAccount) {
-	var charSelect = $("#charListing #characters").empty();
-	var tmpCharList = (curAccount[0] === "@") ? characterList : characterList.filter(curChar => curChar.player.replace(/^@*/, "") === curAccount);
+	const charSelect = $("#charListing #characters").empty();
+	const tmpCharList = (curAccount[0] === "@") ? characterList : characterList.filter(curChar => curChar.player.replace(/^@*/, "") === curAccount);
 
 	tmpCharList.forEach(curChar => {
 		charSelect.append("<option>" + curChar.name + "</option>");
@@ -78,11 +79,11 @@ function selectCharacter() {
 
 /// The character list is ready to be used in the selection dropdown.
 function characterListLoaded(loadMe) {
-	var tmpResult = loadMe.val();
+	const tmpResult = loadMe.val();
 
 	if (tmpResult) {
-		var charSelect = $("#charListing #characters");
-		var accountSelect = $("#charListing #accounts");
+		const charSelect = $("#charListing #characters");
+		const accountSelect = $("#charListing #accounts");
 
 		characterList = Object.entries(tmpResult).map(item => item[1]);
 		
@@ -117,11 +118,11 @@ function loadCharacter(name) {
 }
 
 function checkStoryList(forceOff = false) {
-	var storyList = $("#charStories");
+	const storyList = $("#charStories");
 	storyList.empty();
 
 	if ((!forceOff) && (character.storyData)) {
-		var charStories = Object.entries(character.storyData);
+		const charStories = Object.entries(character.storyData);
 
 		for (var i = 0; i < charStories.length; i++) {
 			storyList.append("<li>" +
@@ -172,8 +173,8 @@ function setCharacterInfo() {
 }
 
 function fillCharacteristics(myProfile) {
-	var found = false;
-	var myDiv = $("#characteristics");
+	let found = false;
+	const myDiv = $("#characteristics");
 	myDiv.empty();
 
 	for (let i = 0; i < characteristicList.length; i++) {
@@ -191,7 +192,7 @@ function fillCharacteristics(myProfile) {
 
 /// The current character's profile is ready to display.
 function profileLoaded(loadMe) {
-	var myProfile = loadMe.val();
+	const myProfile = loadMe.val();
 
 	if (myProfile) {
 		characterCache[dbTransform(nameDecode(character.name))].profile = myProfile;
@@ -205,6 +206,14 @@ function setCharacterProfile(profile) {
 		$("#charImage")[0].style.background =  profile.image ? "url('" + profile.image + "')" : "";
 		$("#charImage").toggle(!!profile.image);
 		$("#profileShort").empty().append(profile.description ? converter.makeHtml(htmlCleanup(profile.description)) : "<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
+		
+		oocBlock.empty();
+		
+		if (profile.oocInfo) {
+			oocBlock.append(converter.makeHtml(htmlCleanup(profile.oocInfo)));
+		}
+
+		oocBlock.toggle(!!profile.oocInfo);
 
 		if (!minimal) {
 			fillCharacteristics(profile);
@@ -213,13 +222,15 @@ function setCharacterProfile(profile) {
 			if (profile.biography) {
 				biographyBlock.append(converter.makeHtml(htmlCleanup(profile.biography)));
 			}
-				
+
 			biographyBlock.toggle(!!profile.biography);
 		}
 	} else {
 		$("#charImage, #characteristics").toggle(false);
-		$("#profileShort, #biography").empty().append("<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
+		$("#profileShort").empty().append("<div class='nodesc'>" + localize("NO_DESCRIPTION_GIVEN") + "</div>");
+		$("#biography, #oocInfo").empty();
 		biographyBlock.toggle(false);
+		oocBlock.toggle(false);
 	}
 }
 

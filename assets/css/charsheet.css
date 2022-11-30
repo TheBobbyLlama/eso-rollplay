@@ -158,6 +158,13 @@ section > div[id] {
 	width: 100%;
 }
 
+#longProfile button + * {
+	border-top: solid 1px var(--content-border);
+	margin-top: 16px;
+	padding-top: 10px;
+	width: 100%;
+}
+
 #charInput {
 	align-items: center;
 	display: inline-flex;
@@ -222,6 +229,10 @@ section > div[id] {
 	overflow-y: auto;
 	padding: 10px;
 	text-align: left;
+}
+
+#previewModal div h1, #previewModal div h2 {
+	font-size: 1.17em;
 }
 
 #printout {

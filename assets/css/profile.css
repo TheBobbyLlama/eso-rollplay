@@ -71,11 +71,31 @@ select + select {
 	margin: 10px 20px;
 }
 
-#biography {
+#biography, #oocInfo {
 	background-color: var(--page-background);
 	border-radius: 8px;
 	margin: 0px 20px 10px 20px;
 	padding: 10px 20px;
+	position: relative;
+}
+
+#biography h1, #biography h2, #oocInfo h1, #oocInfo h2 {
+	font-size: 1.17em;
+}
+
+#oocInfo {
+	margin-top: 2.5em !important;
+}
+
+#oocInfo::before {
+	content: 'OOC Info';
+	font-size: 1.25em;
+	font-weight: bold;
+	left: 0;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: -1.5em;
 }
 
 #storyList {
@@ -114,7 +134,7 @@ select + select {
 }
 
 @media screen and (max-width: 575px) {
-	#biography {
+	#biography, #oocInfo {
 		margin: 20px 0px 10px 0px;
 	}
 

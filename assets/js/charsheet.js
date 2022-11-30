@@ -1,17 +1,20 @@
-var userInfo = null;
-var footer = $("footer");
+const footer = $("footer");
+
 showdown.extension('Rollplay', showdownRollplay);
-var converter = converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
+const shortDescription = createMDE("charBackground");
+const oocInfo = createMDE("charOOCInfo", [ "quote", "link", "image" ]);
+const biography = createMDE("charBiography");
+
+const converter = new showdown.Converter({ openLinksInNewWindow: true, extensions: ["Rollplay"] });
 
 const ATTRIBUTE_POINT_LIMIT = 10;
 const SKILL_POINT_BASE = 10;
-var attrSpent = 0;
-var skillSpent = 0;
-var character = new CharacterSheet();
-var profile = {};
+let attrSpent = 0;
+let skillSpent = 0;
+let character = new CharacterSheet();
+let profile = {};
 
-var shortDescription = createMDE("charBackground");
-var biography = createMDE("charBiography");
+let userInfo = null;
 
 /// Called on page startup.
 async function initializePage(myUser) {
@@ -20,8 +23,8 @@ async function initializePage(myUser) {
 		return;
 	}
 
-	var i;
-	var inCharacter = localStorage.getItem("ESORP[character]");
+	let i;
+	const inCharacter = localStorage.getItem("ESORP[character]");
 
 	userInfo = myUser;
 	character.player = userInfo.display;
@@ -39,10 +42,10 @@ async function initializePage(myUser) {
 	fillSection("skillsCrafting", skillsCrafting);
 	fillSection("skillsKnowledge", skillsKnowledge);
 
-	var raceSelect = $("select[name='charRace']");
-	var backgroundSelect = $("select[name='charBackground']");
-	var superSelect = $("select[name='charSupernatural']");
-	var classSelect = $("select[name='charClass']");
+	const raceSelect = $("select[name='charRace']");
+	const backgroundSelect = $("select[name='charBackground']");
+	const superSelect = $("select[name='charSupernatural']");
+	const classSelect = $("select[name='charClass']");
 
 	for (i = 0; i < races.length; i++) {
 		raceSelect.append("<option value='" + races[i].key + "'>" + localize(races[i].name) + "</option>");
@@ -79,12 +82,13 @@ function finishDraw() {
 	$("#loading").remove();
 	$("body > *").removeClass("hideMe");
 	shortDescription.codemirror.refresh();
+	oocInfo.codemirror.refresh();
 	biography.codemirror.refresh();
 }
 
 /// Creates skill sliders for a given category.
 function fillSection(sectionName, elements) {
-	var parent = $("#" + sectionName);
+	const parent = $("#" + sectionName);
 
 	for (var i = 0; i < elements.length; i++) {
 		parent.append("<div data-key='" + elements[i].key + "'>" +
@@ -109,7 +113,7 @@ function confirmLogout() {
 /// Handles name entry.
 function changeName() {
 	// » is a special character for summons!  Absolutely verboten in character names!
-	var charName = $(this).val().trim().replace(/»/g, "");
+	const charName = $(this).val().trim().replace(/»/g, "");
 	$(this).val(charName);
 	character.name = nameEncode(charName);
 
@@ -130,7 +134,7 @@ function changeRace() {
 
 /// Handles upbringing entry.
 function changeBackground() {
-	let tmpVal = $(this).val();
+	const tmpVal = $(this).val();
 
 	if (tmpVal) {
 		character.background = tmpVal;
@@ -161,7 +165,7 @@ function changeClass() {
 
 /// Handles slider movement.
 function changeSlider() {
-	var itemKey = $(this).closest("*[data-key]").attr("data-key");
+	const itemKey = $(this).closest("*[data-key]").attr("data-key");
 
 	if (attributes.find(element => element.key == itemKey)) {
 		character.attributes[itemKey] = parseInt($(this).val());
@@ -183,19 +187,19 @@ function changeSlider() {
 
 /// Tabulates character info and displays it.
 function updateCharacterSheet() {
-	for (var idx = 0; idx < masterQualityList.length; idx++) {
-		var workingList = masterQualityList[idx];
+	for (let idx = 0; idx < masterQualityList.length; idx++) {
+		const workingList = masterQualityList[idx];
 
-		for(var i = 0; i < workingList.length; i++) {
-			var tmpVal;
+		for(let i = 0; i < workingList.length; i++) {
+			let tmpVal;
 
 			if (attributes.find(element => element.key == workingList[i].key)) {
 				tmpVal = character.getItem(workingList[i].key) - character.getItem(workingList[i].key, true);
 				$("div[data-key='" + workingList[i].key + "'] input[type='range']").attr("title", tmpVal).val(tmpVal);
 				
 			} else {
-				var costLevel = costForNextSkillRank(workingList[i].key, character.getSkill(workingList[i].key));
-				var costClass = "";
+				const costLevel = costForNextSkillRank(workingList[i].key, character.getSkill(workingList[i].key));
+				let costClass = "";
 
 				if (costLevel === 2) {
 					costClass = "costIncreased";
@@ -228,13 +232,14 @@ function updateCharacterSheet() {
 
 /// Sums all skill/attribute points and sets display if they're over the limit.
 function calculateTotalPoints() {
-	var i;
-	var result = true;
-	var total = 0;
-	var max = ATTRIBUTE_POINT_LIMIT;
-	var attrDisplay = $("#attributePoints");
-	var skillDisplay = $("#skillPoints");
-	var workingList = Object.entries(character.attributes || {});
+	const attrDisplay = $("#attributePoints");
+	const skillDisplay = $("#skillPoints");
+	
+	let i;
+	let result = true;
+	let total = 0;
+	let max = ATTRIBUTE_POINT_LIMIT;
+	let workingList = Object.entries(character.attributes || {});
 
 	for (i = 0; i < workingList.length; i++) {
 		total += workingList[i][1];
@@ -265,9 +270,9 @@ function calculateTotalPoints() {
 
 /// Helper function to calculate skill cost as ranks increase.
 function costForNextSkillRank(key, rank) {
-	var skillObj = getQuality(key);
-	var governing = skillObj.governing || "Intelligence";
-	var difficulty = skillObj.difficulty || 0;
+	const skillObj = getQuality(key);
+	const governing = skillObj.governing || "Intelligence";
+	const difficulty = skillObj.difficulty || 0;
 	
 	rank -= character.getSkill(key, true);
 
@@ -282,10 +287,10 @@ function costForNextSkillRank(key, rank) {
 /// Copies character sheet to clipboard.
 function copyOutput(event) {
 	event.stopPropagation();
-	var printout = $("#printout");
-	var range = document.createRange();
+	const printout = $("#printout");
+	const range = document.createRange();
 	range.selectNodeContents(printout[0]);
-	var sel = window.getSelection();
+	const sel = window.getSelection();
 	sel.removeAllRanges();
 	sel.addRange(range);
 	document.execCommand("copy");
@@ -313,7 +318,7 @@ function expandContractSection() {
 
 /// Used on mouseover for helpers at the bottom of the screen.
 function checkHighlight(checkMe) {
-	var root;
+	let root;
 
 	if (checkMe.target) {
 		root = $(checkMe.target);
@@ -321,7 +326,7 @@ function checkHighlight(checkMe) {
 		root = $(checkMe);
 	}
 
-	var helpKey = root.closest("*[data-key]").attr("data-key");
+	const helpKey = root.closest("*[data-key]").attr("data-key");
 
 	if (helpKey) {
 		var item = getQuality(helpKey);
@@ -333,14 +338,14 @@ function checkHighlight(checkMe) {
 
 /// Shows short description info on helper at the bottom of the screen.
 function shortDescriptionHelper() {
-	var desc = $(this);
+	const desc = $(this);
 
 	showFooter(localize("SHORT_DESCRIPTION_HELPER").replace(/CURRENT/, desc.val().length).replace(/MAX/, desc.prop("maxlength")));
 }
 
 /// Hides the helper when the short description is no longer being edited.
 function leaveShortDescription() {
-	var tmpDesc = $("textarea[name='charBackground']");
+	const tmpDesc = $("textarea[name='charBackground']");
 	showFooter(null);
 
 	if (tmpDesc.val().length <= tmpDesc.prop("maxlength")) {
@@ -361,9 +366,9 @@ function checkImageUrl(url) {
 }
 
 function setImageUrl() {
-	var urlField = $(this);
-	var tmpUrl = urlField.val();
-	var tryDisplay = displayImage(tmpUrl);
+	const urlField = $(this);
+	const tmpUrl = urlField.val();
+	const tryDisplay = displayImage(tmpUrl);
 
 	if (tryDisplay) {
 		profile.image = tmpUrl;
@@ -375,7 +380,7 @@ function setImageUrl() {
 }
 
 function displayImage(url) {
-	var test = checkImageUrl(url || "");
+	const test = checkImageUrl(url || "");
 
 	$("#charImage")[0].style.background = (test) ? "url('" + url + "')" : "";
 
@@ -383,16 +388,35 @@ function displayImage(url) {
 }
 
 function setProfileField() {
-	var tmpEl = $(this);
-	var tmpName = tmpEl.attr("name");
+	const tmpEl = $(this);
+	const tmpName = tmpEl.attr("name");
 
 	profile[tmpName] = tmpEl.val();
 }
 
 function setNPC() {
-	var tmpEl = $(this);
+	const tmpEl = $(this);
 	character.npc = tmpEl.prop("checked");
 	updateCharacterSheet();
+}
+
+/// Shows OOC info helper at the bottom of the screen.
+function oocInfoHelper() {
+	const desc = $(this);
+
+	showFooter(localize("OOC_INFO_HELPER").replace(/CURRENT/, desc.val().length).replace(/MAX/, desc.prop("maxlength")));
+}
+
+function leaveOOCInfo() {
+	const tmpOOC = $("textarea[name='charOOCInfo']");
+	showFooter(null);
+
+	if (tmpOOC.val().length <= tmpOOC.prop("maxlength")) {
+		tmpOOC.removeClass("redFlag");
+		profile.oocInfo = htmlCleanup(tmpOOC.val());
+	} else {
+		tmpOOC.addClass("redFlag");
+	}
 }
 
 function leaveBiography() {
@@ -410,15 +434,15 @@ function showFooter(message) {
 }
 
 /// Utility function to make a Simple Markdown Editor with our desired configuration.
-function createMDE(id) {
-    var taEl = document.getElementById(id);
-    var result = new SimpleMDE({
+function createMDE(id, additional = []) {
+    const taEl = document.getElementById(id);
+    const result = new SimpleMDE({
         forceSync: true,
-        hideIcons: [ "strikethrough", "preview", "side-by-side", "fullscreen", "guide" ],
+        hideIcons: [ "strikethrough", "preview", "side-by-side", "fullscreen", "guide", ...additional ],
         element: taEl
     });
 
-    var cm = result.codemirror;
+    const cm = result.codemirror;
     cm.on("update", function() {
         taEl.value = cm.getValue();
 		taEl.dispatchEvent(new Event('change'));
@@ -439,7 +463,7 @@ function showHelpPopup() {
 /// Displays the name selection modal.
 function showNamePopup() {
 	const myFrame = $("#nameModal iframe");
-	var charRace = $("select[name='charRace']").val();
+	const charRace = $("select[name='charRace']").val();
 
 	if (charRace.indexOf(" (") > -1) {
 		charRace = charRace.substring(0, charRace.indexOf(" ("));
@@ -473,7 +497,7 @@ function showConfirmPopup(message, callback) {
 }
 
 function previewHandler() {
-	var field = $(this).attr("data-id");
+	const field = $(this).attr("data-id");
 	//showMarkdownPreview($("textarea[name='" + field + "'").val());
 	if (field) {
 		showMarkdownPreview(profile[field]);
@@ -524,7 +548,7 @@ function saveChar(event) {
 }
 
 function checkCharacterSave(loadMe) {
-	var tmpChar = loadMe.val();
+	const tmpChar = loadMe.val();
 
 	if ((tmpChar) && (dbTransform(tmpChar.player) != dbTransform(userInfo.display))) {
 		showErrorPopup(localize("ERROR_CHARACTER_OTHER_PLAYER").replace(/PLAYER/, nameDecode(tmpChar.player)));
@@ -540,7 +564,8 @@ function charSaveSuccess() {
 
 /// Receives a character from the database.
 function characterLoaded(loadMe) {
-	var tmpChar = loadMe.val();
+	const tmpChar = loadMe.val();
+
 	if (tmpChar) {
 		if (dbTransform(tmpChar.player) == dbTransform(userInfo.display)) {
 			character = tmpChar;
@@ -575,11 +600,10 @@ function characterLoaded(loadMe) {
 
 /// Receives a character profile from the database.
 function profileLoaded(loadMe) {
-	var myProfile = loadMe.val();
+	const myProfile = loadMe.val();
 
 	if (myProfile) {
 		profile = myProfile;
-		shortDescription.value(profile.description);
 		$("input[name='imageUrl']").val(displayImage(profile.image)? profile.image : "");
 		$("#characteristics input[name='aliases']").val(profile.aliases);
 		$("#characteristics select[name='alignment']").val(profile.alignment);
@@ -589,6 +613,8 @@ function profileLoaded(loadMe) {
 		$("#characteristics input[name='alliances']").val(profile.alliances);
 		$("#characteristics input[name='enemies']").val(profile.enemies);
 		$("#characteristics input[name='relationships']").val(profile.relationships);
+		shortDescription.value(profile.description);
+		oocInfo.value(profile.oocInfo);
 		biography.value(profile.biography);
 		showFooter(null);
 	}
@@ -623,8 +649,9 @@ $("textarea[name='charBackground']").on("focus, keydown, change", shortDescripti
 $("input[name='imageUrl']").on("focus", function() { $(this).removeClass("redFlag"); }).on("blur", setImageUrl);
 $("#characteristics input, #characteristics select").on("blur, change", setProfileField);
 $("input[id='isNPC']").on("change", setNPC);
+$("textarea[name='charOOCInfo']").on("focus, keydown, change", oocInfoHelper).on("blur", leaveOOCInfo);
 $("textarea[name='charBiography']").on("blur", leaveBiography);
-$("#charBackgroundPreview, #charBiographyPreview").on("click", previewHandler);
+$("#charBackgroundPreview, #charOOCPreview, #charBiographyPreview").on("click", previewHandler);
 $("#main, #main div[id]").on("mouseenter mouseleave", "*", checkHighlight);
 $("#nameModal iframe").on("load", bindIframeEvents);
 $("#confirmCancel, #errorButton").on("click", hidePopup);
