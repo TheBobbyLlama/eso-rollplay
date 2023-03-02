@@ -420,7 +420,7 @@ function getTemplate(name, list) {
 }
 
 /// CHARACTER FIELD DEFINITION SECTION
-const classes = [ "", "Dragonknight", "Necromancer", "Nightblade", "Sorcerer", "Templar", "Warden" ];
+const classes = [ "", "Arcanist", "Dragonknight", "Necromancer", "Nightblade", "Sorcerer", "Templar", "Warden" ];
 
 const attributes = [
 	new Attribute("Strength"),

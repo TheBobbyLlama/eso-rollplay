@@ -320,6 +320,7 @@ const localizationList = [
 			[ "TRANSFORM_BLOOD_SCION", "Blood Scion" ],
 			[ "TRANSFORM_VAMPIRE_LORD", "Vampire Lord" ],
 			[ "TRANSFORM_WEREWOLF_BEHEMOTH", "Werewolf Behemoth" ],
+			[ "CLASS_ARCANIST", "Arcanist" ],
 			[ "CLASS_DRAGONKNIGHT", "Dragonknight" ],
 			[ "CLASS_NECROMANCER", "Necromancer" ],
 			[ "CLASS_NIGHTBLADE", "Nightblade" ],

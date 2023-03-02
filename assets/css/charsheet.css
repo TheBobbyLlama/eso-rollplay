@@ -216,6 +216,15 @@ section > div[id] {
 	max-height: 85%;
 }
 
+#helpModal {
+	max-height: 100vh;
+}
+
+#helpModal > div {
+	max-height: calc(100vh - 120px);
+	overflow-y: auto;
+}
+
 #previewModal {
 	max-width: 500px !important;
 	width: 500px;
