@@ -84,6 +84,13 @@ function dbTransform(input) {
 	return nameDecode(input).replace(/[\s\W]/g, "").toLowerCase();
 }
 
+/// Loads a single field from the database.
+function dbLoadSingleItem(path, handler) {
+	if (handler) {
+		database.ref(path).once("value").then(handler);
+	}
+}
+
 /// Loads info for the given player.
 function dbLoadAccountInfo(name, handler) {
 	database.ref("accounts/" + dbTransform(name)).once("value").then((loadMe) => {
