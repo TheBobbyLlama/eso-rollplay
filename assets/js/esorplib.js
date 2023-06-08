@@ -810,7 +810,7 @@ class CharacterSheet {
 	}
 
 	/// Prints character sheet, optionally with a link to profile page.
-	print(id, profileLink=false, displayOverride) {
+	print(id, displayOverride) {
 		var i;
 		var printArr = [];
 		var printout = $("#" + id);
@@ -909,10 +909,6 @@ class CharacterSheet {
 		if (printArr.length) {
 			printout.append(this.makePrintoutHeader("WEAKNESSES"));
 			printout.append(printArr.map(item => localize(item)).join(", ") + "<br />");
-		}
-
-		if (profileLink) {
-			printout.append("<a href='profile.html?character=" + this.name + "' target='_blank'>" + localize("VIEW_DESCRIPTION") + "</a>");
 		}
 	}
 

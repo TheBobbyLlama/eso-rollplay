@@ -1,6 +1,6 @@
 var userInfo = null;
 var activeChar;
-var characterCache = [];
+var characterCache = {};
 
 var taskHolder = $("#taskHolder");
 
@@ -70,17 +70,16 @@ function createStory() {
 function previewStory() {
 	var story = $(this).attr("data-story");
 
-	var findIndex = characterCache.findIndex(element => dbTransform(element.name) == activeChar);
 	hidePopup();
 
 	if (findIndex > -1) {
-		var storyText = characterCache[findIndex].storyData[dbTransform(story)].text;
+		var storyText = characterCache[activeChar].storyData[dbTransform(story)].text;
 
 		if (storyText) {
 			showStoryPreview(story, storyText);
 		} else {
 			dbLoadStoryText(activeChar + "/" + dbTransform(story), text => {
-				characterCache[findIndex].storyData[dbTransform(story)].text = text;
+				characterCache[activeChar].storyData[dbTransform(story)].text = text;
 				showStoryPreview(story, text);
 			});
 		}
@@ -99,10 +98,9 @@ function deleteStory() {
 	showConfirmPopup("Delete story " + story + "?", function() {
 		dbDeleteStory(activeChar + "/" + dbTransform(story), function() {
 			hidePopup();
-			var findIndex = characterCache.findIndex(element => dbTransform(element.name) == activeChar);
 
 			if (findIndex > -1) {
-				delete characterCache[findIndex].storyData[dbTransform(story)];
+				delete characterCache[activeChar].storyData[dbTransform(story)];
 				showStoryModal();
 			}
 		}, function(message) {
@@ -125,10 +123,10 @@ function populateCharacterList() {
 		charList.append("<li><button type='button' name='createCharacter' data-localization-key='CREATE_A_NEW_CHARACTER'>" + localize("CREATE_A_NEW_CHARACTER") + "</button></li>");
 
 		$("#newUserPrompt").addClass("hideMe");
-		$("#charListHolder, #characterCommands").removeClass("hideMe");
+		$("#charListHolder, #characterInfo").removeClass("hideMe");
 	} else {
 		$("#newUserPrompt").removeClass("hideMe");
-		$("#charListHolder, #characterCommands").addClass("hideMe");
+		$("#charListHolder, #characterInfo").addClass("hideMe");
 	}
 }
 
@@ -142,36 +140,84 @@ function setCharacterActive(charKey) {
 	$("#characterButtons button").attr("disabled", "true");
 	
 	if (charKey) {
-		var testIndex = characterCache.findIndex(element => dbTransform(element.name) == charKey);
-
+		$("#characterInfo > *").removeClass("hideMe");
 		$("#printout").empty();
 
-		if (testIndex > -1) {
-			displayCharacter(characterCache[testIndex]);
+		if (characterCache[activeChar]) {
+			displayCharacter(characterCache[activeChar]);
 		} else {
-			dbLoadCharacter(activeChar, characterLoaded);
+			dbLoadCharacter(activeChar, characterLoaded, (loadMe) => {
+				const result = loadMe.val();
+
+				if (result) {
+					if (!characterCache[activeChar]) {
+						characterCache.activeChar = {};
+					}
+
+					characterCache[activeChar].profile = result;
+
+					displayCharacter(characterCache[activeChar]);
+				}
+			});
 		}
 	} else {
-		$("#printout").text(localize("PLEASE_SELECT_A_CHARACTER"));
+		$("#characterInfo > *").addClass("hideMe");
+		$("#printout").text(localize("LOADING_CHARACTER"));
 	}
 }
 
 function characterLoaded(loadMe) {
 	if (loadMe.val()) {
 		var tmpChar = Object.setPrototypeOf(loadMe.val(), CharacterSheet.prototype);
-		characterCache.push(tmpChar);
+		var nameKey = dbTransform(tmpChar.name);
+
+		if (characterCache.nameKey) {
+			characterCache[nameKey] = {...characterCache[nameKey], ...tmpChar};
+		} else {
+			characterCache[nameKey] = tmpChar;
+		}
+
 		displayCharacter(tmpChar);
 
 		dbLoadStoryData(dbTransform(nameDecode(tmpChar.name)), (data) => {
-			tmpChar.storyData = data.val();
+			characterCache[nameKey].storyData = data.val();
 		});
 	} else {
 		showErrorPopup(localize("THERE_WAS_AN_ERROR_LOADING_THE_CHARACTER"));
 	}
 }
 
+/// Adds HTML encoding to a given string.
+function htmlCleanup(text) {
+	return text.replace(/[<>]/g, function(match) {
+		switch (match)
+		{
+			case "<":
+				return "&lt;";
+			case ">":
+				return "&gt;";
+			default:
+				return "!";
+		}
+	}).trim();
+}
+
 function displayCharacter(character) {
-	character.print("printout", true);
+	character.print("printout");
+
+	$("#characterProfile > h3").empty().append(character.name);
+
+	$("#characterImage")[0].style.background =  character.profile?.image ? "url('" + character.profile.image + "')" : "";
+	$("#characterImage").toggle(!!character.profile?.image);
+
+	if (character.profile?.description) {
+		$("#characterProfile #characterDescription").removeClass("hideMe").empty().append(converter.makeHtml(htmlCleanup(character.profile.description)));
+	} else {
+		$("#characterProfile #characterDescription").addClass("hideMe");
+	}
+
+	$("#characterLink a").attr("href", `profile.html?character=${character.name}`);
+
 	$("#characterButtons button").removeAttr("disabled");
 }
 
@@ -336,14 +382,12 @@ function showNumericDisplayPopup() {
 }
 
 function showStoryModal() {
-	var testIndex = characterCache.findIndex(element => dbTransform(element.name) == activeChar);
-
-	if (testIndex > -1) {
+	if (characterCache[activeChar]) {
 		var storyList = $("#storyModal ul");
 		storyList.empty();
 
-		if (characterCache[testIndex].storyData) {
-			var charStories = Object.entries(characterCache[testIndex].storyData);
+		if (characterCache[activeChar].storyData) {
+			var charStories = Object.entries(characterCache[activeChar].storyData);
 
 			for (var i = 0; i < charStories.length; i++) {
 				storyList.append("<li>" +

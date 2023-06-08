@@ -37,7 +37,7 @@ input.invalid {
 }
 
 #characterButtons {
-	align-items: flex-start;
+	align-items: stretch;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -56,7 +56,7 @@ input.invalid {
 }
 
 #characterButtons div {
-	align-content: flex-start;
+	align-content: stretch;
 	display: flex;
 	flex-basis: 100%;
 	flex-direction: column;
@@ -73,13 +73,71 @@ input.invalid {
 	justify-content: space-between;
 }
 
-#characterCommands {
-	align-items: stretch;
+#characterInfo {
+	display: flex;
+	max-height: calc(100vh - 228px);
+	width: 500px;
+}
+
+#characterInfo #characterPanel {
 	background-color: var(--content-background);
 	border-radius: 8px;
 	display: flex;
+	flex-direction: column;
 	margin: 20px;
 	padding: 10px 20px;
+}
+
+#characterProfile {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	overflow-y: auto;
+	width: 100%;
+}
+
+#characterImage {
+	background-color: black;
+	background-position: center !important;
+	background-size: cover !important;
+	border: solid 1px var(--content-border);
+	border-radius: 4px;
+	height: 200px;
+	margin: 0 auto 8px auto;
+	min-height: 200px;
+	min-width: 200px;
+	width: 200px;
+}
+
+#characterDescription {
+	flex-shrink: 1;
+	margin-bottom: 16px;
+	overflow-y: auto;
+}
+
+#characterDescription p + p {
+	margin: 8px 0;
+}
+
+#characterCommands {
+	align-items: stretch;
+	display: flex;
+	height: 300px;
+	margin: 0 auto;
+}
+
+#characterCommands #printout {
+	max-height: 300px;
+	max-width: 360px;
+	min-width: 280px;
+	overflow: auto;
+}
+
+#characterLink {
+	height: 20px;
+	margin-top: 8px;
+	text-align: center;
 }
 
 #charListHolder {
@@ -179,11 +237,6 @@ input.invalid {
 #newUserPrompt p {
 	margin-bottom: 20px;
 	max-width: 320px;
-}
-
-#printout {
-	max-width: 360px;
-	min-width: 240px;
 }
 
 #storyModal {
@@ -311,6 +364,18 @@ input.invalid {
 	vertical-align: middle;
 }
 
+@media screen and (max-width: 850px) {
+	#characterCenter {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#characterPanel {
+		width: 100%;
+	}
+}
+
 @media screen and (max-width: 575px) {
 	footer a.buttonLink {
 		background-color: var(--gm-background);
@@ -318,6 +383,26 @@ input.invalid {
 
 	footer a.buttonLink img {
 		opacity: 1;
+	}
+
+	#characterCenter {
+		align-items: stretch;
+		flex-direction: row;
+		width: 100%;
+	}
+
+	#charListHolder, #characterList {
+		width: 100%;
+	}
+
+	#characterInfo {
+		max-height: none;
+	}
+
+	/* TODO - Not sizing correctly <400px screen width */
+	#characterPanel {
+		margin: 0 10px;
+		width: 100%;
 	}
 
 	#characterButtons {
@@ -334,11 +419,14 @@ input.invalid {
 
 	#characterCommands {
 		flex-direction: column-reverse;
+		height: fit-content;
+		width: calc(100% - 20px);
 	}
 
-	#charListHolder, #characterList li {
-		margin-right: 20px;
-		width: 100% !important;
+	#characterCommands #printout {
+		overflow-x: auto;
+		min-width: 0;
+		width: 100%;
 	}
 
 	#storyPreviewModal {

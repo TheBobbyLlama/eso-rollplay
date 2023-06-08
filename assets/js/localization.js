@@ -94,7 +94,7 @@ const localizationList = [
 			[ "NEW_PLAYER_BEFORE_LINK", "Please refer to the" ],
 			[ "NEW_PLAYER_AFTER_LINK", "for more information on getting started.  Or dive right in and make your first character!" ],
 			[ "MAKE_A_CHARACTER", "Make a Character" ],
-			[ "PLEASE_SELECT_A_CHARACTER", "Please select a character." ],
+			[ "LOADING_CHARACTER", "Loading character..." ],
 			[ "CREATE_A_NEW_CHARACTER", "Create a New Character" ],
 			[ "BUTTON_PLAY", "Play!" ],
 			[ "BUTTON_EDIT", "Edit" ],

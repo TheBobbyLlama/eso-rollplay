@@ -570,7 +570,7 @@ function addEventDisplay(event) {
 						}
 					}
 
-					character.print("printout", false, "numeric");
+					character.print("printout", "numeric");
 					playSound("alert");
 				}
 				eventPane.append(event.toHTML());
@@ -752,7 +752,7 @@ function characterLoaded(loadMe) {
 			$("#charStatus").append("<div id='transformControls'><button type='button' id='transformButton' data-key='" + transformName + "' disabled>" + localize("TRANSFORM_INTO") + "</button><input type='text' id='transformName' placeholder='" + localize(transformName) + "'></input></div>");
 		}
 
-		character.print("printout", false, "numeric");
+		character.print("printout", "numeric");
 		resetRollSelect();
 
 		eventPane.empty();

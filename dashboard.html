@@ -49,16 +49,28 @@
 						<li></li>
 					</ol>
 				</div>
-				<div id="characterCommands" class="hideMe">
-					<div>
-						<div id="printout" data-localization-key="PLEASE_SELECT_A_CHARACTER">Please select a character.</div>
-					</div>
-					<div id="characterButtons">
-						<button type="button" id="playCharacter" disabled="true" data-localization-key="BUTTON_PLAY">Play!</button>
-						<button type="button" id="editCharacter" disabled="true" data-localization-key="BUTTON_EDIT">Edit</button>
-						<button type="button" id="deleteCharacter" disabled="true" data-localization-key="BUTTON_DELETE">Delete</button>
-						<div id="storyContainer">
-							<button type="button" id="manageStories" data-localization-key="STORIES">Stories</button>
+				<div id="characterInfo" class="hideMe">
+					<div id="characterPanel">
+						<div id="characterProfile">
+							<h3>Name</h3>
+							<div id="characterImage"></div>
+							<div id="characterDescription"></div>
+						</div>
+						<div id="characterCommands">
+							<div>
+								<div id="printout" data-localization-key="PLEASE_SELECT_A_CHARACTER">Please select a character.</div>
+							</div>
+							<div id="characterButtons">
+								<button type="button" id="playCharacter" disabled="true" data-localization-key="BUTTON_PLAY">Play!</button>
+								<button type="button" id="editCharacter" disabled="true" data-localization-key="BUTTON_EDIT">Edit</button>
+								<button type="button" id="deleteCharacter" disabled="true" data-localization-key="BUTTON_DELETE">Delete</button>
+								<div id="storyContainer">
+									<button type="button" id="manageStories" data-localization-key="STORIES">Stories</button>
+								</div>
+							</div>
+						</div>
+						<div id="characterLink">
+							<a href="#" target="_blank">View Profile</a>
 						</div>
 					</div>
 				</div>
