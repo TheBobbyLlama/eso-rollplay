@@ -1,0 +1,37 @@
+button#addNPC, button#addPlayer {
+	min-width: 70px;
+}
+
+#charSheet #main section:last-child {
+	flex-basis: 700px;
+}
+
+#dieRollPanel div.lucky::after {
+	content: "Lucky!";
+}
+
+#dieRollPanel div.resist::after {
+	content: "Resist!";
+}
+
+#dieRollPanel div.unlucky::after {
+	content: "Unlucky!";
+}
+
+#dieRollPanel div.weak::after {
+	content: "Weak!";
+}
+
+#npcList input, #playerList input {
+	max-width: 160px;
+}
+
+@media screen and (max-width: 575px) {
+	#npcList, #playerList {
+		max-width: 100%;
+	}
+
+	#npcList input, #playerList input {
+		max-width: initial;
+	}
+}

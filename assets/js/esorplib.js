@@ -415,7 +415,7 @@ const npcTemplates = [
 function getTemplate(name, list) {
 	if (name) {
 		name = name.replace(/[\s\W]/g, "");
-		return list.find(element => element.key === name);
+		return list.find(element => element.key === name || element.name === name);
 	}
 }
 
@@ -832,17 +832,17 @@ class CharacterSheet {
 		}
 
 		if (this.race) {
-			printArr.push(localize(races.find(item => item.key === this.race.replace(/[\s\W]/g, "")).name));
+			printArr.push(localize(races.find(item => item.key === this.race.replace(/[\s\W]/g, ""))?.name || this.race));
 		}
 
 		if (this.supernatural) {
-			printArr.push(localize(supernaturals.find(item => item.key === this.supernatural.replace(/[\s\W]/g, "")).name));
+			printArr.push(localize(supernaturals.find(item => item.key === this.supernatural.replace(/[\s\W]/g, ""))?.name || this.supernatural));
 		}
 
 		printArr.push(localize((this.sex) ? "SEX_FEMALE" : "SEX_MALE"));
 
 		if (this.class) {
-			printArr.push(localize("CLASS_" + this.class.toUpperCase()));
+			printArr.push(localize("CLASS_" + this.class.toUpperCase().replace(/^CLASS_/, "")));
 		}
 
 		printout.append(printArr.join(" - ") + "<br />");

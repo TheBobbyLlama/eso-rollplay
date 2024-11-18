@@ -126,6 +126,7 @@ const localizationList = [
 			[ "NUMERIC_DISPLAY_DESCRIPTIVE_TEXT", "Use text to describe the values." ],
 			[ "LANGUAGE", "Language" ],
 			[ "EN-US", "English" ],
+			[ "ES", "Español" ],
 			[ "PT-BR", "Português do Brasil" ],
 			[ "CHANGE_PASSWORD", "Change Password" ],
 			[ "NEW_PASSWORD", "New Password" ],
