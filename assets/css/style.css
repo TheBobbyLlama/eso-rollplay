@@ -455,6 +455,27 @@ ul {
 	color: var(--common-alert);
 }
 
+#new-site-info {
+	background-color: #26272a;
+	border-radius: 6px;
+	flex-shrink: 1;
+	padding: 8px 12px 4px 12px;
+	text-align: center;
+}
+
+#new-site-info p + p {
+	margin-top: 10px;
+}
+
+#new-site-info strong, #new-site-info a:link {
+	color: #20a060;
+}
+
+/* Counteract auth panel sizing */
+#auth-panel #new-site-info {
+	margin: 0 -10px 0 10px;
+}
+
 @media screen and (max-width: 980px) {
 	#eventPane > div, .playersubordinate {
 		align-items: stretch;
